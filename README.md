@@ -21,9 +21,9 @@ Open Planning Poker provides you with an easy option to:
 
 ## System design
 
-### High Level Architecture
+### High-Level Architecture
 
-![Infrastructural HLA Diagram](diagrams/high_level_diagram.drawio "Infrastructual HLA Diagram")
+![Infrastructural HLA Diagram](diagrams/high_level_diagram.drawio.png "Infrastructual HLA Diagram")
 
 ### Data Model
 
