@@ -51,4 +51,4 @@ Unfortunately, this option is not available yet.
 
 ### Access Open Planning Poker online
 
-Unfortunately, this option is not available yet.
+You can access the app by visiting this [link.](https://openplanningpoker.com)
