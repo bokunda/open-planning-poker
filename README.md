@@ -1,5 +1,7 @@
 # Open Planning Poker
 
+[Project website.](https://openplanningpoker.com)
+
 This document represents a project specification of the Open Planning Poker solution. Topics to cover are:
 - What is Open Planning Poker?
 - Technical implementation of Open Planning Poker.
@@ -34,14 +36,12 @@ Work in progress.
 This product has a few services that are in separate repositories:
 - Presentational website
 - Frontend Application
-- GraphQL Facade
-- YARP API Gateway
+- [YARP API Gateway](https://github.com/bokunda/open-planning-poker-api-gateway)
+- [GraphQL Facade](https://github.com/bokunda/open-planning-poker-game-graphql)
 - User Management
 - [Game Engine](https://github.com/bokunda/open-planning-poker-game-engine)
 - Reporting Service
 - Notification Service
-
-Work in progress.
 
 ## How To
 
