@@ -36,12 +36,7 @@ Work in progress.
 This product has a few services that are in separate repositories:
 - [Presentational website](https://github.com/bokunda/open-planning-poker-website)
 - [Frontend Application](https://github.com/bokunda/open-planning-poker-app)
-- [YARP API Gateway](https://github.com/bokunda/open-planning-poker-api-gateway)
-- [GraphQL Facade](https://github.com/bokunda/open-planning-poker-game-graphql)
-- [User Management](https://github.com/bokunda/open-planning-poker-app-users-engine)
 - [Game Engine](https://github.com/bokunda/open-planning-poker-game-engine)
-- [Reporting Service](https://github.com/bokunda/open-planning-poker-reporting-engine)
-- [Notification Service](https://github.com/bokunda/open-planning-poker-notifications-engine)
 
 ## How To
 
