@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  OpenPlanningPoker.GameEngine.GraphQL:
+    image: ${DOCKER_REGISTRY-}openplanningpokergameenginegraphql
+    build:
+      context: .
+      dockerfile: src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL/Dockerfile
+
+  open-planning-poker-game-engine-db:
+    image: postgres:15.5
+    container_name: OpenPlanningPoker.GameEngine.Db
+    environment:
+      - POSTGRES_DB=open-planning-poker-game-engine
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./.containers/database:/var/lib/postgresql/data
+    ports:
+      - 5432:5432

@@ -1,0 +1,110 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+}
+
+type ApiCollectionOfGamePlayer {
+  items: [GamePlayer!]!
+  totalCount: Int!
+}
+
+type ApiCollectionOfTicket {
+  items: [Ticket!]!
+  totalCount: Int!
+}
+
+type ApiCollectionOfVote {
+  items: [Vote!]!
+  totalCount: Int!
+}
+
+type Game {
+  id: UUID!
+  name: String!
+  description: String!
+}
+
+type GamePlayer {
+  gameId: UUID!
+  gameName: String!
+  playerId: UUID!
+  playerName: String!
+}
+
+type Info {
+  version: String!
+  author: String!
+  contact: String!
+}
+
+"Base Game Engine mutation."
+type Mutation {
+  "Join Game"
+  joinGame(gameId: UUID!): Boolean!
+  "Leave a Game"
+  leaveGame(gameId: UUID!): Boolean!
+  "Creates a game, returns game details."
+  createGame(name: String! description: String!): Game!
+  "Dummy health-check mutation."
+  ping: String!
+  "Creates Game Settings."
+  createSettings(gameId: UUID! votingTime: Int! isBreakAllowed: Boolean!): Settings!
+  "Updates Game Settings."
+  updateSettings(id: UUID! gameId: UUID! votingTime: Int! isBreakAllowed: Boolean!): Settings!
+  "Creates a ticket for given game."
+  createTicket(gameId: UUID! name: String! description: String!): Ticket!
+  "Updates a ticket for given game."
+  updateTicket(id: UUID! name: String! description: String!): Ticket!
+  "Deletes a ticket for given game."
+  deleteTicket(id: UUID!): Ticket!
+  "Creates a vote."
+  createVote(ticketId: UUID! value: Int!): Vote!
+  "Updates a vote."
+  updateVote(id: UUID! value: Int!): Vote!
+}
+
+"Base Game Engine query."
+type Query {
+  "Returns game with participants"
+  gamePlayers(gameId: UUID!): ApiCollectionOfGamePlayer!
+  "Returns Game details."
+  game(id: UUID!): Game!
+  "Returns an info about the Game Engine service."
+  info: Info!
+  "Dummy health-check query."
+  ping: String!
+  "Gets Game Settings."
+  settings(gameId: UUID!): Settings!
+  "Gets a ticket by id."
+  ticket(id: UUID!): Ticket!
+  "Gets a list of tickets by gameId."
+  tickets(gameId: UUID!): ApiCollectionOfTicket!
+  "Gets votes by ticketId."
+  votes(ticketId: UUID!): ApiCollectionOfVote!
+}
+
+type Settings {
+  id: UUID!
+  gameId: UUID!
+  votingTime: Int!
+  isBreakAllowed: Boolean!
+}
+
+type Ticket {
+  id: UUID!
+  gameId: UUID!
+  name: String!
+  description: String!
+}
+
+type Vote {
+  id: UUID!
+  gameId: UUID!
+  playerId: UUID!
+  value: Int!
+}
+
+"The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
+directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
+
+scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")
