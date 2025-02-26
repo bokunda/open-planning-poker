@@ -34,6 +34,23 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanningPoker.GameEngin
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{698F88EA-721F-4530-BE82-EEDCA97BF980}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\docs\GameEngine.md = ..\..\docs\GameEngine.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "diagrams", "diagrams", "{27BE83E4-D1D2-4782-B9EB-BA674E73F254}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\diagrams\high_level_diagram.drawio = ..\..\diagrams\high_level_diagram.drawio
+		..\..\diagrams\high_level_diagram.drawio.png = ..\..\diagrams\high_level_diagram.drawio.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "database", "database", "{512718B8-567E-4438-937A-FC0A3F900DA9}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\diagrams\Database\Open Planning Poker - Game Engine DB Schema.png = ..\..\diagrams\Database\Open Planning Poker - Game Engine DB Schema.png
+		..\..\diagrams\Database\Open Planning Poker - Game Engine DB Schema_code.txt = ..\..\diagrams\Database\Open Planning Poker - Game Engine DB Schema_code.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +108,9 @@ Global
 		{E14E03FC-E847-418A-B16D-DC2BB7E5EE9B} = {EB35A64C-8580-42FC-A6EE-4167A44009EB}
 		{E89510A1-A066-4D3C-9AC9-E8DE6B521B20} = {EB35A64C-8580-42FC-A6EE-4167A44009EB}
 		{DD54EF5C-CBF2-42E8-A433-A09F38F8DEA1} = {EB35A64C-8580-42FC-A6EE-4167A44009EB}
+		{698F88EA-721F-4530-BE82-EEDCA97BF980} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}
+		{27BE83E4-D1D2-4782-B9EB-BA674E73F254} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}
+		{512718B8-567E-4438-937A-FC0A3F900DA9} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3C39E3DC-BD48-41A1-841B-A44CB8223F2C}

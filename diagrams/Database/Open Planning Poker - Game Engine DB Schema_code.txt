@@ -1,0 +1,61 @@
+Table user_management_db_Player {
+  Id guid [primary key]
+}
+
+Table Game {
+  Id guid [primary key]
+  Name nvarchar(255) [not null]
+  Description nvarchar(4080)
+  Created_at timestamp [not null]
+  // Finished_at can be calculated based on the Vote.latest created_at
+}
+
+Table GameSettings {
+  Id guid [primary key]
+  GameId guid [not null]
+  VotingTime int [not null]
+  IsBreakAllowed bit [not null]
+  Created_at timestamp [not null]
+}
+
+Table GamePlayer {
+  PlayerId guid [primary key]
+  GameId guid [primary key]
+}
+
+Table Ticket {
+  Id guid [primary key]
+  GameId guid [not null]
+  Name nvarchar(255) [not null]
+  Description nvarchar(4080)
+  Created_at timestamp [not null]
+}
+
+Table Vote {
+  Id guid [not null]
+  PlayerId guid [primary key]
+  TicketId guid [primary key]
+  Value smallint [not null]
+  Created_at timestamp [not null]
+  // Vote.Id is added for easier tracing
+}
+
+// Audit table is used in general purpose to log all impotrant events
+Table Audit {
+  Id guid [primary key]
+  Name nvarchar(255) [not null]
+  Description nvarchar(4080)
+  Type smallint [not null]
+  ObjectType smallint [not null]
+  ObjectId Guid [not null]
+}
+
+
+Ref: Game.Id < GamePlayer.GameId
+Ref: user_management_db_Player.Id < GamePlayer.PlayerId
+Ref: Game.Id - GameSettings.GameId
+
+Ref: Game.Id < Ticket.GameId
+
+Ref: Ticket.Id < Vote.TicketId
+Ref: user_management_db_Player.Id < Vote.PlayerId
