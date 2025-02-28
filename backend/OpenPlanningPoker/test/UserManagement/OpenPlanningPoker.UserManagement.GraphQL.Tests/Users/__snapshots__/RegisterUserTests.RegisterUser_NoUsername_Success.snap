@@ -1,0 +1,23 @@
+﻿{
+  "Kind": "SingleResult",
+  "RequestIndex": null,
+  "VariableIndex": null,
+  "Label": null,
+  "Path": null,
+  "Data": {
+    "registerUser": {
+      "user": {
+        "username": "Username123",
+        "__typename": "User"
+      },
+      "errors": null
+    }
+  },
+  "Items": null,
+  "Errors": null,
+  "Extensions": null,
+  "Incremental": null,
+  "ContextData": null,
+  "HasNext": null,
+  "IsDataSet": true
+}

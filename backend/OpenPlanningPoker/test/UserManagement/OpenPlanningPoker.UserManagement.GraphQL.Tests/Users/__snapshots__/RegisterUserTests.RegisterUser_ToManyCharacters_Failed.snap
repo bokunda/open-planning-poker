@@ -1,0 +1,26 @@
+﻿{
+  "Kind": "SingleResult",
+  "RequestIndex": null,
+  "VariableIndex": null,
+  "Label": null,
+  "Path": null,
+  "Data": {
+    "registerUser": {
+      "user": null,
+      "errors": [
+        {
+          "code": "MaximumLengthValidator",
+          "message": "The length of 'Username' must be 26 characters or fewer. You entered 66 characters.",
+          "__typename": "OpenPlanningPokerError"
+        }
+      ]
+    }
+  },
+  "Items": null,
+  "Errors": null,
+  "Extensions": null,
+  "Incremental": null,
+  "ContextData": null,
+  "HasNext": null,
+  "IsDataSet": true
+}
