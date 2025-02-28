@@ -51,6 +51,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "database", "database", "{51
 		..\..\diagrams\Database\Open Planning Poker - Game Engine DB Schema_code.txt = ..\..\diagrams\Database\Open Planning Poker - Game Engine DB Schema_code.txt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserManagement", "UserManagement", "{D028324F-BA31-49AD-B2D3-5E7764A2200F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanningPoker.UserManagement.GraphQL", "src\UserManagement\OpenPlanningPoker.UserManagement.GraphQL\OpenPlanningPoker.UserManagement.GraphQL.csproj", "{9ADFB2D7-3839-4706-A63B-E7D7B70AA920}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserManagement", "UserManagement", "{2C4BBCBF-3869-4362-925E-4404F6DE108E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanningPoker.UserManagement.GraphQL.Tests", "test\UserManagement\OpenPlanningPoker.UserManagement.GraphQL.Tests\OpenPlanningPoker.UserManagement.GraphQL.Tests.csproj", "{F6303D50-638A-4F87-89EF-C53D00B7265B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +101,14 @@ Global
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ADFB2D7-3839-4706-A63B-E7D7B70AA920}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ADFB2D7-3839-4706-A63B-E7D7B70AA920}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ADFB2D7-3839-4706-A63B-E7D7B70AA920}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ADFB2D7-3839-4706-A63B-E7D7B70AA920}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6303D50-638A-4F87-89EF-C53D00B7265B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6303D50-638A-4F87-89EF-C53D00B7265B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6303D50-638A-4F87-89EF-C53D00B7265B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6303D50-638A-4F87-89EF-C53D00B7265B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,6 +127,10 @@ Global
 		{698F88EA-721F-4530-BE82-EEDCA97BF980} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}
 		{27BE83E4-D1D2-4782-B9EB-BA674E73F254} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}
 		{512718B8-567E-4438-937A-FC0A3F900DA9} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}
+		{D028324F-BA31-49AD-B2D3-5E7764A2200F} = {6A57371B-4DC1-4E5C-9F90-1BE5DAC1115B}
+		{9ADFB2D7-3839-4706-A63B-E7D7B70AA920} = {D028324F-BA31-49AD-B2D3-5E7764A2200F}
+		{2C4BBCBF-3869-4362-925E-4404F6DE108E} = {BDFC2CC3-A098-4F5D-BC5E-8488F5F8C49C}
+		{F6303D50-638A-4F87-89EF-C53D00B7265B} = {2C4BBCBF-3869-4362-925E-4404F6DE108E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3C39E3DC-BD48-41A1-841B-A44CB8223F2C}

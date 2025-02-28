@@ -4,7 +4,8 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
-        "openplanningpoker.gameengine.graphql": "StartDebugging"
+        "openplanningpoker.gameengine.graphql": "StartDebugging",
+        "openplanningpoker.usermanagement.graphql": "StartDebugging"
       }
     }
   }

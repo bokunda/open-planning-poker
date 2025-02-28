@@ -15,10 +15,12 @@
     <PackageVersion Include="HotChocolate" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Abstractions" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.AspNetCore" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.AspNetCore.Authorization" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.AspNetCore.CommandLine" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Execution" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Execution.Abstractions" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Fetching" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.Types" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Types.Analyzers" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Utilities" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Validation" Version="15.0.3" />
@@ -35,11 +37,15 @@
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.2" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.2.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
-    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.2" />
+    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.3" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
+    <PackageVersion Include="Polly" Version="8.5.2" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="Snapshooter.Xunit" Version="1.0.1" />
     <PackageVersion Include="xunit" Version="2.9.3" />
