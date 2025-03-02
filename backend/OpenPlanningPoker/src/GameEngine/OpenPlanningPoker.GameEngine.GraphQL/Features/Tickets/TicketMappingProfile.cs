@@ -1,12 +1,11 @@
-﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Tickets
+﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Tickets;
+
+public class TicketMappingProfile : Profile
 {
-    public class TicketMappingProfile : Profile
+    public TicketMappingProfile()
     {
-        public TicketMappingProfile()
-        {
-            CreateMap<GetTicketResponse, Ticket>();
-            CreateMap<CreateTicketResponse, Ticket>();
-            CreateMap<UpdateTicketResponse, Ticket>();
-        }
+        CreateMap<GetTicketResponse, Ticket>();
+        CreateMap<CreateTicketResponse, Ticket>();
+        CreateMap<UpdateTicketResponse, Ticket>();
     }
 }

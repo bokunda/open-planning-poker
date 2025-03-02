@@ -24,10 +24,6 @@
     <PackageVersion Include="HotChocolate.Types.Analyzers" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Utilities" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Validation" Version="15.0.3" />
-    <PackageVersion Include="Keycloak.AuthServices.Authentication" Version="2.6.0" />
-    <PackageVersion Include="Keycloak.AuthServices.Authorization" Version="2.6.0" />
-    <PackageVersion Include="Keycloak.AuthServices.Common" Version="2.6.0" />
-    <PackageVersion Include="Keycloak.AuthServices.Sdk" Version="2.6.0" />
     <PackageVersion Include="MediatR" Version="12.4.1" />
     <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />

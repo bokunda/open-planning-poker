@@ -1,11 +1,10 @@
-﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.GamePlayer
+﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.GamePlayer;
+
+public class GamePlayerMappingProfile : Profile
 {
-    public class GamePlayerMappingProfile : Profile
+    public GamePlayerMappingProfile()
     {
-        public GamePlayerMappingProfile()
-        {
-            CreateMap<ListPlayersItem, GamePlayer>();
-            CreateMap<ListPlayersItem, GamePlayer>();
-        }
+        CreateMap<ListPlayersItem, GamePlayer>();
+        CreateMap<ListPlayersItem, GamePlayer>();
     }
 }

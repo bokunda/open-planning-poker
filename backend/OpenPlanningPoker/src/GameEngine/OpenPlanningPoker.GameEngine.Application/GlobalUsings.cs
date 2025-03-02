@@ -15,3 +15,5 @@ global using OpenPlanningPoker.GameEngine.Domain.GameSettings;
 global using OpenPlanningPoker.GameEngine.Domain.Identity;
 global using OpenPlanningPoker.GameEngine.Domain.Tickets;
 global using OpenPlanningPoker.GameEngine.Domain.Votes;
+global using OpenPlanningPoker.Shared.Application.Results;
+global using OpenPlanningPoker.Shared.Application.Errors;

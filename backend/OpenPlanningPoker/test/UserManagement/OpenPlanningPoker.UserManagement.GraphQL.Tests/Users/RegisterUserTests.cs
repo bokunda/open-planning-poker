@@ -10,7 +10,7 @@ public class RegisterUserTests
                     __typename
                   }
                   errors {
-                    ... on OpenPlanningPokerError {
+                    ... on ApplicationError {
                       code
                       message
                       __typename

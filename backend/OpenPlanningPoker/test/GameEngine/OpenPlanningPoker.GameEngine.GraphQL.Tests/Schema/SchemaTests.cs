@@ -1,23 +1,21 @@
-﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Tests.Schema
+﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Tests.Schema;
+
+public class SchemaTests
 {
-    
-    public class SchemaTests
+    [Fact]
+    public async Task GenerateSchema()
     {
-        [Fact]
-        public async Task GenerateSchema()
-        {
-            // arrange
-            var schema = await new ServiceCollection()
-                .AddGraphQL()
-                .AddTypes()
-                .BuildSchemaAsync();
+        // arrange
+        var schema = await new ServiceCollection()
+            .AddGraphQL()
+            .AddTypes()
+            .BuildSchemaAsync();
 
-            // act
-            var schemaSDL = schema.ToString();
+        // act
+        var schemaSDL = schema.ToString();
 
-            // assert
-            schemaSDL.MatchSnapshot();
-        }
-        
+        // assert
+        schemaSDL.MatchSnapshot();
     }
+    
 }

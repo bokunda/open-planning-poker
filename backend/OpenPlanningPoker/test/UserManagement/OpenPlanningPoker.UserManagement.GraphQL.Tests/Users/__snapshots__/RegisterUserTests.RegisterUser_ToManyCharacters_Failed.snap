@@ -11,7 +11,7 @@
         {
           "code": "MaximumLengthValidator",
           "message": "The length of 'Username' must be 26 characters or fewer. You entered 66 characters.",
-          "__typename": "OpenPlanningPokerError"
+          "__typename": "ApplicationError"
         }
       ]
     }

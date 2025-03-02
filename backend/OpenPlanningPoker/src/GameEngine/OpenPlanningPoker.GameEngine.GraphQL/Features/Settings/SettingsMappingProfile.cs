@@ -1,12 +1,11 @@
-﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Settings
+﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Settings;
+
+public class SettingsMappingProfile : Profile
 {
-    public class SettingsMappingProfile : Profile
+    public SettingsMappingProfile()
     {
-        public SettingsMappingProfile()
-        {
-            CreateMap<GetGameSettingsResponse, Settings>();
-            CreateMap<CreateGameSettingsResponse, Settings>();
-            CreateMap<UpdateGameSettingsResponse, Settings>();
-        }
+        CreateMap<GetGameSettingsResponse, Settings>();
+        CreateMap<CreateGameSettingsResponse, Settings>();
+        CreateMap<UpdateGameSettingsResponse, Settings>();
     }
 }

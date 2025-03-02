@@ -1,8 +1,6 @@
 ﻿namespace OpenPlanningPoker.GameEngine.Application.Features.GamePlayer;
 
-public sealed record JoinGameResponse;
-
-public sealed record JoinGameCommand(Guid GameId, Guid UserId) : IRequest<JoinGameResponse>;
+public sealed record JoinGameCommand(Guid GameId, Guid UserId) : IRequest<Result<bool, ApplicationError>>;
 
 public static class JoinGame
 {
@@ -27,15 +25,16 @@ public static class JoinGame
     }
 
     public sealed class RequestHandler(IGamePlayerRepository gamePlayerRepository, IUnitOfWork unitOfWork)
-        : IRequestHandler<JoinGameCommand, JoinGameResponse>
+        : IRequestHandler<JoinGameCommand, Result<bool, ApplicationError>>
     {
-        public async Task<JoinGameResponse> Handle(JoinGameCommand request, CancellationToken cancellationToken = default)
+        public async Task<Result<bool, ApplicationError>> Handle(JoinGameCommand request, CancellationToken cancellationToken = default)
         {
             var gamePlayer = Domain.GamePlayer.GamePlayer.Create(request.GameId, request.UserId);
             gamePlayerRepository.Add(gamePlayer);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return new JoinGameResponse();
+
+            return true;
         }
     }
 }

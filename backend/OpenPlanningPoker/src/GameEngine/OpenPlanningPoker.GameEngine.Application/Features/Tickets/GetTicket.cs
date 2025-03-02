@@ -1,7 +1,7 @@
 ﻿namespace OpenPlanningPoker.GameEngine.Application.Features.Tickets;
 
 public sealed record GetTicketResponse(Guid Id, Guid GameId, string Name, string Description);
-public sealed record GetTicketQuery(Guid TicketId) : IRequest<GetTicketResponse>;
+public sealed record GetTicketQuery(Guid TicketId) : IRequest<Result<GetTicketResponse, ApplicationError>>;
 
 public static class GetTicket
 {
@@ -22,9 +22,9 @@ public static class GetTicket
     }
 
     public sealed class RequestHandler(ITicketRepository ticketRepository, IMapper mapper)
-        : IRequestHandler<GetTicketQuery, GetTicketResponse>
+        : IRequestHandler<GetTicketQuery, Result<GetTicketResponse, ApplicationError>>
     {
-        public async Task<GetTicketResponse> Handle(GetTicketQuery request, CancellationToken cancellationToken = default)
+        public async Task<Result<GetTicketResponse, ApplicationError>> Handle(GetTicketQuery request, CancellationToken cancellationToken = default)
         {
             var data = await ticketRepository.GetByIdAsync(request.TicketId, cancellationToken);
             return mapper.Map<GetTicketResponse>(data);

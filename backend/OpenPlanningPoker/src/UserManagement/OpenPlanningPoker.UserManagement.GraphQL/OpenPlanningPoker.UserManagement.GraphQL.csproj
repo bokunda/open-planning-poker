@@ -30,6 +30,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\OpenPlanningPoker.Shared.Application\OpenPlanningPoker.Shared.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="OfflineVocabulary\english-vocabulary.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

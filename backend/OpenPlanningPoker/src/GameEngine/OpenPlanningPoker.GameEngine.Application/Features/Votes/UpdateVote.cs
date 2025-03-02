@@ -2,7 +2,7 @@
 
 public sealed record UpdateVoteResponse(Guid Id, Guid PlayerId, Guid TicketId, int Value);
 
-public sealed record UpdateVoteCommand(Guid Id, int Value) : IRequest<UpdateVoteResponse>;
+public sealed record UpdateVoteCommand(Guid Id, int Value) : IRequest<Result<UpdateVoteResponse, ApplicationError>>;
 
 public static class UpdateVote
 {
@@ -32,9 +32,9 @@ public static class UpdateVote
         IVoteRepository voteRepository,
         IMapper mapper,
         IUnitOfWork unitOfWork)
-        : IRequestHandler<UpdateVoteCommand, UpdateVoteResponse>
+        : IRequestHandler<UpdateVoteCommand, Result<UpdateVoteResponse, ApplicationError>>
     {
-        public async Task<UpdateVoteResponse> Handle(UpdateVoteCommand request, CancellationToken cancellationToken = default)
+        public async Task<Result<UpdateVoteResponse, ApplicationError>> Handle(UpdateVoteCommand request, CancellationToken cancellationToken = default)
         {
             var vote = await voteRepository.GetByIdAsync(request.Id, cancellationToken);
             vote!.Update(request.Value);

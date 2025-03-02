@@ -16,7 +16,7 @@ public class RegisterUserMutation
         }
     }
 
-    public async Task<FieldResult<User, OpenPlanningPokerError>> RegisterUserAsync(
+    public async Task<FieldResult<User, ApplicationError>> RegisterUserAsync(
         [Service] IUsernameGeneratorService usernameGeneratorService,
         string? username,
         CancellationToken cancellationToken = default)
@@ -29,7 +29,7 @@ public class RegisterUserMutation
         var validationResult = new Validator().Validate(new RegisterUserCommand(username));
         if (validationResult.IsValid == false)
         {
-            var errors = validationResult.Errors.Select(e => new OpenPlanningPokerError(e.ErrorCode, e.ErrorMessage)).ToList();
+            var errors = validationResult.Errors.Select(e => new ApplicationError(e.ErrorCode, e.ErrorMessage)).ToList();
             return errors.First();
         }
         return new User(Guid.NewGuid(), username);
