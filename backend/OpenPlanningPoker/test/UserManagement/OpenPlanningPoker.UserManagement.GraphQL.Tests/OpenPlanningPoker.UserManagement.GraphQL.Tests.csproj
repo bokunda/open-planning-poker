@@ -34,10 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Schema\__snapshots__\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\src\UserManagement\OpenPlanningPoker.UserManagement.GraphQL\OpenPlanningPoker.UserManagement.GraphQL.csproj" />
   </ItemGroup>
 

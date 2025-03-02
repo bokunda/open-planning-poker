@@ -2,7 +2,7 @@
 
 public sealed record UpdateTicketResponse(Guid Id, Guid GameId, string Name, string Description);
 
-public sealed record UpdateTicketCommand(Guid TicketId, string Name, string Description) : IRequest<UpdateTicketResponse>;
+public sealed record UpdateTicketCommand(Guid TicketId, string Name, string Description) : IRequest<Result<UpdateTicketResponse, ApplicationError>>;
 
 public static class UpdateTicket
 {
@@ -32,9 +32,9 @@ public static class UpdateTicket
     }
 
     public sealed class RequestHandler(ITicketRepository ticketRepository, IMapper mapper, IUnitOfWork unitOfWork)
-        : IRequestHandler<UpdateTicketCommand, UpdateTicketResponse>
+        : IRequestHandler<UpdateTicketCommand, Result<UpdateTicketResponse, ApplicationError>>
     {
-        public async Task<UpdateTicketResponse> Handle(UpdateTicketCommand request, CancellationToken cancellationToken = default)
+        public async Task<Result<UpdateTicketResponse, ApplicationError>> Handle(UpdateTicketCommand request, CancellationToken cancellationToken = default)
         {
             var ticket = await ticketRepository.GetByIdAsync(request.TicketId, cancellationToken);
             ticket!.Update(request.Name, request.Description);

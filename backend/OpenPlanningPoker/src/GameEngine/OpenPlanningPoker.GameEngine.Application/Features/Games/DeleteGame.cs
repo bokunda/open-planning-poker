@@ -1,8 +1,6 @@
 ﻿namespace OpenPlanningPoker.GameEngine.Application.Features.Games;
 
-public sealed record DeleteGameResponse;
-
-public sealed record DeleteGameCommand(Guid GameId) : IRequest<DeleteGameResponse>;
+public sealed record DeleteGameCommand(Guid GameId) : IRequest<Result<bool, ApplicationError>>;
 
 /// <summary>
 /// Delete Game will be used by the service worker for DB cleanup purposes so no validation is needed.
@@ -19,15 +17,15 @@ public static class DeleteGame
     }
 
     public sealed class RequestHandler(IGameRepository gameRepository, IUnitOfWork unitOfWork)
-        : IRequestHandler<DeleteGameCommand, DeleteGameResponse>
+        : IRequestHandler<DeleteGameCommand, Result<bool, ApplicationError>>
     {
-        public async Task<DeleteGameResponse> Handle(DeleteGameCommand request, CancellationToken cancellationToken = default)
+        public async Task<Result<bool, ApplicationError>> Handle(DeleteGameCommand request, CancellationToken cancellationToken = default)
         {
             var game = (await gameRepository.GetByIdAsync(request.GameId, cancellationToken))!;
             gameRepository.Delete(game);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return new DeleteGameResponse();
+            return true;
         }
     }
 }

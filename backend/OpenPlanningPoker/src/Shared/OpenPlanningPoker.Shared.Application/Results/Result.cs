@@ -1,32 +1,34 @@
-﻿namespace OpenPlanningPoker.UserManagement.GraphQL.Features;
+﻿namespace OpenPlanningPoker.Shared.Application.Results;
 
 public class Result<TValue, TError>
 {
     public readonly TValue? Value;
     public readonly TError? Error;
 
-    private readonly bool _isSuccess;
+    public readonly bool IsSuccess;
 
     private Result(TValue value)
     {
-        _isSuccess = true;
+        IsSuccess = true;
         Value = value;
         Error = default;
     }
 
     private Result(TError error)
     {
-        _isSuccess = false;
+        IsSuccess = false;
         Value = default;
         Error = error;
     }
 
+    //happy path
     public static implicit operator Result<TValue, TError>(TValue value) => new(value);
 
+    //error path
     public static implicit operator Result<TValue, TError>(TError error) => new(error);
 
     public Result<TValue, TError> Match(Func<TValue, Result<TValue, TError>> success, Func<TError, Result<TValue, TError>> failure)
     {
-        return _isSuccess ? success(Value!) : failure(Error!);
+        return IsSuccess ? success(Value!) : failure(Error!);
     }
 }

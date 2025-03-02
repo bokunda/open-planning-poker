@@ -1,8 +1,6 @@
 ﻿namespace OpenPlanningPoker.GameEngine.Application.Features.GamePlayer;
 
-public sealed record LeaveGameResponse;
-
-public sealed record LeaveGameCommand(Guid GameId, Guid UserId) : IRequest<LeaveGameResponse>;
+public sealed record LeaveGameCommand(Guid GameId, Guid UserId) : IRequest<Result<bool, ApplicationError>>;
 
 public static class LeaveGame
 {
@@ -27,15 +25,15 @@ public static class LeaveGame
     }
 
     public sealed class RequestHandler(IGamePlayerRepository gamePlayerRepository, IUnitOfWork unitOfWork)
-        : IRequestHandler<LeaveGameCommand, LeaveGameResponse>
+        : IRequestHandler<LeaveGameCommand, Result<bool, ApplicationError>>
     {
-        public async Task<LeaveGameResponse> Handle(LeaveGameCommand request, CancellationToken cancellationToken = default)
+        public async Task<Result<bool, ApplicationError>> Handle(LeaveGameCommand request, CancellationToken cancellationToken = default)
         {
             var result = await gamePlayerRepository.GetByGameAndPlayer(request.GameId, request.UserId, cancellationToken);
             gamePlayerRepository.Delete(result);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return new LeaveGameResponse();
+            return true;
         }
     }
 }

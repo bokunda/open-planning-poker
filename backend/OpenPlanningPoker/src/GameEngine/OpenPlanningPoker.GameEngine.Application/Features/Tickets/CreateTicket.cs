@@ -2,7 +2,7 @@
 
 public sealed record CreateTicketResponse(Guid Id, Guid GameId, string Name, string Description);
 
-public sealed record CreateTicketCommand(Guid GameId, string Name, string Description) : IRequest<CreateTicketResponse>;
+public sealed record CreateTicketCommand(Guid GameId, string Name, string Description) : IRequest<Result<CreateTicketResponse, ApplicationError>>;
 
 public static class CreateTicket
 {
@@ -32,9 +32,9 @@ public static class CreateTicket
     }
 
     public sealed class RequestHandler(ITicketRepository ticketRepository, IMapper mapper, IUnitOfWork unitOfWork)
-        : IRequestHandler<CreateTicketCommand, CreateTicketResponse>
+        : IRequestHandler<CreateTicketCommand, Result<CreateTicketResponse, ApplicationError>>
     {
-        public async Task<CreateTicketResponse> Handle(CreateTicketCommand request, CancellationToken cancellationToken = default)
+        public async Task<Result<CreateTicketResponse, ApplicationError>> Handle(CreateTicketCommand request, CancellationToken cancellationToken = default)
         {
             var ticket = Ticket.Create(request.GameId, request.Name, request.Description);
             ticketRepository.Add(ticket);

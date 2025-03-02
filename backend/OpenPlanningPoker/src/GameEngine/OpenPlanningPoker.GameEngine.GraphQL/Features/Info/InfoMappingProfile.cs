@@ -1,10 +1,9 @@
-﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Info
+﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Info;
+
+public class InfoMappingProfile : Profile
 {
-    public class InfoMappingProfile : Profile
+    public InfoMappingProfile()
     {
-        public InfoMappingProfile()
-        {
-            CreateMap<GetInfoResponse, Info>();
-        }
+        CreateMap<GetInfoResponse, Info>();
     }
 }

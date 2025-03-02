@@ -18,6 +18,8 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 //    .CreateLogger();
 
 builder.AddGraphQL()
+    .AddQueryConventions()
+    .AddMutationConventions()
     .AddTypes();
 
 var app = builder.Build();

@@ -1,7 +1,7 @@
 ﻿namespace OpenPlanningPoker.GameEngine.Application.Features.GameSettings;
 
 public sealed record GetGameSettingsResponse(Guid Id, Guid GameId, int VotingTime, bool IsBreakAllowed);
-public sealed record GetGameSettingsQuery(Guid GameId) : IRequest<GetGameSettingsResponse>;
+public sealed record GetGameSettingsQuery(Guid GameId) : IRequest<Result<GetGameSettingsResponse, ApplicationError>>;
 
 public static class GetGameSettings
 {
@@ -22,9 +22,9 @@ public static class GetGameSettings
     }
 
     public sealed class RequestHandler(IGameSettingsRepository gameSettingsRepository, IMapper mapper)
-        : IRequestHandler<GetGameSettingsQuery, GetGameSettingsResponse>
+        : IRequestHandler<GetGameSettingsQuery, Result<GetGameSettingsResponse, ApplicationError>>
     {
-        public async Task<GetGameSettingsResponse> Handle(GetGameSettingsQuery request, CancellationToken cancellationToken = default)
+        public async Task<Result<GetGameSettingsResponse, ApplicationError>> Handle(GetGameSettingsQuery request, CancellationToken cancellationToken = default)
         {
             var data = await gameSettingsRepository.GetByGame(request.GameId, cancellationToken);
             return mapper.Map<GetGameSettingsResponse>(data);

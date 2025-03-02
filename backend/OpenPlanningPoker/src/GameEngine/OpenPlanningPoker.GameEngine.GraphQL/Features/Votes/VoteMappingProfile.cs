@@ -1,12 +1,11 @@
-﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Votes
+﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Votes;
+
+public class VoteMappingProfile : Profile
 {
-    public class VoteMappingProfile : Profile
+    public VoteMappingProfile()
     {
-        public VoteMappingProfile()
-        {
-            CreateMap<GetVotesItem, Vote>();
-            CreateMap<CreateVoteResponse, Vote>();
-            CreateMap<UpdateVoteResponse, Vote>();
-        }
+        CreateMap<GetVotesItem, Vote>();
+        CreateMap<CreateVoteResponse, Vote>();
+        CreateMap<UpdateVoteResponse, Vote>();
     }
 }

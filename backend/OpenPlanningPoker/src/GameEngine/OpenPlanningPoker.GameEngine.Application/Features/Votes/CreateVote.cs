@@ -2,7 +2,7 @@
 
 public sealed record CreateVoteResponse(Guid Id, Guid PlayerId, Guid TicketId, int Value);
 
-public sealed record CreateVoteCommand(Guid TicketId, int Value) : IRequest<CreateVoteResponse>;
+public sealed record CreateVoteCommand(Guid TicketId, int Value) : IRequest<Result<CreateVoteResponse, ApplicationError>>;
 
 public static class CreateVote
 {
@@ -33,9 +33,9 @@ public static class CreateVote
         ICurrentUserProvider currentUserProvider,
         IMapper mapper,
         IUnitOfWork unitOfWork)
-        : IRequestHandler<CreateVoteCommand, CreateVoteResponse>
+        : IRequestHandler<CreateVoteCommand, Result<CreateVoteResponse, ApplicationError>>
     {
-        public async Task<CreateVoteResponse> Handle(CreateVoteCommand request, CancellationToken cancellationToken = default)
+        public async Task<Result<CreateVoteResponse, ApplicationError>> Handle(CreateVoteCommand request, CancellationToken cancellationToken = default)
         {
             var vote = Vote.Create(currentUserProvider.CustomerId, request.TicketId, request.Value);
             voteRepository.Add(vote);

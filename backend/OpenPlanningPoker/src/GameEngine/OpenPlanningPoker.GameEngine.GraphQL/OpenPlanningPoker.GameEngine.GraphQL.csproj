@@ -27,14 +27,11 @@
     </PackageReference>
     <PackageReference Include="HotChocolate.AspNetCore" />
     <PackageReference Include="HotChocolate.AspNetCore.CommandLine" />
+    <PackageReference Include="HotChocolate.Types" />
     <PackageReference Include="HotChocolate.Types.Analyzers">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Keycloak.AuthServices.Authentication" />
-    <PackageReference Include="Keycloak.AuthServices.Authorization" />
-    <PackageReference Include="Keycloak.AuthServices.Common" />
-    <PackageReference Include="Keycloak.AuthServices.Sdk" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
