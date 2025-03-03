@@ -15,7 +15,7 @@ public class GameMutations
     {
         var result = await sender.Send(new CreateGameCommand(name, description), cancellationToken);
         return result.IsSuccess
-            ? mapper.Map<Game>(result.Value)
+            ? mapper.Map<Game>(result.Value!)
             : result.Error!;
     }
 }
