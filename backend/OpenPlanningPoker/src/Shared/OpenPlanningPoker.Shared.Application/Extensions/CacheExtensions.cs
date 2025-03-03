@@ -2,11 +2,13 @@
 
 public static class CacheExtensions
 {
+    private const int DefaultMaximumPayloadBytes = 1024 * 1024;
+    private const int DefaultMaximumKeyLength = 1024;
     public static IHybridCacheBuilder AddHybridCache(this IServiceCollection services)
         => services.AddHybridCache(options =>
         {
-            options.MaximumPayloadBytes = 1024 * 1024;
-            options.MaximumKeyLength = 1024;
+            options.MaximumPayloadBytes = DefaultMaximumPayloadBytes;
+            options.MaximumKeyLength = DefaultMaximumKeyLength;
             options.DefaultEntryOptions = new HybridCacheEntryOptions
             {
                 LocalCacheExpiration = TimeSpan.FromMinutes(30),
