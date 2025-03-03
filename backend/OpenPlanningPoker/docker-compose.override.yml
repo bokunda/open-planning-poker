@@ -23,3 +23,7 @@ services:
       - ./.containers/database:/var/lib/postgresql/data
     ports:
       - 5432:5432
+
+  OpenPlanningPoker.Cache:
+    ports:
+      - 6379:6379

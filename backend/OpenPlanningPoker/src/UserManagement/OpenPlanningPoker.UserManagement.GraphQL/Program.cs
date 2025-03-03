@@ -10,6 +10,9 @@ builder.Services
     .AddHttpClient(Constants.DefaultHttpClientName)
     .AddStandardResilienceHandler();
 
+builder.Services.AddRedis(builder.Configuration);
+CacheExtensions.AddHybridCache(builder.Services);
+
 builder
     .AddGraphQL()
     .AddQueryConventions()

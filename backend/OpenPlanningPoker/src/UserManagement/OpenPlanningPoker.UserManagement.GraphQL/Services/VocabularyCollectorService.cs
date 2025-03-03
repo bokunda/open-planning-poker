@@ -6,6 +6,7 @@ public interface IVocabularyCollectorService
 }
 
 public class VocabularyCollectorService(
+    HybridCache cache,
     IConfiguration configuration,
     HttpClient httpClient) : IVocabularyCollectorService
 {
@@ -14,10 +15,14 @@ public class VocabularyCollectorService(
     {
         var url = configuration[$"Vocabulary:{language}:Url"]!;
         var offlineFile = System.IO.Path.Combine("OfflineVocabulary", configuration[$"Vocabulary:{language}:Offline"]!);
-        var result = await Get(url, offlineFile, cancellationToken);
 
-        return result;
+        return await cache.GetOrCreateAsync(
+            GetCacheKey(language), 
+            async cancellationToken => await Get(url, offlineFile, cancellationToken),
+            cancellationToken: cancellationToken);
     }
+
+    private static string GetCacheKey(Language language) => $"Vocabulary:{language}";
 
     private async Task<IEnumerable<string>> Get(string url, string file, CancellationToken cancellationToken)
     {

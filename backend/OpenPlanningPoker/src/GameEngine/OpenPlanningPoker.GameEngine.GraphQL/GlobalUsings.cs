@@ -22,3 +22,4 @@ global using OpenPlanningPoker.GameEngine.Application.Features.Votes;
 global using OpenPlanningPoker.GameEngine.Application.Info.GetInfo;
 global using OpenPlanningPoker.GameEngine.Domain.Identity;
 global using OpenPlanningPoker.Shared.Application.Errors;
+global using HotChocolate.Execution.Configuration;
