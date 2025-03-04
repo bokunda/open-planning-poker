@@ -2,8 +2,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddGraphQLServices();
 builder.Services.AddHealthCheckServices(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<ICurrentUserProvider, HttpCurrentUserProvider>();
+
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
+
 
 var app = builder.Build();
 

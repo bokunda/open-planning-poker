@@ -49,7 +49,7 @@ public sealed class OpenPlanningPokerGameEngineDbContext(
         {
             if (entityEntry.State == EntityState.Added)
             {
-                ((IEntityHasCreated)entityEntry.Entity).SetCreated(utcNow, currentUserProvider.CustomerId);
+                ((IEntityHasCreated)entityEntry.Entity).SetCreated(utcNow, currentUserProvider.UserId);
             }
         }
     }
