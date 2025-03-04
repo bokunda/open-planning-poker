@@ -6,7 +6,6 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddTransient<ICurrentUserProvider, CurrentUserProvider>();
         services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 
         AddPersistence(services, configuration);

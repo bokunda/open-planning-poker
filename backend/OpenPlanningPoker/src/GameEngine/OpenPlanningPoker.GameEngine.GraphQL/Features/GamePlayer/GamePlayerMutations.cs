@@ -12,7 +12,7 @@ public class GamePlayerMutations
         [Required] Guid gameId,
         CancellationToken cancellationToken = default)
     {
-        var result = await sender.Send(new JoinGameCommand(gameId, currentUserProvider.CustomerId), cancellationToken);
+        var result = await sender.Send(new JoinGameCommand(gameId, currentUserProvider.UserId), cancellationToken);
 
         return result.IsSuccess
             ? result.Value
@@ -29,8 +29,7 @@ public class GamePlayerMutations
         [Required] Guid gameId,
         CancellationToken cancellationToken = default)
     {
-        var result = await sender.Send(new LeaveGameCommand(gameId, currentUserProvider.CustomerId), cancellationToken);
-        
+        var result = await sender.Send(new LeaveGameCommand(gameId, currentUserProvider.UserId), cancellationToken);
         return result.IsSuccess
             ? result.Value
             : result.Error!;
