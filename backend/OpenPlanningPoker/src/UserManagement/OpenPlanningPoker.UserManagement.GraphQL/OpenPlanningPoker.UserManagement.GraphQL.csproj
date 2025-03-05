@@ -17,6 +17,7 @@
   <ItemGroup>
     <PackageReference Include="HotChocolate.AspNetCore" />
     <PackageReference Include="HotChocolate.AspNetCore.CommandLine" />
+    <PackageReference Include="HotChocolate.AspNetCore.Authorization" />
     <PackageReference Include="HotChocolate.Types" />
     <PackageReference Include="HotChocolate.Types.Analyzers">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

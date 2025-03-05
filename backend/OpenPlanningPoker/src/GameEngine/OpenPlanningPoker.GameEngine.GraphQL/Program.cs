@@ -2,6 +2,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddGraphQLServices();
 builder.Services.AddHealthCheckServices(builder.Configuration);
+builder.Services.AddAuthentication(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ICurrentUserProvider, HttpCurrentUserProvider>();
 
@@ -20,6 +21,7 @@ app.MapHealthChecks("/_health", new HealthCheckOptions
 });
 
 app.UseCustomExceptionHandler();
-app.MapGraphQL();
+app.MapGraphQL()
+    .RequireAuthorization();
 
 app.RunWithGraphQLCommands(args);

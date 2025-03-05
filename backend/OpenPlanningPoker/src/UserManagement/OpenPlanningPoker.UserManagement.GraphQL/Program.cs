@@ -5,6 +5,8 @@ builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddSingleton<IVocabularyCollectorService, VocabularyCollectorService>();
 builder.Services.AddSingleton<IUsernameGeneratorService, UsernameGeneratorService>();
+builder.Services.AddTransient<ICurrentUserProvider, HttpCurrentUserProvider>();
+
 
 builder.Services
     .AddHttpClient(Constants.DefaultHttpClientName)
@@ -13,15 +15,23 @@ builder.Services
 builder.Services.AddRedis(builder.Configuration);
 CacheExtensions.AddHybridCache(builder.Services);
 
+builder.Services.AddAuthentication(builder.Configuration);
+
 builder
     .AddGraphQL()
+    .AddAuthorization()
     .AddQueryConventions()
     .AddMutationConventions()
     .AddTypes();
 
+builder.AddGraphQLServices();
+
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapGraphQL();
 

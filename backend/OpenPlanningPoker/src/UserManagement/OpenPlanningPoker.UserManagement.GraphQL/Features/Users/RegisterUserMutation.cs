@@ -1,4 +1,10 @@
-﻿namespace OpenPlanningPoker.UserManagement.GraphQL.Features.Users;
+﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+
+namespace OpenPlanningPoker.UserManagement.GraphQL.Features.Users;
 
 [MutationType]
 public class RegisterUserMutation
@@ -16,8 +22,9 @@ public class RegisterUserMutation
         }
     }
 
-    public async Task<FieldResult<User, ApplicationError>> RegisterUserAsync(
+    public async Task<FieldResult<RegisterUserResponse, ApplicationError>> RegisterUserAsync(
         [Service] IUsernameGeneratorService usernameGeneratorService,
+        [Service] IConfiguration configuration,
         [Service] HybridCache cache,
         string? username,
         CancellationToken cancellationToken = default)
@@ -34,10 +41,26 @@ public class RegisterUserMutation
             return errors.First();
         }
         
-        var user = new User(Guid.NewGuid(), username);
+        var registeredUser = new RegisterUserResponse(Guid.NewGuid(), username);
+        await cache.SetAsync(registeredUser.GetCacheKey(), registeredUser, cancellationToken: cancellationToken);
 
-        await cache.SetAsync(user.GetCacheKey(), user, cancellationToken: cancellationToken);
+        var token = GenerateToken(registeredUser.Id.ToString(), registeredUser.UserName, configuration["Authentication:Secret"]!);
+        registeredUser.SetToken(token);
 
-        return user;
+        return registeredUser;
+    }
+
+    private static string GenerateToken(string id, string username, string secretKey)
+    {
+        var key = Encoding.ASCII.GetBytes(secretKey);
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity([new Claim(nameof(id), id), new Claim(nameof(username), username)]),
+            Expires = DateTime.UtcNow.AddDays(1),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        };
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token) ?? throw new Exception("Cannot create a token!");
     }
 }

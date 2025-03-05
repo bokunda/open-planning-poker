@@ -37,7 +37,7 @@ public static class CreateVote
     {
         public async Task<Result<CreateVoteResponse, ApplicationError>> Handle(CreateVoteCommand request, CancellationToken cancellationToken = default)
         {
-            var vote = Vote.Create(currentUserProvider.UserId, request.TicketId, request.Value);
+            var vote = Vote.Create(currentUserProvider.Id, request.TicketId, request.Value);
             voteRepository.Add(vote);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
