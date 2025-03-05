@@ -5,4 +5,6 @@ global using OpenPlanningPoker.UserManagement.GraphQL.Enums;
 global using OpenPlanningPoker.UserManagement.GraphQL.Services;
 global using OpenPlanningPoker.Shared.Errors;
 global using OpenPlanningPoker.Shared.Extensions;
+global using OpenPlanningPoker.Shared.Identity;
 global using System.Net;
+global using HotChocolate.Authorization;

@@ -14,6 +14,7 @@ public static class ApplicationBuilderExtensions
 
     public static IRequestExecutorBuilder AddGraphQLServices(this WebApplicationBuilder builder) => 
         builder.AddGraphQL()
+            .AddAuthorization()
             .AddQueryConventions()
             .AddMutationConventions()
             .AddTypes();
