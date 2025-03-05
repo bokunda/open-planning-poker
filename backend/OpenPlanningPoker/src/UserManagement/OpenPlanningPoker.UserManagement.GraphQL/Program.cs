@@ -24,8 +24,6 @@ builder
     .AddMutationConventions()
     .AddTypes();
 
-builder.AddGraphQLServices();
-
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
