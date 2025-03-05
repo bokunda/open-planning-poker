@@ -1,0 +1,9 @@
+<div class="game-options">
+  <span *ngIf="inGame">
+    <button mat-raised-button color="primary">Create Game</button>
+    <button mat-raised-button color="warn">Join Game</button>
+  </span>
+  <span *ngIf="!inGame">
+    <button mat-raised-button color="warn">Leave Game</button>
+  </span>
+</div>
