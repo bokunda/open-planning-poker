@@ -39,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\OpenPlanningPoker.Shared\OpenPlanningPoker.Shared.csproj" />
     <ProjectReference Include="..\OpenPlanningPoker.GameEngine.Application\OpenPlanningPoker.GameEngine.Application.csproj" />
     <ProjectReference Include="..\OpenPlanningPoker.GameEngine.Infrastructure\OpenPlanningPoker.GameEngine.Infrastructure.csproj" />
   </ItemGroup>

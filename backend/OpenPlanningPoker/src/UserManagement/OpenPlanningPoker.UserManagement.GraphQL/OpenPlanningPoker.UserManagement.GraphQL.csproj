@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\OpenPlanningPoker.Shared.Application\OpenPlanningPoker.Shared.Application.csproj" />
+    <ProjectReference Include="..\..\Shared\OpenPlanningPoker.Shared\OpenPlanningPoker.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

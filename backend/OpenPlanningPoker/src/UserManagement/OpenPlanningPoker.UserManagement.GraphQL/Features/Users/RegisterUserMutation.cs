@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Hybrid;
-
-namespace OpenPlanningPoker.UserManagement.GraphQL.Features.Users;
+﻿namespace OpenPlanningPoker.UserManagement.GraphQL.Features.Users;
 
 [MutationType]
 public class RegisterUserMutation
