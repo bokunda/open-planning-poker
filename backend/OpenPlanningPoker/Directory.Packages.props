@@ -20,6 +20,7 @@
     <PackageVersion Include="HotChocolate.Execution" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Execution.Abstractions" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Fetching" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.Fusion" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Types" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Types.Analyzers" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Utilities" Version="15.0.3" />
@@ -38,7 +39,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.2.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
-    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.2" />
+    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />

@@ -17,6 +17,15 @@ services:
       context: .
       dockerfile: src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile
 
+  openplanningpoker.fusion.gateway:
+    image: ${DOCKER_REGISTRY-}openplanningpokerfusiongateway
+    build:
+      context: .
+      dockerfile: src/Gateway/OpenPlanningPoker.Fusion.Gateway/Dockerfile
+    depends_on:
+      - OpenPlanningPoker.GameEngine.GraphQL
+      - OpenPlanningPoker.UserManagement.GraphQL
+
   opp-db:
     image: postgres:15.5
     container_name: OpenPlanningPoker.Db
@@ -24,5 +33,5 @@ services:
   OpenPlanningPoker.Cache:
     image: redis:latest
     container_name: OpenPlanningPoker.Cache
-     
     
+

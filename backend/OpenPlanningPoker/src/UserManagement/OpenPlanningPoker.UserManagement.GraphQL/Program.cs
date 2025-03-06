@@ -32,6 +32,13 @@ builder.Services.AddCors(corsConfig.PolicyName, corsConfig.AllowedOrigins);
 
 var app = builder.Build();
 
+if (args.Contains("schema"))
+{
+    app.MapGraphQL();
+    app.RunWithGraphQLCommands(args);
+    return;
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
 

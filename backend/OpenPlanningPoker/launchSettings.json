@@ -5,7 +5,8 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "openplanningpoker.gameengine.graphql": "StartDebugging",
-        "openplanningpoker.usermanagement.graphql": "StartDebugging"
+        "openplanningpoker.usermanagement.graphql": "StartDebugging",
+        "openplanningpoker.fusion.gateway": "StartDebugging"
       }
     }
   }
