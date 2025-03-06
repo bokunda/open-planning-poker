@@ -26,11 +26,17 @@ builder
 
 builder.Services.AddHttpContextAccessor();
 
+var corsConfig = new CorsConfiguration();
+builder.Configuration.GetSection("Cors").Bind(corsConfig);
+builder.Services.AddCors(corsConfig.PolicyName, corsConfig.AllowedOrigins);
+
 var app = builder.Build();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapGraphQL();
+
+app.UseCors(corsConfig.PolicyName);
 
 app.RunWithGraphQLCommands(args);

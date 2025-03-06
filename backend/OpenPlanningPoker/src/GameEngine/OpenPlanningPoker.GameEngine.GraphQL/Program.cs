@@ -9,6 +9,9 @@ builder.Services.AddTransient<ICurrentUserProvider, HttpCurrentUserProvider>();
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 
+var corsConfig = new CorsConfiguration();
+builder.Configuration.GetSection("Cors").Bind(corsConfig);
+builder.Services.AddCors(corsConfig.PolicyName, corsConfig.AllowedOrigins);
 
 var app = builder.Build();
 
@@ -23,5 +26,7 @@ app.MapHealthChecks("/_health", new HealthCheckOptions
 app.UseCustomExceptionHandler();
 app.MapGraphQL()
     .RequireAuthorization();
+
+app.UseCors(corsConfig.PolicyName);
 
 app.RunWithGraphQLCommands(args);

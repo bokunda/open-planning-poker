@@ -7,6 +7,8 @@ import { SharedModule } from './shared/shared.module';
 import { ErrorsModule } from './features/errors/errors.module';
 import { RouterModule } from '@angular/router';
 import { routes } from './app.routes';
+import { appConfig } from './app.config';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,6 +21,7 @@ import { routes } from './app.routes';
     SharedModule,
     ErrorsModule
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  providers: [...appConfig.providers ]
 })
 export class AppModule { }
