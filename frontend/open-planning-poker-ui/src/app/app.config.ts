@@ -6,7 +6,7 @@ import { HttpLink } from 'apollo-angular/http';
 import { provideApollo } from 'apollo-angular';
 import { ApolloLink, InMemoryCache } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
-import { gqlUsers } from './shared/constants';
+import { gqlGateway } from './shared/constants';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -35,7 +35,7 @@ export const appConfig: ApplicationConfig = {
       });
 
       return {
-        link: ApolloLink.from([basic, auth, httpLink.create({ uri: gqlUsers })]),
+        link: ApolloLink.from([basic, auth, httpLink.create({ uri: gqlGateway })]),
         cache: new InMemoryCache(),
       };
     })],

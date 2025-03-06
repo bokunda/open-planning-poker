@@ -14,6 +14,15 @@ services:
     ports:
       - "9091:8080"
 
+  openplanningpoker.fusion.gateway:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+    ports:
+      - 10010:8080
+      - 10011:8081
+
   opp-db:
     environment:
       - POSTGRES_DB=postgres
@@ -27,3 +36,4 @@ services:
   OpenPlanningPoker.Cache:
     ports:
       - 6379:6379
+

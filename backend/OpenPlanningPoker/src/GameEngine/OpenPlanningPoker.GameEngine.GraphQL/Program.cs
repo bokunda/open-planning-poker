@@ -15,15 +15,23 @@ builder.Services.AddCors(corsConfig.PolicyName, corsConfig.AllowedOrigins);
 
 var app = builder.Build();
 
+if (args.Contains("schema"))
+{
+    app.MapGraphQL().RequireAuthorization();
+    app.RunWithGraphQLCommands(args);
+    return;
+}
+
 app.ApplyMigrations();
 
- //Future improvements, this shouldn't be visible to everyone
+//Future improvements, this shouldn't be visible to everyone
 app.MapHealthChecks("/_health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
 app.UseCustomExceptionHandler();
+
 app.MapGraphQL()
     .RequireAuthorization();
 
