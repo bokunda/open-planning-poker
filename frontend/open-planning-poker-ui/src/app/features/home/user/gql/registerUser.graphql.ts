@@ -18,12 +18,4 @@ const REGISTER_USER = gql `
     }
   }`;
 
-const GET_USER = gql `
-  query GetUser {
-    currentUser {
-      id
-      userName
-    }
-  }`;
-
-export { GET_USER, REGISTER_USER };
+export { REGISTER_USER };

@@ -1,6 +1,8 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { GET_USER, REGISTER_USER } from './user.graphql.operations';
+import { Mutation, Query, RegisterUserInput } from '../../graphql/graphql-gateway.service';
+import { GET_USER } from './user/gql/getUser.graphql';
+import { REGISTER_USER } from './user/gql/registerUser.graphql';
 
 @Component({
   selector: 'app-home',
@@ -19,12 +21,12 @@ export class HomeComponent implements OnInit {
   }
 
   private setupUser() {
-    this.apollo.watchQuery<any>({query: GET_USER})
+
+    this.apollo.watchQuery<Query>({query: GET_USER})
     .valueChanges
     .subscribe({
       next: ({ data }) => {
         if (data) {
-          console.log('[HomeComponent] User found', JSON.stringify(data, null, 2));
           this.username = data.currentUser.userName;
         }
         else
@@ -43,13 +45,13 @@ export class HomeComponent implements OnInit {
   }
 
   private registerUser(): void {
-    this.apollo.mutate<any, any>({
+    this.apollo.mutate<Mutation, RegisterUserInput>({
       mutation: REGISTER_USER,
       variables: {},
       refetchQueries: [{ query: GET_USER }]
     }).subscribe({
       next: ({ data }) => {
-        if (data) {
+        if (data?.registerUser?.registerUserResponse?.token) {
           console.log('[HomeComponent] New user created', JSON.stringify(data, null, 2));
           localStorage.setItem('token', data.registerUser.registerUserResponse.token);
           this.username = data.registerUser.registerUserResponse.userName;
