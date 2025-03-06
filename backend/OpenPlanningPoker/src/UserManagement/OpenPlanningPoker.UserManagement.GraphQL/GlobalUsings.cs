@@ -8,3 +8,4 @@ global using OpenPlanningPoker.Shared.Extensions;
 global using OpenPlanningPoker.Shared.Identity;
 global using System.Net;
 global using HotChocolate.Authorization;
+global using OpenPlanningPoker.Shared.Configurations;

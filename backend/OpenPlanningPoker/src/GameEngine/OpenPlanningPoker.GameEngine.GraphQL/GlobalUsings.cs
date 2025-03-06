@@ -24,3 +24,5 @@ global using OpenPlanningPoker.Shared.Errors;
 global using HotChocolate.Execution.Configuration;
 global using OpenPlanningPoker.Shared.Identity;
 global using OpenPlanningPoker.GameEngine.GraphQL.Health;
+global using OpenPlanningPoker.Shared.Configurations;
+global using OpenPlanningPoker.Shared.Extensions;
