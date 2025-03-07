@@ -1,5 +1,15 @@
 <div class="game-wrapper">
-  <div class="game center">
-    <app-options></app-options>
+  <div class="game">
+    <div class="center">
+      <app-options
+        [inGame]="!game"
+        (onCreateGameClick)="handleCreateGame()"
+        (onJoinGameClick)="handleJoinGame()"
+        (onLeaveGameClick)="handleLeaveGame()">
+      </app-options>
+    </div>
+    <div class="center">
+      <app-game-details [game]="game"></app-game-details>
+    </div>
   </div>
 </div>
