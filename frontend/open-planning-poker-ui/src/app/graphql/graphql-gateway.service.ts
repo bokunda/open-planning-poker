@@ -50,6 +50,18 @@ export enum ApplyPolicy {
   Validation = 'VALIDATION'
 }
 
+export type ChangeUsernameError = ApplicationError;
+
+export type ChangeUsernameInput = {
+  username: Scalars['String']['input'];
+};
+
+export type ChangeUsernamePayload = {
+  __typename?: 'ChangeUsernamePayload';
+  boolean?: Maybe<Scalars['Boolean']['output']>;
+  errors?: Maybe<Array<ChangeUsernameError>>;
+};
+
 export type CreateGameError = ApplicationError;
 
 export type CreateGameInput = {
@@ -174,6 +186,7 @@ export type LeaveGamePayload = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  changeUsername: ChangeUsernamePayload;
   /** Creates a game, returns game details. */
   createGame: CreateGamePayload;
   /** Creates Game Settings. */
@@ -197,6 +210,11 @@ export type Mutation = {
   updateTicket: UpdateTicketPayload;
   /** Updates a vote. */
   updateVote: UpdateVotePayload;
+};
+
+
+export type MutationChangeUsernameArgs = {
+  input: ChangeUsernameInput;
 };
 
 

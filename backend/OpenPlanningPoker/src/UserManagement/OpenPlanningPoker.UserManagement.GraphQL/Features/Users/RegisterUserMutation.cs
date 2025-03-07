@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-
-namespace OpenPlanningPoker.UserManagement.GraphQL.Features.Users;
+﻿namespace OpenPlanningPoker.UserManagement.GraphQL.Features.Users;
 
 [MutationType]
 public class RegisterUserMutation
@@ -44,19 +38,19 @@ public class RegisterUserMutation
         var registeredUser = new RegisterUserResponse(Guid.NewGuid(), username);
         await cache.SetAsync(registeredUser.GetCacheKey(), registeredUser, cancellationToken: cancellationToken);
 
-        var token = GenerateToken(registeredUser.Id.ToString(), registeredUser.UserName, configuration["Authentication:Secret"]!);
+        var token = GenerateToken(registeredUser.Id.ToString(), configuration["Authentication:Secret"]!);
         registeredUser.SetToken(token);
 
         return registeredUser;
     }
 
-    private static string GenerateToken(string id, string username, string secretKey)
+    private static string GenerateToken(string id, string secretKey)
     {
         var key = Encoding.ASCII.GetBytes(secretKey);
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity([new Claim(nameof(id), id), new Claim(nameof(username), username)]),
+            Subject = new ClaimsIdentity([new Claim(nameof(id), id)]),
             Expires = DateTime.UtcNow.AddDays(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };

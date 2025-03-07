@@ -12,8 +12,14 @@ type ApplicationError implements Error {
   message: String!
 }
 
+type ChangeUsernamePayload {
+  boolean: Boolean
+  errors: [ChangeUsernameError!]
+}
+
 type Mutation {
   ping: PingPayload! @cost(weight: "10")
+  changeUsername(input: ChangeUsernameInput!): ChangeUsernamePayload! @cost(weight: "10")
   registerUser(input: RegisterUserInput!): RegisterUserPayload! @cost(weight: "10")
 }
 
@@ -42,7 +48,13 @@ type User {
   userName: String!
 }
 
+union ChangeUsernameError = ApplicationError
+
 union RegisterUserError = ApplicationError
+
+input ChangeUsernameInput {
+  username: String!
+}
 
 input RegisterUserInput {
   username: String
