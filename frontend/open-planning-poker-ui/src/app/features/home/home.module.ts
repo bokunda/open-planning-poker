@@ -5,20 +5,18 @@ import { RouterModule } from '@angular/router';
 import { HomeComponent } from './home.component';
 import { HeaderComponent } from './header/header.component';
 import { UserComponent } from './user/user.component';
-import { GameComponent } from './game/game.component';
-import { OptionsComponent } from './game/options/options.component';
+import { GameModule } from './game/game.module';
 
 @NgModule({
   declarations: [
     HeaderComponent,
     UserComponent,
-    GameComponent,
-    OptionsComponent,
     HomeComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
+    GameModule,
     RouterModule
   ],
   exports: [
