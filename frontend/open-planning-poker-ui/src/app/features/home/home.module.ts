@@ -6,17 +6,18 @@ import { HomeComponent } from './home.component';
 import { HeaderComponent } from './header/header.component';
 import { UserComponent } from './user/user.component';
 import { GameModule } from './game/game.module';
+import { UserModule } from './user/user.module';
 
 @NgModule({
   declarations: [
     HeaderComponent,
-    UserComponent,
     HomeComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
     GameModule,
+    UserModule,
     RouterModule
   ],
   exports: [
