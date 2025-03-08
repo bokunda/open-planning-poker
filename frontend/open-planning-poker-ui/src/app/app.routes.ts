@@ -9,6 +9,16 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'game',
+    component: HomeComponent,
+    pathMatch: 'full'
+  },
+  {
+    path: 'game/:id',
+    component: HomeComponent,
+    pathMatch: 'full'
+  },
+  {
     path: '**',
     component: ErrorsComponent,
   }

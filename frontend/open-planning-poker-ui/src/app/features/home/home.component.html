@@ -2,6 +2,6 @@
   <div class="home">
     <app-header></app-header>
     <app-user [username]="username"></app-user>
-    <app-game></app-game>
+    <app-game *ngIf="userExists()"></app-game>
   </div>
 </div>
