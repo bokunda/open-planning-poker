@@ -9,7 +9,10 @@
       </app-options>
     </div>
     <div class="center">
-      <app-game-details [game]="game"></app-game-details>
+      <app-game-details
+        [game]="game"
+        (onLeaveGameClick)="handleLeaveGame()">
+      </app-game-details>
     </div>
   </div>
 </div>

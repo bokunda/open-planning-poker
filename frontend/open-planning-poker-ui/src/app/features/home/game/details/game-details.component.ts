@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { Game } from '../../../../graphql/graphql-gateway.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '../../../../shared/constants';
@@ -12,6 +12,8 @@ import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '.
 })
 export class GameDetailsComponent {
   @Input() game: Game | undefined;
+
+  @Output() onLeaveGameClick = new EventEmitter<void>();
 
   private snackBar = inject(MatSnackBar);
 

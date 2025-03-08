@@ -11,9 +11,22 @@
         </button>
         <button
           mat-icon-button
+          color="primary"
+          matTooltip="Edit Game"
+          disabled>
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          mat-icon-button
           matTooltip="{{ game.description }}"
           *ngIf="game?.description">
           <mat-icon>info</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          matTooltip="Leave Game"
+          (click)="onLeaveGameClick.emit()">
+          <mat-icon>exit_to_app</mat-icon>
         </button>
       </h1>
   </div>
