@@ -20,6 +20,10 @@ export class HomeComponent implements OnInit {
     this.setupUser();
   }
 
+  public userExists(): boolean {
+    return this.username !== '';
+  }
+
   private setupUser() {
 
     this.apollo.watchQuery<Query>({query: GET_USER})

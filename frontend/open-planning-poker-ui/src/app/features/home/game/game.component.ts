@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Game, Mutation, MutationCreateGameArgs, Query } from '../../../graphql/graphql-gateway.service';
 import { GET_GAME } from './gql/getGame.graphql';
@@ -6,6 +6,7 @@ import { CREATE_GAME } from './gql/createGame.graphql';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateGameDialogComponent } from './create/dialog/create-game-dialog.component';
 import { JoinGameDialogComponent } from './join/dialog/join-game-dialog.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-game',
@@ -13,13 +14,24 @@ import { JoinGameDialogComponent } from './join/dialog/join-game-dialog.componen
   styleUrl: './game.component.scss',
   standalone: false
 })
-export class GameComponent {
+export class GameComponent implements OnInit {
 
   game: Game | undefined;
 
   readonly dialog = inject(MatDialog);
+  readonly router = inject(Router);
+  readonly route = inject(ActivatedRoute);
 
   constructor(private apollo: Apollo) {}
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const gameId = params.get('id');
+      if (gameId) {
+        this.getGame(gameId);
+      }
+    });
+  }
 
   handleCreateGame() {
     this.openCreateGameDialog();
@@ -31,6 +43,7 @@ export class GameComponent {
 
   handleLeaveGame() {
     this.game = undefined;
+    this.router.navigate([`/game`]);
   }
 
   private getGame(id: string): void {
@@ -62,6 +75,7 @@ export class GameComponent {
       next: ({ data }) => {
         if (data?.createGame?.game) {
           this.game = data?.createGame?.game;
+          this.router.navigate([`/game/${this.game.id}`]);
         }
       },
       error: (error) => {

@@ -1,18 +1,20 @@
 <div class="game-details-wrapper" *ngIf="game">
   <div class="game-details">
-      <h4>Game Details</h4>
-      <span>{{ game.id }}</span>
-
-      <button
-        mat-icon-button
-        (click)="copyToClipboard(game.id)"
-        aria-label="Copy GameId to clipboard!"
-        matTooltip="Copy GameId to clipboard!">
-        <mat-icon>content_copy</mat-icon>
-      </button>
-
-      <br>
-      <span>{{ game.name }}</span><br>
-      <span *ngIf="game?.description">Description: {{ game.description }}</span><br>
+      <h1>
+        {{ game.name }}
+        <button
+          mat-icon-button
+          (click)="copyToClipboard(game.id)"
+          aria-label="Copy GameId to clipboard!"
+          matTooltip="Copy GameId to clipboard!">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          matTooltip="{{ game.description }}"
+          *ngIf="game?.description">
+          <mat-icon>info</mat-icon>
+        </button>
+      </h1>
   </div>
 </div>

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
 import { Game } from '../../../../graphql/graphql-gateway.service';
-import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '../../../../shared/constants';
 
 @Component({
   selector: 'app-game-details',
@@ -14,11 +15,17 @@ export class GameDetailsComponent {
 
   private snackBar = inject(MatSnackBar);
 
-  copyToClipboard(text: string): void {
+  copyToClipboard(gameId: string): void {
+
+    const baseUrl = window.location.origin;
+    const gameUrl = `${baseUrl}/game/${gameId}`;
+
     navigator.clipboard
-      .writeText(text)
+      .writeText(gameUrl)
       .then(() => {
-        this.snackBar.open('Game Id copied to clipboard successfully!');
+        this.snackBar.open('Game Id copied to clipboard successfully!', OPP_SNACKBAR_MODAL_LABEL_CLOSE, {
+          duration: OPP_SNACKBAR_DURATION_DEFAULT,
+        });
       })
       .catch((err) => {
         this.snackBar.open('Could not copy text to clipboard!');
