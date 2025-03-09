@@ -5,8 +5,8 @@
         <button
           mat-icon-button
           (click)="copyToClipboard(game.id)"
-          aria-label="Copy GameId to clipboard!"
-          matTooltip="Copy GameId to clipboard!">
+          aria-label="Copy Game URL to clipboard!"
+          matTooltip="Copy Game URL to clipboard!">
           <mat-icon>content_copy</mat-icon>
         </button>
         <button
@@ -21,6 +21,12 @@
           matTooltip="{{ game.description }}"
           *ngIf="game?.description">
           <mat-icon>info</mat-icon>
+        </button>
+        <button
+          mat-icon-button href="#"
+          matTooltip="Export Game"
+          disabled>
+          <mat-icon>get_app</mat-icon>
         </button>
         <button
           mat-icon-button

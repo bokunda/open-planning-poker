@@ -141,10 +141,8 @@ export type Game = {
 
 export type GamePlayer = {
   __typename?: 'GamePlayer';
-  gameId: Scalars['UUID']['output'];
-  gameName: Scalars['String']['output'];
-  playerId: Scalars['UUID']['output'];
-  playerName: Scalars['String']['output'];
+  id: Scalars['UUID']['output'];
+  name?: Maybe<Scalars['String']['output']>;
 };
 
 export type GamePlayersResult = ApiCollectionOfGamePlayer | ApplicationError;

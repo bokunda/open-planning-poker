@@ -5,6 +5,7 @@ builder.Services.AddHealthCheckServices(builder.Configuration);
 builder.Services.AddAuthentication(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ICurrentUserProvider, HttpCurrentUserProvider>();
+builder.Services.AddTransient<IUserService, CacheUserService>();
 
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);

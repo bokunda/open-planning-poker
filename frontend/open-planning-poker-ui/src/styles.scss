@@ -10,6 +10,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .center {
   display: flex;
   justify-content: center;
-  align-items: center;
   height: 100%; /* Adjust as needed */
+}
+
+.width-80p {
+  width: 80%;
 }

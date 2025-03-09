@@ -2,8 +2,8 @@
 
 public class GamePlayer
 {
-    public Guid GameId { get; set; }
-    public string GameName { get; set; } = string.Empty;
-    public Guid PlayerId { get; set; }
-    public string PlayerName { get; set; } = string.Empty;
+    public Guid Id { get; set; }
+
+    public async Task<string?> GetNameAsync([Service] IUserService userSerivce, CancellationToken cancellationToken = default) => 
+        (await userSerivce.GetUserProfileAsync(Id.ToString(), cancellationToken))?.UserName;
 }

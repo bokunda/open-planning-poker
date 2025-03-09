@@ -9,6 +9,9 @@ import { CreateGameDialogComponent } from './create/dialog/create-game-dialog.co
 import { JoinGameDialogComponent } from './join/dialog/join-game-dialog.component';
 import { JoinGameComponent } from './join/join-game.component';
 import { GameDetailsComponent } from './details/game-details.component';
+import { PlayersComponent } from './players/players.component';
+import { VotingComponent } from './voting/voting.component';
+import { VotingHistoryComponent } from './voting-history/voting-history.component';
 
 
 
@@ -20,7 +23,10 @@ import { GameDetailsComponent } from './details/game-details.component';
     JoinGameComponent,
     JoinGameDialogComponent,
     GameDetailsComponent,
-    GameComponent
+    GameComponent,
+    VotingComponent,
+    VotingHistoryComponent,
+    PlayersComponent
   ],
   imports: [
     CommonModule,
