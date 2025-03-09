@@ -25,3 +25,7 @@ global using HotChocolate.Execution.Configuration;
 global using OpenPlanningPoker.Shared.Identity;
 global using OpenPlanningPoker.GameEngine.GraphQL.Health;
 global using OpenPlanningPoker.Shared.Configurations;
+global using Microsoft.Extensions.Caching.Hybrid;
+global using OpenPlanningPoker.Shared.Models;
+global using OpenPlanningPoker.Shared.Results;
+global using OpenPlanningPoker.Shared.Services;

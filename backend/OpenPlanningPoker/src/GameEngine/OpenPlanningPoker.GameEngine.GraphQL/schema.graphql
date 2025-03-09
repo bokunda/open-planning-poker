@@ -59,10 +59,8 @@ type Game {
 }
 
 type GamePlayer {
-  gameId: UUID!
-  gameName: String!
-  playerId: UUID!
-  playerName: String!
+  name: String @cost(weight: "10")
+  id: UUID!
 }
 
 type Info {

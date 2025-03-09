@@ -8,11 +8,23 @@
         (onLeaveGameClick)="handleLeaveGame()">
       </app-options>
     </div>
-    <div class="center">
-      <app-game-details
-        [game]="game"
-        (onLeaveGameClick)="handleLeaveGame()">
-      </app-game-details>
+    <div class="game-details" *ngIf="game">
+      <div class="center">
+        <app-game-details [game]="game" (onLeaveGameClick)="handleLeaveGame()"></app-game-details>
+      </div>
+
+      <div class="center">
+        <div class="width-80p">
+          <app-voting [players]="players">
+          </app-voting>
+        </div>
+      </div>
+
+      <div class="center">
+        <div class="width-80p">
+          <app-voting-history></app-voting-history>
+        </div>
+      </div>
     </div>
   </div>
 </div>

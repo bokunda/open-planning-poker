@@ -1,0 +1,11 @@
+<div class="players-wrapper" *ngIf="players && players.totalCount > 0">
+  <div class="players">
+    <h2>Players</h2>
+    <div class="players-list">
+      <div class="player" *ngFor="let player of players?.items">
+        <div class="player-name">
+          {{player.name}}
+        </div>
+      </div>
+    </div>
+</div>
