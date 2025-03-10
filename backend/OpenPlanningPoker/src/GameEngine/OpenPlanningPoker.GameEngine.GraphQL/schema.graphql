@@ -1,6 +1,7 @@
 ﻿schema {
   query: Query
   mutation: Mutation
+  subscription: Subscription
 }
 
 interface Error {
@@ -134,6 +135,11 @@ type Settings {
   gameId: UUID!
   votingTime: Int!
   isBreakAllowed: Boolean!
+}
+
+type Subscription {
+  onPlayerJoined: UUID!
+  onPlayerLeave: UUID!
 }
 
 type Ticket {
