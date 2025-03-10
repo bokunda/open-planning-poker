@@ -6,6 +6,7 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddSingleton<IVocabularyCollectorService, VocabularyCollectorService>();
 builder.Services.AddSingleton<IUsernameGeneratorService, UsernameGeneratorService>();
 builder.Services.AddTransient<ICurrentUserProvider, HttpCurrentUserProvider>();
+builder.Services.AddTransient<IUserService, CacheUserService>();
 
 
 builder.Services

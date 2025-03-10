@@ -1,4 +1,6 @@
-﻿namespace OpenPlanningPoker.UserManagement.GraphQL.Features.Users;
+﻿
+
+namespace OpenPlanningPoker.UserManagement.GraphQL.Features.Users;
 
 [MutationType]
 public class RegisterUserMutation
@@ -18,8 +20,8 @@ public class RegisterUserMutation
 
     public async Task<FieldResult<RegisterUserResponse, ApplicationError>> RegisterUserAsync(
         [Service] IUsernameGeneratorService usernameGeneratorService,
+        [Service] IUserService userService,
         [Service] IConfiguration configuration,
-        [Service] HybridCache cache,
         string? username,
         CancellationToken cancellationToken = default)
     {
@@ -34,9 +36,10 @@ public class RegisterUserMutation
             var errors = validationResult.Errors.Select(e => new ApplicationError(e.ErrorCode, e.ErrorMessage)).ToList();
             return errors.First();
         }
-        
-        var registeredUser = new RegisterUserResponse(Guid.NewGuid(), username);
-        await cache.SetAsync(registeredUser.GetCacheKey(), registeredUser, cancellationToken: cancellationToken);
+
+        var user = await userService.AddAsync(username, cancellationToken);
+
+        var registeredUser = new RegisterUserResponse(user.Id, user.UserName);
 
         var token = GenerateToken(registeredUser.Id.ToString(), configuration["Authentication:Secret"]!);
         registeredUser.SetToken(token);

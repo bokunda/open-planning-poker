@@ -18,8 +18,7 @@ public class ChangeUsernameMutation
 
     public async Task<FieldResult<bool, ApplicationError>> ChangeUsernameAsync(
         [Service] ICurrentUserProvider currentUserProvider,
-        [Service] IConfiguration configuration,
-        [Service] HybridCache cache,
+        [Service] IUserService userService,
         [Required] string username,
         CancellationToken cancellationToken = default)
     {
@@ -29,10 +28,9 @@ public class ChangeUsernameMutation
             var errors = validationResult.Errors.Select(e => new ApplicationError(e.ErrorCode, e.ErrorMessage)).ToList();
             return errors.First();
         }
-        
-        var currentUser = await currentUserProvider.GetAsync(cancellationToken);
-        var user = new User(currentUser.Id, username);
-        await cache.SetAsync(user.GetCacheKey(), user, cancellationToken: cancellationToken);
+
+        var currentUserId = $"{currentUserProvider.Id}";
+        await userService.UpdateAsync(currentUserId, username, cancellationToken);
 
         return true;
     }
