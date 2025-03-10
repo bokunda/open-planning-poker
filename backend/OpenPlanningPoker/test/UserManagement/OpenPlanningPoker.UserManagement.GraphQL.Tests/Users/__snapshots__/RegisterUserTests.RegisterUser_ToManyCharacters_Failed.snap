@@ -6,14 +6,15 @@
   "Path": null,
   "Data": {
     "registerUser": {
-      "user": null,
+      "registerUserResponse": null,
       "errors": [
         {
           "code": "MaximumLengthValidator",
           "message": "The length of 'Username' must be 26 characters or fewer. You entered 66 characters.",
           "__typename": "ApplicationError"
         }
-      ]
+      ],
+      "__typename": "RegisterUserPayload"
     }
   },
   "Items": null,

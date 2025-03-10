@@ -9,6 +9,7 @@ public class SchemaTests
         // arrange
         var schema = await new ServiceCollection()
             .AddGraphQL()
+            .AddAuthorization()
             .AddTypes()
             .BuildSchemaAsync();
 

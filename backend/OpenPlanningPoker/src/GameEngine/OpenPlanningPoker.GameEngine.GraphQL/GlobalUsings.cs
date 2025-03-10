@@ -29,3 +29,5 @@ global using Microsoft.Extensions.Caching.Hybrid;
 global using OpenPlanningPoker.Shared.Models;
 global using OpenPlanningPoker.Shared.Results;
 global using OpenPlanningPoker.Shared.Services;
+global using HotChocolate.Subscriptions;
+global using StackExchange.Redis;

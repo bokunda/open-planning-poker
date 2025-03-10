@@ -1,6 +1,7 @@
 ﻿schema {
   query: Query
   mutation: Mutation
+  subscription: Subscription
 }
 
 type ApiCollectionOfGamePlayer {
@@ -25,10 +26,8 @@ type Game {
 }
 
 type GamePlayer {
-  gameId: UUID!
-  gameName: String!
-  playerId: UUID!
-  playerName: String!
+  name: String
+  id: UUID!
 }
 
 type Info {
@@ -88,6 +87,11 @@ type Settings {
   gameId: UUID!
   votingTime: Int!
   isBreakAllowed: Boolean!
+}
+
+type Subscription {
+  onPlayerJoined: UUID!
+  onPlayerLeave: UUID!
 }
 
 type Ticket {

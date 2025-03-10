@@ -6,11 +6,14 @@
   "Path": null,
   "Data": {
     "registerUser": {
-      "user": {
-        "username": "Username123",
-        "__typename": "User"
+      "registerUserResponse": {
+        "id": "e65fb783-3952-411c-b41c-1d5dc1d9ef6c",
+        "userName": "Username123",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU2NWZiNzgzLTM5NTItNDExYy1iNDFjLTFkNWRjMWQ5ZWY2YyIsIm5iZiI6MTc0MTY1MDEzNCwiZXhwIjoxNzQxNzM2NTM0LCJpYXQiOjE3NDE2NTAxMzR9.nrTiVpZB8jy2W_Zc3NFAZRlHvxPZm0PstxBXRT9tYTk",
+        "__typename": "RegisterUserResponse"
       },
-      "errors": null
+      "errors": null,
+      "__typename": "RegisterUserPayload"
     }
   },
   "Items": null,

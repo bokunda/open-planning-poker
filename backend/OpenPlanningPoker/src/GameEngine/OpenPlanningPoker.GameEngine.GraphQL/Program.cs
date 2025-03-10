@@ -1,6 +1,6 @@
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddGraphQLServices();
+builder.AddGraphQLServices(builder.Configuration);
 builder.Services.AddHealthCheckServices(builder.Configuration);
 builder.Services.AddAuthentication(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
@@ -33,8 +33,8 @@ app.MapHealthChecks("/_health", new HealthCheckOptions
 
 app.UseCustomExceptionHandler();
 
-app.MapGraphQL()
-    .RequireAuthorization();
+app.UseWebSockets();
+app.MapGraphQL().RequireAuthorization();
 
 app.UseCors(corsConfig.PolicyName);
 
