@@ -18,7 +18,8 @@ var app = builder.Build();
 
 if (args.Contains("schema"))
 {
-    app.MapGraphQL().RequireAuthorization();
+    app.MapGraphQL();
+        // .RequireAuthorization();
     app.RunWithGraphQLCommands(args);
     return;
 }
@@ -34,7 +35,8 @@ app.MapHealthChecks("/_health", new HealthCheckOptions
 app.UseCustomExceptionHandler();
 
 app.UseWebSockets();
-app.MapGraphQL().RequireAuthorization();
+app.MapGraphQL();
+    //.RequireAuthorization();
 
 app.UseCors(corsConfig.PolicyName);
 
