@@ -5,9 +5,9 @@ public class GamePlayerSubscriptions
 {
     [Subscribe]
     [Topic(nameof(GamePlayerMutations.JoinGameAsync))]
-    public Guid OnPlayerJoined([EventMessage] Guid userId) => userId;
+    public BaseUserProfile OnPlayerJoined([EventMessage] BaseUserProfile user) => user;
 
     [Subscribe]
     [Topic(nameof(GamePlayerMutations.LeaveGameAsync))]
-    public Guid OnPlayerLeave([EventMessage] Guid userId) => userId;
+    public BaseUserProfile OnPlayerLeave([EventMessage] BaseUserProfile user) => user;
 }
