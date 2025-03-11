@@ -14,7 +14,7 @@ public static class ApplicationBuilderExtensions
 
     public static IRequestExecutorBuilder AddGraphQLServices(this WebApplicationBuilder builder, IConfiguration configuration) =>
         builder.AddGraphQL()
-            .AddAuthorization()
+            //.AddAuthorization()
             .AddQueryConventions()
             .AddMutationConventions()
             .AddRedisSubscriptions((sp) => ConnectionMultiplexer.Connect(configuration["ConnectionStrings:Cache"]!))

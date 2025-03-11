@@ -50,6 +50,12 @@ export enum ApplyPolicy {
   Validation = 'VALIDATION'
 }
 
+export type BaseUserProfile = {
+  __typename?: 'BaseUserProfile';
+  id: Scalars['UUID']['output'];
+  userName: Scalars['String']['output'];
+};
+
 export type ChangeUsernameError = ApplicationError;
 
 export type ChangeUsernameInput = {
@@ -354,6 +360,12 @@ export type Settings = {
 };
 
 export type SettingsResult = ApplicationError | Settings;
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  onPlayerJoined: BaseUserProfile;
+  onPlayerLeave: BaseUserProfile;
+};
 
 export type Ticket = {
   __typename?: 'Ticket';

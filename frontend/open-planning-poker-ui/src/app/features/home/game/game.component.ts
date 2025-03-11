@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Apollo } from 'apollo-angular';
-import { ApiCollectionOfGamePlayer, Game, GamePlayer, Mutation, MutationCreateGameArgs, MutationJoinGameArgs, Query } from '../../../graphql/graphql-gateway.service';
+import { Apollo, gql } from 'apollo-angular';
+import { ApiCollectionOfGamePlayer, BaseUserProfile, Game, GamePlayer, Mutation, MutationCreateGameArgs, MutationJoinGameArgs, Query } from '../../../graphql/graphql-gateway.service';
 import { GET_GAME } from './gql/getGame.graphql';
 import { CREATE_GAME } from './gql/createGame.graphql';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,6 +9,8 @@ import { JoinGameDialogComponent } from './join/dialog/join-game-dialog.componen
 import { ActivatedRoute, Router } from '@angular/router';
 import { JOIN_GAME } from './gql/joinGame.graphql';
 import { GET_GAME_PLAYERS } from './gql/getPlayers.graphql';
+import { Observable } from 'rxjs';
+import { ON_PLAYER_JOINED } from './gql/onPlayerJoined.graphql';
 
 @Component({
   selector: 'app-game',
@@ -34,6 +36,8 @@ export class GameComponent implements OnInit {
         this.getGame(gameId);
       }
     });
+
+    this.subscribeToPlayerJoined();
   }
 
   handleCreateGame() {
@@ -113,7 +117,6 @@ export class GameComponent implements OnInit {
       variables: {input: {gameId}}
     }).subscribe({
       next: ({ data }) => {
-        console.log('join game', data);
         this.getGamePlayers(gameId);
       }
     });
@@ -144,6 +147,39 @@ export class GameComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: Game | undefined) => {
       if (!result) { return; }
       this.getGame(result.id);
+    });
+  }
+
+  private subscribeToPlayerJoined(): void {
+    this.apollo.subscribe<{ onPlayerJoined: BaseUserProfile }>({
+      query: ON_PLAYER_JOINED,
+      variables: {},
+    }).subscribe((result) => {
+      if (!result) {
+        return;
+      }
+
+      const newPlayer: BaseUserProfile = result!.data!.onPlayerJoined;
+      const item = { id: newPlayer.id, name: newPlayer.userName } as GamePlayer;
+
+      if (this.players?.items) {
+        const existingPlayerIndex = this.players.items.findIndex(player => player.id === item.id);
+        if (existingPlayerIndex !== -1) {
+          // Update the username if it is different
+          if (this.players.items[existingPlayerIndex].name !== item.name) {
+            this.players.items[existingPlayerIndex].name = item.name;
+          }
+        } else {
+          // Add the new player
+          console.log('da');
+          this.players = {
+            ...this.players,
+            items: [...this.players.items, item]
+          };
+        }
+      } else {
+        this.players = { items: [item] } as ApiCollectionOfGamePlayer;
+      }
     });
   }
 
