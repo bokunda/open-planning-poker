@@ -1,10 +1,7 @@
 <div class="game-wrapper">
   <div class="game">
     <div class="center">
-      <app-options
-        [inGame]="!game"
-        (onCreateGameClick)="handleCreateGame()"
-        (onJoinGameClick)="handleJoinGame()"
+      <app-options [inGame]="!game" (onCreateGameClick)="handleCreateGame()" (onJoinGameClick)="handleJoinGame()"
         (onLeaveGameClick)="handleLeaveGame()">
       </app-options>
     </div>
@@ -14,14 +11,14 @@
       </div>
 
       <div class="center">
-        <div class="width-80p">
-          <app-voting [players]="players">
-          </app-voting>
-        </div>
+        <app-voting [players]="players" [gameSettings]="game.settingsDetails">
+        </app-voting>
       </div>
 
+
+
       <div class="center">
-        <div class="width-80p">
+        <div class="full-width">
           <app-voting-history></app-voting-history>
         </div>
       </div>

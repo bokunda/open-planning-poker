@@ -84,9 +84,8 @@ export type CreateGamePayload = {
 export type CreateSettingsError = ApplicationError;
 
 export type CreateSettingsInput = {
+  deckSetup?: InputMaybe<Scalars['String']['input']>;
   gameId: Scalars['UUID']['input'];
-  isBreakAllowed: Scalars['Boolean']['input'];
-  votingTime: Scalars['Int']['input'];
 };
 
 export type CreateSettingsPayload = {
@@ -143,6 +142,7 @@ export type Game = {
   description: Scalars['String']['output'];
   id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
+  settingsDetails: SettingsDetailsResult;
 };
 
 export type GamePlayer = {
@@ -353,11 +353,12 @@ export type RegisterUserResponse = {
 
 export type Settings = {
   __typename?: 'Settings';
+  deckSetup: Scalars['String']['output'];
   gameId: Scalars['UUID']['output'];
   id: Scalars['UUID']['output'];
-  isBreakAllowed: Scalars['Boolean']['output'];
-  votingTime: Scalars['Int']['output'];
 };
+
+export type SettingsDetailsResult = ApplicationError | Settings;
 
 export type SettingsResult = ApplicationError | Settings;
 
@@ -382,10 +383,9 @@ export type TicketsResult = ApiCollectionOfTicket | ApplicationError;
 export type UpdateSettingsError = ApplicationError;
 
 export type UpdateSettingsInput = {
+  deckSetup?: InputMaybe<Scalars['String']['input']>;
   gameId: Scalars['UUID']['input'];
   id: Scalars['UUID']['input'];
-  isBreakAllowed: Scalars['Boolean']['input'];
-  votingTime: Scalars['Int']['input'];
 };
 
 export type UpdateSettingsPayload = {

@@ -1,6 +1,6 @@
 <div class="game-details-wrapper" *ngIf="game">
   <div class="game-details">
-      <h1>
+      <h2>
         {{ game.name }}
         <button
           mat-icon-button
@@ -34,6 +34,6 @@
           (click)="onLeaveGameClick.emit()">
           <mat-icon>exit_to_app</mat-icon>
         </button>
-      </h1>
+      </h2>
   </div>
 </div>

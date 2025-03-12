@@ -2,7 +2,7 @@
 
 public sealed class Vote : Entity<Guid>
 {
-    internal Vote(Guid playerId, Guid ticketId, int value)
+    internal Vote(Guid playerId, Guid ticketId, string value)
     {
         PlayerId = playerId;
         TicketId = ticketId;
@@ -11,18 +11,18 @@ public sealed class Vote : Entity<Guid>
 
     public Guid PlayerId { get; set; }
     public Guid TicketId { get; set; }
-    public int Value { get; set; }
+    public string Value { get; set; }
 
     public Ticket Ticket { get; set; } = null!;
 
-    public static Vote Create(Guid playerId, Guid ticketId, int value)
+    public static Vote Create(Guid playerId, Guid ticketId, string value)
     {
         var vote = new Vote(playerId, ticketId, value);
         vote.RaiseDomainEvent(new CreateVoteDomainEvent(vote.Id));
         return vote;
     }
 
-    public void Update(int value)
+    public void Update(string value)
     {
         Value = value;
 

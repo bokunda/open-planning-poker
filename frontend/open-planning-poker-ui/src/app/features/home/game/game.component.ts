@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
-import { ApiCollectionOfGamePlayer, BaseUserProfile, Game, GamePlayer, Mutation, MutationCreateGameArgs, MutationJoinGameArgs, Query } from '../../../graphql/graphql-gateway.service';
+import { ApiCollectionOfGamePlayer, BaseUserProfile, Game, GamePlayer, Mutation, MutationCreateGameArgs, MutationJoinGameArgs, Query, Settings } from '../../../graphql/graphql-gateway.service';
 import { GET_GAME } from './gql/getGame.graphql';
 import { CREATE_GAME } from './gql/createGame.graphql';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,7 +9,6 @@ import { JoinGameDialogComponent } from './join/dialog/join-game-dialog.componen
 import { ActivatedRoute, Router } from '@angular/router';
 import { JOIN_GAME } from './gql/joinGame.graphql';
 import { GET_GAME_PLAYERS } from './gql/getPlayers.graphql';
-import { Observable } from 'rxjs';
 import { ON_PLAYER_JOINED } from './gql/onPlayerJoined.graphql';
 
 @Component({
@@ -171,7 +170,6 @@ export class GameComponent implements OnInit {
           }
         } else {
           // Add the new player
-          console.log('da');
           this.players = {
             ...this.players,
             items: [...this.players.items, item]

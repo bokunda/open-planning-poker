@@ -1,6 +1,6 @@
 ﻿namespace OpenPlanningPoker.GameEngine.Application.Features.GameSettings;
 
-public sealed record GetGameSettingsResponse(Guid Id, Guid GameId, int VotingTime, bool IsBreakAllowed);
+public sealed record GetGameSettingsResponse(Guid Id, Guid GameId, string DeckSetup);
 public sealed record GetGameSettingsQuery(Guid GameId) : IRequest<Result<GetGameSettingsResponse, ApplicationError>>;
 
 public static class GetGameSettings

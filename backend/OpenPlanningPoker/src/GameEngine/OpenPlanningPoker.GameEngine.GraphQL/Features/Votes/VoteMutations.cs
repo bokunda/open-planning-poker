@@ -10,7 +10,7 @@ public class VoteMutations
         [Service] ISender sender,
         [Service] IMapper mapper,
         [Required] Guid ticketId,
-        [Required] int value,
+        [Required] string value,
         CancellationToken cancellationToken = default)
     {
         var result = await sender.Send(new CreateVoteCommand(ticketId, value), cancellationToken);
@@ -26,7 +26,7 @@ public class VoteMutations
         [Service] ISender sender,
         [Service] IMapper mapper,
         [Required] Guid id,
-        [Required] int value,
+        [Required] string value,
         CancellationToken cancellationToken = default)
     {
         var result = await sender.Send(new UpdateVoteCommand(id, value), cancellationToken);

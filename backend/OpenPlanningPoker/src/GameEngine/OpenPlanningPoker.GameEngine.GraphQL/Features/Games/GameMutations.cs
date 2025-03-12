@@ -14,6 +14,15 @@ public class GameMutations
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(new CreateGameCommand(name, description), cancellationToken);
+
+        if (result.IsSuccess)
+        {
+            await sender.Send(new CreateGameSettingsCommand(
+                result.Value!.Id, 
+                GameSettingsConstants.FibonacciDeckSetup), 
+                cancellationToken);
+        }
+
         return result.IsSuccess
             ? mapper.Map<Game>(result.Value!)
             : result.Error!;

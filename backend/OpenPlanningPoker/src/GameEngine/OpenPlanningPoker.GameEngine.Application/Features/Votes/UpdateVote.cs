@@ -1,8 +1,8 @@
 ﻿namespace OpenPlanningPoker.GameEngine.Application.Features.Votes;
 
-public sealed record UpdateVoteResponse(Guid Id, Guid PlayerId, Guid TicketId, int Value);
+public sealed record UpdateVoteResponse(Guid Id, Guid PlayerId, Guid TicketId, string Value);
 
-public sealed record UpdateVoteCommand(Guid Id, int Value) : IRequest<Result<UpdateVoteResponse, ApplicationError>>;
+public sealed record UpdateVoteCommand(Guid Id, string Value) : IRequest<Result<UpdateVoteResponse, ApplicationError>>;
 
 public static class UpdateVote
 {
@@ -14,8 +14,7 @@ public static class UpdateVote
                 .NotEmpty();
 
             RuleFor(x => x.Value)
-                .GreaterThan(0)
-                .LessThan(100);
+                .NotEmpty();
         }
     }
 

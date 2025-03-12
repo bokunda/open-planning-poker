@@ -1,8 +1,8 @@
 ﻿namespace OpenPlanningPoker.GameEngine.Application.Features.Votes;
 
-public sealed record CreateVoteResponse(Guid Id, Guid PlayerId, Guid TicketId, int Value);
+public sealed record CreateVoteResponse(Guid Id, Guid PlayerId, Guid TicketId, string Value);
 
-public sealed record CreateVoteCommand(Guid TicketId, int Value) : IRequest<Result<CreateVoteResponse, ApplicationError>>;
+public sealed record CreateVoteCommand(Guid TicketId, string Value) : IRequest<Result<CreateVoteResponse, ApplicationError>>;
 
 public static class CreateVote
 {
@@ -14,8 +14,7 @@ public static class CreateVote
                 .NotEmpty();
 
             RuleFor(x => x.Value)
-                .GreaterThan(0)
-                .LessThan(100);
+                .NotEmpty();
         }
     }
 
