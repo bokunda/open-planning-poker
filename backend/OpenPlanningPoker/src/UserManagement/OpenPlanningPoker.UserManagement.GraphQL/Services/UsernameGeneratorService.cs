@@ -12,7 +12,7 @@ public class UsernameGeneratorService(IVocabularyCollectorService vocabularyColl
         var vocabulary = await vocabularyCollectorService.GetVocabulary(language, cancellationToken);
         var firstWord = GetRandomVocabularyItem(vocabulary);
         var secondWord = GetRandomVocabularyItem(vocabulary);
-        return $"{firstWord}{secondWord}";
+        return $"{firstWord} {secondWord}";
     }
 
     private static string GetRandomVocabularyItem(IEnumerable<string> vocabulary)
