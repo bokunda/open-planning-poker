@@ -14,7 +14,7 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         services.AddAutoMapper(typeof(DependencyInjection).Assembly);
         services.AddRedis(configuration);
-        CacheExtensions.AddHybridCache(services);
+        CacheExtensions.AddHybridCache(services, true);
 
         return services;
     }
