@@ -1,4 +1,100 @@
+.players {
+  padding: 10% 0;
+}
+
 .players-list {
   padding: 15% 0 15% 0;
   font-weight: bold;
+}
+
+.table-container {
+  position: relative;
+  width: 700px;
+  height: 350px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.table-players {
+  width: 250px;
+  height: 150px;
+  background-color: #444;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  border-radius: 225px;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.top-players,
+.bottom-players,
+.left-players,
+.right-players {
+  position: absolute;
+  display: flex;
+  gap: 30px;
+  text-align: center;
+}
+
+.top-players {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.bottom-players {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.left-players {
+  left: 0;
+  top: 50%;
+  flex-direction: column;
+  transform: translateY(-50%);
+}
+
+.right-players {
+  right: 0;
+  top: 50%;
+  flex-direction: column;
+  transform: translateY(-50%);
+}
+
+.right-players, .left-players {
+  .player {
+    display: flex;
+  }
+}
+
+.player-item-name {
+  padding: 7px;
+  font-size: larger;
+}
+
+.player-item-vote-wrapper {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+.player-item-vote {
+  border: 3px solid #000;
+  border-radius: 10px;
+  width: 30px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.player-item-vote-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

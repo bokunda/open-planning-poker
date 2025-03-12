@@ -1,10 +1,52 @@
-<div class="players-wrapper" *ngIf="players && players.totalCount > 0">
+<div class="players-wrapper">
   <div class="players">
-    <div class="players-list">
-      <div class="player" *ngFor="let player of players?.items">
-        <div *ngIf="player.name" class="player-name">
-          {{player.name}} 🃏
+    <div class="table-container">
+      <!-- Top Players -->
+      <div class="top-players">
+        <div class="player" *ngFor="let player of topPlayers">
+          <span class="player-item-name">{{ player.name }}</span>
+          <div class="player-item-vote-wrapper">
+            <span class="player-item-vote">{{ player.id[0]}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Left Players -->
+      <div class="left-players">
+        <div class="player" *ngFor="let player of leftPlayers">
+          <span class="player-item-name">{{ player.name }}</span>
+          <div class="player-item-vote-wrapper">
+            <span class="player-item-vote">{{ player.id[0]}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table (Rectangle) -->
+      <div class="table-players">
+        <button mat-flat-button>Reveal the cards</button>
+        <button mat-flat-button>Vote again</button>
+        <button mat-flat-button>New Ticket</button>
+      </div>
+
+      <!-- Right Players -->
+      <div class="right-players">
+        <div class="player" *ngFor="let player of rightPlayers">
+          <div class="player-item-vote-wrapper">
+            <span class="player-item-vote">{{ player.id[0]}}</span>
+          </div>
+          <span class="player-item-name">{{ player.name }}</span>
+        </div>
+      </div>
+
+      <!-- Bottom Players -->
+      <div class="bottom-players">
+        <div class="player" *ngFor="let player of bottomPlayers">
+          <div class="player-item-vote-wrapper">
+            <span class="player-item-vote">{{ player.id[0]}}</span>
+          </div>
+          <span class="player-item-name">{{ player.name }}</span>
         </div>
       </div>
     </div>
+  </div>
 </div>
