@@ -143,8 +143,8 @@ type Settings {
 }
 
 type Subscription {
-  onPlayerJoined: BaseUserProfile!
-  onPlayerLeave: BaseUserProfile!
+  onPlayerJoined(gameId: UUID!): BaseUserProfile!
+  onPlayerLeave(gameId: UUID!): BaseUserProfile!
 }
 
 type Ticket {
@@ -230,7 +230,7 @@ input CreateTicketInput {
 
 input CreateVoteInput {
   ticketId: UUID!
-  value: Int!
+  value: String!
 }
 
 input DeleteTicketInput {
@@ -259,7 +259,7 @@ input UpdateTicketInput {
 
 input UpdateVoteInput {
   id: UUID!
-  value: Int!
+  value: String!
 }
 
 "The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."

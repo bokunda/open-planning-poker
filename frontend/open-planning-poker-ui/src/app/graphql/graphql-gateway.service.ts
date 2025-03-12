@@ -112,7 +112,7 @@ export type CreateVoteError = ApplicationError;
 
 export type CreateVoteInput = {
   ticketId: Scalars['UUID']['input'];
-  value: Scalars['Int']['input'];
+  value: Scalars['String']['input'];
 };
 
 export type CreateVotePayload = {
@@ -368,6 +368,16 @@ export type Subscription = {
   onPlayerLeave: BaseUserProfile;
 };
 
+
+export type SubscriptionOnPlayerJoinedArgs = {
+  gameId: Scalars['UUID']['input'];
+};
+
+
+export type SubscriptionOnPlayerLeaveArgs = {
+  gameId: Scalars['UUID']['input'];
+};
+
 export type Ticket = {
   __typename?: 'Ticket';
   description: Scalars['String']['output'];
@@ -412,7 +422,7 @@ export type UpdateVoteError = ApplicationError;
 
 export type UpdateVoteInput = {
   id: Scalars['UUID']['input'];
-  value: Scalars['Int']['input'];
+  value: Scalars['String']['input'];
 };
 
 export type UpdateVotePayload = {

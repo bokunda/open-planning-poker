@@ -33,10 +33,9 @@ export class GameComponent implements OnInit {
       const gameId = params.get('id');
       if (gameId) {
         this.getGame(gameId);
+        this.subscribeToPlayerJoined(gameId);
       }
     });
-
-    this.subscribeToPlayerJoined();
   }
 
   handleCreateGame() {
@@ -149,10 +148,10 @@ export class GameComponent implements OnInit {
     });
   }
 
-  private subscribeToPlayerJoined(): void {
+  private subscribeToPlayerJoined(gameId: string): void {
     this.apollo.subscribe<{ onPlayerJoined: BaseUserProfile }>({
       query: ON_PLAYER_JOINED,
-      variables: {},
+      variables: { gameId },
     }).subscribe((result) => {
       if (!result) {
         return;
