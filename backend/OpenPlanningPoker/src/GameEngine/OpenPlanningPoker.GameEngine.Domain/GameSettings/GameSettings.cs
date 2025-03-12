@@ -1,34 +1,29 @@
-﻿using OpenPlanningPoker.GameEngine.Domain.GameSettings.Events;
-
-namespace OpenPlanningPoker.GameEngine.Domain.GameSettings;
+﻿namespace OpenPlanningPoker.GameEngine.Domain.GameSettings;
 
 public sealed class GameSettings : Entity<Guid>
 {
-    internal GameSettings(Guid gameId, int votingTime, bool isBreakAllowed)
+    internal GameSettings(Guid gameId, string deckSetup)
     {
         GameId = gameId;
-        VotingTime = votingTime;
-        IsBreakAllowed = isBreakAllowed;
+        DeckSetup = deckSetup;
     }
 
     public Guid GameId { get; private set; }
-    public int VotingTime { get; private set; }
-    public bool IsBreakAllowed { get; private set; }
+    public string DeckSetup { get; private set; }
 
     public Game Game { get; set; } = null!;
 
-    public static GameSettings Create(Guid gameId, int votingTime, bool isBreakAllowed)
+    public static GameSettings Create(Guid gameId, string deckSetup)
     {
-        var gameSettings = new GameSettings(gameId, votingTime, isBreakAllowed);
+        var gameSettings = new GameSettings(gameId, deckSetup);
         gameSettings.RaiseDomainEvent(new CreateGameSettingsDomainEvent(gameSettings.Id));
         return gameSettings;
     }
 
-    public void Update(Guid gameId, int votingTime, bool isBreakAllowed)
+    public void Update(Guid gameId, string deckSetup)
     {
         GameId = gameId;
-        VotingTime = votingTime;
-        IsBreakAllowed = isBreakAllowed;
+        DeckSetup = deckSetup;
         RaiseDomainEvent(new CreateGameSettingsDomainEvent(Id));
     }
 }

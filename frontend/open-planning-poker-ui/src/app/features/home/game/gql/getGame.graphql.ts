@@ -7,8 +7,20 @@ const GET_GAME = gql `
         id
         name
         description
+        settingsDetails {
+          ... on Settings {
+            id
+            gameId
+            deckSetup
+          }
+          ... on ApplicationError {
+            code
+            message
+          }
+        }
       }
       ... on ApplicationError {
+        code
         message
       }
     }

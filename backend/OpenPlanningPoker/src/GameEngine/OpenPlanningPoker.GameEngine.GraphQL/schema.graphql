@@ -59,6 +59,7 @@ type DeleteTicketPayload {
 }
 
 type Game {
+  settingsDetails: SettingsDetailsResult! @cost(weight: "10")
   id: UUID!
   name: String!
   description: String!
@@ -138,13 +139,12 @@ type Query {
 type Settings {
   id: UUID!
   gameId: UUID!
-  votingTime: Int!
-  isBreakAllowed: Boolean!
+  deckSetup: String!
 }
 
 type Subscription {
-  onPlayerJoined: BaseUserProfile! @allowAnonymous
-  onPlayerLeave: BaseUserProfile! @allowAnonymous
+  onPlayerJoined: BaseUserProfile!
+  onPlayerLeave: BaseUserProfile!
 }
 
 type Ticket {
@@ -196,6 +196,8 @@ union JoinGameError = ApplicationError
 
 union LeaveGameError = ApplicationError
 
+union SettingsDetailsResult = Settings | ApplicationError
+
 union SettingsResult = Settings | ApplicationError
 
 union TicketResult = Ticket | ApplicationError
@@ -217,8 +219,7 @@ input CreateGameInput {
 
 input CreateSettingsInput {
   gameId: UUID!
-  votingTime: Int!
-  isBreakAllowed: Boolean!
+  deckSetup: String
 }
 
 input CreateTicketInput {
@@ -247,8 +248,7 @@ input LeaveGameInput {
 input UpdateSettingsInput {
   id: UUID!
   gameId: UUID!
-  votingTime: Int!
-  isBreakAllowed: Boolean!
+  deckSetup: String
 }
 
 input UpdateTicketInput {
@@ -261,18 +261,6 @@ input UpdateVoteInput {
   id: UUID!
   value: Int!
 }
-
-"Defines when a policy shall be executed."
-enum ApplyPolicy {
-  "Before the resolver was executed."
-  BEFORE_RESOLVER
-  "After the resolver was executed."
-  AFTER_RESOLVER
-  "The policy is applied in the validation step before the execution."
-  VALIDATION
-}
-
-directive @allowAnonymous repeatable on FIELD_DEFINITION
 
 "The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
 directive @cost("The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc." weight: String!) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION

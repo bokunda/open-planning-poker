@@ -1,6 +1,6 @@
 ﻿namespace OpenPlanningPoker.GameEngine.Application.Features.Votes;
 
-public sealed record GetVotesItem(Guid Id, Guid PlayerId, int Value);
+public sealed record GetVotesItem(Guid Id, Guid PlayerId, string Value);
 public sealed record GetVotesQuery(Guid TicketId) : IRequest<Result<ApiCollection<GetVotesItem>, ApplicationError>>;
 
 public static class GetVotes

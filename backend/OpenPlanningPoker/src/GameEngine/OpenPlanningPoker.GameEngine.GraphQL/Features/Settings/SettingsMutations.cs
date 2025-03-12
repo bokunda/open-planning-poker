@@ -10,11 +10,11 @@ public class SettingsMutations
         [Service] ISender sender,
         [Service] IMapper mapper,
         [Required] Guid gameId,
-        [Required] int votingTime,
-        [Required] bool isBreakAllowed,
+        string? deckSetup,
         CancellationToken cancellationToken = default)
     {
-        var result = await sender.Send(new CreateGameSettingsCommand(gameId, votingTime, isBreakAllowed), cancellationToken);
+        deckSetup = string.IsNullOrEmpty(deckSetup) ? GameSettingsConstants.FibonacciDeckSetup : deckSetup;
+        var result = await sender.Send(new CreateGameSettingsCommand(gameId, deckSetup), cancellationToken);
         return result.IsSuccess
             ? mapper.Map<Settings>(result.Value)
             : result.Error!;
@@ -28,11 +28,11 @@ public class SettingsMutations
         [Service] IMapper mapper,
         [Required] Guid id,
         [Required] Guid gameId,
-        [Required] int votingTime,
-        [Required] bool isBreakAllowed,
+        string? deckSetup,
         CancellationToken cancellationToken = default)
     {
-        var result = await sender.Send(new UpdateGameSettingsCommand(id, gameId, votingTime, isBreakAllowed), cancellationToken);
+        deckSetup = string.IsNullOrEmpty(deckSetup) ? GameSettingsConstants.FibonacciDeckSetup : deckSetup;
+        var result = await sender.Send(new UpdateGameSettingsCommand(id, gameId, deckSetup), cancellationToken);
         return result.IsSuccess
             ? mapper.Map<Settings>(result.Value)
             : result.Error!;

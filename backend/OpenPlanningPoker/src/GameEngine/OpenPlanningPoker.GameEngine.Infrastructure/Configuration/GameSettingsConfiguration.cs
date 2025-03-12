@@ -12,10 +12,7 @@ internal sealed class GameSettingsConfiguration : IEntityTypeConfiguration<GameS
         builder.Property(gamesettings => gamesettings.GameId)
             .IsRequired();
 
-        builder.Property(gamesettings => gamesettings.IsBreakAllowed)
-            .IsRequired();
-
-        builder.Property(gamesettings => gamesettings.VotingTime)
+        builder.Property(gamesettings => gamesettings.DeckSetup)
             .IsRequired();
     }
 }
