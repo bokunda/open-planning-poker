@@ -15,7 +15,7 @@ public class GamePlayerMutations
     {
         var user = await currentUserProvider.GetAsync(cancellationToken);
         var result = await sender.Send(new JoinGameCommand(gameId, currentUserProvider.Id), cancellationToken);
-        await eventSender.SendAsync(nameof(JoinGameAsync), user, cancellationToken);
+        await eventSender.SendAsync($"{nameof(JoinGameAsync)}_{gameId}", user, cancellationToken);
 
         return result.IsSuccess
             ? result.Value
@@ -35,7 +35,7 @@ public class GamePlayerMutations
     {
         var user = await currentUserProvider.GetAsync(cancellationToken);
         var result = await sender.Send(new LeaveGameCommand(gameId, currentUserProvider.Id), cancellationToken);
-        await eventSender.SendAsync(nameof(JoinGameAsync), user, cancellationToken);
+        await eventSender.SendAsync($"{nameof(LeaveGameAsync)}_{gameId}", user, cancellationToken);
 
         return result.IsSuccess
             ? result.Value
