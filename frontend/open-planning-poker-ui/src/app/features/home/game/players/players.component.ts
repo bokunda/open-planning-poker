@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { ApiCollectionOfGamePlayer } from '../../../../graphql/graphql-gateway.service';
 
 @Component({
@@ -11,6 +11,10 @@ import { ApiCollectionOfGamePlayer } from '../../../../graphql/graphql-gateway.s
 export class PlayersComponent {
 
   @Input() players: ApiCollectionOfGamePlayer | undefined;
+
+  @Output() onCreateNewTicket = new EventEmitter<void>();
+  @Output() onVoteAgain = new EventEmitter<void>();
+  @Output() onRevealCards = new EventEmitter<void>();
 
   get topPlayers() {
     return this.players!.items.slice(0, Math.ceil(this.players!.items.length / 4));

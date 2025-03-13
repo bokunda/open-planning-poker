@@ -19,6 +19,11 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'game/:id/ticket/:ticketId',
+    component: HomeComponent,
+    pathMatch: 'full'
+  },
+  {
     path: '**',
     component: ErrorsComponent,
   }

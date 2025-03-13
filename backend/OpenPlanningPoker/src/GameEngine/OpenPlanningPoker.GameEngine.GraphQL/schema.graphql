@@ -145,6 +145,7 @@ type Settings {
 type Subscription {
   onPlayerJoined(gameId: UUID!): BaseUserProfile!
   onPlayerLeave(gameId: UUID!): BaseUserProfile!
+  onTicketCreated(gameId: UUID!): Ticket!
 }
 
 type Ticket {

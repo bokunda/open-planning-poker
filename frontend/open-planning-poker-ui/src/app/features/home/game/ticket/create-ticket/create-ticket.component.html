@@ -1,0 +1,15 @@
+<div class="create-ticket-wrapper">
+  <div class="create-ticket">
+    <form [formGroup]="createTicketForm" (ngSubmit)="onSubmit()" class="create-ticket-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Ticket Name</mat-label>
+        <input matInput formControlName="name">
+      </mat-form-field>
+
+      <button mat-fab extended type="submit">
+        Create
+        <mat-icon>sports_esports</mat-icon>
+      </button>
+    </form>
+  </div>
+</div>

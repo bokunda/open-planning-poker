@@ -11,7 +11,12 @@
       </div>
 
       <div class="center">
-        <app-voting [players]="players" [gameSettings]="game.settingsDetails"></app-voting>
+        <app-voting
+          [players]="players"
+          [gameSettings]="game.settingsDetails"
+          [ticket]="ticket"
+          (onCreateNewTicket)="handleCreateTicket()"
+          ></app-voting>
       </div>
 
       <div class="center">

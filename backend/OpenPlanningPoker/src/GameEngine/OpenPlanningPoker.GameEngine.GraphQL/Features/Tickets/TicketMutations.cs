@@ -9,6 +9,7 @@ public class TicketMutations
     public async Task<FieldResult<Ticket, ApplicationError>> CreateTicketAsync(
         [Service] ISender sender,
         [Service] IMapper mapper,
+        [Service] ITopicEventSender eventSender,
         [Required] Guid gameId,
         [Required] string name,
         [Required] string description,
@@ -16,6 +17,15 @@ public class TicketMutations
     {
         //TODO: Access check -> player <-> game
         var result = await sender.Send(new CreateTicketCommand(gameId, name, description), cancellationToken);
+
+        if (result.IsSuccess)
+        {
+            await eventSender.SendAsync(
+                $"{nameof(CreateTicketAsync)}_{gameId}", 
+                mapper.Map<Ticket>(result.Value), 
+                cancellationToken);
+        }
+
         return result.IsSuccess
             ? mapper.Map<Ticket>(result.Value)
             : result.Error!;

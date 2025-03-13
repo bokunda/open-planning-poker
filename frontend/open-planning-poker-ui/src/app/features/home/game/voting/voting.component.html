@@ -1,14 +1,17 @@
 <div class="voting-wrapper">
   <div class="voting">
     <div class="voting-item-details">
-      <h1 class="center">Ticket: Introduce GraphQL Gateway</h1>
+      <h1 class="center">Ticket: {{ticket?.name}}</h1>
     </div>
   </div>
 
   <div class="voting-players-wrapper">
     <div class="voting-players-wrapper center">
       <app-players
-        [players]="players">
+        [players]="players"
+        (onRevealCards)="onRevealCards.emit()"
+        (onVoteAgain)="onVoteAgain.emit()"
+        (onCreateNewTicket)="onCreateNewTicket.emit()">
       </app-players>
     </div>
   </div>
