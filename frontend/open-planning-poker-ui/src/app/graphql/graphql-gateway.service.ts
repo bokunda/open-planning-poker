@@ -366,6 +366,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   onPlayerJoined: BaseUserProfile;
   onPlayerLeave: BaseUserProfile;
+  onTicketCreated: BaseUserProfile;
 };
 
 
@@ -378,12 +379,24 @@ export type SubscriptionOnPlayerLeaveArgs = {
   gameId: Scalars['UUID']['input'];
 };
 
+
+export type SubscriptionOnTicketCreatedArgs = {
+  ticket: TicketInput;
+};
+
 export type Ticket = {
   __typename?: 'Ticket';
   description: Scalars['String']['output'];
   gameId: Scalars['UUID']['output'];
   id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
+};
+
+export type TicketInput = {
+  description: Scalars['String']['input'];
+  gameId: Scalars['UUID']['input'];
+  id: Scalars['UUID']['input'];
+  name: Scalars['String']['input'];
 };
 
 export type TicketResult = ApplicationError | Ticket;

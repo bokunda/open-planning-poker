@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { ApiCollectionOfGamePlayer, Settings, SettingsDetailsResult } from '../../../../graphql/graphql-gateway.service';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ApiCollectionOfGamePlayer, Settings, SettingsDetailsResult, Ticket } from '../../../../graphql/graphql-gateway.service';
 
 @Component({
   selector: 'app-voting',
@@ -12,6 +12,11 @@ export class VotingComponent implements OnInit {
 
   @Input() gameSettings: SettingsDetailsResult | undefined;
   @Input() players: ApiCollectionOfGamePlayer | undefined;
+  @Input() ticket: Ticket | undefined;
+
+  @Output() onCreateNewTicket = new EventEmitter<void>();
+  @Output() onVoteAgain = new EventEmitter<void>();
+  @Output() onRevealCards = new EventEmitter<void>();
 
   voteOptions: string[] = [];
   selectedOption: string | null = null;

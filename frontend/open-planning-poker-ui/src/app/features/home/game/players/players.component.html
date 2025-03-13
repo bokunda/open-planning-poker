@@ -23,9 +23,9 @@
 
       <!-- Table (Rectangle) -->
       <div class="table-players">
-        <button mat-flat-button>Reveal the cards</button>
-        <button mat-flat-button>Vote again</button>
-        <button mat-flat-button>New Ticket</button>
+        <button mat-flat-button (click)="onRevealCards.emit()">Reveal the cards</button>
+        <button mat-flat-button (click)="onVoteAgain.emit()">Vote again</button>
+        <button mat-flat-button (click)="onCreateNewTicket.emit()">New Ticket</button>
       </div>
 
       <!-- Right Players -->
