@@ -26,7 +26,7 @@ public static class GetVotes
     {
         public async Task<Result<ApiCollection<GetVotesItem>, ApplicationError>> Handle(GetVotesQuery request, CancellationToken cancellationToken = default)
         {
-            var result = await voteRepository.GetByTicket(request.TicketId, cancellationToken);
+            var result = await voteRepository.GetByTicket(request.TicketId, null, cancellationToken);
             var mappedResult = mapper.Map<ICollection<GetVotesItem>>(result);
             return new ApiCollection<GetVotesItem>(mappedResult, mappedResult.Count);
         }

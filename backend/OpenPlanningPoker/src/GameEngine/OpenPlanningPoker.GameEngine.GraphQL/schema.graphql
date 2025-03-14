@@ -38,6 +38,11 @@ type CreateGamePayload {
   errors: [CreateGameError!]
 }
 
+type CreateOrUpdateVotePayload {
+  vote: Vote
+  errors: [CreateOrUpdateVoteError!]
+}
+
 type CreateSettingsPayload {
   settings: Settings
   errors: [CreateSettingsError!]
@@ -46,11 +51,6 @@ type CreateSettingsPayload {
 type CreateTicketPayload {
   ticket: Ticket
   errors: [CreateTicketError!]
-}
-
-type CreateVotePayload {
-  vote: Vote
-  errors: [CreateVoteError!]
 }
 
 type DeleteTicketPayload {
@@ -106,10 +106,8 @@ type Mutation {
   updateTicket(input: UpdateTicketInput!): UpdateTicketPayload! @cost(weight: "10")
   "Deletes a ticket for given game."
   deleteTicket(input: DeleteTicketInput!): DeleteTicketPayload! @cost(weight: "10")
-  "Creates a vote."
-  createVote(input: CreateVoteInput!): CreateVotePayload! @cost(weight: "10")
-  "Updates a vote."
-  updateVote(input: UpdateVoteInput!): UpdateVotePayload! @cost(weight: "10")
+  "Creates or updates a vote."
+  createOrUpdateVote(input: CreateOrUpdateVoteInput!): CreateOrUpdateVotePayload! @cost(weight: "10")
 }
 
 type PingPayload {
@@ -146,6 +144,7 @@ type Subscription {
   onPlayerJoined(gameId: UUID!): BaseUserProfile!
   onPlayerLeave(gameId: UUID!): BaseUserProfile!
   onTicketCreated(gameId: UUID!): Ticket!
+  onVoteCreatedOrUpdated(ticketId: UUID!): Vote!
 }
 
 type Ticket {
@@ -165,25 +164,19 @@ type UpdateTicketPayload {
   errors: [UpdateTicketError!]
 }
 
-type UpdateVotePayload {
-  vote: Vote
-  errors: [UpdateVoteError!]
-}
-
 type Vote {
   id: UUID!
-  gameId: UUID!
   playerId: UUID!
   value: Int!
 }
 
 union CreateGameError = ApplicationError
 
+union CreateOrUpdateVoteError = ApplicationError
+
 union CreateSettingsError = ApplicationError
 
 union CreateTicketError = ApplicationError
-
-union CreateVoteError = ApplicationError
 
 union DeleteTicketError = ApplicationError
 
@@ -209,13 +202,16 @@ union UpdateSettingsError = ApplicationError
 
 union UpdateTicketError = ApplicationError
 
-union UpdateVoteError = ApplicationError
-
 union VotesResult = ApiCollectionOfVote | ApplicationError
 
 input CreateGameInput {
   name: String!
   description: String!
+}
+
+input CreateOrUpdateVoteInput {
+  ticketId: UUID!
+  value: String!
 }
 
 input CreateSettingsInput {
@@ -227,11 +223,6 @@ input CreateTicketInput {
   gameId: UUID!
   name: String!
   description: String!
-}
-
-input CreateVoteInput {
-  ticketId: UUID!
-  value: String!
 }
 
 input DeleteTicketInput {
@@ -256,11 +247,6 @@ input UpdateTicketInput {
   id: UUID!
   name: String!
   description: String!
-}
-
-input UpdateVoteInput {
-  id: UUID!
-  value: String!
 }
 
 "The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."

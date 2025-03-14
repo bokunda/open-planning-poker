@@ -5,7 +5,6 @@ public class VoteMappingProfile : Profile
     public VoteMappingProfile()
     {
         CreateMap<GetVotesItem, Vote>();
-        CreateMap<CreateVoteResponse, Vote>();
-        CreateMap<UpdateVoteResponse, Vote>();
+        CreateMap<CreateOrUpdateVoteResponse, Vote>();
     }
 }

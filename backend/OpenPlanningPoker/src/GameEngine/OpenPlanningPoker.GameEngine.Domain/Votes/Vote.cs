@@ -1,9 +1,12 @@
-﻿namespace OpenPlanningPoker.GameEngine.Domain.Votes;
+﻿using OpenPlanningPoker.GameEngine.Domain.Shared;
+
+namespace OpenPlanningPoker.GameEngine.Domain.Votes;
 
 public sealed class Vote : Entity<Guid>
 {
     internal Vote(Guid playerId, Guid ticketId, string value)
     {
+        Id = SequentialGuidGenerator.Generate();
         PlayerId = playerId;
         TicketId = ticketId;
         Value = value;

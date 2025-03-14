@@ -47,12 +47,6 @@ export class UserComponent {
         if (!!data?.changeUsername?.boolean) {
           this.username = username;
         }
-      },
-      error: (error) => {
-        console.error('[UserComponent] Error updating username user', error);
-      },
-      complete: () => {
-        console.log('[UserComponent] Updating username completed');
       }
     });
   }
