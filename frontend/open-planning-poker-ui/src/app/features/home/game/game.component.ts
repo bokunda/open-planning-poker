@@ -206,6 +206,7 @@ export class GameComponent implements OnInit {
       next: ({ data }) => {
         if (data?.createTicket?.ticket) {
           this.ticket = data?.createTicket?.ticket;
+          this.votes = [];
           this.router.navigate([`/game/${gameId}/ticket/${this.ticket.id}`]);
         }
       }
@@ -251,6 +252,7 @@ export class GameComponent implements OnInit {
         return;
       }
       this.ticket = result.data?.onTicketCreated as Ticket;
+      this.votes = [];
       this.router.navigate([`/game/${gameId}/ticket/${this.ticket.id}`]);
     });
   }
@@ -310,45 +312,6 @@ export class GameComponent implements OnInit {
         this.votes = this.votes.map((vote, index) =>
           index === voteIndex ? { ...vote, value: result!.data!.onVoteCreatedOrUpdated!.value } : vote
         );
-      } else {
-        this.votes.push(result!.data!.onVoteCreatedOrUpdated);
-      }
-    });
-  }
-
-  private createOrUpdateVote(ticketId: string, value: string) {
-    this.apollo.mutate<Mutation, MutationCreateOrUpdateVoteArgs>({
-      mutation: CREATE_OR_UPDATE_VOTE,
-      variables: {
-        input: {
-          ticketId,
-          value
-      }}
-    }).subscribe({
-      next: ({ data }) => {
-        if (data?.createOrUpdateVote?.vote) {
-          const voteIndex = this.votes.findIndex(x => x && x.id === data!.createOrUpdateVote!.vote!.id);
-          if (voteIndex !== -1) {
-            this.votes[voteIndex].value = data.createOrUpdateVote.vote.value;
-          } else {
-            this.votes.push(data.createOrUpdateVote.vote);
-          }
-        }
-      }
-    });
-  }
-
-  private subscribeToVoteActions(ticketId: string): void {
-    this.apollo.subscribe<{ onVoteCreatedOrUpdated: any }>({
-      query: ON_VOTE_CREATED_OR_UPDATED,
-      variables: { ticketId },
-    }).subscribe((result) => {
-      if (!result) {
-        return;
-      }
-      const voteIndex = this.votes.findIndex(x => x && x.id === result!.data!.onVoteCreatedOrUpdated!.id);
-      if (voteIndex !== -1) {
-        this.votes[voteIndex].value = result!.data!.onVoteCreatedOrUpdated!.value;
       } else {
         this.votes.push(result!.data!.onVoteCreatedOrUpdated);
       }

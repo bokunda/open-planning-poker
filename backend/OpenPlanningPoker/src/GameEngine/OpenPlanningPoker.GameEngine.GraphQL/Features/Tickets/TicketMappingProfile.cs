@@ -7,5 +7,6 @@ public class TicketMappingProfile : Profile
         CreateMap<GetTicketResponse, Ticket>();
         CreateMap<CreateTicketResponse, Ticket>();
         CreateMap<UpdateTicketResponse, Ticket>();
+        CreateMap<GetTicketsItem, Ticket>();
     }
 }
