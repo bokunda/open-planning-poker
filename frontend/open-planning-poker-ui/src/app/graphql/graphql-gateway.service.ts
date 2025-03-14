@@ -81,6 +81,19 @@ export type CreateGamePayload = {
   game?: Maybe<Game>;
 };
 
+export type CreateOrUpdateVoteError = ApplicationError;
+
+export type CreateOrUpdateVoteInput = {
+  ticketId: Scalars['UUID']['input'];
+  value: Scalars['String']['input'];
+};
+
+export type CreateOrUpdateVotePayload = {
+  __typename?: 'CreateOrUpdateVotePayload';
+  errors?: Maybe<Array<CreateOrUpdateVoteError>>;
+  vote?: Maybe<Vote>;
+};
+
 export type CreateSettingsError = ApplicationError;
 
 export type CreateSettingsInput = {
@@ -106,19 +119,6 @@ export type CreateTicketPayload = {
   __typename?: 'CreateTicketPayload';
   errors?: Maybe<Array<CreateTicketError>>;
   ticket?: Maybe<Ticket>;
-};
-
-export type CreateVoteError = ApplicationError;
-
-export type CreateVoteInput = {
-  ticketId: Scalars['UUID']['input'];
-  value: Scalars['String']['input'];
-};
-
-export type CreateVotePayload = {
-  __typename?: 'CreateVotePayload';
-  errors?: Maybe<Array<CreateVoteError>>;
-  vote?: Maybe<Vote>;
 };
 
 export type DeleteTicketError = ApplicationError;
@@ -193,12 +193,12 @@ export type Mutation = {
   changeUsername: ChangeUsernamePayload;
   /** Creates a game, returns game details. */
   createGame: CreateGamePayload;
+  /** Creates or updates a vote. */
+  createOrUpdateVote: CreateOrUpdateVotePayload;
   /** Creates Game Settings. */
   createSettings: CreateSettingsPayload;
   /** Creates a ticket for given game. */
   createTicket: CreateTicketPayload;
-  /** Creates a vote. */
-  createVote: CreateVotePayload;
   /** Deletes a ticket for given game. */
   deleteTicket: DeleteTicketPayload;
   /** Join Game */
@@ -212,8 +212,6 @@ export type Mutation = {
   updateSettings: UpdateSettingsPayload;
   /** Updates a ticket for given game. */
   updateTicket: UpdateTicketPayload;
-  /** Updates a vote. */
-  updateVote: UpdateVotePayload;
 };
 
 
@@ -227,6 +225,11 @@ export type MutationCreateGameArgs = {
 };
 
 
+export type MutationCreateOrUpdateVoteArgs = {
+  input: CreateOrUpdateVoteInput;
+};
+
+
 export type MutationCreateSettingsArgs = {
   input: CreateSettingsInput;
 };
@@ -234,11 +237,6 @@ export type MutationCreateSettingsArgs = {
 
 export type MutationCreateTicketArgs = {
   input: CreateTicketInput;
-};
-
-
-export type MutationCreateVoteArgs = {
-  input: CreateVoteInput;
 };
 
 
@@ -269,11 +267,6 @@ export type MutationUpdateSettingsArgs = {
 
 export type MutationUpdateTicketArgs = {
   input: UpdateTicketInput;
-};
-
-
-export type MutationUpdateVoteArgs = {
-  input: UpdateVoteInput;
 };
 
 export type PingPayload = {
@@ -366,7 +359,8 @@ export type Subscription = {
   __typename?: 'Subscription';
   onPlayerJoined: BaseUserProfile;
   onPlayerLeave: BaseUserProfile;
-  onTicketCreated: BaseUserProfile;
+  onTicketCreated: Ticket;
+  onVoteCreatedOrUpdated: Vote;
 };
 
 
@@ -381,7 +375,12 @@ export type SubscriptionOnPlayerLeaveArgs = {
 
 
 export type SubscriptionOnTicketCreatedArgs = {
-  ticket: TicketInput;
+  gameId: Scalars['UUID']['input'];
+};
+
+
+export type SubscriptionOnVoteCreatedOrUpdatedArgs = {
+  ticketId: Scalars['UUID']['input'];
 };
 
 export type Ticket = {
@@ -390,13 +389,6 @@ export type Ticket = {
   gameId: Scalars['UUID']['output'];
   id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
-};
-
-export type TicketInput = {
-  description: Scalars['String']['input'];
-  gameId: Scalars['UUID']['input'];
-  id: Scalars['UUID']['input'];
-  name: Scalars['String']['input'];
 };
 
 export type TicketResult = ApplicationError | Ticket;
@@ -431,19 +423,6 @@ export type UpdateTicketPayload = {
   ticket?: Maybe<Ticket>;
 };
 
-export type UpdateVoteError = ApplicationError;
-
-export type UpdateVoteInput = {
-  id: Scalars['UUID']['input'];
-  value: Scalars['String']['input'];
-};
-
-export type UpdateVotePayload = {
-  __typename?: 'UpdateVotePayload';
-  errors?: Maybe<Array<UpdateVoteError>>;
-  vote?: Maybe<Vote>;
-};
-
 export type User = {
   __typename?: 'User';
   id: Scalars['UUID']['output'];
@@ -452,7 +431,6 @@ export type User = {
 
 export type Vote = {
   __typename?: 'Vote';
-  gameId: Scalars['UUID']['output'];
   id: Scalars['UUID']['output'];
   playerId: Scalars['UUID']['output'];
   value: Scalars['Int']['output'];

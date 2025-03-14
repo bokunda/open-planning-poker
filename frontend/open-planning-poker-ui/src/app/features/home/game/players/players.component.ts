@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { ApiCollectionOfGamePlayer } from '../../../../graphql/graphql-gateway.service';
+import { ApiCollectionOfGamePlayer, Vote } from '../../../../graphql/graphql-gateway.service';
 
 @Component({
   selector: 'app-players',
@@ -11,6 +11,7 @@ import { ApiCollectionOfGamePlayer } from '../../../../graphql/graphql-gateway.s
 export class PlayersComponent {
 
   @Input() players: ApiCollectionOfGamePlayer | undefined;
+  @Input() votes: Vote[] = [];
 
   @Output() onCreateNewTicket = new EventEmitter<void>();
   @Output() onVoteAgain = new EventEmitter<void>();
@@ -36,5 +37,10 @@ export class PlayersComponent {
 
   get leftPlayers() {
     return this.players!.items.slice(Math.ceil((3 * this.players!.items.length) / 4));
+  }
+
+  getVoteData(playerId: string): Vote | undefined {
+    console.log('votes!!', this.votes);
+    return this.votes.find(x => x.playerId === playerId);
   }
 }

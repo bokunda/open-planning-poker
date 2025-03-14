@@ -15,7 +15,9 @@
           [players]="players"
           [gameSettings]="game.settingsDetails"
           [ticket]="ticket"
+          [votes]="votes"
           (onCreateNewTicket)="handleCreateTicket()"
+          (OnVote)="handleVoteAction($event)"
           ></app-voting>
       </div>
 

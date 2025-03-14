@@ -37,13 +37,6 @@ export class HomeComponent implements OnInit {
         {
           this.registerUser();
         }
-      },
-      error: (error) => {
-        console.error('[HomeComponent] Error getting user', error);
-        this.registerUser();
-      },
-      complete: () => {
-        console.log('[HomeComponent] Get user request completed');
       }
     });
   }
@@ -56,16 +49,9 @@ export class HomeComponent implements OnInit {
     }).subscribe({
       next: ({ data }) => {
         if (data?.registerUser?.registerUserResponse?.token) {
-          console.log('[HomeComponent] New user created', JSON.stringify(data, null, 2));
           localStorage.setItem('token', data.registerUser.registerUserResponse.token);
           this.username = data.registerUser.registerUserResponse.userName;
         }
-      },
-      error: (error) => {
-        console.error('[HomeComponent] Error registering user', error);
-      },
-      complete: () => {
-        console.log('[HomeComponent] Registration request completed');
       }
     });
   }

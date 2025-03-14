@@ -9,6 +9,7 @@
     <div class="voting-players-wrapper center">
       <app-players
         [players]="players"
+        [votes]="votes"
         (onRevealCards)="onRevealCards.emit()"
         (onVoteAgain)="onVoteAgain.emit()"
         (onCreateNewTicket)="onCreateNewTicket.emit()">

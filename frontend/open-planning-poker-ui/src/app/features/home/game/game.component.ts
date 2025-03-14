@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Apollo, gql } from 'apollo-angular';
-import { ApiCollectionOfGamePlayer, BaseUserProfile, Game, GamePlayer, Mutation, MutationCreateGameArgs, MutationCreateTicketArgs, MutationJoinGameArgs, Query, Settings, Ticket } from '../../../graphql/graphql-gateway.service';
+import { Apollo } from 'apollo-angular';
+import { ApiCollectionOfGamePlayer, BaseUserProfile, Game, GamePlayer, Mutation, MutationCreateGameArgs, MutationCreateOrUpdateVoteArgs, MutationCreateTicketArgs, MutationJoinGameArgs, Ticket, Vote } from '../../../graphql/graphql-gateway.service';
 import { GET_GAME } from './gql/getGame.graphql';
 import { CREATE_GAME } from './gql/createGame.graphql';
 import { MatDialog } from '@angular/material/dialog';
@@ -14,6 +14,8 @@ import { CreateTicketDialogComponent } from './ticket/create-ticket/dialog/creat
 import { CREATE_TICKET } from './gql/createTicket.graphql';
 import { GET_TICKET } from './gql/getTicket.graphql';
 import { ON_TICKET_CREATED } from './gql/onTicketCreated.graphql';
+import { ON_VOTE_CREATED_OR_UPDATED } from './gql/onVoteCreatedOrUpdated.graphql';
+import { CREATE_OR_UPDATE_VOTE } from './gql/createVote.graphql';
 
 @Component({
   selector: 'app-game',
@@ -26,6 +28,7 @@ export class GameComponent implements OnInit {
   game: Game | undefined;
   ticket: Ticket | undefined;
   players: ApiCollectionOfGamePlayer | undefined;
+  votes: Vote[] = [];
 
   readonly dialog = inject(MatDialog);
   readonly router = inject(Router);
@@ -44,6 +47,7 @@ export class GameComponent implements OnInit {
 
         if (ticketId) {
           this.getTicket(ticketId);
+          this.subscribeToVoteActions(ticketId);
         }
       }
     });
@@ -66,6 +70,11 @@ export class GameComponent implements OnInit {
     this.openCreateTicketDialog();
   }
 
+  handleVoteAction(value: string) {
+    if (!this.ticket?.id) { return; }
+    this.createOrUpdateVote(this.ticket!.id, value);
+  }
+
   private getGame(id: string): void {
     this.apollo.watchQuery<{ game: Game }>({
       query: GET_GAME,
@@ -78,12 +87,6 @@ export class GameComponent implements OnInit {
           this.game = data?.game;
           this.joinGame(this.game.id);
         }
-      },
-      error: (error) => {
-        console.error('[GameComponent] Error getting game', error);
-      },
-      complete: () => {
-        console.log('[GameComponent] Get game request completed');
       }
     });
   }
@@ -99,12 +102,6 @@ export class GameComponent implements OnInit {
           this.joinGame(this.game.id);
           this.router.navigate([`/game/${this.game.id}`]);
         }
-      },
-      error: (error) => {
-        console.error('[GameComponent] Error creating a game', error);
-      },
-      complete: () => {
-        console.log('[GameComponent] Game Creation completed');
       }
     });
   }
@@ -210,12 +207,6 @@ export class GameComponent implements OnInit {
           this.ticket = data?.createTicket?.ticket;
           this.router.navigate([`/game/${gameId}/ticket/${this.ticket.id}`]);
         }
-      },
-      error: (error) => {
-        console.error('[GameComponent] Error creating a ticket', error);
-      },
-      complete: () => {
-        console.log('[GameComponent] Ticket Creation completed');
       }
     });
   }
@@ -231,12 +222,6 @@ export class GameComponent implements OnInit {
         if (data) {
           this.ticket = data?.ticket;
         }
-      },
-      error: (error) => {
-        console.error('[GameComponent] Error getting ticket', error);
-      },
-      complete: () => {
-        console.log('[GameComponent] Get ticket request completed');
       }
     });
   }
@@ -264,6 +249,46 @@ export class GameComponent implements OnInit {
         return;
       }
       this.ticket = result.data?.onTicketCreated as Ticket;
+    });
+  }
+
+  private createOrUpdateVote(ticketId: string, value: string) {
+    this.apollo.mutate<Mutation, MutationCreateOrUpdateVoteArgs>({
+      mutation: CREATE_OR_UPDATE_VOTE,
+      variables: {
+        input: {
+          ticketId,
+          value
+      }}
+    }).subscribe({
+      next: ({ data }) => {
+        if (data?.createOrUpdateVote?.vote) {
+          const voteIndex = this.votes.findIndex(x => x && x.id === data!.createOrUpdateVote!.vote!.id);
+          if (voteIndex !== -1) {
+            this.votes[voteIndex].value = data.createOrUpdateVote.vote.value;
+          } else {
+            this.votes.push(data.createOrUpdateVote.vote);
+          }
+        }
+      }
+    });
+  }
+
+  private subscribeToVoteActions(ticketId: string): void {
+    this.apollo.subscribe<{ onVoteCreatedOrUpdated: any }>({
+      query: ON_VOTE_CREATED_OR_UPDATED,
+      variables: { ticketId },
+    }).subscribe((result) => {
+      if (!result) {
+        return;
+      }
+
+      const voteIndex = this.votes.findIndex(x => x && x.id === result!.data!.onVoteCreatedOrUpdated!.id);
+      if (voteIndex !== -1) {
+        this.votes[voteIndex].value = result!.data!.onVoteCreatedOrUpdated!.value;
+      } else {
+        this.votes.push(result!.data!.onVoteCreatedOrUpdated);
+      }
     });
   }
 

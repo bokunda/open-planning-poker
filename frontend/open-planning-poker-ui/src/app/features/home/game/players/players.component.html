@@ -6,7 +6,7 @@
         <div class="player" *ngFor="let player of topPlayers">
           <span class="player-item-name">{{ player.name }}</span>
           <div class="player-item-vote-wrapper">
-            <span class="player-item-vote">{{ player.id[0]}}</span>
+            <span class="player-item-vote">{{ getVoteData(player.id)}}</span>
           </div>
         </div>
       </div>
@@ -16,7 +16,7 @@
         <div class="player" *ngFor="let player of leftPlayers">
           <span class="player-item-name">{{ player.name }}</span>
           <div class="player-item-vote-wrapper">
-            <span class="player-item-vote">{{ player.id[0]}}</span>
+            <span class="player-item-vote">{{ getVoteData(player.id)}}</span>
           </div>
         </div>
       </div>
@@ -32,7 +32,7 @@
       <div class="right-players">
         <div class="player" *ngFor="let player of rightPlayers">
           <div class="player-item-vote-wrapper">
-            <span class="player-item-vote">{{ player.id[0]}}</span>
+            <span class="player-item-vote">{{ getVoteData(player.id)}}</span>
           </div>
           <span class="player-item-name">{{ player.name }}</span>
         </div>
@@ -42,7 +42,7 @@
       <div class="bottom-players">
         <div class="player" *ngFor="let player of bottomPlayers">
           <div class="player-item-vote-wrapper">
-            <span class="player-item-vote">{{ player.id[0]}}</span>
+            <span class="player-item-vote">{{ getVoteData(player.id)}}</span>
           </div>
           <span class="player-item-name">{{ player.name }}</span>
         </div>
