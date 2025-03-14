@@ -37,6 +37,9 @@ export class HomeComponent implements OnInit {
         {
           this.registerUser();
         }
+      },
+      error: ({ error }) => {
+        this.registerUser();
       }
     });
   }

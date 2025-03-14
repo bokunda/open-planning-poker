@@ -1,6 +1,6 @@
 <div class="players-wrapper">
   <div class="players">
-    <div class="table-container">
+    <div class="table-container" *ngIf="players?.items">
       <!-- Top Players -->
       <div class="top-players">
         <div class="player" *ngFor="let player of topPlayers">
@@ -23,8 +23,9 @@
 
       <!-- Table (Rectangle) -->
       <div class="table-players">
-        <button mat-flat-button (click)="onRevealCards.emit()">Reveal the cards</button>
-        <button mat-flat-button (click)="onVoteAgain.emit()">Vote again</button>
+        <!-- For some of the future releases. -->
+        <!-- <button mat-flat-button (click)="onRevealCards.emit()">Reveal the cards</button> -->
+        <!-- <button mat-flat-button (click)="onVoteAgain.emit()">Vote again</button> -->
         <button mat-flat-button (click)="onCreateNewTicket.emit()">New Ticket</button>
       </div>
 
