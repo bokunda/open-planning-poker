@@ -1,44 +1,18 @@
 <div class="voting-history-wrapper">
-  <div class="voting-history">
+  <div class="voting-history" *ngIf="tickets">
     <h3>History</h3>
     <mat-accordion>
-      <mat-expansion-panel>
+      <mat-expansion-panel *ngFor="let ticket of tickets">
         <mat-expansion-panel-header>
           <mat-panel-title>
-            First Ticket
-            <a
-              mat-icon-button
-              href="https://google.com"
-              target="_blank"
-              matTooltip="Go To Ticket">
-              <mat-icon>link</mat-icon>
-            </a>
+            {{ticket.name}}
           </mat-panel-title>
-          <mat-panel-description> Average voting value: 5 </mat-panel-description>
+          <mat-panel-description>Average voting value: {{ticket.averageVotingValue}} </mat-panel-description>
         </mat-expansion-panel-header>
         <p>Voting result history.</p>
-        <p><strong>User 1:</strong> 3</p>
-        <p><strong>User 2:</strong> 1</p>
-        <p><strong>User 3:</strong> 5</p>
-      </mat-expansion-panel>
-      <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Second Random Ticket
-            <a
-              mat-icon-button
-              href="https://google.com"
-              target="_blank"
-              matTooltip="Go To Ticket">
-              <mat-icon>link</mat-icon>
-            </a>
-          </mat-panel-title>
-          <mat-panel-description> Average voting value: 3 </mat-panel-description>
-        </mat-expansion-panel-header>
-        <p>Voting result history.</p>
-        <p><strong>User 1:</strong> 3</p>
-        <p><strong>User 1:</strong> 2: 1</p>
-        <p><strong>User 1:</strong> 3: 5</p>
+        <span *ngFor="let vote of ticket?.votes?.items">
+          <p><strong>{{vote.playerName}}:</strong> {{vote.value}}</p>
+        </span>
       </mat-expansion-panel>
     </mat-accordion>
   </div>

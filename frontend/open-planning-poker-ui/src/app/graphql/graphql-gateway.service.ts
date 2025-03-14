@@ -13,6 +13,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** The `Decimal` scalar type represents a decimal floating-point number. */
+  Decimal: { input: any; output: any; }
   UUID: { input: any; output: any; }
 };
 
@@ -385,10 +387,12 @@ export type SubscriptionOnVoteCreatedOrUpdatedArgs = {
 
 export type Ticket = {
   __typename?: 'Ticket';
+  averageVotingValue: Scalars['Decimal']['output'];
   description: Scalars['String']['output'];
   gameId: Scalars['UUID']['output'];
   id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
+  votes: ApiCollectionOfVote;
 };
 
 export type TicketResult = ApplicationError | Ticket;
@@ -433,7 +437,8 @@ export type Vote = {
   __typename?: 'Vote';
   id: Scalars['UUID']['output'];
   playerId: Scalars['UUID']['output'];
-  value: Scalars['Int']['output'];
+  playerName: Scalars['String']['output'];
+  value: Scalars['String']['output'];
 };
 
 export type VotesResult = ApiCollectionOfVote | ApplicationError;

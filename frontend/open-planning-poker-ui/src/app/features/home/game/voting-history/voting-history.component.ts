@@ -1,12 +1,14 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
+import { Ticket } from '../../../../graphql/graphql-gateway.service';
 
 @Component({
   selector: 'app-voting-history',
   templateUrl: './voting-history.component.html',
   styleUrl: './voting-history.component.scss',
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class VotingHistoryComponent {
-  readonly panelOpenState = signal(false);
+
+  @Input() tickets: Ticket[] = [];
 }

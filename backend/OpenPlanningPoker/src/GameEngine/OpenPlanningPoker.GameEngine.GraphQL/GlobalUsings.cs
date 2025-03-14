@@ -32,3 +32,4 @@ global using OpenPlanningPoker.Shared.Services;
 global using HotChocolate.Subscriptions;
 global using StackExchange.Redis;
 global using OpenPlanningPoker.GameEngine.GraphQL.Features.Tickets;
+global using OpenPlanningPoker.GameEngine.GraphQL.Features.Votes;

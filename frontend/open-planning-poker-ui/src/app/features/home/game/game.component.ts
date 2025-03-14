@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { ApiCollectionOfGamePlayer, ApiCollectionOfVote, BaseUserProfile, Game, GamePlayer, Mutation, MutationCreateGameArgs, MutationCreateOrUpdateVoteArgs, MutationCreateTicketArgs, MutationJoinGameArgs, Ticket, Vote } from '../../../graphql/graphql-gateway.service';
+import { ApiCollectionOfGamePlayer, ApiCollectionOfTicket, ApiCollectionOfVote, BaseUserProfile, Game, GamePlayer, Mutation, MutationCreateGameArgs, MutationCreateOrUpdateVoteArgs, MutationCreateTicketArgs, MutationJoinGameArgs, Ticket, Vote } from '../../../graphql/graphql-gateway.service';
 import { GET_GAME } from './gql/getGame.graphql';
 import { CREATE_GAME } from './gql/createGame.graphql';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,6 +17,7 @@ import { ON_TICKET_CREATED } from './gql/onTicketCreated.graphql';
 import { ON_VOTE_CREATED_OR_UPDATED } from './gql/onVoteCreatedOrUpdated.graphql';
 import { CREATE_OR_UPDATE_VOTE } from './gql/createVote.graphql';
 import { GET_VOTES } from './gql/getVotes.graphql';
+import { GET_TICKETS } from './gql/getTickets.graphql';
 
 @Component({
   selector: 'app-game',
@@ -28,6 +29,7 @@ export class GameComponent implements OnInit {
 
   game: Game | undefined;
   ticket: Ticket | undefined;
+  tickets: Ticket[] = [];
   players: ApiCollectionOfGamePlayer | undefined;
   votes: Vote[] = [];
 
@@ -87,6 +89,7 @@ export class GameComponent implements OnInit {
         if (data) {
           this.game = data?.game;
           this.joinGame(this.game.id);
+          this.getTickets(this.game.id);
         }
       }
     });
@@ -207,6 +210,7 @@ export class GameComponent implements OnInit {
         if (data?.createTicket?.ticket) {
           this.ticket = data?.createTicket?.ticket;
           this.votes = [];
+          this.getTickets(gameId);
           this.router.navigate([`/game/${gameId}/ticket/${this.ticket.id}`]);
         }
       }
@@ -224,6 +228,7 @@ export class GameComponent implements OnInit {
         if (data) {
           this.ticket = data?.ticket;
           this.getVotes(this.ticket.id);
+          this.getTickets(this.ticket.gameId);
         }
       }
     });
@@ -314,6 +319,21 @@ export class GameComponent implements OnInit {
         );
       } else {
         this.votes.push(result!.data!.onVoteCreatedOrUpdated);
+      }
+    });
+  }
+
+  private getTickets(gameId: string): void {
+    this.apollo.watchQuery<{ tickets: ApiCollectionOfTicket }>({
+      query: GET_TICKETS,
+      variables: { gameId }
+    })
+    .valueChanges
+    .subscribe({
+      next: ({ data }) => {
+        if (data) {
+          this.tickets = data?.tickets?.items ?? [];
+        }
       }
     });
   }
