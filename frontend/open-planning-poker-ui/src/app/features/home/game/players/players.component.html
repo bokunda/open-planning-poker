@@ -1,6 +1,6 @@
 <div class="players-wrapper">
   <div class="players">
-    <div class="table-container">
+    <div class="table-container" *ngIf="players?.items">
       <!-- Top Players -->
       <div class="top-players">
         <div class="player" *ngFor="let player of topPlayers">

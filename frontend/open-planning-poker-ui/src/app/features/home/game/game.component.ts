@@ -249,6 +249,7 @@ export class GameComponent implements OnInit {
         return;
       }
       this.ticket = result.data?.onTicketCreated as Ticket;
+      this.router.navigate([`/game/${gameId}/ticket/${this.ticket.id}`]);
     });
   }
 
