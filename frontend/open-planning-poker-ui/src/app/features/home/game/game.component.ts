@@ -282,7 +282,6 @@ export class GameComponent implements OnInit {
       if (!result) {
         return;
       }
-
       const voteIndex = this.votes.findIndex(x => x && x.id === result!.data!.onVoteCreatedOrUpdated!.id);
       if (voteIndex !== -1) {
         this.votes[voteIndex].value = result!.data!.onVoteCreatedOrUpdated!.value;

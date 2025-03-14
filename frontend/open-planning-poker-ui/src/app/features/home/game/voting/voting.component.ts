@@ -6,7 +6,7 @@ import { ApiCollectionOfGamePlayer, Settings, SettingsDetailsResult, Ticket, Vot
   templateUrl: './voting.component.html',
   styleUrl: './voting.component.scss',
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class VotingComponent implements OnInit {
 

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ApiCollectionOfGamePlayer, Vote } from '../../../../graphql/graphql-gateway.service';
 
 @Component({
@@ -6,9 +6,11 @@ import { ApiCollectionOfGamePlayer, Vote } from '../../../../graphql/graphql-gat
   templateUrl: './players.component.html',
   styleUrl: './players.component.scss',
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
 })
-export class PlayersComponent {
+export class PlayersComponent implements OnInit {
+
+  ngOnInit(): void { }
 
   @Input() players: ApiCollectionOfGamePlayer | undefined;
   @Input() votes: Vote[] = [];
@@ -40,7 +42,6 @@ export class PlayersComponent {
   }
 
   getVoteData(playerId: string): Vote | undefined {
-    console.log('votes!!', this.votes);
     return this.votes.find(x => x.playerId === playerId);
   }
 }
