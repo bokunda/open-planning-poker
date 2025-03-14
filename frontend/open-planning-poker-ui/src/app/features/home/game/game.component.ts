@@ -316,4 +316,43 @@ export class GameComponent implements OnInit {
     });
   }
 
+  private createOrUpdateVote(ticketId: string, value: string) {
+    this.apollo.mutate<Mutation, MutationCreateOrUpdateVoteArgs>({
+      mutation: CREATE_OR_UPDATE_VOTE,
+      variables: {
+        input: {
+          ticketId,
+          value
+      }}
+    }).subscribe({
+      next: ({ data }) => {
+        if (data?.createOrUpdateVote?.vote) {
+          const voteIndex = this.votes.findIndex(x => x && x.id === data!.createOrUpdateVote!.vote!.id);
+          if (voteIndex !== -1) {
+            this.votes[voteIndex].value = data.createOrUpdateVote.vote.value;
+          } else {
+            this.votes.push(data.createOrUpdateVote.vote);
+          }
+        }
+      }
+    });
+  }
+
+  private subscribeToVoteActions(ticketId: string): void {
+    this.apollo.subscribe<{ onVoteCreatedOrUpdated: any }>({
+      query: ON_VOTE_CREATED_OR_UPDATED,
+      variables: { ticketId },
+    }).subscribe((result) => {
+      if (!result) {
+        return;
+      }
+      const voteIndex = this.votes.findIndex(x => x && x.id === result!.data!.onVoteCreatedOrUpdated!.id);
+      if (voteIndex !== -1) {
+        this.votes[voteIndex].value = result!.data!.onVoteCreatedOrUpdated!.value;
+      } else {
+        this.votes.push(result!.data!.onVoteCreatedOrUpdated);
+      }
+    });
+  }
+
 }
