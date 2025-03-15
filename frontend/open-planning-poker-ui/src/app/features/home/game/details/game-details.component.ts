@@ -17,13 +17,9 @@ export class GameDetailsComponent {
 
   private snackBar = inject(MatSnackBar);
 
-  copyToClipboard(gameId: string): void {
-
-    const baseUrl = window.location.origin;
-    const gameUrl = `${baseUrl}/game/${gameId}`;
-
+  copyToClipboard(): void {
     navigator.clipboard
-      .writeText(gameUrl)
+      .writeText(window.location.href)
       .then(() => {
         this.snackBar.open('Game Id copied to clipboard successfully!', OPP_SNACKBAR_MODAL_LABEL_CLOSE, {
           duration: OPP_SNACKBAR_DURATION_DEFAULT,
