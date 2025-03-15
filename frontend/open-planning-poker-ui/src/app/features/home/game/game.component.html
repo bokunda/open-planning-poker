@@ -20,9 +20,16 @@
           (OnVote)="handleVoteAction($event)"
           ></app-voting>
       </div>
+
       <div class="center">
-        <div class="full-width">
-          <app-voting-history [tickets]="tickets"></app-voting-history>
+        <div class="full-width" >
+          <div class="display-voting-history">
+            <button mat-stroked-button (click)="onDisplayVoteHistoryClick()">Display History</button>
+          </div>
+          <app-voting-history
+            *ngIf="displayVoteHistory"
+            [tickets]="tickets"
+          ></app-voting-history>
         </div>
       </div>
     </div>

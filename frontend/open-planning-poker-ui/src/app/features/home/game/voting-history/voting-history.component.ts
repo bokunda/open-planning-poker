@@ -6,7 +6,7 @@ import { Ticket } from '../../../../graphql/graphql-gateway.service';
   templateUrl: './voting-history.component.html',
   styleUrl: './voting-history.component.scss',
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VotingHistoryComponent {
 
