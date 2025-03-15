@@ -12,7 +12,7 @@
         [votes]="votes"
         (onRevealCards)="onRevealCards.emit()"
         (onVoteAgain)="onVoteAgain.emit()"
-        (onCreateNewTicket)="onCreateNewTicket.emit()">
+        (onCreateNewTicket)="handleOnCreateNewTicket()">
       </app-players>
     </div>
   </div>
@@ -23,6 +23,7 @@
         mat-raised-button
         color="primary"
         class="card-button"
+        [disabled]="ticket?.id == null"
         [ngClass]="{'selected': selectedOption === voteOption}"
         (click)="selectOption(voteOption)">
         {{ voteOption }}

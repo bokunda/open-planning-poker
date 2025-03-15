@@ -35,4 +35,9 @@ export class VotingComponent implements OnInit {
     this.selectedOption = option;
     this.OnVote.emit(option);
   }
+
+  handleOnCreateNewTicket() {
+    this.selectOption('');
+    this.onCreateNewTicket.emit();
+  }
 }
