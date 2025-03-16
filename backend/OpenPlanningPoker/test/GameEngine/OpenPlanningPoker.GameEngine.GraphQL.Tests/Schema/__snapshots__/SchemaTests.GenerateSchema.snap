@@ -19,7 +19,13 @@ type ApiCollectionOfVote {
   totalCount: Int!
 }
 
+type BaseUserProfile {
+  id: UUID!
+  userName: String!
+}
+
 type Game {
+  settingsDetails: Settings!
   id: UUID!
   name: String!
   description: String!
@@ -47,19 +53,17 @@ type Mutation {
   "Dummy health-check mutation."
   ping: String!
   "Creates Game Settings."
-  createSettings(gameId: UUID! votingTime: Int! isBreakAllowed: Boolean!): Settings!
+  createSettings(gameId: UUID! deckSetup: String): Settings!
   "Updates Game Settings."
-  updateSettings(id: UUID! gameId: UUID! votingTime: Int! isBreakAllowed: Boolean!): Settings!
+  updateSettings(id: UUID! gameId: UUID! deckSetup: String): Settings!
   "Creates a ticket for given game."
   createTicket(gameId: UUID! name: String! description: String!): Ticket!
   "Updates a ticket for given game."
   updateTicket(id: UUID! name: String! description: String!): Ticket!
   "Deletes a ticket for given game."
   deleteTicket(id: UUID!): Ticket!
-  "Creates a vote."
-  createVote(ticketId: UUID! value: Int!): Vote!
-  "Updates a vote."
-  updateVote(id: UUID! value: Int!): Vote!
+  "Creates or updates a vote."
+  createOrUpdateVote(ticketId: UUID! value: String!): Vote!
 }
 
 "Base Game Engine query."
@@ -85,16 +89,19 @@ type Query {
 type Settings {
   id: UUID!
   gameId: UUID!
-  votingTime: Int!
-  isBreakAllowed: Boolean!
+  deckSetup: String!
 }
 
 type Subscription {
-  onPlayerJoined: UUID!
-  onPlayerLeave: UUID!
+  onPlayerJoined(gameId: UUID!): BaseUserProfile!
+  onPlayerLeave(gameId: UUID!): BaseUserProfile!
+  onTicketCreated(gameId: UUID!): Ticket!
+  onVoteCreatedOrUpdated(ticketId: UUID!): Vote!
 }
 
 type Ticket {
+  votes: ApiCollectionOfVote!
+  averageVotingValue: Decimal!
   id: UUID!
   gameId: UUID!
   name: String!
@@ -102,13 +109,16 @@ type Ticket {
 }
 
 type Vote {
+  playerName: String!
   id: UUID!
-  gameId: UUID!
   playerId: UUID!
-  value: Int!
+  value: String!
 }
 
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
 directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
+
+"The `Decimal` scalar type represents a decimal floating-point number."
+scalar Decimal
 
 scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")

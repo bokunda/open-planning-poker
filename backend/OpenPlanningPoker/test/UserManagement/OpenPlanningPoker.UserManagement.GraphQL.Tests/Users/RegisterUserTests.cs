@@ -11,7 +11,6 @@ public class RegisterUserTests
             registerUserResponse {
               id
               userName
-              token
               __typename
             }
             errors {

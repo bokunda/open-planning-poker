@@ -6,7 +6,7 @@ import { ApiCollectionOfGamePlayer, Vote } from '../../../../graphql/graphql-gat
   templateUrl: './players.component.html',
   styleUrl: './players.component.scss',
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class PlayersComponent implements OnInit {
 

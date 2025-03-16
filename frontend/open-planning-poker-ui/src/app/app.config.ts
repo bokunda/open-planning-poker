@@ -4,7 +4,7 @@ import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpLink } from 'apollo-angular/http';
 import { provideApollo } from 'apollo-angular';
-import { ApolloLink, InMemoryCache, split } from '@apollo/client/core';
+import { ApolloLink, DefaultOptions, InMemoryCache, split } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
 import { gqlGateway, gqlGatewayWss } from './shared/constants';
 import { createClient } from 'graphql-ws';
@@ -46,6 +46,17 @@ export const appConfig: ApplicationConfig = {
 
       const http = httpLink.create({ uri: gqlGateway });
 
+      const defaultOptions: DefaultOptions = {
+        watchQuery: {
+          fetchPolicy: 'no-cache',
+          errorPolicy: 'ignore',
+        },
+        query: {
+          fetchPolicy: 'no-cache',
+          errorPolicy: 'all',
+        },
+      }
+
       const link = split(
         ({ query }) => {
           const definition = getMainDefinition(query);
@@ -61,6 +72,7 @@ export const appConfig: ApplicationConfig = {
       return {
         link,
         cache: new InMemoryCache(),
+        defaultOptions: defaultOptions
       };
     }),
   ],

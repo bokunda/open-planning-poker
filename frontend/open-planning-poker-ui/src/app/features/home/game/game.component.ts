@@ -32,7 +32,6 @@ export class GameComponent implements OnInit {
   tickets: Ticket[] = [];
   players: ApiCollectionOfGamePlayer | undefined;
   votes: Vote[] = [];
-  displayVoteHistory = false;
 
   readonly dialog = inject(MatDialog);
   readonly router = inject(Router);
@@ -77,11 +76,6 @@ export class GameComponent implements OnInit {
   handleVoteAction(value: string) {
     if (!this.ticket?.id) { return; }
     this.createOrUpdateVote(this.ticket!.id, value);
-  }
-
-  onDisplayVoteHistoryClick(): void {
-    this.displayVoteHistory = true;
-    this.getTickets(this.game?.id);
   }
 
   private getGame(id: string): void {
@@ -216,6 +210,7 @@ export class GameComponent implements OnInit {
         if (data?.createTicket?.ticket) {
           this.ticket = data?.createTicket?.ticket;
           this.votes = [];
+          this.subscribeToPlayerJoined(gameId);
           this.getTickets(gameId);
           this.router.navigate([`/game/${gameId}/ticket/${this.ticket.id}`]);
         }
