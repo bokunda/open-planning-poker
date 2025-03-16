@@ -216,6 +216,7 @@ export class GameComponent implements OnInit {
         if (data?.createTicket?.ticket) {
           this.ticket = data?.createTicket?.ticket;
           this.votes = [];
+          this.subscribeToPlayerJoined(gameId);
           this.getTickets(gameId);
           this.router.navigate([`/game/${gameId}/ticket/${this.ticket.id}`]);
         }
