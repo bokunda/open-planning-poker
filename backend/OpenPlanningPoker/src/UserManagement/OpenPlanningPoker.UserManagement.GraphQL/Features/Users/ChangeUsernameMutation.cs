@@ -19,6 +19,7 @@ public class ChangeUsernameMutation
     public async Task<FieldResult<bool, ApplicationError>> ChangeUsernameAsync(
         [Service] ICurrentUserProvider currentUserProvider,
         [Service] IUserService userService,
+        [Service] ILogger<ChangeUsernameMutation> logger,
         [Required] string username,
         CancellationToken cancellationToken = default)
     {
@@ -31,6 +32,8 @@ public class ChangeUsernameMutation
 
         var currentUserId = $"{currentUserProvider.Id}";
         await userService.UpdateAsync(currentUserId, username, cancellationToken);
+
+        logger.LogInformation("Username changed for user {userId} to {newUsername}", currentUserId, username);
 
         return true;
     }

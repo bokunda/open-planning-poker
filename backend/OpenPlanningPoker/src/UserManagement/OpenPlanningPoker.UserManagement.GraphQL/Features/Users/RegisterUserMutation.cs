@@ -22,6 +22,7 @@ public class RegisterUserMutation
         [Service] IUsernameGeneratorService usernameGeneratorService,
         [Service] IUserService userService,
         [Service] IConfiguration configuration,
+        [Service] ILogger<RegisterUserMutation> logger,
         string? username,
         CancellationToken cancellationToken = default)
     {
@@ -43,6 +44,8 @@ public class RegisterUserMutation
 
         var token = GenerateToken(registeredUser.Id.ToString(), configuration["Authentication:Secret"]!);
         registeredUser.SetToken(token);
+
+        logger.LogInformation("User registered with id: {userId} and username: {newUsername}", user.Id, username);
 
         return registeredUser;
     }

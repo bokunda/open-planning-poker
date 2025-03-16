@@ -19,6 +19,7 @@ services:
 
   openplanningpoker.fusion.gateway:
     image: ${DOCKER_REGISTRY-}openplanningpokerfusiongateway
+    container_name: Openplanningpoker.Fusion.Gateway
     build:
       context: .
       dockerfile: src/Gateway/OpenPlanningPoker.Fusion.Gateway/Dockerfile
