@@ -14,8 +14,7 @@ public class Ticket
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(new GetVotesQuery(Id), cancellationToken);
-        Votes = mapper.Map<ApiCollection<Vote>>(result.Value);
-        return Votes;
+        return mapper.Map<ApiCollection<Vote>>(result.Value);
     }
 
     public async Task<decimal> GetAverageVotingValue(
@@ -23,9 +22,9 @@ public class Ticket
         [Service] IMapper mapper,
         CancellationToken cancellationToken)
     {
-        Votes ??= await GetVotes(sender, mapper, cancellationToken);
+        var votes = await GetVotes(sender, mapper, cancellationToken);
 
-        var rawVotes = Votes.Items.Select(v => v.Value);
+        var rawVotes = votes.Items.Select(v => v.Value);
         var total = 0M;
         var count = 0;
 
@@ -39,6 +38,8 @@ public class Ticket
             total += parsedVote;
             count++;
         }
-        return count > 0 ? total / count : 0;
+        return count > 0
+            ? decimal.Round(total /count, 2) 
+            : 0;
     }
 }
