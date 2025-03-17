@@ -17,6 +17,7 @@
     <PackageVersion Include="HotChocolate.AspNetCore" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.AspNetCore.Authorization" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.AspNetCore.CommandLine" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.Diagnostics" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Execution" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Execution.Abstractions" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Fetching" Version="15.0.3" />
@@ -46,8 +47,18 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.11.2" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.2" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.11.2-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Zipkin" Version="1.11.2" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.11.2" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.11.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.11.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Process" Version="1.11.0-beta.2" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.11.1" />
     <PackageVersion Include="Polly" Version="8.5.2" />
+    <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageVersion Include="Serilog.Sinks.Grafana.Loki" Version="8.3.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="Snapshooter.Xunit" Version="1.0.1" />
     <PackageVersion Include="xunit" Version="2.9.3" />
