@@ -18,6 +18,7 @@
     <PackageReference Include="HotChocolate.AspNetCore" />
     <PackageReference Include="HotChocolate.AspNetCore.CommandLine" />
     <PackageReference Include="HotChocolate.AspNetCore.Authorization" />
+    <PackageReference Include="HotChocolate.Diagnostics" />
     <PackageReference Include="HotChocolate.Types" />
     <PackageReference Include="HotChocolate.Types.Analyzers">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -28,6 +29,8 @@
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
     <PackageReference Include="Polly" />
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Sinks.Grafana.Loki" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,8 @@
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
+
 builder.AddGraphQLServices(builder.Configuration);
 builder.Services.AddHealthCheckServices(builder.Configuration);
 builder.Services.AddAuthentication(builder.Configuration);
@@ -13,6 +16,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 var corsConfig = new CorsConfiguration();
 builder.Configuration.GetSection("Cors").Bind(corsConfig);
 builder.Services.AddCors(corsConfig.PolicyName, corsConfig.AllowedOrigins);
+
+builder.Services.AddOpenTelemetry(builder.Configuration);
 
 var app = builder.Build();
 

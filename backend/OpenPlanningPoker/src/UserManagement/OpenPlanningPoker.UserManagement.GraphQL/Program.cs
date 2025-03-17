@@ -1,5 +1,8 @@
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
+
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 builder.Services.AddFluentValidationAutoValidation();
 
@@ -27,6 +30,8 @@ builder
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddOpenTelemetry(builder.Configuration);
+
 var corsConfig = new CorsConfiguration();
 builder.Configuration.GetSection("Cors").Bind(corsConfig);
 builder.Services.AddCors(corsConfig.PolicyName, corsConfig.AllowedOrigins);
@@ -39,6 +44,8 @@ if (args.Contains("schema"))
     app.RunWithGraphQLCommands(args);
     return;
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseAuthentication();
 app.UseAuthorization();

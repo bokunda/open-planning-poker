@@ -3,6 +3,9 @@ const string FusionConfigFileName = "gateway.fgp";
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
+
 builder.Services.AddHttpClient(HttpClientName)
     .AddHttpMessageHandler<HeaderPropagationHandler>();
 
@@ -20,6 +23,8 @@ builder.Services
     .ConfigureFromFile(FusionConfigFileName)
     // Note: AllowQueryPlan is enabled for demonstration purposes. Disable in production environments.
     .ModifyFusionOptions(x => x.AllowQueryPlan = true);
+
+builder.Services.AddOpenTelemetry(builder.Configuration);
 
 var app = builder.Build();
 
