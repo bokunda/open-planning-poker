@@ -44,6 +44,7 @@ services:
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
+    restart: unless-stopped
     networks:
       - monitoring
 
@@ -52,6 +53,7 @@ services:
     volumes:
       - /var/log:/var/log
     command: -config.file=/etc/promtail/config.yml
+    restart: unless-stopped
     networks:
       - monitoring
 
@@ -82,6 +84,7 @@ services:
     image: grafana/grafana:latest
     ports:
       - "3000:3000"
+    restart: unless-stopped
     networks:
       - monitoring
   node_exporter:
