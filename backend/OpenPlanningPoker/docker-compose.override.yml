@@ -4,6 +4,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://162.55.213.9:3100
     ports:
       - "9090:8080"
 
@@ -11,6 +12,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://162.55.213.9:3100
     ports:
       - "9091:8080"
 
@@ -19,6 +21,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://162.55.213.9:3100
     ports:
       - 10010:8080
       - 10011:8081
