@@ -18,10 +18,6 @@ jobs:
         with:
           dotnet-version: 9.0.x
 
-      - name: List files to verify appsettings.json location
-        run: |
-          ls -R    
-
       - name: Set connection string in appsettings.json
         run: |
           # Replace placeholders in appsettings.json with GitHub secrets
@@ -31,19 +27,34 @@ jobs:
               .Serilog.WriteTo[0].Args.uri = "${{ secrets.LOKI_URL }}"
               ' ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/appsettings.json > temp.json && mv temp.json ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/appsettings.json
 
-      - name: Log in to GitHub Docker Registry
-        uses: docker/login-action@v2
-        with:
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.PACKAGES_SECRET }}
-
       - name: Build Docker image
         run: |
           docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest -f src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
 
-      - name: Push Docker image to GitHub Docker Registry
+      - name: Save Docker image as tar
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
+          docker save -o openplanningpokerusermanagementgraphql.tar openplanningpokerusermanagementgraphql:latest
+
+      - name: Transfer image to the server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          script: |
+            mkdir -p /tmp/docker-images
+            scp -o StrictHostKeyChecking=no openplanningpokerusermanagementgraphql.tar ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/tmp/docker-images/
+
+      - name: Load Docker image on the server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          script: |
+            docker load -i /tmp/docker-images/openplanningpokerusermanagementgraphql.tar
 
       - name: Deploy using SSH
         uses: appleboy/ssh-action@v1
