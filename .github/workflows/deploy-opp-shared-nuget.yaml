@@ -1,0 +1,32 @@
+name: Publish Open Planning Poker NuGet Package
+run-name: "Publishing Open Planning Poker NuGet Package"
+on: 
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  publish-open-planning-poker-nuget:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: bokunda/open-planning-poker-shared
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build project
+        run: dotnet build -c Release --no-restore
+
+      - name: Pack NuGet package
+        run: dotnet pack -c Release --no-build --output .
+
+      - name: Publish to NuGet.org
+        run: dotnet nuget push "*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ secrets.NUGET_ORG_API_KEY }} --skip-duplicate
