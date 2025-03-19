@@ -15,5 +15,3 @@ jobs:
   opp-gateway:
     needs: [opp-user-management, opp-game-engine]
     uses: ./.github/workflows/deploy-opp-gateway.yaml
-    with:
-      param5: value5
