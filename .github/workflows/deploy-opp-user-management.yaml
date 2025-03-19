@@ -1,0 +1,58 @@
+name: Deploy OPP User Management
+run-name: "Deploying Open Planning Poker User Management to server"
+on: 
+  push:
+    branches:
+      - main
+      - deploy-um
+  workflow_dispatch:
+jobs:
+  deploy-opp-user-management:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Set connection string in appsettings.json
+        run: |
+          # Replace placeholders in appsettings.json with GitHub secrets
+          jq '.ConnectionStrings.Cache = "${{ secrets.REDIS_HOST }}" |
+              .Cors.AllowedOrigins = [${{ secrets.OPP_DEFAULT_CORS }}] |
+              .Otel.Endpoint = "${{ secrets.OTEL_ENDPOINT }}" |
+              .Serilog.WriteTo[0].Args.uri = "${{ secrets.LOKI_URL }}"' appsettings.json > temp.json && mv temp.json appsettings.json
+
+      - name: Log in to GitHub Docker Registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.PACKAGES_SECRET }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest -f src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
+
+      - name: Push Docker image to GitHub Docker Registry
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
+
+      - name: Deploy using SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
+            docker rm -f OpenPlanningPoker.UserManagement.GraphQL || true
+            docker run -d \
+              --name OpenPlanningPoker.UserManagement.GraphQL \
+              -e ASPNETCORE_ENVIRONMENT=Development \
+              -e ASPNETCORE_HTTP_PORTS=8080 \
+              -e OTEL_EXPORTER_OTLP_ENDPOINT=http://162.55.213.9:3100 \
+              -p 9091:8080 \
+              ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
