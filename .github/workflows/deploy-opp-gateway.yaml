@@ -55,7 +55,6 @@ jobs:
 
       - name: Compose Schema
         run: |
-          pwd
           cd backend/OpenPlanningPoker/src/Gateway/OpenPlanningPoker.Fusion.Gateway
           fusion compose -p gateway.fgp -s ../../UserManagement/OpenPlanningPoker.UserManagement.GraphQL/UserManagement.fsp
           fusion compose -p gateway.fgp -s ../../GameEngine/OpenPlanningPoker.GameEngine.GraphQL/GameEngine.fsp
