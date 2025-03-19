@@ -43,7 +43,7 @@ jobs:
 
       - name: Pack Game Engine subgraph
         run: |
-          cd backend/OpenPlanningPoker/src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL
+          cd ../../GameEngine/OpenPlanningPoker.GameEngine.GraphQL
           jq '.http.baseAddress = "${{ vars.OPP_GE_SUBGRAPH_URL }}"' subgraph-config.json > temp.json && mv temp.json subgraph-config.json
           dotnet run -- schema export --output schema.graphql
           fusion subgraph pack
