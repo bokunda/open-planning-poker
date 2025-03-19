@@ -1,12 +1,13 @@
-name: Deploy OPP User Management
-run-name: "Deploying Open Planning Poker User Management to server"
+name: Deploy OPP Game Engine
+run-name: "Deploying Open Planning Poker Game Engine to server"
 on: 
   push:
     branches:
       - main
+      - ge-deployment
   workflow_dispatch:
 jobs:
-  deploy-opp-user-management:
+  deploy-opp-game-engine:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -23,11 +24,12 @@ jobs:
       - name: Set connection string in appsettings.json
         run: |
           # Replace placeholders in appsettings.json with GitHub secrets
-          jq '.ConnectionStrings.Cache = "${{ vars.REDIS_HOST }}" |
+          jq '.ConnectionStrings.Database = "Host=${{ vars.OPP_DB_HOST }};Port=${{ vars.OPP_DB_PORT }};Database=${{ vars.OPP_DB_GE_NAME }};Username=${{ vars.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }};" |
+              .ConnectionStrings.Cache = "${{ vars.REDIS_HOST }}" |
               .Cors.AllowedOrigins = ${{ vars.OPP_DEFAULT_CORS }} |
               .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}" |
               .Serilog.WriteTo[0].Args.uri = "${{ vars.LOKI_URL }}"
-              ' ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/appsettings.json > temp.json && mv temp.json ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/appsettings.json
+              ' ./backend/OpenPlanningPoker/src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL/appsettings.json > temp.json && mv temp.json ./backend/OpenPlanningPoker/src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL/appsettings.json
       
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
@@ -35,13 +37,13 @@ jobs:
       - name: Build Docker image
         run: |
           cd backend/OpenPlanningPoker
-          docker build -t openplanningpokerusermanagementgraphql:latest -f ./src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
+          docker build -t openplanningpokergameenginegraphql:latest -f ./src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL/Dockerfile .
 
       - name: Build and push Docker image
         run: |
           cd backend/OpenPlanningPoker
-          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest -f ./src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
-          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:latest -f ./src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL/Dockerfile .
+          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:latest
 
       - name: Deploy using SSH
         uses: appleboy/ssh-action@v1
@@ -51,12 +53,12 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
-            docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
-            docker rm -f OpenPlanningPoker.UserManagement.GraphQL || true
+            docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:latest
+            docker rm -f OpenPlanningPoker.GameEngine.GraphQL || true
             docker run -d \
-              --name OpenPlanningPoker.UserManagement.GraphQL \
+              --name OpenPlanningPoker.GameEngine.GraphQL \
               -e ASPNETCORE_ENVIRONMENT=Development \
               -e ASPNETCORE_HTTP_PORTS=8080 \
               -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
-              -p 9090:8080 \
-              ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
+              -p 9091:8080 \
+              ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:latest
