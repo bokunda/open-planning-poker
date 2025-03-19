@@ -26,36 +26,20 @@ jobs:
               .Otel.Endpoint = "${{ secrets.OTEL_ENDPOINT }}" |
               .Serilog.WriteTo[0].Args.uri = "${{ secrets.LOKI_URL }}"
               ' ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/appsettings.json > temp.json && mv temp.json ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/appsettings.json
+      
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker image
         run: |
           cd backend/OpenPlanningPoker
           docker build -t openplanningpokerusermanagementgraphql:latest -f ./src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
 
-      - name: Save Docker image as tar
+      - name: Build and push Docker image
         run: |
-          docker save -o openplanningpokerusermanagementgraphql.tar openplanningpokerusermanagementgraphql:latest
-
-      - name: Transfer image to the server
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: 22
-          script: |
-            mkdir -p /tmp/docker-images
-            scp -o StrictHostKeyChecking=no ./home/runner/work/open-planning-poker/open-planning-poker/openplanningpokerusermanagementgraphql.tar ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/tmp/
-
-      - name: Load Docker image on the server
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: 22
-          script: |
-            docker load -i /tmp/docker-images/openplanningpokerusermanagementgraphql.tar
+          cd backend/OpenPlanningPoker
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest -f ./src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
+          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
 
       - name: Deploy using SSH
         uses: appleboy/ssh-action@v1
@@ -64,6 +48,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
+            docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
+            docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
             docker rm -f OpenPlanningPoker.UserManagement.GraphQL || true
             docker run -d \
               --name OpenPlanningPoker.UserManagement.GraphQL \
@@ -71,4 +57,4 @@ jobs:
               -e ASPNETCORE_HTTP_PORTS=8080 \
               -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ secrets.LOKI_URL }} \
               -p 9091:8080 \
-              openplanningpokerusermanagementgraphql:latest
+              ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
