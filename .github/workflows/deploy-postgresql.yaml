@@ -12,8 +12,8 @@ jobs:
       - name: Deploy using SSH
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             docker pull postgres:15.5
