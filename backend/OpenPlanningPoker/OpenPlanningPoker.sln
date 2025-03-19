@@ -66,6 +66,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{C300
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanningPoker.Fusion.Gateway", "src\Gateway\OpenPlanningPoker.Fusion.Gateway\OpenPlanningPoker.Fusion.Gateway.csproj", "{55A26181-0038-45C3-B7E9-D3A92ED512C4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{CAD67C32-BD0B-4852-8AC7-F53285D79BA1}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\.github\workflows\deploy-opp-shared-nuget.yaml = ..\..\.github\workflows\deploy-opp-shared-nuget.yaml
+		..\..\.github\workflows\deploy-postgresql.yaml = ..\..\.github\workflows\deploy-postgresql.yaml
+		..\..\.github\workflows\deploy-redis.yaml = ..\..\.github\workflows\deploy-redis.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +152,7 @@ Global
 		{D29EB918-B1CC-4EA3-A825-5C15308B28DE} = {6A57371B-4DC1-4E5C-9F90-1BE5DAC1115B}
 		{C30012E6-FAF0-4C9C-BC64-B52165FCD130} = {6A57371B-4DC1-4E5C-9F90-1BE5DAC1115B}
 		{55A26181-0038-45C3-B7E9-D3A92ED512C4} = {C30012E6-FAF0-4C9C-BC64-B52165FCD130}
+		{CAD67C32-BD0B-4852-8AC7-F53285D79BA1} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3C39E3DC-BD48-41A1-841B-A44CB8223F2C}
