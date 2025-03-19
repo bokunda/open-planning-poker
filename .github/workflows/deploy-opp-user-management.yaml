@@ -27,7 +27,7 @@ jobs:
           jq '.ConnectionStrings.Cache = "${{ secrets.REDIS_HOST }}" |
               .Cors.AllowedOrigins = ${{ secrets.OPP_DEFAULT_CORS }} |
               .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}" |
-              .Serilog.WriteTo[0].Args.uri = "${{ secrets.LOKI_URL }}"
+              .Serilog.WriteTo[0].Args.uri = "${{ vars.LOKI_URL }}"
               ' ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/appsettings.json > temp.json && mv temp.json ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/appsettings.json
       
       - name: Log in to GitHub Container Registry
@@ -58,6 +58,6 @@ jobs:
               --name OpenPlanningPoker.UserManagement.GraphQL \
               -e ASPNETCORE_ENVIRONMENT=Development \
               -e ASPNETCORE_HTTP_PORTS=8080 \
-              -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ secrets.LOKI_URL }} \
+              -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
               -p 9091:8080 \
               ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
