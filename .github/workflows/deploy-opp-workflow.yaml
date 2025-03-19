@@ -1,4 +1,5 @@
 name: Deploy OPP services
+run-name: "Deploying Open Planning Poker services to server"
 on:
   push:
     branches:
