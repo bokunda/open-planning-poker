@@ -1,0 +1,25 @@
+name: Deploy Redis
+run-name: "Deploying Redis to server"
+on: 
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  deploy-redis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy using SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            docker pull redis:latest
+            docker rm -f OpenPlanningPoker.Cache || true
+            docker run -d --name OpenPlanningPoker.Cache -p 6379:6379 redis:latest
+            docker system prune -f
