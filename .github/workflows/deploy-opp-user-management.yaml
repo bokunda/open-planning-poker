@@ -29,6 +29,7 @@ jobs:
 
       - name: Build Docker image
         run: |
+          cd backend
           pwd
           ls
           cd backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL
