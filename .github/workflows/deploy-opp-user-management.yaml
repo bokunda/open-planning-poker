@@ -22,7 +22,7 @@ jobs:
         run: |
           # Replace placeholders in appsettings.json with GitHub secrets
           jq '.ConnectionStrings.Cache = "${{ secrets.REDIS_HOST }}" |
-              .Cors.AllowedOrigins = [${{ secrets.OPP_DEFAULT_CORS }}] |
+              .Cors.AllowedOrigins = ${{ secrets.OPP_DEFAULT_CORS }} |
               .Otel.Endpoint = "${{ secrets.OTEL_ENDPOINT }}" |
               .Serilog.WriteTo[0].Args.uri = "${{ secrets.LOKI_URL }}"' appsettings.json > temp.json && mv temp.json appsettings.json
 
