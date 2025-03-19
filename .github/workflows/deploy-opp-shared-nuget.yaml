@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - opp-shared-nuget-deployment
   workflow_dispatch:
 jobs:
   publish-open-planning-poker-nuget:
