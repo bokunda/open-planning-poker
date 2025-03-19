@@ -6,10 +6,10 @@ on:
       - main
       - op-gw
     workflow_dispatch:
+permissions:
+    contents: read
+    packages: write
 jobs:
-  permissions:
-      contents: read
-      packages: write
   opp-user-management:
     name: Deploy OPP User Management
     uses: ./.github/workflows/deploy-opp-user-management.yaml
