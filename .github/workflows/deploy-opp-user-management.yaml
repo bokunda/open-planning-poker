@@ -58,5 +58,5 @@ jobs:
               -e ASPNETCORE_ENVIRONMENT=Development \
               -e ASPNETCORE_HTTP_PORTS=8080 \
               -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
-              -p 9091:8080 \
+              -p 9090:8080 \
               ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
