@@ -49,6 +49,7 @@ jobs:
           script: |
             pwd
             ls -la
+            mkdir /tmp/docker-images/
             scp -o StrictHostKeyChecking=no openplanningpokerusermanagementgraphql.tar ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/tmp/
 
       - name: Load Docker image on the server
