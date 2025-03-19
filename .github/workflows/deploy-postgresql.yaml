@@ -20,8 +20,8 @@ jobs:
             docker rm -f OpenPlanningPoker.Db || true
             docker run -d \
               --name OpenPlanningPoker.Db \
-              -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
-              -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+              -e POSTGRES_DB=${{ vars.POSTGRES_DB }} \
+              -e POSTGRES_USER=${{ vars.POSTGRES_USER }} \
               -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
               -v /path/to/database:/var/lib/postgresql/data \
               -p 5432:5432 \
