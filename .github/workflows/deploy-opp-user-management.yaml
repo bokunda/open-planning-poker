@@ -29,7 +29,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest -f src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
+          docker build -t openplanningpokerusermanagementgraphql:latest -f ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
 
       - name: Save Docker image as tar
         run: |
@@ -63,12 +63,11 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
             docker rm -f OpenPlanningPoker.UserManagement.GraphQL || true
             docker run -d \
               --name OpenPlanningPoker.UserManagement.GraphQL \
               -e ASPNETCORE_ENVIRONMENT=Development \
               -e ASPNETCORE_HTTP_PORTS=8080 \
-              -e OTEL_EXPORTER_OTLP_ENDPOINT=http://162.55.213.9:3100 \
+              -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ LOKI_URL }} \
               -p 9091:8080 \
-              ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
+              openplanningpokerusermanagementgraphql:latest
