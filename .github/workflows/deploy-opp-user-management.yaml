@@ -18,6 +18,10 @@ jobs:
         with:
           dotnet-version: 9.0.x
 
+      - name: List files to verify appsettings.json location
+        run: |
+          ls -R
+
       - name: Set connection string in appsettings.json
         run: |
           # Replace placeholders in appsettings.json with GitHub secrets
@@ -29,7 +33,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t openplanningpokerusermanagementgraphql:latest -f OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
+          docker build -t openplanningpokerusermanagementgraphql:latest -f ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
 
       - name: Save Docker image as tar
         run: |
