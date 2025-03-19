@@ -35,7 +35,10 @@ jobs:
 
       - name: Save Docker image as tar
         run: |
+          pwd
+          ls
           docker save -o openplanningpokerusermanagementgraphql.tar openplanningpokerusermanagementgraphql:latest
+          ls
 
       - name: Transfer image to the server
         uses: appleboy/ssh-action@v1
