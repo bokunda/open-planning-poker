@@ -47,11 +47,8 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           script: |
-            pwd
-            ls -la
-            ls
-            mkdir /tmp/docker-images
-            scp -o StrictHostKeyChecking=no /home/runner/work/open-planning-poker/open-planning-poker/openplanningpokerusermanagementgraphql.tar ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/tmp/
+            mkdir -p /tmp/docker-images
+            scp -o StrictHostKeyChecking=no ./home/runner/work/open-planning-poker/open-planning-poker/openplanningpokerusermanagementgraphql.tar ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/tmp/
 
       - name: Load Docker image on the server
         uses: appleboy/ssh-action@v1
