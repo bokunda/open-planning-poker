@@ -26,7 +26,7 @@ jobs:
           # Replace placeholders in appsettings.json with GitHub secrets
           jq '.ConnectionStrings.Cache = "${{ secrets.REDIS_HOST }}" |
               .Cors.AllowedOrigins = ${{ secrets.OPP_DEFAULT_CORS }} |
-              .Otel.Endpoint = "${{ variables.OTEL_ENDPOINT }}" |
+              .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}" |
               .Serilog.WriteTo[0].Args.uri = "${{ secrets.LOKI_URL }}"
               ' ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/appsettings.json > temp.json && mv temp.json ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/appsettings.json
       
