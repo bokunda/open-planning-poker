@@ -14,10 +14,10 @@
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="OpenPlanningPoker.Shared" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\OpenPlanningPoker.Shared\OpenPlanningPoker.Shared.csproj" />
     <ProjectReference Include="..\OpenPlanningPoker.GameEngine.Domain\OpenPlanningPoker.GameEngine.Domain.csproj" />
   </ItemGroup>
 
