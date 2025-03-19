@@ -68,6 +68,6 @@ jobs:
               --name OpenPlanningPoker.UserManagement.GraphQL \
               -e ASPNETCORE_ENVIRONMENT=Development \
               -e ASPNETCORE_HTTP_PORTS=8080 \
-              -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ LOKI_URL }} \
+              -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ secrets.LOKI_URL }} \
               -p 9091:8080 \
               openplanningpokerusermanagementgraphql:latest
