@@ -12,7 +12,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Directory.Packages.props", "."]
-COPY ["src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/OpenPlanningPoker.UserManagement.GraphQL.csproj", "src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/"]
+#COPY ["src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/OpenPlanningPoker.UserManagement.GraphQL.csproj", "src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/"]
+COPY ["./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/OpenPlanningPoker.UserManagement.GraphQL.csproj", "src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/"]
 RUN dotnet restore "./src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/OpenPlanningPoker.UserManagement.GraphQL.csproj"
 COPY . .
 WORKDIR "/src/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL"
