@@ -32,7 +32,6 @@ jobs:
           cd backend/OpenPlanningPoker/src/UserManagement
           pwd
           ls
-          cd backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL
           docker build -t openplanningpokerusermanagementgraphql:latest -f ./src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
 
       - name: Save Docker image as tar
