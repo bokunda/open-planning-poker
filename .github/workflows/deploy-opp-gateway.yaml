@@ -35,7 +35,7 @@ jobs:
 
       - name: Pack User Management subgraph
         run: |
-          cd ../../UserManagement/OpenPlanningPoker.UserManagement.GraphQL
+          cd backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL
           jq '.http.baseAddress = "${{ vars.OPP_UM_SUBGRAPH_URL }}"'
             ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/subgraph-config.json > temp.json && mv temp.json ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/subgraph-config.json
           dotnet run -- schema export --output schema.graphql
