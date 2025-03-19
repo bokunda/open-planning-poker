@@ -11,11 +11,14 @@ jobs:
       contents: read
       packages: write
   opp-user-management:
+    name: Deploy OPP User Management
     uses: ./.github/workflows/deploy-opp-user-management.yaml
 
   opp-game-engine:
+    name: Deploy OPP Game Engine
     uses: ./.github/workflows/deploy-opp-game-engine.yaml
 
   opp-gateway:
+    name: Deploy OPP Gateway
     needs: [opp-user-management, opp-game-engine]
     uses: ./.github/workflows/deploy-opp-gateway.yaml
