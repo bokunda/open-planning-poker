@@ -23,7 +23,6 @@ jobs:
 
       - name: Set connection string in appsettings.json
         run: |
-          # Replace placeholders in appsettings.json with GitHub secrets
           jq '.Cors.AllowedOrigins = ${{ vars.OPP_DEFAULT_CORS }} |
               .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}" |
               .Serilog.WriteTo[0].Args.uri = "${{ vars.LOKI_URL }}"
@@ -35,7 +34,6 @@ jobs:
 
       - name: Pack User Management subgraph
         run: |
-          cd backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL
           pwd
           ls -la
           jq '.http.baseAddress = "google.com"' ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/subgraph-config.json > temp.json && mv temp.json ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/subgraph-config.json
