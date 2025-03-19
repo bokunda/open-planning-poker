@@ -35,10 +35,7 @@ jobs:
 
       - name: Save Docker image as tar
         run: |
-          pwd
-          ls
           docker save -o openplanningpokerusermanagementgraphql.tar openplanningpokerusermanagementgraphql:latest
-          ls
 
       - name: Transfer image to the server
         uses: appleboy/ssh-action@v1
@@ -48,6 +45,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           script: |
+            ls
             mkdir -p /tmp/docker-images
             scp -o StrictHostKeyChecking=no openplanningpokerusermanagementgraphql.tar ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/tmp/docker-images/
 
