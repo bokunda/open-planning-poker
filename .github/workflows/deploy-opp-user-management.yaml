@@ -30,14 +30,11 @@ jobs:
       - name: Build Docker image
         run: |
           cd backend/OpenPlanningPoker
-          ls
           docker build -t openplanningpokerusermanagementgraphql:latest -f ./src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
 
       - name: Save Docker image as tar
         run: |
-          pwd
           docker save -o openplanningpokerusermanagementgraphql.tar openplanningpokerusermanagementgraphql:latest
-          ls -la
 
       - name: Transfer image to the server
         uses: appleboy/ssh-action@v1
