@@ -40,7 +40,6 @@ jobs:
           dotnet run -- schema export --output schema.graphql
           fusion subgraph pack
           cat subgraph-config.json
-          ls -la
 
       - name: Pack Game Engine subgraph
         run: |
@@ -49,13 +48,12 @@ jobs:
           dotnet run -- schema export --output schema.graphql
           fusion subgraph pack
           cat subgraph-config.json
-          ls -la
 
       - name: Compose Schema
         run: |
           cd backend/OpenPlanningPoker/src/Gateway/OpenPlanningPoker.Fusion.Gateway
-          fusion compose -p gateway -s ../../UserManagement/OpenPlanningPoker.UserManagement.GraphQL/UserManagement.fsp
-          fusion compose -p gateway -s ../../GameEngine/OpenPlanningPoker.GameEngine.GraphQL/GameEngine.fsp
+          fusion compose -p gateway.fgp -s ../../UserManagement/OpenPlanningPoker.UserManagement.GraphQL/UserManagement.fsp
+          fusion compose -p gateway.fgp -s ../../GameEngine/OpenPlanningPoker.GameEngine.GraphQL/GameEngine.fsp
           ls -la
 
       - name: Log in to GitHub Container Registry
