@@ -29,6 +29,28 @@ jobs:
               .Serilog.WriteTo[0].Args.uri = "${{ vars.LOKI_URL }}"
               ' ./backend/OpenPlanningPoker/src/Gateway/OpenPlanningPoker.Fusion.Gateway/appsettings.json > temp.json && mv temp.json ./backend/OpenPlanningPoker/src/Gateway/OpenPlanningPoker.Fusion.Gateway/appsettings.json
 
+      - name: Install HotChocolate.Fusion CLI
+        run: |
+          dotnet tool install -g HotChocolate.Fusion.CommandLine
+
+      - name: Pack User Management subgraph
+        run: |
+          cd ../../UserManagement/OpenPlanningPoker.UserManagement.GraphQL
+          dotnet run -- schema export --output schema.graphql
+          fusion subgraph pack
+
+      - name: Pack Game Engine subgraph
+        run: |
+          cd ../../GameEngine/OpenPlanningPoker.GameEngine.GraphQL
+          dotnet run -- schema export --output schema.graphql
+          fusion subgraph pack
+
+      - name: Compose Schema
+        run: |
+          cd ../../Gateway/OpenPlanningPoker.Fusion.Gateway
+          fusion compose -p gateway.fgp -s ../../UserManagement/OpenPlanningPoker.UserManagement.GraphQL
+          fusion compose -p gateway.fgp -s ../../GameEngine/OpenPlanningPoker.GameEngine.GraphQL
+
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
