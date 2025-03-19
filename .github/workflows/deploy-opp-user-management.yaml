@@ -47,7 +47,7 @@ jobs:
           script: |
             ls
             mkdir -p /tmp/docker-images
-            scp -o StrictHostKeyChecking=no openplanningpokerusermanagementgraphql.tar ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/tmp/docker-images/
+            scp -o StrictHostKeyChecking=no openplanningpokerusermanagementgraphql.tar ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/tmp/
 
       - name: Load Docker image on the server
         uses: appleboy/ssh-action@v1
