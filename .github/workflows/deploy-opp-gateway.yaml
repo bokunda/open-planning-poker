@@ -43,7 +43,6 @@ jobs:
 
       - name: Pack Game Engine subgraph
         run: |
-          pwd
           cd backend/OpenPlanningPoker/src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL
           jq '.http.baseAddress = "${{ vars.OPP_GE_SUBGRAPH_URL }}"'
             ./backend/OpenPlanningPoker/src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL/subgraph-config.json > temp.json && mv temp.json ./backend/OpenPlanningPoker/src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL/subgraph-config.json
@@ -52,7 +51,8 @@ jobs:
 
       - name: Compose Schema
         run: |
-          cd ../../Gateway/OpenPlanningPoker.Fusion.Gateway
+          pwd
+          cd backend/OpenPlanningPoker/src/Gateway/OpenPlanningPoker.Fusion.Gateway
           fusion compose -p gateway.fgp -s ../../UserManagement/OpenPlanningPoker.UserManagement.GraphQL
           fusion compose -p gateway.fgp -s ../../GameEngine/OpenPlanningPoker.GameEngine.GraphQL
 
