@@ -36,6 +36,8 @@ jobs:
       - name: Pack User Management subgraph
         run: |
           cd backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL
+          pwd
+          ls -la
           jq '.http.baseAddress = "google.com"' ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/subgraph-config.json > temp.json && mv temp.json ./backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/subgraph-config.json
           dotnet run -- schema export --output schema.graphql
           fusion subgraph pack
