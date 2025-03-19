@@ -1,0 +1,32 @@
+name: Deploy PostgreSQL
+run-name: "Deploying PostgreSQL to server"
+on: 
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  deploy-postgresql:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy using SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            docker pull postgres:15.5
+            docker rm -f OpenPlanningPoker.Db || true
+            docker run -d \
+              --name OpenPlanningPoker.Db \
+              -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
+              -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+              -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+              -v /path/to/database:/var/lib/postgresql/data \
+              -p 5432:5432 \
+              postgres:15.5
+            docker system prune -f
