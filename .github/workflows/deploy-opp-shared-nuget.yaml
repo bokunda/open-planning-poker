@@ -30,4 +30,4 @@ jobs:
         run: dotnet pack -c Release --no-build --output .
 
       - name: Publish to NuGet.org
-        run: dotnet nuget push "*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ secrets.NUGET_ORG_API_KEY }} --skip-duplicate
+        run: dotnet nuget push  "*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ secrets.NUGET_ORG_API_KEY }} --skip-duplicate
