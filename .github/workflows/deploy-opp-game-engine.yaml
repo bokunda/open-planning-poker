@@ -24,7 +24,7 @@ jobs:
       - name: Set connection string in appsettings.json
         run: |
           # Replace placeholders in appsettings.json with GitHub secrets
-          jq '.ConnectionStrings.Database = "Host=OpenPlanningPoker.Db;Port=5432;Database=opp-gameengine;Username=postgres;Password=postgres;" |
+          jq '.ConnectionStrings.Database = "${{ vars.GE_PSQL_CONN_STRING }}" |
               .ConnectionStrings.Cache = "${{ vars.REDIS_HOST }}" |
               .Cors.AllowedOrigins = ${{ vars.OPP_DEFAULT_CORS }} |
               .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}" |
