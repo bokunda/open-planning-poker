@@ -24,7 +24,7 @@ jobs:
       - name: Set connection string in appsettings.json
         run: |
           # Replace placeholders in appsettings.json with GitHub secrets
-          jq '.ConnectionStrings.Database = "Host=${{ vars.OPP_DB_HOST }};Port=${{ vars.OPP_DB_PORT }};Database=${{ vars.OPP_DB_GE_NAME }};Username=${{ vars.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }};" |
+          jq '.ConnectionStrings.Database = "${{ vars.GE_PSQL_CONN_STRING }}" |
               .ConnectionStrings.Cache = "${{ vars.REDIS_HOST }}" |
               .Cors.AllowedOrigins = ${{ vars.OPP_DEFAULT_CORS }} |
               .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}" |
@@ -57,6 +57,7 @@ jobs:
             docker rm -f OpenPlanningPoker.GameEngine.GraphQL || true
             docker run -d \
               --name OpenPlanningPoker.GameEngine.GraphQL \
+              --network oppnetwork \
               -e ASPNETCORE_ENVIRONMENT=Development \
               -e ASPNETCORE_HTTP_PORTS=8080 \
               -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
