@@ -49,4 +49,5 @@ jobs:
               --name OpenPlanningPoker.UI \
               --network oppnetwork \
               -p 10000:8080 \
+              -p 10000:80 \
               ghcr.io/${{ github.repository_owner }}/openplanningpokerui:latest
