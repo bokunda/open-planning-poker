@@ -6,7 +6,6 @@ import { HttpLink } from 'apollo-angular/http';
 import { provideApollo } from 'apollo-angular';
 import { ApolloLink, DefaultOptions, InMemoryCache, split } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
-import { gqlGateway, gqlGatewayWss } from './shared/constants';
 import { createClient } from 'graphql-ws';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition } from '@apollo/client/utilities';
@@ -17,7 +16,13 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     provideApollo(() => {
+
       const httpLink = inject(HttpLink);
+
+      const config = (window as any).appConfig;
+
+      const gqlGateway = config?.gqlGateway ?? 'http://localhost:10010/graphql';
+      const gqlGatewayWss = config?.gqlGatewayWss ?? 'ws://localhost:10010/graphql';
 
       const basic = setContext((operation, context) => ({
         headers: {},
