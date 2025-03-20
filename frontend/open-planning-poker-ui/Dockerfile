@@ -14,7 +14,7 @@ RUN find /app/dist
 
 FROM nginx:alpine AS production-stage
 
-COPY --from=build-stage /app/dist/open-planning-poker-ui /usr/share/nginx/html
+COPY --from=build-stage /app/dist/open-planning-poker-ui/* /usr/share/nginx/html
 
 EXPOSE 80
 
