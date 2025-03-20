@@ -56,6 +56,7 @@ jobs:
             docker rm -f OpenPlanningPoker.UserManagement.GraphQL || true
             docker run -d \
               --name OpenPlanningPoker.UserManagement.GraphQL \
+              --network oppnetwork \
               -e ASPNETCORE_ENVIRONMENT=Development \
               -e ASPNETCORE_HTTP_PORTS=8080 \
               -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \

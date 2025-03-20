@@ -82,6 +82,7 @@ jobs:
             docker rm -f OpenPlanningPoker.Fusion.Gateway || true
             docker run -d \
               --name OpenPlanningPoker.Fusion.Gateway \
+              --network oppnetwork \
               -e ASPNETCORE_ENVIRONMENT=Development \
               -e ASPNETCORE_HTTP_PORTS=8080 \
               -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
