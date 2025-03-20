@@ -7,7 +7,7 @@ COPY . .
 RUN npm run build --prod
 
 FROM nginx:alpine
-COPY --from=build /app/dist/your-app-name /usr/share/nginx/html
+COPY --from=build /app/dist/opp-planning-poker-ui /usr/share/nginx/html
 
 EXPOSE 80
 
