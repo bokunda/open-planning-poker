@@ -1,16 +1,22 @@
-FROM node:18 AS build
+FROM node:23 AS build-stage
+
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm install
-COPY . .
-RUN npm run build --prod
+COPY package*.json ./
 
-FROM nginx:alpine
-COPY --from=build /app/dist/open-planning-poker-ui /usr/share/nginx/html
+RUN npm install
+
+COPY . .
+
+RUN npm run build --omit=dev
+RUN ls -alh /app/dist
+RUN find /app/dist
+
+FROM nginx:alpine AS production-stage
+
+COPY --from=build-stage /app/dist/open-planning-poker-ui /usr/share/nginx/html
 
 EXPOSE 80
 
-# Start Nginx to serve the app
-# daemon off because of docker container, it is easier to monitor
+# Start NGINX to serve the app
 CMD ["nginx", "-g", "daemon off;"]
