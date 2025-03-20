@@ -16,7 +16,7 @@ builder.Services.AddHttpContextAccessor();
 
 var corsConfig = new CorsConfiguration();
 builder.Configuration.GetSection("Cors").Bind(corsConfig);
-builder.Services.AddCors(corsConfig.PolicyName, corsConfig.AllowedOrigins);
+builder.Services.AddCors(corsConfig.PolicyName, corsConfig.AllowedOrigins, true);
 
 builder.Services
     .AddFusionGatewayServer()
