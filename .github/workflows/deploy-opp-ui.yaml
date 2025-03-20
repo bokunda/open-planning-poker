@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
   workflow_call:
 jobs:
-  deploy-opp-user-management:
+  deploy-opp-ui:
     runs-on: ubuntu-latest
     permissions:
       contents: read
