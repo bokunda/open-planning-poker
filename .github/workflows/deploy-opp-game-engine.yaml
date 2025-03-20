@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - ge-deployment
   workflow_dispatch:
   workflow_call:
 jobs:
@@ -34,11 +33,6 @@ jobs:
       
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Build Docker image
-        run: |
-          cd backend/OpenPlanningPoker
-          docker build -t openplanningpokergameenginegraphql:latest -f ./src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL/Dockerfile .
 
       - name: Build and push Docker image
         run: |

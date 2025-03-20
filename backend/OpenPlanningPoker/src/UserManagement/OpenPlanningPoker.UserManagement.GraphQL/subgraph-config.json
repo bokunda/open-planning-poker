@@ -1,6 +1,6 @@
 {
   "subgraph": "UserManagement",
   "http": {
-    "baseAddress": "http://OpenPlanningPoker.UserManagement.GraphQL:8080/graphql"
+    "baseAddress": "http://162.55.213.9:9090/graphql"
   }
 }

@@ -3,7 +3,3 @@ export const OPP_WEBSITE_URL = 'https://openplanningpoker.com';
 
 export const OPP_SNACKBAR_DURATION_DEFAULT = 2000;
 export const OPP_SNACKBAR_MODAL_LABEL_CLOSE = 'Close';
-
-// TODO: Move this
-export const gqlGateway = "http://localhost:10010/graphql/";
-export const gqlGatewayWss = "ws://localhost:10010/graphql";
