@@ -6,6 +6,7 @@ on:
       - main
       - ge-deployment
   workflow_dispatch:
+  workflow_call:
 jobs:
   deploy-opp-game-engine:
     runs-on: ubuntu-latest
