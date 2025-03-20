@@ -9,12 +9,7 @@ export class ConfigService {
 
   private config: any;
 
-  constructor(private http: HttpClient) { }
-
-  async loadConfig() {
-    const data = await firstValueFrom(this.http.get(url));
-    this.config = data;
-  }
+  constructor() {}
 
   getConfig() {
     return this.config;
