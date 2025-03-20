@@ -18,4 +18,10 @@
     <PackageReference Include="Serilog.Sinks.Grafana.Loki" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="gateway.fgp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
