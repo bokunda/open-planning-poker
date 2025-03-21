@@ -37,6 +37,8 @@ export class VotingComponent implements OnInit {
   }
 
   handleOnCreateNewTicket() {
+    return;
+    // Bug, updates vote value before new ticket is created
     this.selectOption('');
     this.onCreateNewTicket.emit();
   }

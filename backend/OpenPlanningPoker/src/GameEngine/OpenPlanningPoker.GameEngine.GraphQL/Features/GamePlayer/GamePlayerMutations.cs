@@ -15,7 +15,7 @@ public class GamePlayerMutations
     {
         var user = await currentUserProvider.GetAsync(cancellationToken);
         var result = await sender.Send(new JoinGameCommand(gameId, currentUserProvider.Id), cancellationToken);
-        await eventSender.SendAsync($"{nameof(JoinGameAsync)}_{gameId}", user, cancellationToken);
+        await eventSender.SendAsync($"{nameof(JoinGameAsync)}_{gameId}", user.Value, cancellationToken);
 
         return result.IsSuccess
             ? result.Value

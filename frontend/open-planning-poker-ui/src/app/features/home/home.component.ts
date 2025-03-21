@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit {
     .valueChanges
     .subscribe({
       next: ({ data }) => {
-        if (data) {
+        if (data?.currentUser?.userName) {
           this.username = data.currentUser.userName;
         }
         else
@@ -51,8 +51,6 @@ export class HomeComponent implements OnInit {
       refetchQueries: [{ query: GET_USER }]
     }).subscribe({
       next: ({ data }) => {
-
-        console.log('data', data);
         if (data?.registerUser?.registerUserResponse?.token) {
           localStorage.setItem('token', data.registerUser.registerUserResponse.token);
           this.username = data.registerUser.registerUserResponse.userName;
