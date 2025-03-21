@@ -29,7 +29,7 @@ type PingPayload {
 
 type Query {
   ping: String! @cost(weight: "10")
-  currentUser: User! @authorize @cost(weight: "10")
+  currentUser: CurrentUserResult! @authorize @cost(weight: "10")
 }
 
 type RegisterUserPayload {
@@ -49,6 +49,8 @@ type User {
 }
 
 union ChangeUsernameError = ApplicationError
+
+union CurrentUserResult = User | ApplicationError
 
 union RegisterUserError = ApplicationError
 
