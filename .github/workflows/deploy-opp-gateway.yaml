@@ -3,6 +3,9 @@ run-name: "Deploying Open Planning Poker Gateway - Build #${{ github.run_number 
 on:
   workflow_dispatch:
   workflow_call:
+  secrets:
+    SSH_PASSWORD: 
+      required: true
 jobs:
   deploy-opp-gateway:
     runs-on: ubuntu-latest
