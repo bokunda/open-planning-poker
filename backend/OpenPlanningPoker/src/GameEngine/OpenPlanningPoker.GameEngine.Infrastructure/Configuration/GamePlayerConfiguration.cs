@@ -6,6 +6,9 @@ internal sealed class GamePlayerConfiguration : IEntityTypeConfiguration<GamePla
     {
         builder.ToTable("gameplayer");
 
-        builder.HasKey(gameplayer => new { gameplayer.GameId, gameplayer.PlayerId });
+        builder.HasIndex(gameplayer => new { gameplayer.GameId });
+        builder.HasIndex(gameplayer => new { gameplayer.PlayerId });
+
+        builder.HasKey(gameplayer => new { gameplayer.Id });
     }
 }

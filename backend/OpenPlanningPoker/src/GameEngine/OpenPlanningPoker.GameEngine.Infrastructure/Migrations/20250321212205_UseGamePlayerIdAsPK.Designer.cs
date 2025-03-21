@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OpenPlanningPoker.GameEngine.Infrastructure;
@@ -11,9 +12,11 @@ using OpenPlanningPoker.GameEngine.Infrastructure;
 namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
 {
     [DbContext(typeof(OpenPlanningPokerGameEngineDbContext))]
-    partial class OpenPlanningPokerGameEngineDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250321212205_UseGamePlayerIdAsPK")]
+    partial class UseGamePlayerIdAsPK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
