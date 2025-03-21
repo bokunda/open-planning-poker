@@ -123,6 +123,8 @@ export type CreateTicketPayload = {
   ticket?: Maybe<Ticket>;
 };
 
+export type CurrentUserResult = ApplicationError | User;
+
 export type DeleteTicketError = ApplicationError;
 
 export type DeleteTicketInput = {
@@ -278,7 +280,7 @@ export type PingPayload = {
 
 export type Query = {
   __typename?: 'Query';
-  currentUser: User;
+  currentUser: CurrentUserResult;
   /** Returns Game details. */
   game: GameResult;
   /** Returns game with participants */
