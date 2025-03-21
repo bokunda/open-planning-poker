@@ -1,13 +1,16 @@
 name: Deploy OPP
 run-name: "Deploying Open Planning Poker Game - Build #${{ github.run_number }}"
+
 on:
   workflow_dispatch:
   push:
     branches:
       - main
+
 permissions:
-contents: read
-packages: write
+  contents: read
+  packages: write
+
 jobs:
   deploy-opp-user-management:
     name: Deploy OPP User Management
