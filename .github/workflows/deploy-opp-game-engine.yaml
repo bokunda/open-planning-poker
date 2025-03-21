@@ -1,5 +1,5 @@
 name: Deploy OPP Game Engine
-run-name: "Deploying Open Planning Poker Game Engine to server"
+run-name: "Deploying Open Planning Poker Game Engine - Build #${{ github.run_number }}"
 on: 
   push:
     branches:
@@ -37,6 +37,9 @@ jobs:
       - name: Build and push Docker image
         run: |
           cd backend/OpenPlanningPoker
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }} -f ./src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL/Dockerfile .
+          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }}
+          
           docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:latest -f ./src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL/Dockerfile .
           docker push ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:latest
 
@@ -48,7 +51,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
-            docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:latest
+            docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }}
             docker rm -f OpenPlanningPoker.GameEngine.GraphQL || true
             docker run -d \
               --name OpenPlanningPoker.GameEngine.GraphQL \
@@ -57,4 +60,4 @@ jobs:
               -e ASPNETCORE_HTTP_PORTS=8080 \
               -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
               -p 9091:8080 \
-              ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:latest
+              ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }}

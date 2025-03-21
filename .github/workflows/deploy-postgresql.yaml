@@ -1,5 +1,5 @@
 name: Deploy PostgreSQL
-run-name: "Deploying PostgreSQL to server"
+run-name: "Deploying PostgreSQL - Build #${{ github.run_number }}"
 on:
   workflow_dispatch:
 jobs:
