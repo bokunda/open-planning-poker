@@ -19,7 +19,7 @@ jobs:
       - name: Set connection string in config.json
         run: |
           jq '.gqlGateway = "${{ vars.OPP_API_URL }}" |
-              .gqlGatewayWss = "${{ vars.OPP_WSS_URL }}" |
+              .gqlGatewayWss = "${{ vars.OPP_WSS_URL }}"
              ' ./frontend/open-planning-poker-ui/public/assets/config.json > temp.json && mv temp.json ./frontend/open-planning-poker-ui/public/assets/config.json
       
       - name: Log in to GitHub Container Registry
