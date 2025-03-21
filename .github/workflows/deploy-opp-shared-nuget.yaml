@@ -1,5 +1,5 @@
 name: Publish Open Planning Poker NuGet Package
-run-name: "Publishing Open Planning Poker NuGet Package"
+run-name: "Publishing Open Planning Poker NuGet Package - Build #${{ github.run_number }}"
 on: 
   push:
     branches:
