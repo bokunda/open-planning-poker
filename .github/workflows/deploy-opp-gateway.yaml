@@ -1,9 +1,6 @@
 name: Deploy OPP Gateway
 run-name: "Deploying Open Planning Poker Gateway - Build #${{ github.run_number }}"
-on: 
-  push:
-    branches:
-      - main
+on:
   workflow_dispatch:
   workflow_call:
 jobs:
