@@ -13,7 +13,7 @@ jobs:
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
+          username: ${{ vars.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             docker pull redis:latest
