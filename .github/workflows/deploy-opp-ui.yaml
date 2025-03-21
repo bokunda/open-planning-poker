@@ -1,10 +1,6 @@
 name: Deploy OPP UI
 run-name: "Deploying Open Planning Poker UI - Build #${{ github.run_number }}"
-on: 
-  push:
-    branches:
-      - main
-      - docker-image-versioning
+on:
   workflow_dispatch:
   workflow_call:
 jobs:
