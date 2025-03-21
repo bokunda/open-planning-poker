@@ -5,11 +5,14 @@ public sealed class GetCurrentUserQuery
 {
 
     [Authorize]
-    public async Task<User> GetCurrentUser(
+    public async Task<FieldResult<User, ApplicationError>> GetCurrentUser(
         [Service] ICurrentUserProvider currentUserProvider, 
         CancellationToken cancellationToken)
     {
         var user = await currentUserProvider.GetAsync(cancellationToken);
-        return new User(user.Id, user.UserName);
+
+        return user.IsSuccess
+            ? new User(user.Value!.Id, user.Value.UserName)
+            : user.Error!;
     }
 }
