@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { Mutation, Query, RegisterUserInput } from '../../graphql/graphql-gateway.service';
+import { Mutation, Query, RegisterUserInput, User } from '../../graphql/graphql-gateway.service';
 import { GET_USER } from './user/gql/getUser.graphql';
 import { REGISTER_USER } from './user/gql/registerUser.graphql';
 
@@ -30,8 +30,9 @@ export class HomeComponent implements OnInit {
     .valueChanges
     .subscribe({
       next: ({ data }) => {
-        if (data) {
-          this.username = data.currentUser.userName;
+        let currentUser = data?.currentUser as User;
+        if (currentUser?.userName) {
+          this.username = currentUser.userName;
         }
         else
         {
@@ -51,8 +52,6 @@ export class HomeComponent implements OnInit {
       refetchQueries: [{ query: GET_USER }]
     }).subscribe({
       next: ({ data }) => {
-
-        console.log('data', data);
         if (data?.registerUser?.registerUserResponse?.token) {
           localStorage.setItem('token', data.registerUser.registerUserResponse.token);
           this.username = data.registerUser.registerUserResponse.userName;
