@@ -18,4 +18,4 @@ jobs:
   deploy-opp-ui:
     name: Deploy OPP UI
     needs: [deploy-opp-user-management, deploy-opp-game-engine]
-    uses: ./.github/workflows/deploy-opp.yaml
+    uses: ./.github/workflows/deploy-opp-ui.yaml
