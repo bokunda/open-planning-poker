@@ -36,8 +36,11 @@ jobs:
       - name: Build and push Docker image
         run: |
           cd backend/OpenPlanningPoker
-          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest-${{ github.run_number }} -f ./src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
-          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest-${{ github.run_number }}
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:${{ github.run_number }} -f ./src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
+          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:${{ github.run_number }}
+          
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest -f ./src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
+          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
 
       - name: Deploy using SSH
         uses: appleboy/ssh-action@v1
@@ -47,7 +50,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
-            docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest-${{ github.run_number }}
+            docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:${{ github.run_number }}
             docker rm -f OpenPlanningPoker.UserManagement.GraphQL || true
             docker run -d \
               --name OpenPlanningPoker.UserManagement.GraphQL \
@@ -56,4 +59,4 @@ jobs:
               -e ASPNETCORE_HTTP_PORTS=8080 \
               -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
               -p 9090:8080 \
-              ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest-${{ github.run_number }}
+              ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:${{ github.run_number }}

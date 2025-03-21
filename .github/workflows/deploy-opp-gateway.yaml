@@ -61,8 +61,11 @@ jobs:
       - name: Build and push Docker image
         run: |
           cd backend/OpenPlanningPoker
-          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:latest-${{ github.run_number }} -f ./src/Gateway/OpenPlanningPoker.Fusion.Gateway/Dockerfile .
-          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:latest-${{ github.run_number }}
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:${{ github.run_number }} -f ./src/Gateway/OpenPlanningPoker.Fusion.Gateway/Dockerfile .
+          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:${{ github.run_number }}
+
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:latest -f ./src/Gateway/OpenPlanningPoker.Fusion.Gateway/Dockerfile .
+          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:latest
 
       - name: Deploy using SSH
         uses: appleboy/ssh-action@v1
@@ -72,7 +75,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
-            docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:latest-${{ github.run_number }}
+            docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:${{ github.run_number }}
             docker rm -f OpenPlanningPoker.Fusion.Gateway || true
             docker run -d \
               --name OpenPlanningPoker.Fusion.Gateway \
@@ -82,4 +85,4 @@ jobs:
               -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
               -p 10010:8080 \
               -p 10011:8081 \
-              ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:latest-${{ github.run_number }}
+              ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:${{ github.run_number }}

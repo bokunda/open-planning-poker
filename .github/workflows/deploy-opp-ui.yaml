@@ -29,8 +29,11 @@ jobs:
       - name: Build and push Docker image
         run: |
           cd frontend/open-planning-poker-ui
-          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerui:latest-${{ github.run_number }} -f ./Dockerfile .
-          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerui:latest-${{ github.run_number }}
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerui:${{ github.run_number }} -f ./Dockerfile .
+          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerui:${{ github.run_number }}
+
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerui:latest -f ./Dockerfile .
+          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerui:latest
 
       - name: Deploy using SSH
         uses: appleboy/ssh-action@v1
@@ -40,10 +43,10 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |            
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
-            docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokerui:latest-${{ github.run_number }}
+            docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokerui:${{ github.run_number }}
             docker rm -f OpenPlanningPoker.UI || true
             docker run -d \
               --name OpenPlanningPoker.UI \
               --network oppnetwork \
               -p 10000:80 \
-              ghcr.io/${{ github.repository_owner }}/openplanningpokerui:latest-${{ github.run_number }}
+              ghcr.io/${{ github.repository_owner }}/openplanningpokerui:${{ github.run_number }}
