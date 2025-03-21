@@ -3,9 +3,6 @@ run-name: "Deploying Open Planning Poker UI - Build #${{ github.run_number }}"
 on:
   workflow_dispatch:
   workflow_call:
-  secrets:
-    SSH_PASSWORD: 
-      required: true
 jobs:
   deploy-opp-ui:
     runs-on: ubuntu-latest
