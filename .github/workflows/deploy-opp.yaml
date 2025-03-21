@@ -8,14 +8,14 @@ on:
 jobs:
   deploy-opp-user-management:
     name: Deploy OPP User Management
-    uses: ./.github/workflows/deploy-opp-user-management.yaml@main
+    uses: ./.github/workflows/deploy-opp-user-management.yaml
     secrets: inherit
 
   deploy-opp-game-engine:
     name: Deploy OPP Game Engine
-    uses: ./.github/workflows/deploy-opp-game-engine.yaml@main
+    uses: ./.github/workflows/deploy-opp-game-engine.yaml
 
   deploy-opp-ui:
     name: Deploy OPP UI
     needs: [deploy-opp-user-management, deploy-opp-game-engine]
-    uses: ./.github/workflows/existing-workflow3.yml@main
+    uses: ./.github/workflows/existing-workflow3.yml
