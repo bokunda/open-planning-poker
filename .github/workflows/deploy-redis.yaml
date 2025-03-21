@@ -18,5 +18,5 @@ jobs:
           script: |
             docker pull redis:latest
             docker rm -f OpenPlanningPoker.Cache || true
-            docker run -d --name OpenPlanningPoker.Cache -p 6379:6379 redis:latest
+            docker run -d --name OpenPlanningPoker.Cache --network oppnetwork -p 6379:6379 redis:latest
             docker system prune -f
