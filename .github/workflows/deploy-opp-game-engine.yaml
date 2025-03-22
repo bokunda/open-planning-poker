@@ -6,6 +6,8 @@ on:
     secrets:
       SSH_PASSWORD: 
         required: true
+      POSTGRES_PASSWORD: 
+        required: true
 jobs:
   deploy-opp-game-engine:
     runs-on: ubuntu-latest
