@@ -15,11 +15,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/open-planning-poker-user-management
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          repository: ${{ github.repository_owner }}/open-planning-poker-user-management
           dotnet-version: 9.0.x
 
       - name: Set connection string in appsettings.json
