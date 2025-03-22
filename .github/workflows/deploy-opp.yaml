@@ -6,26 +6,26 @@ permissions:
   contents: read
   packages: write
 jobs:
-  deploy-opp-user-management:
+  opp-um:
     name: Deploy OPP User Management
     uses: ./.github/workflows/deploy-opp-user-management.yaml
     secrets: 
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-  deploy-opp-game-engine:
+  opp-ge:
     name: Deploy OPP Game Engine
     uses: ./.github/workflows/deploy-opp-game-engine.yaml
     secrets: 
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD  }}
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-  deploy-opp-ui:
-    name: Deploy OPP UI
-    needs: [deploy-opp-user-management, deploy-opp-game-engine]
-    uses: ./.github/workflows/deploy-opp-ui.yaml
+  opp-gtw:
+    name: Deploy OPP Gateway
+    needs: [opp-um, opp-ge]
+    uses: ./.github/workflows/deploy-opp-gateway.yaml
     secrets: 
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-  deploy-opp-gateway:
-    name: Deploy OPP Gateway
-    needs: [deploy-opp-ui]
-    uses: ./.github/workflows/deploy-opp-gateway.yaml
+  opp-ui:
+    name: Deploy OPP UI
+    needs: [opp-gtw]
+    uses: ./.github/workflows/deploy-opp-ui.yaml
     secrets: 
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
