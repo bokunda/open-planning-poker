@@ -37,10 +37,10 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:${{ github.run_number }} -f ./src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:${{ github.run_number }} -f ./src/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
           docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:${{ github.run_number }}
           
-          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest -f ./src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest -f ./src/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
           docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:latest
 
       - name: Deploy using SSH
