@@ -3,9 +3,9 @@ run-name: "Deploying Open Planning Poker User Management - Build #${{ github.run
 on:
   workflow_dispatch:
   workflow_call:
-  secrets:
-    SSH_PASSWORD: 
-      required: true
+    secrets:
+      SSH_PASSWORD: 
+        required: true
 jobs:
   deploy-opp-user-management:
     runs-on: ubuntu-latest
