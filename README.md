@@ -35,8 +35,12 @@ Work in progress.
 
 This product has a few services that are in separate repositories:
 - [Presentational website](https://github.com/bokunda/open-planning-poker-website)
-- [Frontend Application](https://github.com/bokunda/open-planning-poker-app)
+- [Frontend Application](https://github.com/bokunda/open-planning-poker-web-app)
+- [GraphQL Gateway](https://github.com/bokunda/open-planning-poker-graphql-gateway)
+- [User Management](https://github.com/bokunda/open-planning-poker-user-management)
 - [Game Engine](https://github.com/bokunda/open-planning-poker-game-engine)
+- [Shared NuGet](https://github.com/bokunda/open-planning-poker-shared)
+- [Monitoring Services](https://github.com/bokunda/open-planning-poker-monitoring-services)
 
 ## How To
 
