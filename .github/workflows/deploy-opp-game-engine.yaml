@@ -33,7 +33,7 @@ jobs:
               .Cors.AllowedOrigins = ${{ vars.OPP_DEFAULT_CORS }} |
               .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}" |
               .Serilog.WriteTo[0].Args.uri = "${{ vars.LOKI_URL }}"
-              ' ./backend/OpenPlanningPoker/src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL/appsettings.json > temp.json && mv temp.json ./backend/OpenPlanningPoker/src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL/appsettings.json
+              ' ./src/OpenPlanningPoker.GameEngine.GraphQL/appsettings.json > temp.json && mv temp.json ./src/OpenPlanningPoker.GameEngine.GraphQL/appsettings.json
       
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
@@ -41,10 +41,10 @@ jobs:
       - name: Build and push Docker image
         run: |
           cd backend/OpenPlanningPoker
-          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }} -f ./src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL/Dockerfile .
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }} -f ./src/OpenPlanningPoker.GameEngine.GraphQL/Dockerfile .
           docker push ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }}
           
-          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:latest -f ./src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL/Dockerfile .
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:latest -f ./src/OpenPlanningPoker.GameEngine.GraphQL/Dockerfile .
           docker push ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:latest
 
       - name: Deploy using SSH
