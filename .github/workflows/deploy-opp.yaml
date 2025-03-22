@@ -10,22 +10,22 @@ jobs:
     name: Deploy OPP User Management
     uses: ./.github/workflows/deploy-opp-user-management.yaml
     secrets: 
-      secrets.SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
   deploy-opp-game-engine:
     name: Deploy OPP Game Engine
     uses: ./.github/workflows/deploy-opp-game-engine.yaml
     secrets: 
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD  }}
-      secrets.SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
   deploy-opp-ui:
     name: Deploy OPP UI
     needs: [deploy-opp-user-management, deploy-opp-game-engine]
     uses: ./.github/workflows/deploy-opp-ui.yaml
     secrets: 
-      secrets.SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
   deploy-opp-gateway:
     name: Deploy OPP Gateway
     needs: [deploy-opp-ui]
     uses: ./.github/workflows/deploy-opp-gateway.yaml
     secrets: 
-      secrets.SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
