@@ -40,7 +40,6 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          cd backend/OpenPlanningPoker
           docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }} -f ./src/OpenPlanningPoker.GameEngine.GraphQL/Dockerfile .
           docker push ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }}
           
