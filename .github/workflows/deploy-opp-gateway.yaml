@@ -63,7 +63,7 @@ jobs:
 
       - name: Compose Schema
         run: |
-          cd backend/OpenPlanningPoker/src/Gateway/OpenPlanningPoker.Fusion.Gateway
+          ls -la
           fusion compose -p gateway.fgp -s UserManagement.fsp
           fusion compose -p gateway.fgp -s GameEngine.fsp
           cat gateway.fgp
@@ -73,7 +73,6 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          cd backend/OpenPlanningPoker
           docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:${{ github.run_number }} -f ./Dockerfile .
           docker push ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:${{ github.run_number }}
 
