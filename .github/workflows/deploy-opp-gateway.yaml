@@ -43,7 +43,8 @@ jobs:
 
       - name: Pack User Management subgraph
         run: |
-          cd src/OpenPlanningPoker.UserManagement.GraphQL
+          ls -la
+          cd opp-um/src/OpenPlanningPoker.UserManagement.GraphQL
           jq '.http.baseAddress = "${{ vars.OPP_UM_SUBGRAPH_URL }}"' subgraph-config.json > temp.json && mv temp.json subgraph-config.json
           dotnet run -- schema export --output schema.graphql
           fusion subgraph pack
@@ -57,7 +58,8 @@ jobs:
 
       - name: Pack Game Engine subgraph
         run: |
-          cd src/OpenPlanningPoker.GameEngine.GraphQL
+          ls -la
+          cd opp-ge/src/OpenPlanningPoker.GameEngine.GraphQL
           jq '.http.baseAddress = "${{ vars.OPP_GE_SUBGRAPH_URL }}"' subgraph-config.json > temp.json && mv temp.json subgraph-config.json
           dotnet run -- schema export --output schema.graphql
           fusion subgraph pack
