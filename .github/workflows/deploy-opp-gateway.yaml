@@ -62,18 +62,13 @@ jobs:
           fusion subgraph pack
           cat subgraph-config.json
 
-      - name: Move to base directory
-        run: |
-          pwd
-          cd ..
-          cd ..
-          pwd
-
       - name: Compose Schema
         run: |
           fusion compose -p gateway.fgp -s opp-um/src/OpenPlanningPoker.UserManagement.GraphQL/UserManagement.fsp
           fusion compose -p gateway.fgp -s opp-ge/src/OpenPlanningPoker.GameEngine.GraphQL/GameEngine.fsp
           cat gateway.fgp
+          rm -rf opp-ge
+          rm -fr opp-um
 
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
