@@ -29,7 +29,7 @@ Open Planning Poker provides you with an easy option to:
 
 ### Data Model
 
-Work in progress.
+![Game Engine DB](diagrams/Database/Open%20Planning%20Poker%20-%20Game%20Engine%20DB%20Schema.png "Game Engine Database Schema")
 
 ## Technical implementation
 
@@ -51,3 +51,7 @@ Unfortunately, this option is not available yet.
 ### Access Open Planning Poker online
 
 You can access the app by visiting this [link.](https://openplanningpoker.com)
+
+## License
+
+Project is under [GNU General Public License](https://github.com/bokunda/open-planning-poker/blob/main/LICENSE)
