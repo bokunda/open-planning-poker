@@ -46,7 +46,8 @@ This product has a few services that are in separate repositories:
 
 ### Run Open Planning Poker locally
 
-Unfortunately, this option is not available yet.
+- Windows: execute `run-game-locally.ps1`
+- Linux: execute `run-game-locally.sh`
 
 ### Access Open Planning Poker online
 

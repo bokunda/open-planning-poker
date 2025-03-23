@@ -1,0 +1,42 @@
+services:
+
+  OpenPlanningPoker.UserManagement.GraphQL:
+    image: ${DOCKER_REGISTRY-}openplanningpokerusermanagementgraphql
+    container_name: OpenPlanningPoker.UserManagement.GraphQL
+    build:
+      context: ../open-planning-poker-user-management
+      dockerfile: src/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile
+
+  OpenPlanningPoker.GameEngine.GraphQL:
+    image: ${DOCKER_REGISTRY-}openplanningpokergameenginegraphql
+    container_name: OpenPlanningPoker.GameEngine.GraphQL
+    build:
+      context: ../open-planning-poker-game-engine
+      dockerfile: src/OpenPlanningPoker.GameEngine.GraphQL/Dockerfile
+    depends_on:
+     - opp-db
+
+  openplanningpoker.fusion.gateway:
+    image: ${DOCKER_REGISTRY-}openplanningpokerfusiongateway
+    container_name: Openplanningpoker.Fusion.Gateway
+    build:
+      context: ../open-planning-poker-graphql-gateway
+      dockerfile: Dockerfile
+    depends_on:
+      - OpenPlanningPoker.GameEngine.GraphQL
+      - OpenPlanningPoker.UserManagement.GraphQL
+
+  openplanning.poker.webapp:
+    image: ${DOCKER_REGISTRY-}openplanningpokerwebapp
+    container_name: OpenPlanningPoker.webapp
+    build:
+      context: ../open-planning-poker-web-app
+      dockerfile: Dockerfile
+
+  opp-db:
+    image: postgres:15.5
+    container_name: OpenPlanningPoker.Db
+
+  OpenPlanningPoker.Cache:
+    image: redis:latest
+    container_name: OpenPlanningPoker.Cache

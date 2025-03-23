@@ -47,7 +47,3 @@ cd open-planning-poker
 # Run docker-compose
 Write-Host "Running docker-compose up"
 docker-compose up
-
-# Wait for user input before closing
-Write-Host "Press any key to close..."
-[System.Console]::ReadKey()
