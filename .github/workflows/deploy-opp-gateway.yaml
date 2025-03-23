@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/open-planning-poker-graphql-gateway
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -36,10 +38,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository_owner }}/open-planning-poker-user-management
+          path: opp-um
 
       - name: Pack User Management subgraph
         run: |
-          cd src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL
+          cd opp-um/src/OpenPlanningPoker.UserManagement.GraphQL
           jq '.http.baseAddress = "${{ vars.OPP_UM_SUBGRAPH_URL }}"' subgraph-config.json > temp.json && mv temp.json subgraph-config.json
           dotnet run -- schema export --output schema.graphql
           fusion subgraph pack
@@ -49,10 +52,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository_owner }}/open-planning-poker-game-engine
+          path: opp-ge
 
       - name: Pack Game Engine subgraph
         run: |
-          cd src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL
+          cd opp-ge/src/OpenPlanningPoker.GameEngine.GraphQL
           jq '.http.baseAddress = "${{ vars.OPP_GE_SUBGRAPH_URL }}"' subgraph-config.json > temp.json && mv temp.json subgraph-config.json
           dotnet run -- schema export --output schema.graphql
           fusion subgraph pack
@@ -60,17 +64,17 @@ jobs:
 
       - name: Compose Schema
         run: |
-          cd backend/OpenPlanningPoker/src/Gateway/OpenPlanningPoker.Fusion.Gateway
-          fusion compose -p gateway.fgp -s UserManagement.fsp
-          fusion compose -p gateway.fgp -s GameEngine.fsp
+          fusion compose -p gateway.fgp -s opp-um/src/OpenPlanningPoker.UserManagement.GraphQL/UserManagement.fsp
+          fusion compose -p gateway.fgp -s opp-ge/src/OpenPlanningPoker.GameEngine.GraphQL/GameEngine.fsp
           cat gateway.fgp
+          rm -rf opp-ge
+          rm -fr opp-um
 
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build and push Docker image
         run: |
-          cd backend/OpenPlanningPoker
           docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:${{ github.run_number }} -f ./Dockerfile .
           docker push ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:${{ github.run_number }}
 
