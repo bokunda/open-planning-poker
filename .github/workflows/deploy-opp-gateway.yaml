@@ -39,6 +39,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository_owner }}/open-planning-poker-user-management
+          paht: opp-um
 
       - name: Pack User Management subgraph
         run: |
@@ -52,6 +53,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository_owner }}/open-planning-poker-game-engine
+          path: opp-ge
 
       - name: Pack Game Engine subgraph
         run: |
