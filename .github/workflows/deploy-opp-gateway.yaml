@@ -64,6 +64,8 @@ jobs:
       - name: Compose Schema
         run: |
           ls -la
+          cd ..
+          ls -la
           fusion compose -p gateway.fgp -s UserManagement.fsp
           fusion compose -p gateway.fgp -s GameEngine.fsp
           cat gateway.fgp
