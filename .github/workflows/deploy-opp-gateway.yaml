@@ -62,6 +62,13 @@ jobs:
           fusion subgraph pack
           cat subgraph-config.json
 
+      - name: Move to base directory
+        run: |
+          pwd
+          cd ..
+          cd ..
+          pwd
+
       - name: Compose Schema
         run: |
           fusion compose -p gateway.fgp -s opp-um/src/OpenPlanningPoker.UserManagement.GraphQL/UserManagement.fsp
