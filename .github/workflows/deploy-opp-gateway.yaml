@@ -25,7 +25,6 @@ jobs:
 
       - name: Set connection string in appsettings.json
         run: |
-          ls -la |
           jq '.Cors.AllowedOrigins = ${{ vars.OPP_DEFAULT_CORS }} |
               .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}" |
               .Serilog.WriteTo[0].Args.uri = "${{ vars.LOKI_URL }}"
@@ -43,7 +42,6 @@ jobs:
 
       - name: Pack User Management subgraph
         run: |
-          ls -la
           cd opp-um/src/OpenPlanningPoker.UserManagement.GraphQL
           jq '.http.baseAddress = "${{ vars.OPP_UM_SUBGRAPH_URL }}"' subgraph-config.json > temp.json && mv temp.json subgraph-config.json
           dotnet run -- schema export --output schema.graphql
@@ -58,7 +56,6 @@ jobs:
 
       - name: Pack Game Engine subgraph
         run: |
-          ls -la
           cd opp-ge/src/OpenPlanningPoker.GameEngine.GraphQL
           jq '.http.baseAddress = "${{ vars.OPP_GE_SUBGRAPH_URL }}"' subgraph-config.json > temp.json && mv temp.json subgraph-config.json
           dotnet run -- schema export --output schema.graphql
@@ -67,15 +64,8 @@ jobs:
 
       - name: Compose Schema
         run: |
-          ls -la
-          cd ..
-          ls -la
-          cd ..
-          ls -la
-          cd ..
-          ls -la
-          fusion compose -p gateway.fgp -s UserManagement.fsp
-          fusion compose -p gateway.fgp -s GameEngine.fsp
+          fusion compose -p gateway.fgp -s opp-um/src/OpenPlanningPoker.UserManagement.GraphQL/UserManagement.fsp
+          fusion compose -p gateway.fgp -s opp-ge/src/OpenPlanningPoker.GameEngine.GraphQL/GameEngine.fsp
           cat gateway.fgp
 
       - name: Log in to GitHub Container Registry
