@@ -23,6 +23,7 @@ jobs:
 
       - name: Set connection string in appsettings.json
         run: |
+          ls -la |
           jq '.Cors.AllowedOrigins = ${{ vars.OPP_DEFAULT_CORS }} |
               .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}" |
               .Serilog.WriteTo[0].Args.uri = "${{ vars.LOKI_URL }}"
