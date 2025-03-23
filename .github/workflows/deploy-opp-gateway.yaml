@@ -26,23 +26,33 @@ jobs:
           jq '.Cors.AllowedOrigins = ${{ vars.OPP_DEFAULT_CORS }} |
               .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}" |
               .Serilog.WriteTo[0].Args.uri = "${{ vars.LOKI_URL }}"
-              ' ./backend/OpenPlanningPoker/src/Gateway/OpenPlanningPoker.Fusion.Gateway/appsettings.json > temp.json && mv temp.json ./backend/OpenPlanningPoker/src/Gateway/OpenPlanningPoker.Fusion.Gateway/appsettings.json
+              ' ./appsettings.json > temp.json && mv temp.json ./appsettings.json
 
       - name: Install HotChocolate.Fusion CLI
         run: |
           dotnet tool install -g HotChocolate.Fusion.CommandLine
 
+      - name: Checkout User Management Repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/open-planning-poker-user-management
+
       - name: Pack User Management subgraph
         run: |
-          cd backend/OpenPlanningPoker/src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL
+          cd src/UserManagement/OpenPlanningPoker.UserManagement.GraphQL
           jq '.http.baseAddress = "${{ vars.OPP_UM_SUBGRAPH_URL }}"' subgraph-config.json > temp.json && mv temp.json subgraph-config.json
           dotnet run -- schema export --output schema.graphql
           fusion subgraph pack
           cat subgraph-config.json
 
+      - name: Checkout Game Engine Repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/open-planning-poker-game-engine
+
       - name: Pack Game Engine subgraph
         run: |
-          cd backend/OpenPlanningPoker/src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL
+          cd src/GameEngine/OpenPlanningPoker.GameEngine.GraphQL
           jq '.http.baseAddress = "${{ vars.OPP_GE_SUBGRAPH_URL }}"' subgraph-config.json > temp.json && mv temp.json subgraph-config.json
           dotnet run -- schema export --output schema.graphql
           fusion subgraph pack
@@ -51,8 +61,8 @@ jobs:
       - name: Compose Schema
         run: |
           cd backend/OpenPlanningPoker/src/Gateway/OpenPlanningPoker.Fusion.Gateway
-          fusion compose -p gateway.fgp -s ../../UserManagement/OpenPlanningPoker.UserManagement.GraphQL/UserManagement.fsp
-          fusion compose -p gateway.fgp -s ../../GameEngine/OpenPlanningPoker.GameEngine.GraphQL/GameEngine.fsp
+          fusion compose -p gateway.fgp -s UserManagement.fsp
+          fusion compose -p gateway.fgp -s GameEngine.fsp
           cat gateway.fgp
 
       - name: Log in to GitHub Container Registry
@@ -61,10 +71,10 @@ jobs:
       - name: Build and push Docker image
         run: |
           cd backend/OpenPlanningPoker
-          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:${{ github.run_number }} -f ./src/Gateway/OpenPlanningPoker.Fusion.Gateway/Dockerfile .
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:${{ github.run_number }} -f ./Dockerfile .
           docker push ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:${{ github.run_number }}
 
-          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:latest -f ./src/Gateway/OpenPlanningPoker.Fusion.Gateway/Dockerfile .
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:latest -f ./Dockerfile .
           docker push ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:latest
 
       - name: Deploy using SSH
