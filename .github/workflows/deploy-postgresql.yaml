@@ -12,9 +12,9 @@ jobs:
       - name: Deploy using SSH
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ vars.SSH_HOST }}
-          username: ${{ vars.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          host: ${{ vars.SSH_PRIVATE_HOST }}
+          username: ${{ vars.SSH_PRIVATE_USER }}
+          password: ${{ secrets.SSH_PRIVATE_PASSWORD }}
           script: |
             docker pull postgres:15.5
             docker rm -f OpenPlanningPoker.Db || true
