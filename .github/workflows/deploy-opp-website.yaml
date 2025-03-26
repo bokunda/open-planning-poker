@@ -1,0 +1,46 @@
+name: Deploy OPP Website
+run-name: "Deploying Open Planning Poker Website - Build #${{ github.run_number }}"
+on:
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      SSH_PASSWORD: 
+        required: true
+jobs:
+  deploy-opp-website:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/open-planning-poker-website
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerwebsite:${{ github.run_number }} -f ./Dockerfile .
+          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerwebsite:${{ github.run_number }}
+          
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerwebsite:latest -f ./Dockerfile .
+          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerwebsite:latest
+
+      - name: Deploy using SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
+            docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokerwebsite:${{ github.run_number }}
+            docker rm -f OpenPlanningPoker.Website || true
+            docker run -d \
+              --name OpenPlanningPoker.Website \
+              --network oppnetwork \
+              -p 9010:80 \
+              ghcr.io/${{ github.repository_owner }}/openplanningpokerwebsite:${{ github.run_number }}
