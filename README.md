@@ -21,6 +21,15 @@ Open Planning Poker provides you with an easy option to:
 - Voting mechanism.
 - Export results.
 
+## Screenshots
+
+### Main screen
+![Main screen](./images/open-planning-poker-game-demo.png)
+
+### Game History
+![History screen](./images/open-planning-poker-game-demo-history.png)
+
+
 ## System design
 
 ### High-Level Architecture
