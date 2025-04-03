@@ -17,10 +17,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set connection string in config.json
+        working-directory: frontend/open-planning-poker-web-app
         run: |
-          cd frontend/open-planning-poker-web-app
-          pwd
-          ls -la
           jq '.gqlGateway = "${{ vars.OPP_API_URL }}" |
               .gqlGatewayWss = "${{ vars.OPP_WSS_URL }}"
              ' ./public/assets/config.json > temp.json && mv temp.json ./public/assets/config.json
@@ -29,8 +27,8 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build and push Docker image
+        working-directory: frontend/open-planning-poker-web-app
         run: |
-          cd frontend/open-planning-poker-web-app
           docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerui:${{ github.run_number }} -f ./Dockerfile .
           docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerui:${{ github.run_number }}
 
@@ -39,12 +37,12 @@ jobs:
 
       - name: Deploy using SSH
         uses: appleboy/ssh-action@v1
+        working-directory: frontend/open-planning-poker-web-app
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd frontend/open-planning-poker-web-app
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
             docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokerui:${{ github.run_number }}
             docker rm -f OpenPlanningPoker.UI || true
