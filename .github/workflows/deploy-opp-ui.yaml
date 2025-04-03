@@ -16,11 +16,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set working directory
-        run: cd frontend/open-planning-poker-web-app
-
       - name: Set connection string in config.json
         run: |
+          cd frontend/open-planning-poker-web-app
           pwd
           ls -la
           jq '.gqlGateway = "${{ vars.OPP_API_URL }}" |
