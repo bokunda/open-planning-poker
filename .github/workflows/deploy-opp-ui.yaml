@@ -23,7 +23,7 @@ jobs:
           ls -la
           jq '.gqlGateway = "${{ vars.OPP_API_URL }}" |
               .gqlGatewayWss = "${{ vars.OPP_WSS_URL }}"
-             ' /public/assets/config.json > temp.json && mv temp.json /public/assets/config.json
+             ' ./public/assets/config.json > temp.json && mv temp.json ./public/assets/config.json
       
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
