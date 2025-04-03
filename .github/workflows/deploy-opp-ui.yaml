@@ -30,6 +30,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
+          cd frontend/open-planning-poker-web-app
           docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerui:${{ github.run_number }} -f ./Dockerfile .
           docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerui:${{ github.run_number }}
 
@@ -42,7 +43,8 @@ jobs:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
-          script: |            
+          script: |
+            cd frontend/open-planning-poker-web-app
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
             docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokerui:${{ github.run_number }}
             docker rm -f OpenPlanningPoker.UI || true
