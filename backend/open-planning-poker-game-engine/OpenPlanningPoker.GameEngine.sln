@@ -1,0 +1,103 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35818.85
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{9FA02D77-8A8D-44BB-AE58-67DDEEDEE740}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{52A425E1-99BC-4217-AFB7-C21C1E88B51E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{5BCA93A8-63A9-41C4-AB5D-9E84DA8E5ED9}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\Database\Open Planning Poker - Game Engine DB Schema.png = Resources\Database\Open Planning Poker - Game Engine DB Schema.png
+		Resources\Database\Open Planning Poker - Game Engine DB Schema_code.txt = Resources\Database\Open Planning Poker - Game Engine DB Schema_code.txt
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanningPoker.GameEngine.Api.Models", "src\OpenPlanningPoker.GameEngine.Api.Models\OpenPlanningPoker.GameEngine.Api.Models.csproj", "{14D5A027-BE07-0902-CBFF-0E53D37A3078}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanningPoker.GameEngine.Application", "src\OpenPlanningPoker.GameEngine.Application\OpenPlanningPoker.GameEngine.Application.csproj", "{8DF19FD2-8EC7-AEB7-92E7-88F5EA4A2289}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanningPoker.GameEngine.Domain", "src\OpenPlanningPoker.GameEngine.Domain\OpenPlanningPoker.GameEngine.Domain.csproj", "{9F4CF3FF-4D82-2CF4-7DD6-A626D0A72B06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanningPoker.GameEngine.GraphQL", "src\OpenPlanningPoker.GameEngine.GraphQL\OpenPlanningPoker.GameEngine.GraphQL.csproj", "{BA0411E8-AA29-1E25-35DC-7D25E991A117}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanningPoker.GameEngine.Infrastructure", "src\OpenPlanningPoker.GameEngine.Infrastructure\OpenPlanningPoker.GameEngine.Infrastructure.csproj", "{C26122BC-BDC6-FFE4-7C53-A61C4124AE94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanningPoker.GameEngine.Application.UnitTests", "test\OpenPlanningPoker.GameEngine.Application.UnitTests\OpenPlanningPoker.GameEngine.Application.UnitTests.csproj", "{2C85EE65-AF33-F0DD-41DB-1B9B25DF45C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanningPoker.GameEngine.Architecture.Tests", "test\OpenPlanningPoker.GameEngine.Architecture.Tests\OpenPlanningPoker.GameEngine.Architecture.Tests.csproj", "{D85C1FEA-2984-C761-5471-00AE2FDE74E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanningPoker.GameEngine.Domain.UnitTests", "test\OpenPlanningPoker.GameEngine.Domain.UnitTests\OpenPlanningPoker.GameEngine.Domain.UnitTests.csproj", "{1E74D9B9-E5AB-78D6-5BD4-CB5614C431B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanningPoker.GameEngine.GraphQL.Tests", "test\OpenPlanningPoker.GameEngine.GraphQL.Tests\OpenPlanningPoker.GameEngine.GraphQL.Tests.csproj", "{8A3F3FA2-C152-3BB1-2951-E79782637481}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{14D5A027-BE07-0902-CBFF-0E53D37A3078}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14D5A027-BE07-0902-CBFF-0E53D37A3078}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14D5A027-BE07-0902-CBFF-0E53D37A3078}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14D5A027-BE07-0902-CBFF-0E53D37A3078}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DF19FD2-8EC7-AEB7-92E7-88F5EA4A2289}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DF19FD2-8EC7-AEB7-92E7-88F5EA4A2289}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DF19FD2-8EC7-AEB7-92E7-88F5EA4A2289}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DF19FD2-8EC7-AEB7-92E7-88F5EA4A2289}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F4CF3FF-4D82-2CF4-7DD6-A626D0A72B06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F4CF3FF-4D82-2CF4-7DD6-A626D0A72B06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F4CF3FF-4D82-2CF4-7DD6-A626D0A72B06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F4CF3FF-4D82-2CF4-7DD6-A626D0A72B06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA0411E8-AA29-1E25-35DC-7D25E991A117}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA0411E8-AA29-1E25-35DC-7D25E991A117}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA0411E8-AA29-1E25-35DC-7D25E991A117}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA0411E8-AA29-1E25-35DC-7D25E991A117}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C26122BC-BDC6-FFE4-7C53-A61C4124AE94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C26122BC-BDC6-FFE4-7C53-A61C4124AE94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C26122BC-BDC6-FFE4-7C53-A61C4124AE94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C26122BC-BDC6-FFE4-7C53-A61C4124AE94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C85EE65-AF33-F0DD-41DB-1B9B25DF45C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C85EE65-AF33-F0DD-41DB-1B9B25DF45C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C85EE65-AF33-F0DD-41DB-1B9B25DF45C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C85EE65-AF33-F0DD-41DB-1B9B25DF45C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D85C1FEA-2984-C761-5471-00AE2FDE74E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D85C1FEA-2984-C761-5471-00AE2FDE74E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D85C1FEA-2984-C761-5471-00AE2FDE74E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D85C1FEA-2984-C761-5471-00AE2FDE74E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E74D9B9-E5AB-78D6-5BD4-CB5614C431B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E74D9B9-E5AB-78D6-5BD4-CB5614C431B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E74D9B9-E5AB-78D6-5BD4-CB5614C431B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E74D9B9-E5AB-78D6-5BD4-CB5614C431B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A3F3FA2-C152-3BB1-2951-E79782637481}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A3F3FA2-C152-3BB1-2951-E79782637481}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A3F3FA2-C152-3BB1-2951-E79782637481}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A3F3FA2-C152-3BB1-2951-E79782637481}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{52A425E1-99BC-4217-AFB7-C21C1E88B51E} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}
+		{5BCA93A8-63A9-41C4-AB5D-9E84DA8E5ED9} = {52A425E1-99BC-4217-AFB7-C21C1E88B51E}
+		{14D5A027-BE07-0902-CBFF-0E53D37A3078} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{8DF19FD2-8EC7-AEB7-92E7-88F5EA4A2289} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{9F4CF3FF-4D82-2CF4-7DD6-A626D0A72B06} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{BA0411E8-AA29-1E25-35DC-7D25E991A117} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{C26122BC-BDC6-FFE4-7C53-A61C4124AE94} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{2C85EE65-AF33-F0DD-41DB-1B9B25DF45C0} = {9FA02D77-8A8D-44BB-AE58-67DDEEDEE740}
+		{D85C1FEA-2984-C761-5471-00AE2FDE74E1} = {9FA02D77-8A8D-44BB-AE58-67DDEEDEE740}
+		{1E74D9B9-E5AB-78D6-5BD4-CB5614C431B2} = {9FA02D77-8A8D-44BB-AE58-67DDEEDEE740}
+		{8A3F3FA2-C152-3BB1-2951-E79782637481} = {9FA02D77-8A8D-44BB-AE58-67DDEEDEE740}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3A3EFD2E-4A64-4B32-945A-3B51A979FB27}
+	EndGlobalSection
+EndGlobal
