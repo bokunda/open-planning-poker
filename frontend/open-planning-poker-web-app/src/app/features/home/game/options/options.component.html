@@ -1,0 +1,18 @@
+<div class="game-options-wrapper">
+  <div class="game-options">
+    <span *ngIf="inGame">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="onCreateGameClick.emit()">
+        Create Game
+      </button>
+      <!-- <button
+        mat-raised-button
+        color="warn"
+        (click)="onJoinGameClick.emit()">
+        Join Game
+      </button> -->
+    </span>
+  </div>
+</div>

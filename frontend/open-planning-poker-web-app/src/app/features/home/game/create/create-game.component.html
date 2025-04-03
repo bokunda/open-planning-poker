@@ -1,0 +1,20 @@
+<div class="create-game-wrapper">
+  <div class="create-game">
+    <form [formGroup]="createGameForm" (ngSubmit)="onSubmit()" class="create-game-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Game Name</mat-label>
+        <input matInput formControlName="name">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
+
+      <button mat-fab extended type="submit">
+        Create
+        <mat-icon>sports_esports</mat-icon>
+      </button>
+    </form>
+  </div>
+</div>
