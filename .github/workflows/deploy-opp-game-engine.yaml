@@ -26,6 +26,7 @@ jobs:
           dotnet-version: 9.0.x
 
       - name: Set connection string in appsettings.json
+        working-directory: backend/open-planning-poker-game-engine
         run: |
           # Replace placeholders in appsettings.json with GitHub secrets
           jq '.ConnectionStrings.Database = "Host=${{ vars.OPP_DB_HOST }};Port=${{ vars.OPP_DB_PORT }};Database=${{ vars.OPP_DB_GE_NAME }};Username=${{ vars.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }};" |
@@ -39,6 +40,7 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build and push Docker image
+        working-directory: backend/open-planning-poker-game-engine
         run: |
           docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }} -f ./src/OpenPlanningPoker.GameEngine.GraphQL/Dockerfile .
           docker push ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }}
@@ -52,6 +54,7 @@ jobs:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
+          working-directory: backend/open-planning-poker-game-engine
           script: |
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
             docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }}
