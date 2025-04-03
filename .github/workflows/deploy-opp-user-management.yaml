@@ -15,8 +15,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository_owner }}/open-planning-poker-user-management
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -24,6 +22,7 @@ jobs:
           dotnet-version: 9.0.x
 
       - name: Set connection string in appsettings.json
+        working-directory: backend/open-planning-poker-user-management
         run: |
           # Replace placeholders in appsettings.json with GitHub secrets
           jq '.ConnectionStrings.Cache = "${{ vars.REDIS_HOST }}" |
@@ -36,6 +35,7 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build and push Docker image
+        working-directory: backend/open-planning-poker-user-management
         run: |
           docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:${{ github.run_number }} -f ./src/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile .
           docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:${{ github.run_number }}
