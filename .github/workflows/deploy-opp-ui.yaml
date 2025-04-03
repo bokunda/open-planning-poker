@@ -16,14 +16,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set working directory
-        run: cd frontend/open-planning-poker-web-app
-
       - name: Set connection string in config.json
         run: |
           jq '.gqlGateway = "${{ vars.OPP_API_URL }}" |
               .gqlGatewayWss = "${{ vars.OPP_WSS_URL }}"
              ' ./public/assets/config.json > temp.json && mv temp.json ./public/assets/config.json
+        working-directory: frontend/open-planning-poker-web-app
       
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
@@ -35,6 +33,7 @@ jobs:
 
           docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerui:latest -f ./Dockerfile .
           docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerui:latest
+        working-directory: frontend/open-planning-poker-web-app
 
       - name: Deploy using SSH
         uses: appleboy/ssh-action@v1
@@ -42,7 +41,7 @@ jobs:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
-          script: |            
+          script: |
             docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
             docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokerui:${{ github.run_number }}
             docker rm -f OpenPlanningPoker.UI || true
@@ -51,3 +50,4 @@ jobs:
               --network oppnetwork \
               -p 10000:80 \
               ghcr.io/${{ github.repository_owner }}/openplanningpokerui:${{ github.run_number }}
+          working-directory: frontend/open-planning-poker-web-app
