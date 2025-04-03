@@ -1,0 +1,40 @@
+<div class="game-details-wrapper" *ngIf="game">
+  <div class="game-details">
+      <h2>
+        {{ game.name }}
+        <button
+          mat-icon-button
+          (click)="copyToClipboard()"
+          aria-label="Copy Game URL to clipboard!"
+          matTooltip="Copy Game URL to clipboard!">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+        <!-- TODO: For some future realese -->
+        <!-- <button
+          mat-icon-button
+          color="primary"
+          matTooltip="Edit Game"
+          disabled>
+          <mat-icon>edit</mat-icon>
+        </button> -->
+        <button
+          mat-icon-button
+          matTooltip="{{ game.description }}"
+          *ngIf="game?.description">
+          <mat-icon>info</mat-icon>
+        </button>
+        <!-- TODO: For some future realese -->
+        <!-- <button
+          mat-icon-button href="#"
+          disabled>
+          <mat-icon>get_app</mat-icon>
+        </button> -->
+        <button
+          mat-icon-button
+          matTooltip="Leave Game"
+          (click)="onLeaveGameClick.emit()">
+          <mat-icon>exit_to_app</mat-icon>
+        </button>
+      </h2>
+  </div>
+</div>

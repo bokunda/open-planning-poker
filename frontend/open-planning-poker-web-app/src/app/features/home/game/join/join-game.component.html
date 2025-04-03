@@ -1,0 +1,16 @@
+<div class="join-game-wrapper">
+  <div class="join-game">
+    <form [formGroup]="joinGameForm" (ngSubmit)="onSubmit()" class="join-game-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Game Identificator</mat-label>
+        <input matInput formControlName="id">
+      </mat-form-field>
+
+      <button mat-fab extended type="submit">
+        Join
+        <mat-icon>sports_esports</mat-icon>
+      </button>
+    </form>
+
+  </div>
+</div>

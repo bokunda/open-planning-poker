@@ -1,0 +1,33 @@
+<div class="game-wrapper">
+  <div class="game">
+    <div class="center">
+      <app-options [inGame]="!game" (onCreateGameClick)="handleCreateGame()" (onJoinGameClick)="handleJoinGame()"
+        (onLeaveGameClick)="handleLeaveGame()">
+      </app-options>
+    </div>
+    <div class="game-details" *ngIf="game">
+      <div class="center">
+        <app-game-details [game]="game" (onLeaveGameClick)="handleLeaveGame()"></app-game-details>
+      </div>
+
+      <div class="center">
+        <app-voting
+          [players]="players"
+          [gameSettings]="game.settingsDetails"
+          [ticket]="ticket"
+          [votes]="votes"
+          (onCreateNewTicket)="handleCreateTicket()"
+          (OnVote)="handleVoteAction($event)"
+          ></app-voting>
+      </div>
+
+      <div class="center">
+        <div class="full-width" >
+          <app-voting-history
+            [tickets]="tickets"
+          ></app-voting-history>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,7 @@
+<div class="home-wrapper">
+  <div class="home">
+    <app-header></app-header>
+    <app-user [username]="username"></app-user>
+    <app-game *ngIf="userExists()" class="center"></app-game>
+  </div>
+</div>

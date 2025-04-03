@@ -1,0 +1,23 @@
+<div class="voting-history-wrapper">
+  <div class="voting-history" *ngIf="tickets">
+    <h3>History</h3>
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let ticket of tickets">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ticket.name}}
+          </mat-panel-title>
+          <mat-panel-description>Average voting value: {{ticket.averageVotingValue}} </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div *ngIf="ticket?.votes?.items && ticket!.votes!.totalCount > 0; else noItems">
+          <p>Voting result history.</p>
+          <span *ngFor="let vote of ticket?.votes?.items">
+            <p><strong>{{vote.playerName}}:</strong> {{vote.value}}</p>
+          </span>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>
+
+<ng-template #noItems><p>No voting results for the ticket.</p></ng-template>

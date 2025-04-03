@@ -1,0 +1,16 @@
+<div class="update-user-wrapper">
+  <div class="update-user">
+    <form [formGroup]="updateUserForm" (ngSubmit)="onSubmit()" class="update-user-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username">
+      </mat-form-field>
+
+      <button mat-fab extended type="submit">
+        Save
+        <mat-icon>save</mat-icon>
+      </button>
+    </form>
+
+  </div>
+</div>

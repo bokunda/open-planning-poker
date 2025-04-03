@@ -1,0 +1,66 @@
+<div class="players-wrapper">
+  <div class="players">
+    <div class="table-container" *ngIf="players?.items">
+      <!-- Top Players -->
+      <div class="top-players">
+        <div class="player" *ngFor="let player of topPlayers">
+          <span class="player-item-name">{{ player.name }}</span>
+          <div class="player-item-vote-wrapper">
+            <span class="player-item-vote">{{ getVoteData(player.id)?.value }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Left Players -->
+      <div class="left-players">
+        <div class="player" *ngFor="let player of leftPlayers">
+          <span class="player-item-name">{{ player.name }}</span>
+          <div class="player-item-vote-wrapper">
+            <span class="player-item-vote">{{ getVoteData(player.id)?.value }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table (Rectangle) -->
+      <div class="table-players">
+        <!-- For some of the future releases. -->
+        <!-- <button mat-flat-button (click)="onRevealCards.emit()">Reveal the cards</button> -->
+        <!-- <button mat-flat-button (click)="onVoteAgain.emit()">Vote again</button> -->
+        <button mat-flat-button (click)="onCreateNewTicket.emit()">New Ticket</button>
+      </div>
+
+      <!-- Right Players -->
+      <div class="right-players">
+        <div class="player" *ngFor="let player of rightPlayers">
+          <div class="player-item-vote-wrapper">
+            <span class="player-item-vote">{{ getVoteData(player.id)?.value }}</span>
+          </div>
+          <span class="player-item-name">{{ player.name }}</span>
+        </div>
+      </div>
+
+      <!-- Bottom Players -->
+      <div class="bottom-players">
+        <div class="player" *ngFor="let player of bottomPlayers">
+          <div class="player-item-vote-wrapper">
+            <span class="player-item-vote">{{ getVoteData(player.id)?.value }}</span>
+          </div>
+          <span class="player-item-name">{{ player.name }}</span>
+        </div>
+      </div>
+
+      <!-- Responsive representation of players -->
+      <div class="players-table-wrapper">
+        <div class="center">
+          <button mat-flat-button (click)="onCreateNewTicket.emit()">New Ticket</button>
+        </div>
+        <div class="players-table" *ngIf="players?.items">
+          <div class="player-row" *ngFor="let player of players?.items">
+            <div class="player-cell">{{ player.name }}</div>
+            <div class="player-cell">{{ getVoteData(player.id)?.value }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

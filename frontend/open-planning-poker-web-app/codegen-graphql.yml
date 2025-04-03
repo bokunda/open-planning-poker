@@ -1,0 +1,21 @@
+overwrite: true
+generates:
+  # where to generate file
+  ./src/app/graphql/graphql-gateway.service.ts:
+    schema:
+      # where the server lives
+      - http://localhost:10010/graphql
+    # Instead using the schema, we can use the documents to generate the types
+    #documents:
+      # where are our queries / mutations, etc.
+      #- src/app/graphql/graphql-custom-backend/*.graphql
+    # necessary to properly generate types
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-apollo-angular
+    config:
+      # used to disable lint rule: ts(4114) (override)
+      addExplicitOverride: true
+
+  # Defined other endpoints with similar logic as above
