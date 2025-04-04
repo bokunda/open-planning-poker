@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35818.85 d17.13
+VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanningPoker.Api.Gateway", "OpenPlanningPoker.Api.Gateway\OpenPlanningPoker.Api.Gateway.csproj", "{C2CE0FE0-A2E6-4EA0-A275-3D5D6B7F4CB9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPlanningPoker.Api.Gateway", "OpenPlanningPoker.Api.Gateway.csproj", "{98F57522-3C8B-9C7B-25C9-4D3143E14372}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C2CE0FE0-A2E6-4EA0-A275-3D5D6B7F4CB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2CE0FE0-A2E6-4EA0-A275-3D5D6B7F4CB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2CE0FE0-A2E6-4EA0-A275-3D5D6B7F4CB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2CE0FE0-A2E6-4EA0-A275-3D5D6B7F4CB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98F57522-3C8B-9C7B-25C9-4D3143E14372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98F57522-3C8B-9C7B-25C9-4D3143E14372}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98F57522-3C8B-9C7B-25C9-4D3143E14372}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98F57522-3C8B-9C7B-25C9-4D3143E14372}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
