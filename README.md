@@ -43,13 +43,13 @@ Open Planning Poker provides you with an easy option to:
 ## Technical implementation
 
 This product has a few services:
-- Presentational website
-- Frontend Application
-- GraphQL Gateway
-- User Management
-- Game Engine
-- Shared NuGet
-- Monitoring Services
+- [Presentational website](https://github.com/bokunda/open-planning-poker/tree/main/frontend/open-planning-poker-website)
+- [Frontend Application](https://github.com/bokunda/open-planning-poker/tree/main/frontend/open-planning-poker-web-app)
+- [GraphQL Gateway](https://github.com/bokunda/open-planning-poker/tree/main/backend/open-planning-poker-graphql-gateway)
+- [User Management](https://github.com/bokunda/open-planning-poker/tree/main/backend/open-planning-poker-user-management)
+- [Game Engine](https://github.com/bokunda/open-planning-poker/tree/main/backend/open-planning-poker-game-engine)
+- [Shared NuGet](https://github.com/bokunda/open-planning-poker/tree/main/backend/open-planning-poker-shared)
+- [Monitoring Services](https://github.com/bokunda/open-planning-poker/tree/main/backend/open-planning-poker-monitoring-services)
 
 ## How To
 
