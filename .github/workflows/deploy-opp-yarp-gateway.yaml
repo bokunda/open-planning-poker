@@ -28,7 +28,7 @@ jobs:
         working-directory: backend/open-planning-poker-api-gateway
         run: |
           # Replace placeholders in appsettings.json with GitHub secrets
-          jq '.ReverseProxy.Clusters.graphql-cluster.Destinations.destination1.Address = "${{ vars.OPP_API_URL }}"
+          jq '.ReverseProxy.Clusters[\"graphql-cluster\"].Destinations.destination1.Address = "${{ vars.OPP_API_URL }}"
               ' ./appsettings.json > temp.json && mv temp.json ./appsettings.json
       
       - name: Log in to GitHub Container Registry
