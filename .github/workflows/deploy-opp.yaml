@@ -17,10 +17,16 @@ jobs:
     secrets: 
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD  }}
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-  opp-gtw:
-    name: Deploy OPP Gateway
+  opp-graphql-gtw:
+    name: Deploy OPP GraphQL Gateway
     needs: [opp-um, opp-ge]
     uses: ./.github/workflows/deploy-opp-gateway.yaml
+    secrets: 
+      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+  opp-gtw:
+    name: Deploy OPP API Gateway
+    needs: [opp-graphql-gtw]
+    uses: ./.github/workflows/deploy-opp-yarp-gateway.yaml
     secrets: 
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
   opp-ui:

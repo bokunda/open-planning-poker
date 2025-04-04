@@ -1,0 +1,59 @@
+name: Deploy OPP YARP Gateway
+run-name: "Deploying Open Planning Poker YARP Gateway - Build #${{ github.run_number }}"
+on:
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      SSH_PASSWORD: 
+        required: true
+jobs:
+  deploy-opp-api-gateway:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Set API address in appsettings.json
+        working-directory: backend/open-planning-poker-api-gateway
+        run: |
+          jq ".ReverseProxy.Clusters[\"graphql-cluster\"].Destinations.destination1.Address = \"${{ vars.OPP_GRAPHQL_GATEWAY }}\"" \
+          appsettings.json > temp.json && mv temp.json appsettings.json
+      
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build and push Docker image
+        working-directory: backend/open-planning-poker-api-gateway
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerapigateway:${{ github.run_number }} -f ./Dockerfile .
+          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerapigateway:${{ github.run_number }}
+          
+          docker build -t ghcr.io/${{ github.repository_owner }}/openplanningpokerapigateway:latest -f ./Dockerfile .
+          docker push ghcr.io/${{ github.repository_owner }}/openplanningpokerapigateway:latest
+
+      - name: Deploy using SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            docker login ghcr.io -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
+            docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokerapigateway:${{ github.run_number }}
+            docker rm -f OpenPlanningPoker.Api.Gateway || true
+            docker run -d \
+              --name OpenPlanningPoker.Api.Gateway \
+              --network oppnetwork \
+              -e ASPNETCORE_ENVIRONMENT=Development \
+              -e ASPNETCORE_HTTP_PORTS=8080 \
+              -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
+              -p 11000:8080 \
+              ghcr.io/${{ github.repository_owner }}/openplanningpokerapigateway:${{ github.run_number }}
