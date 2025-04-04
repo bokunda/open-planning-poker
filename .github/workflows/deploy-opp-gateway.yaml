@@ -50,9 +50,10 @@ jobs:
           cat subgraph-config.json
 
       - name: Compose Schema
+        working-directory: backend
         run: |
-          fusion compose -p gateway.fgp -s ../open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL/UserManagement.fsp
-          fusion compose -p gateway.fgp -s ../open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL/GameEngine.fsp
+          fusion compose -p gateway.fgp -s open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL/UserManagement.fsp
+          fusion compose -p gateway.fgp -s open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL/GameEngine.fsp
           cat gateway.fgp
 
       - name: Log in to GitHub Container Registry
