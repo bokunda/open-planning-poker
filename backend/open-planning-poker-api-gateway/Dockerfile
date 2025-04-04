@@ -15,7 +15,7 @@ COPY ["OpenPlanningPoker.Api.Gateway.csproj", "OpenPlanningPoker.Api.Gateway/"]
 RUN dotnet restore "./OpenPlanningPoker.Api.Gateway/OpenPlanningPoker.Api.Gateway.csproj"
 COPY . .
 WORKDIR "/src/OpenPlanningPoker.Api.Gateway"
-RUN dotnet build "./OpenPlanningPoker.Api.Gateway.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./OpenPlanningPoker.Api.Gateway/OpenPlanningPoker.Api.Gateway.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
