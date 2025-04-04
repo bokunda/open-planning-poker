@@ -1,9 +1,6 @@
 name: Deploy OPP YARP Gateway
 run-name: "Deploying Open Planning Poker YARP Gateway - Build #${{ github.run_number }}"
 on:
-  push:
-    branches:
-      - add-yarp-gateway
   workflow_dispatch:
   workflow_call:
     secrets:
