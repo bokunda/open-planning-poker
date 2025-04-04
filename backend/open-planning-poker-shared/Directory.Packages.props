@@ -1,0 +1,36 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="HotChocolate" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.Abstractions" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.AspNetCore" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.AspNetCore.Authorization" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.AspNetCore.CommandLine" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.Diagnostics" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.Execution" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.Execution.Abstractions" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.Fetching" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.Fusion" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.Subscriptions.Redis" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.Types" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.Types.Analyzers" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.Utilities" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.Validation" Version="15.0.3" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Hybrid" Version="9.3.0" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.11.2" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.2" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.11.2-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Zipkin" Version="1.11.2" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.11.2" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.11.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.11.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Process" Version="1.11.0-beta.2" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.11.1" />
+  </ItemGroup>
+</Project>
