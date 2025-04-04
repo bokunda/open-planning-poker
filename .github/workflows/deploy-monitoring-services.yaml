@@ -1,0 +1,31 @@
+name: Deploy Monitoring Services
+run-name: "Deploying monitoring services to server"
+on: push
+jobs:
+  deploy-monitoring-services:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Copy code to the server
+        uses: appleboy/scp-action@v0.1.7
+        working-directory: backend/open-planning-poker-monitoring-services
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "."
+          target: "/home/${{ secrets.SSH_USER }}/opp-metrics"
+      
+      - name: Deploy using SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd /home/${{ secrets.SSH_USER }}/opp-metrics
+            docker compose pull
+            docker compose up -d --remove-orphans
+            docker system prune -f
