@@ -12,7 +12,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["OpenPlanningPoker.Api.Gateway.csproj", "OpenPlanningPoker.Api.Gateway/"]
-RUN dotnet restore "./OpenPlanningPoker.Api.Gateway.csproj"
+RUN dotnet restore "./OpenPlanningPoker.Api.Gateway/OpenPlanningPoker.Api.Gateway.csproj"
 COPY . .
 WORKDIR "/src/OpenPlanningPoker.Api.Gateway"
 RUN dotnet build "./OpenPlanningPoker.Api.Gateway.csproj" -c $BUILD_CONFIGURATION -o /app/build
