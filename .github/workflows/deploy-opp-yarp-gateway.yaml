@@ -27,7 +27,7 @@ jobs:
       - name: Set API address in appsettings.json
         working-directory: backend/open-planning-poker-api-gateway
         run: |
-          jq ".ReverseProxy.Clusters[\"graphql-cluster\"].Destinations.destination1.Address = \"${{ vars.OPP_API_URL }}\"" \
+          jq ".ReverseProxy.Clusters[\"graphql-cluster\"].Destinations.destination1.Address = \"${{ vars.OPP_GRAPHQL_GATEWAY }}\"" \
           appsettings.json > temp.json && mv temp.json appsettings.json
       
       - name: Log in to GitHub Container Registry
