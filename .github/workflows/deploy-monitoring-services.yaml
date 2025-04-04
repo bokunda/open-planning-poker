@@ -1,6 +1,11 @@
 name: Deploy Monitoring Services
 run-name: "Deploying monitoring services to server"
-on: push
+on:
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      SSH_PASSWORD: 
+        required: true
 jobs:
   deploy-monitoring-services:
     runs-on: ubuntu-latest
