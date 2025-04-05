@@ -38,6 +38,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
     <PackageReference Include="OpenPlanningPoker.Shared" />
+    <PackageReference Include="QuestPDF" />
     <PackageReference Include="Serilog.AspNetCore" />
     <PackageReference Include="Serilog.Sinks.Grafana.Loki" />
   </ItemGroup>

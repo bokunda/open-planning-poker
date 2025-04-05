@@ -27,4 +27,24 @@ public class GameMutations
             ? mapper.Map<Game>(result.Value!)
             : result.Error!;
     }
+
+    public async Task<FieldResult<GameReport, ApplicationError>> GenerateGameReport(
+        [Service] ISender sender,
+        [Required] Guid gameId,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new CreateGameReportCommand(gameId), cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            return result.Error!;
+        }
+
+        return new GameReport
+        {
+            GameId = gameId,
+            FileName = $"opp_game_export_{result.Value!.GameName.Replace(' ', '_')}_{DateTime.UtcNow:yyyyMMdd_HHmmss}.pdf",
+            Data = result.Value!.Stream!.ToArray()
+        };
+    }
 }

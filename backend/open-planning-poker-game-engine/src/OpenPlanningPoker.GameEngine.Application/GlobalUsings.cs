@@ -19,4 +19,5 @@ global using OpenPlanningPoker.Shared.Results;
 global using OpenPlanningPoker.Shared.Errors;
 global using OpenPlanningPoker.Shared.Extensions;
 global using OpenPlanningPoker.Shared.Identity;
-global using OpenPlanningPoker.Shared.Models;
+global using QuestPDF.Fluent;
+global using QuestPDF.Helpers;
