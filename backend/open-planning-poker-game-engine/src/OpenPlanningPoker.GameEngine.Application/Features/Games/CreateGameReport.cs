@@ -84,7 +84,7 @@ public static class CreateGameReport
             //.ShowInCompanionAsync(cancellationToken: cancellationToken);
             .GeneratePdf(memoryStream);
 
-            return new CreateGameReportResponse(game.Name, memoryStream);
+            return new CreateGameReportResponse(game!.Name, memoryStream);
         }
 
         private async Task<Game?> GetGameData(Guid gameId, CancellationToken cancellationToken)
