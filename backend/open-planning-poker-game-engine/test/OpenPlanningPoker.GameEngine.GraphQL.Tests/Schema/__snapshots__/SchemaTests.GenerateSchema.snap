@@ -36,6 +36,12 @@ type GamePlayer {
   id: UUID!
 }
 
+type GameReport {
+  gameId: UUID!
+  fileName: String!
+  data: [Byte!]!
+}
+
 type Info {
   version: String!
   author: String!
@@ -50,6 +56,7 @@ type Mutation {
   leaveGame(gameId: UUID!): Boolean!
   "Creates a game, returns game details."
   createGame(name: String! description: String!): Game!
+  generateGameReport(gameId: UUID!): GameReport!
   "Dummy health-check mutation."
   ping: String!
   "Creates Game Settings."
@@ -117,6 +124,9 @@ type Vote {
 
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
 directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
+
+"The `Byte` scalar type represents non-fractional whole numeric values. Byte can represent values between 0 and 255."
+scalar Byte
 
 "The `Decimal` scalar type represents a decimal floating-point number."
 scalar Decimal
