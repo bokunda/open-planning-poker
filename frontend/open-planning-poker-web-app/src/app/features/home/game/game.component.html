@@ -1,13 +1,19 @@
 <div class="game-wrapper">
   <div class="game">
     <div class="center">
-      <app-options [inGame]="!game" (onCreateGameClick)="handleCreateGame()" (onJoinGameClick)="handleJoinGame()"
+      <app-options
+        [inGame]="!game"
+        (onCreateGameClick)="handleCreateGame()"
+        (onJoinGameClick)="handleJoinGame()"
         (onLeaveGameClick)="handleLeaveGame()">
       </app-options>
     </div>
     <div class="game-details" *ngIf="game">
       <div class="center">
-        <app-game-details [game]="game" (onLeaveGameClick)="handleLeaveGame()"></app-game-details>
+        <app-game-details
+          [game]="game"
+          (onLeaveGameClick)="handleLeaveGame()"
+          (onGameReportClick)="handleGameReport()"></app-game-details>
       </div>
 
       <div class="center">

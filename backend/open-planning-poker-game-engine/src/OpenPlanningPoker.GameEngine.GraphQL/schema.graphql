@@ -70,6 +70,17 @@ type GamePlayer {
   id: UUID!
 }
 
+type GameReport {
+  gameId: UUID!
+  fileName: String!
+  data: [Byte!]!
+}
+
+type GenerateGameReportPayload {
+  gameReport: GameReport
+  errors: [GenerateGameReportError!]
+}
+
 type Info {
   version: String!
   author: String!
@@ -94,6 +105,7 @@ type Mutation {
   leaveGame(input: LeaveGameInput!): LeaveGamePayload! @cost(weight: "10")
   "Creates a game, returns game details."
   createGame(input: CreateGameInput!): CreateGamePayload! @cost(weight: "10")
+  generateGameReport(input: GenerateGameReportInput!): GenerateGameReportPayload! @cost(weight: "10")
   "Dummy health-check mutation."
   ping: PingPayload! @cost(weight: "10")
   "Creates Game Settings."
@@ -187,6 +199,8 @@ union GamePlayersResult = ApiCollectionOfGamePlayer | ApplicationError
 
 union GameResult = Game | ApplicationError
 
+union GenerateGameReportError = ApplicationError
+
 union InfoResult = Info | ApplicationError
 
 union JoinGameError = ApplicationError
@@ -232,6 +246,10 @@ input DeleteTicketInput {
   id: UUID!
 }
 
+input GenerateGameReportInput {
+  gameId: UUID!
+}
+
 input JoinGameInput {
   gameId: UUID!
 }
@@ -257,6 +275,9 @@ directive @cost("The `weight` argument defines what value to add to the overall 
 
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
 directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
+
+"The `Byte` scalar type represents non-fractional whole numeric values. Byte can represent values between 0 and 255."
+scalar Byte
 
 "The `Decimal` scalar type represents a decimal floating-point number."
 scalar Decimal

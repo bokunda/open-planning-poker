@@ -31,6 +31,12 @@
         </button> -->
         <button
           mat-icon-button
+          matTooltip="Download game report!"
+          (click)="onGameReportClick.emit()">
+          <mat-icon>download</mat-icon>
+        </button>
+        <button
+          mat-icon-button
           matTooltip="Leave Game"
           (click)="onLeaveGameClick.emit()">
           <mat-icon>exit_to_app</mat-icon>

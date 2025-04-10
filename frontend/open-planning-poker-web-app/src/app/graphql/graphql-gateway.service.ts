@@ -13,6 +13,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** The `Byte` scalar type represents non-fractional whole numeric values. Byte can represent values between 0 and 255. */
+  Byte: { input: any; output: any; }
   /** The `Decimal` scalar type represents a decimal floating-point number. */
   Decimal: { input: any; output: any; }
   UUID: { input: any; output: any; }
@@ -157,7 +159,26 @@ export type GamePlayer = {
 
 export type GamePlayersResult = ApiCollectionOfGamePlayer | ApplicationError;
 
+export type GameReport = {
+  __typename?: 'GameReport';
+  data: Array<Scalars['Byte']['output']>;
+  fileName: Scalars['String']['output'];
+  gameId: Scalars['UUID']['output'];
+};
+
 export type GameResult = ApplicationError | Game;
+
+export type GenerateGameReportError = ApplicationError;
+
+export type GenerateGameReportInput = {
+  gameId: Scalars['UUID']['input'];
+};
+
+export type GenerateGameReportPayload = {
+  __typename?: 'GenerateGameReportPayload';
+  errors?: Maybe<Array<GenerateGameReportError>>;
+  gameReport?: Maybe<GameReport>;
+};
 
 export type Info = {
   __typename?: 'Info';
@@ -205,6 +226,7 @@ export type Mutation = {
   createTicket: CreateTicketPayload;
   /** Deletes a ticket for given game. */
   deleteTicket: DeleteTicketPayload;
+  generateGameReport: GenerateGameReportPayload;
   /** Join Game */
   joinGame: JoinGamePayload;
   /** Leave a Game */
@@ -246,6 +268,11 @@ export type MutationCreateTicketArgs = {
 
 export type MutationDeleteTicketArgs = {
   input: DeleteTicketInput;
+};
+
+
+export type MutationGenerateGameReportArgs = {
+  input: GenerateGameReportInput;
 };
 
 

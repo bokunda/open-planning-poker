@@ -18,6 +18,8 @@ import { ON_VOTE_CREATED_OR_UPDATED } from './gql/onVoteCreatedOrUpdated.graphql
 import { CREATE_OR_UPDATE_VOTE } from './gql/createVote.graphql';
 import { GET_VOTES } from './gql/getVotes.graphql';
 import { GET_TICKETS } from './gql/getTickets.graphql';
+import { GENERATE_GAME_REPORT } from './gql/generateGameReport.graphql';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-game',
@@ -67,6 +69,10 @@ export class GameComponent implements OnInit {
   handleLeaveGame() {
     this.game = undefined;
     this.router.navigate([`/game`]);
+  }
+
+  handleGameReport() {
+    this.generateAndDownloadReport(this.game?.id!);
   }
 
   handleCreateTicket() {
@@ -346,4 +352,28 @@ export class GameComponent implements OnInit {
     });
   }
 
+  generateAndDownloadReport(gameId: string): void {
+    this.apollo.mutate({
+      mutation: GENERATE_GAME_REPORT,
+      variables: {
+        input: {
+          gameId: gameId
+        }
+      }
+    }).pipe(
+      map((result: any) => result.data?.generateGameReport?.gameReport)
+    ).subscribe((report) => {
+      if (!report) {
+        return;
+      }
+
+      const byteArray = new Uint8Array(report.data);
+      const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = report.fileName;
+      a.click();
+    });
+  }
 }

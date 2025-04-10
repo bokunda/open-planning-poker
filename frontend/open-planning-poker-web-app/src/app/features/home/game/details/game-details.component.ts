@@ -14,6 +14,7 @@ export class GameDetailsComponent {
   @Input() game: Game | undefined;
 
   @Output() onLeaveGameClick = new EventEmitter<void>();
+  @Output() onGameReportClick = new EventEmitter<void>();
 
   private snackBar = inject(MatSnackBar);
 
