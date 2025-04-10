@@ -9,4 +9,9 @@ public static class VoteQueryableExtensions
         => playerId.HasValue
             ? query.Where(x => x.PlayerId == playerId)
             : query;
+
+    public static IQueryable<Vote> QueryByGame(this IQueryable<Vote> query, Guid? gameId)
+    => gameId.HasValue
+        ? query.Where(x => x.Ticket.GameId == gameId)
+        : query;
 }
