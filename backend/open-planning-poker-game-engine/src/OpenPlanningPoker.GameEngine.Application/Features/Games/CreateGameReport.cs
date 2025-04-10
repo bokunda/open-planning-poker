@@ -90,7 +90,7 @@ public static class CreateGameReport
         {
             var game = await gameRepository.GetByIdAsync(gameId, cancellationToken);
             var tickets = await ticketRepository.GetByGame(gameId, cancellationToken);
-            var votes = await voteRepository.GetByTicket(gameId, null, cancellationToken);
+            var votes = await voteRepository.GetByGame(gameId, null, cancellationToken);
 
             if (game is null || tickets is null || votes is null)
             {
