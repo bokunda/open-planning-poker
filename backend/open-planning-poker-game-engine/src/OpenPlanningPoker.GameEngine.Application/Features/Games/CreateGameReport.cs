@@ -19,6 +19,7 @@ public static class CreateGameReport
         {
             // TODO: Enhance this to use one query
             var game = await GetGameData(request.GameId, cancellationToken);
+            var usernames = await GetUsernames(game, cancellationToken);
 
             using var memoryStream = new MemoryStream();
             Document.Create(container =>
@@ -30,7 +31,7 @@ public static class CreateGameReport
                     page.Header()
                         .PaddingBottom(8, QuestPDF.Infrastructure.Unit.Millimetre)
                         .Column(column =>
-                        {                            
+                        {
                             column.Item().Text("Game Report").FontSize(20).Bold();
                             column.Item()
                                 .PaddingTop(6, QuestPDF.Infrastructure.Unit.Point)
@@ -38,12 +39,12 @@ public static class CreateGameReport
                             column.Item().Text($"Name: {game.Name}");
                             column.Item().Text($"Created On: {game.CreatedOn}");
                             column.Item().Text($"Total Tickets: {game.Tickets!.Count}");
-                            column.Item().Text($"Average Ticket Estimation: {GetAverageVote(game.Tickets.SelectMany(ticket => ticket.Votes ?? Enumerable.Empty<Vote>())) }");
+                            column.Item().Text($"Average Ticket Estimation: {GetAverageVote(game.Tickets.SelectMany(ticket => ticket.Votes ?? Enumerable.Empty<Vote>()))}");
                         });
 
                     page.Content()
                         .PaddingBottom(16, QuestPDF.Infrastructure.Unit.Millimetre)
-                        .Column(async column =>
+                        .Column(column =>
                         {
                             column.Spacing(4, QuestPDF.Infrastructure.Unit.Point);
 
@@ -67,10 +68,9 @@ public static class CreateGameReport
 
                                 foreach (var vote in ticket.Votes!)
                                 {
-                                    var userName = (await userService.GetAsync($"{vote.PlayerId}", cancellationToken))?.UserName ?? "Expired";
                                     column.Item()
                                         .PaddingLeft(16, QuestPDF.Infrastructure.Unit.Point)
-                                        .Text($"Vote: {vote.Value} by {userName}")
+                                        .Text($"Vote: {vote.Value} by {usernames[vote.PlayerId]}")
                                         .FontSize(14);
                                 }
                             }
@@ -84,6 +84,24 @@ public static class CreateGameReport
             .GeneratePdf(memoryStream);
 
             return new CreateGameReportResponse(game!.Name, memoryStream);
+        }
+
+        private async Task<Dictionary<Guid, string>> GetUsernames(Game? game, CancellationToken cancellationToken)
+        {
+            var playerIds = game?.Tickets?
+                .SelectMany(ticket => ticket.Votes ?? Enumerable.Empty<Vote>())
+                .Select(vote => vote.PlayerId)
+                .Distinct()
+                .ToList();
+
+            var usernames = new Dictionary<Guid, string>();
+            foreach (var playerId in playerIds ?? Enumerable.Empty<Guid>())
+            {
+                var username = (await userService.GetAsync($"{playerId}", cancellationToken))?.UserName ?? "Expired";
+                usernames.Add(playerId, username);
+            }
+
+            return usernames;
         }
 
         private async Task<Game?> GetGameData(Guid gameId, CancellationToken cancellationToken)
