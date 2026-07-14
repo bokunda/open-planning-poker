@@ -14,6 +14,7 @@ export class PlayersComponent implements OnInit {
 
   @Input() players: ApiCollectionOfGamePlayer | undefined;
   @Input() votes: Vote[] = [];
+  @Input() votesRevealed = false;
 
   @Output() onCreateNewTicket = new EventEmitter<void>();
   @Output() onVoteAgain = new EventEmitter<void>();
@@ -43,5 +44,16 @@ export class PlayersComponent implements OnInit {
 
   getVoteData(playerId: string): Vote | undefined {
     return this.votes.find(x => x.playerId === playerId);
+  }
+
+  getVoteDisplay(playerId: string): string {
+    if (!this.votesRevealed) {
+      return this.getVoteData(playerId) ? '?' : '';
+    }
+    return this.getVoteData(playerId)?.value ?? '';
+  }
+
+  get hasAnyVotes(): boolean {
+    return this.votes.length > 0;
   }
 }

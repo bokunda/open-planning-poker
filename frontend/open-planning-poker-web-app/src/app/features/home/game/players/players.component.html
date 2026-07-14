@@ -6,7 +6,7 @@
         <div class="player" *ngFor="let player of topPlayers">
           <span class="player-item-name">{{ player.name }}</span>
           <div class="player-item-vote-wrapper">
-            <span class="player-item-vote">{{ getVoteData(player.id)?.value }}</span>
+            <span class="player-item-vote" [class.vote-hidden]="!votesRevealed && getVoteData(player.id)">{{ getVoteDisplay(player.id) }}</span>
           </div>
         </div>
       </div>
@@ -16,16 +16,26 @@
         <div class="player" *ngFor="let player of leftPlayers">
           <span class="player-item-name">{{ player.name }}</span>
           <div class="player-item-vote-wrapper">
-            <span class="player-item-vote">{{ getVoteData(player.id)?.value }}</span>
+            <span class="player-item-vote" [class.vote-hidden]="!votesRevealed && getVoteData(player.id)">{{ getVoteDisplay(player.id) }}</span>
           </div>
         </div>
       </div>
 
       <!-- Table (Rectangle) -->
       <div class="table-players">
-        <!-- For some of the future releases. -->
-        <!-- <button mat-flat-button (click)="onRevealCards.emit()">Reveal the cards</button> -->
-        <!-- <button mat-flat-button (click)="onVoteAgain.emit()">Vote again</button> -->
+        <button
+          mat-flat-button
+          color="accent"
+          *ngIf="!votesRevealed && hasAnyVotes"
+          (click)="onRevealCards.emit()">
+          Reveal Votes
+        </button>
+        <button
+          mat-flat-button
+          *ngIf="votesRevealed"
+          (click)="onVoteAgain.emit()">
+          Vote Again
+        </button>
         <button mat-flat-button (click)="onCreateNewTicket.emit()">New Ticket</button>
       </div>
 
@@ -33,7 +43,7 @@
       <div class="right-players">
         <div class="player" *ngFor="let player of rightPlayers">
           <div class="player-item-vote-wrapper">
-            <span class="player-item-vote">{{ getVoteData(player.id)?.value }}</span>
+            <span class="player-item-vote" [class.vote-hidden]="!votesRevealed && getVoteData(player.id)">{{ getVoteDisplay(player.id) }}</span>
           </div>
           <span class="player-item-name">{{ player.name }}</span>
         </div>
@@ -43,7 +53,7 @@
       <div class="bottom-players">
         <div class="player" *ngFor="let player of bottomPlayers">
           <div class="player-item-vote-wrapper">
-            <span class="player-item-vote">{{ getVoteData(player.id)?.value }}</span>
+            <span class="player-item-vote" [class.vote-hidden]="!votesRevealed && getVoteData(player.id)">{{ getVoteDisplay(player.id) }}</span>
           </div>
           <span class="player-item-name">{{ player.name }}</span>
         </div>
@@ -52,12 +62,25 @@
       <!-- Responsive representation of players -->
       <div class="players-table-wrapper">
         <div class="center">
+          <button
+            mat-flat-button
+            color="accent"
+            *ngIf="!votesRevealed && hasAnyVotes"
+            (click)="onRevealCards.emit()">
+            Reveal Votes
+          </button>
+          <button
+            mat-flat-button
+            *ngIf="votesRevealed"
+            (click)="onVoteAgain.emit()">
+            Vote Again
+          </button>
           <button mat-flat-button (click)="onCreateNewTicket.emit()">New Ticket</button>
         </div>
         <div class="players-table" *ngIf="players?.items">
           <div class="player-row" *ngFor="let player of players?.items">
             <div class="player-cell">{{ player.name }}</div>
-            <div class="player-cell">{{ getVoteData(player.id)?.value }}</div>
+            <div class="player-cell">{{ getVoteDisplay(player.id) }}</div>
           </div>
         </div>
       </div>

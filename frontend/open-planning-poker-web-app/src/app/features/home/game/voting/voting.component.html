@@ -13,7 +13,8 @@
       <app-players
         [players]="players"
         [votes]="votes"
-        (onRevealCards)="onRevealCards.emit()"
+        [votesRevealed]="votesRevealed"
+        (onRevealCards)="onRevealVotes.emit()"
         (onVoteAgain)="onVoteAgain.emit()"
         (onCreateNewTicket)="handleOnCreateNewTicket()">
       </app-players>

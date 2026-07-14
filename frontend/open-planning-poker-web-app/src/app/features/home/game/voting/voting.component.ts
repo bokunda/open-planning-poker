@@ -14,11 +14,12 @@ export class VotingComponent implements OnInit {
   @Input() players: ApiCollectionOfGamePlayer | undefined;
   @Input() ticket: Ticket | undefined;
   @Input() votes: Vote[] = [];
+  @Input() votesRevealed = false;
 
   @Output() onCreateNewTicket = new EventEmitter<void>();
   @Output() OnVote = new EventEmitter<string>();
   @Output() onVoteAgain = new EventEmitter<void>();
-  @Output() onRevealCards = new EventEmitter<void>();
+  @Output() onRevealVotes = new EventEmitter<void>();
 
   voteOptions: string[] = [];
   selectedOption: string | null = null;

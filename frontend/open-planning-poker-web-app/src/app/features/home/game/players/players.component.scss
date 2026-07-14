@@ -99,6 +99,15 @@
   justify-content: center;
 }
 
+.vote-hidden {
+  background-color: #7e3af2;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.2em;
+  border-radius: 8px;
+  padding: 4px 12px;
+}
+
 // Responsive table representation
 @media (min-width: 768px) {
   .players-table-wrapper {

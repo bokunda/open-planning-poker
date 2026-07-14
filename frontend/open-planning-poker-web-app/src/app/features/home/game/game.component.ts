@@ -35,6 +35,7 @@ export class GameComponent implements OnInit {
   tickets: Ticket[] = [];
   players: ApiCollectionOfGamePlayer | undefined;
   votes: Vote[] = [];
+  votesRevealed = false;
   breadcrumbItems: BreadcrumbItem[] = [];
 
   readonly dialog = inject(MatDialog);
@@ -98,6 +99,15 @@ export class GameComponent implements OnInit {
   handleVoteAction(value: string) {
     if (!this.ticket?.id) { return; }
     this.createOrUpdateVote(this.ticket!.id, value);
+  }
+
+  handleRevealVotes() {
+    this.votesRevealed = true;
+  }
+
+  handleVoteAgain() {
+    this.votesRevealed = false;
+    this.votes = [];
   }
 
   private getGame(id: string): void {

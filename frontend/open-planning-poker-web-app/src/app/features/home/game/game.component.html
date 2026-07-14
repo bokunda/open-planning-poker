@@ -23,8 +23,11 @@
           [gameSettings]="game.settingsDetails"
           [ticket]="ticket"
           [votes]="votes"
+          [votesRevealed]="votesRevealed"
           (onCreateNewTicket)="handleCreateTicket()"
           (OnVote)="handleVoteAction($event)"
+          (onRevealVotes)="handleRevealVotes()"
+          (onVoteAgain)="handleVoteAgain()"
           ></app-voting>
       </div>
 
