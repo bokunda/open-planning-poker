@@ -20,8 +20,8 @@ public class HttpCurrentUserProvider(
         if (user?.Id == Guid.Empty || string.IsNullOrEmpty(user?.UserName))
         {
             return new ApplicationError(
-                ApplicationErrorContants.UserNotFound.Key, 
-                ApplicationErrorContants.UserNotFound.Value);
+                ApplicationErrorConstants.UserNotFound.Key,
+                ApplicationErrorConstants.UserNotFound.Value);
         }
 
         return user;

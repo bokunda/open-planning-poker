@@ -1,0 +1,43 @@
+# Production overrides for docker-compose.yml
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+services:
+
+  OpenPlanningPoker.UserManagement.GraphQL:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=8080
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_ENDPOINT}
+    restart: unless-stopped
+
+  OpenPlanningPoker.GameEngine.GraphQL:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=8080
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_ENDPOINT}
+    restart: unless-stopped
+
+  openplanningpoker.fusion.gateway:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_ENDPOINT}
+    restart: unless-stopped
+
+  openplanning.poker.webapp:
+    restart: unless-stopped
+
+  opp-db:
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-postgres}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - opp-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  OpenPlanningPoker.Cache:
+    restart: unless-stopped
+
+volumes:
+  opp-db-data:

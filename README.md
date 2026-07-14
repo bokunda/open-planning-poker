@@ -53,10 +53,56 @@ This product has a few services:
 
 ## How To
 
+### Prerequisites
+
+- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+- [Node.js 22 LTS](https://nodejs.org/)
+- [Docker & Docker Compose](https://www.docker.com/)
+- [Angular CLI](https://angular.dev/cli) (`npm install -g @angular/cli`)
+
 ### Run Open Planning Poker locally
 
-- Windows: execute `run-game-locally.ps1`
-- Linux: execute `run-game-locally.sh`
+```bash
+# Start infrastructure (PostgreSQL + Redis)
+docker compose up -d opp-db OpenPlanningPoker.Cache
+
+# Backend services (each in a separate terminal)
+cd backend/open-planning-poker-api-gateway && dotnet run
+cd backend/open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL && dotnet run
+cd backend/open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL && dotnet run
+cd backend/open-planning-poker-graphql-gateway && dotnet run
+
+# Frontend
+cd frontend/open-planning-poker-web-app && npm install && npm start
+```
+
+Or use the convenience scripts:
+- Windows: `.\run-game-locally.ps1`
+- Linux: `./run-game-locally.sh`
+
+### Production Deployment
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+For CI/CD deployment, use the GitHub Actions workflows in `.github/workflows/`:
+- `deploy-opp.yaml` — Deploy all application services
+- `deploy-postgresql.yaml` — Deploy PostgreSQL
+- `deploy-redis.yaml` — Deploy Redis
+- `deploy-opp-website.yaml` — Deploy marketing website
+- `deploy-monitoring-services.yaml` — Deploy monitoring stack
+
+### Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `ASPNETCORE_ENVIRONMENT` | `Development` or `Production` |
+| `POSTGRES_DB` | PostgreSQL database name |
+| `POSTGRES_USER` | PostgreSQL user |
+| `POSTGRES_PASSWORD` | PostgreSQL password |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | OpenTelemetry collector URL |
+| `DOCKER_REGISTRY` | Container registry prefix (optional) |
 
 ### Access Open Planning Poker online
 

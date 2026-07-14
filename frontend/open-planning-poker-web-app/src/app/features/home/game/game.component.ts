@@ -174,30 +174,33 @@ export class GameComponent implements OnInit {
     this.apollo.subscribe<{ onPlayerJoined: BaseUserProfile }>({
       query: ON_PLAYER_JOINED,
       variables: { gameId },
-    }).subscribe((result) => {
-      if (!result) {
-        return;
-      }
+    }).subscribe({
+      next: (result) => {
+        if (!result) {
+          return;
+        }
 
-      const newPlayer: BaseUserProfile = result!.data!.onPlayerJoined;
-      const item = { id: newPlayer.id, name: newPlayer.userName } as GamePlayer;
+        const newPlayer: BaseUserProfile = result!.data!.onPlayerJoined;
+        const item = { id: newPlayer.id, name: newPlayer.userName } as GamePlayer;
 
-      if (this.players?.items) {
-        const existingPlayerIndex = this.players.items.findIndex(player => player.id === item.id);
-        if (existingPlayerIndex !== -1) {
-          // Update the username if it is different
-          if (this.players.items[existingPlayerIndex].name !== item.name) {
-            this.players.items[existingPlayerIndex].name = item.name;
+        if (this.players?.items) {
+          const existingPlayerIndex = this.players.items.findIndex(player => player.id === item.id);
+          if (existingPlayerIndex !== -1) {
+            if (this.players.items[existingPlayerIndex].name !== item.name) {
+              this.players.items[existingPlayerIndex].name = item.name;
+            }
+          } else {
+            this.players = {
+              ...this.players,
+              items: [...this.players.items, item]
+            };
           }
         } else {
-          // Add the new player
-          this.players = {
-            ...this.players,
-            items: [...this.players.items, item]
-          };
+          this.players = { items: [item] } as ApiCollectionOfGamePlayer;
         }
-      } else {
-        this.players = { items: [item] } as ApiCollectionOfGamePlayer;
+      },
+      error: (err) => {
+        console.error('Subscription error (onPlayerJoined):', err);
       }
     });
   }
@@ -259,13 +262,18 @@ export class GameComponent implements OnInit {
     this.apollo.subscribe<{ onTicketCreated: Ticket }>({
       query: ON_TICKET_CREATED,
       variables: { gameId },
-    }).subscribe((result) => {
-      if (!result) {
-        return;
+    }).subscribe({
+      next: (result) => {
+        if (!result) {
+          return;
+        }
+        this.ticket = result.data?.onTicketCreated as Ticket;
+        this.votes = [];
+        this.router.navigate([`/game/${gameId}/ticket/${this.ticket.id}`]);
+      },
+      error: (err) => {
+        console.error('Subscription error (onTicketCreated):', err);
       }
-      this.ticket = result.data?.onTicketCreated as Ticket;
-      this.votes = [];
-      this.router.navigate([`/game/${gameId}/ticket/${this.ticket.id}`]);
     });
   }
 
@@ -314,19 +322,24 @@ export class GameComponent implements OnInit {
     this.apollo.subscribe<{ onVoteCreatedOrUpdated: any }>({
       query: ON_VOTE_CREATED_OR_UPDATED,
       variables: { ticketId },
-    }).subscribe((result) => {
-      if (!result) {
-        return;
-      }
-      const voteIndex = this.votes.findIndex(x => x && x.id === result!.data!.onVoteCreatedOrUpdated!.id);
+    }).subscribe({
+      next: (result) => {
+        if (!result) {
+          return;
+        }
+        const voteIndex = this.votes.findIndex(x => x && x.id === result!.data!.onVoteCreatedOrUpdated!.id);
 
-      this.getTickets(this.game?.id!);
-      if (voteIndex !== -1) {
-        this.votes = this.votes.map((vote, index) =>
-          index === voteIndex ? { ...vote, value: result!.data!.onVoteCreatedOrUpdated!.value } : vote
-        );
-      } else {
-        this.votes.push(result!.data!.onVoteCreatedOrUpdated);
+        this.getTickets(this.game?.id!);
+        if (voteIndex !== -1) {
+          this.votes = this.votes.map((vote, index) =>
+            index === voteIndex ? { ...vote, value: result!.data!.onVoteCreatedOrUpdated!.value } : vote
+          );
+        } else {
+          this.votes.push(result!.data!.onVoteCreatedOrUpdated);
+        }
+      },
+      error: (err) => {
+        console.error('Subscription error (onVoteCreatedOrUpdated):', err);
       }
     });
   }

@@ -11,7 +11,12 @@ public class HeaderPropagationHandler(IHttpContextAccessor httpContextAccessor) 
             // Propagate  headers
             if (httpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
             {
-                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authHeader.ToString().Split(" ").Last());
+                var token = authHeader.ToString();
+                if (token.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                {
+                    token = token["Bearer ".Length..];
+                }
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             }
         }
 
