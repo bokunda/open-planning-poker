@@ -3,6 +3,22 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+/* Accessibility: skip-to-content link (visually hidden until focused) */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #7e3af2;
+  color: #fff;
+  padding: 8px 16px;
+  z-index: 10000;
+  text-decoration: none;
+  border-radius: 0 0 4px 0;
+}
+.skip-link:focus {
+  top: 0;
+}
+
 .center-text {
   text-align: center;
 }

@@ -1,7 +1,7 @@
 {
-  "name": "landwind",
+  "name": "open-planning-poker-website",
   "version": "1.0.0",
-  "description": "Landwind is a free and open-source landing page built with Tailwind CSS and Flowbite for SaaS and product websites.",
+  "description": "Open Planning Poker — free and open-source agile estimation tool. Landing page built with Tailwind CSS and Flowbite.",
   "main": "index.js",
   "scripts": {
     "build": "tailwindcss build input.css -o dist/input.css --minify",
@@ -9,22 +9,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/themesberg/landwind.git"
+    "url": "git+https://github.com/bokunda/open-planning-poker.git"
   },
   "keywords": [
-    "landing",
-    "page",
-    "tailwind",
+    "planning",
+    "poker",
+    "scrum",
+    "agile",
+    "estimation",
     "tailwind",
     "css",
     "flowbite",
-    "responsive",
-    "html",
-    "css",
-    "javascript",
-    "design"
+    "open",
+    "source"
   ],
-  "author": "Themesberg",
+  "author": "Bojan Piskulic",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/themesberg/landwind/issues"

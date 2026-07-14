@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://app.openplanningpoker.com/sitemap.xml

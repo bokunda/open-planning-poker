@@ -9,20 +9,29 @@
 server {
     listen 80;
     server_name app.openplanningpoker.com;
-
-    location / {
-        return 301 https://$host$request_uri;
-    }
+    return 301 https://$host$request_uri;
 }
 
 server {
-    listen 443 ssl;
+    listen 443 ssl http2;
     server_name app.openplanningpoker.com;
 
     ssl_certificate /etc/letsencrypt/live/app.openplanningpoker.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/app.openplanningpoker.com/privkey.pem;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
+
+    # Security headers
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    add_header X-Frame-Options "DENY" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    # Gzip
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css text/xml text/javascript application/javascript application/json image/svg+xml;
 
     # Reverse proxy for HTTP requests
     location / {
@@ -31,6 +40,7 @@ server {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 
     # WebSocket support for GraphQL subscriptions
@@ -42,6 +52,7 @@ server {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
 ```

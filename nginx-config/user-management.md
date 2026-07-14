@@ -16,7 +16,7 @@ server {
 }
 
 server {
-    listen 443 ssl;
+    listen 443 ssl http2;
     server_name usermanagement.openplanningpoker.com;
 
     ssl_certificate /etc/letsencrypt/live/usermanagement.openplanningpoker.com/fullchain.pem;
@@ -24,9 +24,20 @@ server {
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
 
+    # Security headers
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    add_header X-Frame-Options "DENY" always;
+    add_header X-Content-Type-Options "nosniff" always;
+
+    # Gzip
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css text/xml text/javascript application/javascript application/json;
+
     # Reverse proxy for HTTP requests
     location / {
-        proxy_pass http://162.55.213.9:9091;
+        proxy_pass http://162.55.213.9:9090;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -35,7 +46,7 @@ server {
 
     # WebSocket support for GraphQL subscriptions
     location /graphql {
-        proxy_pass http://162.55.213.9:9091;
+        proxy_pass http://162.55.213.9:9090;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";

@@ -16,13 +16,24 @@ server {
 }
 
 server {
-    listen 443 ssl;
+    listen 443 ssl http2;
     server_name gateway.openplanningpoker.com;
 
     ssl_certificate /etc/letsencrypt/live/gateway.openplanningpoker.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/gateway.openplanningpoker.com/privkey.pem;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
+
+    # Security headers
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    add_header X-Frame-Options "DENY" always;
+    add_header X-Content-Type-Options "nosniff" always;
+
+    # Gzip
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css text/xml text/javascript application/javascript application/json;
 
     # Reverse proxy for HTTP requests
     location / {
