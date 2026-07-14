@@ -1,113 +1,114 @@
 # Open Planning Poker
 
-🌍 [Project website.](https://openplanningpoker.com)
+🌍 [Project Website](https://openplanningpoker.com) &nbsp;|&nbsp; 🎮 [Play Now](https://app.openplanningpoker.com)
 
-This document represents a project specification of the Open Planning Poker solution. Topics to cover are:
-- What is Open Planning Poker?
-- Technical implementation of Open Planning Poker.
-- System design of the whole solution.
-- How to run locally.
-- How to access online.
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![.NET](https://img.shields.io/badge/.NET-9.0-512bd4.svg)](https://dotnet.microsoft.com/)
+[![Angular](https://img.shields.io/badge/Angular-19.2-dd0031.svg)](https://angular.dev/)
+[![GraphQL](https://img.shields.io/badge/GraphQL-HotChocolate%2015-e10098.svg)](https://chillicream.com/)
 
-## What is Open Planning Poker?
+**Open Planning Poker** is a free and open-source agile estimation tool for Scrum teams. Create game rooms, invite your team, estimate user stories collaboratively, and export results — all in real-time.
 
-Open Planning Poker is a free and open-source solution that implements one of the ways how to plan and estimate effort.
-The idea is simple, you have to import or write all the user stories/features/tasks and during the 'poker' sessions you have to discuss about the scope and effort of each item as a team.
-The next step is **voting** where you have to assign a complexity value for the discussed story. When the voting is finished, an average value is calculated and then you can argue if the average value is acceptable or to vote again.
+## ✨ Features
 
-Open Planning Poker provides you with an easy option to:
-- Create a poker room.
-- Import or add stories/features/tasks manually.
-- Voting mechanism.
-- Export results.
+- 🏠 **Create & Join Poker Rooms** — Start a game and share the link with your team
+- 🎴 **Classic Planning Poker Voting** — Estimate user stories using Fibonacci, T-shirt sizes, or custom decks
+- 👻 **Hidden Votes** — Votes are concealed until the team is ready to reveal them
+- ⚡ **Real-Time Updates** — GraphQL WebSocket subscriptions for instant vote and player updates
+- 📊 **Export Results** — Download game reports as PDF
+- 🔒 **No Registration Required** — Anonymous usernames, no passwords, no personal data
+- 📱 **PWA Support** — Installable on mobile and desktop, works offline
+- 🔍 **SEO Optimized** — Server-side rendering, structured data, meta tags for search engines
+- 🐳 **Docker Ready** — Run locally or deploy to production with Docker Compose
+- 🛡️ **Rate Limiting & Security Headers** — Protected by design
+- 📈 **Monitoring** — OpenTelemetry, Prometheus, Loki, and Grafana dashboards
 
-## Screenshots
+## 📖 Documentation
 
-### Main screen
-![Main screen](./images/open-planning-poker-game-demo.png)
+| Document | Description |
+|----------|-------------|
+| [Architecture](docs/architecture.md) | System design, service matrix, data flow, Clean Architecture layers |
+| [Setup & Development](docs/setup-and-development.md) | Prerequisites, local setup, project structure, env vars, tests |
+| [Deployment](docs/deployment.md) | Production deployment, CI/CD, nginx, SSL, firewall, rollback |
+| [SEO & Analytics](docs/seo-and-analytics.md) | SEO features, structured data, sitemap, GA4, Clarity |
+| [Contributing](CONTRIBUTING.md) | How to contribute, coding standards, PR checklist |
+| [Security](SECURITY.md) | Vulnerability reporting, security features, known limitations |
+| [Changelog](CHANGELOG.md) | Release history and changes |
+| [Code of Conduct](CODE_OF_CONDUCT.md) | Community standards |
 
-### Game History
-![History screen](./images/open-planning-poker-game-demo-history.png)
+## 🏗️ Architecture
 
+Open Planning Poker follows a **microservices architecture with GraphQL Federation**:
 
-## System design
+```
+Browser → Nginx (SSL) → API Gateway (YARP) → Fusion Gateway → GraphQL Subgraphs
+                                                                    ├── Game Engine (PostgreSQL)
+                                                                    └── User Management (Redis)
+```
 
-### High-Level Architecture
+See the [Architecture documentation](docs/architecture.md) for the full system design, service responsibility matrix, and data flow diagrams.
 
-![Infrastructural HLA Diagram](diagrams/high_level_diagram.drawio.png "Infrastructual HLA Diagram")
-
-### Data Model
-
-![Game Engine DB](diagrams/Database/Open%20Planning%20Poker%20-%20Game%20Engine%20DB%20Schema.png "Game Engine Database Schema")
-
-## Technical implementation
-
-This product has a few services:
-- [Presentational website](https://github.com/bokunda/open-planning-poker/tree/main/frontend/open-planning-poker-website)
-- [Frontend Application](https://github.com/bokunda/open-planning-poker/tree/main/frontend/open-planning-poker-web-app)
-- [GraphQL Gateway](https://github.com/bokunda/open-planning-poker/tree/main/backend/open-planning-poker-graphql-gateway)
-- [User Management](https://github.com/bokunda/open-planning-poker/tree/main/backend/open-planning-poker-user-management)
-- [Game Engine](https://github.com/bokunda/open-planning-poker/tree/main/backend/open-planning-poker-game-engine)
-- [Shared NuGet](https://github.com/bokunda/open-planning-poker/tree/main/backend/open-planning-poker-shared)
-- [Monitoring Services](https://github.com/bokunda/open-planning-poker/tree/main/backend/open-planning-poker-monitoring-services)
-
-## How To
-
-### Prerequisites
-
-- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
-- [Node.js 22 LTS](https://nodejs.org/)
-- [Docker & Docker Compose](https://www.docker.com/)
-- [Angular CLI](https://angular.dev/cli) (`npm install -g @angular/cli`)
-
-### Run Open Planning Poker locally
+## 🚀 Quick Start
 
 ```bash
+# Clone the repo
+git clone https://github.com/bokunda/open-planning-poker.git
+cd open-planning-poker
+
 # Start infrastructure (PostgreSQL + Redis)
 docker compose up -d opp-db OpenPlanningPoker.Cache
 
-# Backend services (each in a separate terminal)
-cd backend/open-planning-poker-api-gateway && dotnet run
-cd backend/open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL && dotnet run
-cd backend/open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL && dotnet run
-cd backend/open-planning-poker-graphql-gateway && dotnet run
+# Start backend services
+cd backend/open-planning-poker-api-gateway && dotnet run           # Terminal 1 — API Gateway :11000
+cd backend/open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL && dotnet run  # Terminal 2 — Game Engine :9091
+cd backend/open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL && dotnet run  # Terminal 3 — User Mgmt :9090
+cd backend/open-planning-poker-graphql-gateway && dotnet run      # Terminal 4 — Fusion Gateway :10010
 
-# Frontend
-cd frontend/open-planning-poker-web-app && npm install && npm start
+# Start frontend
+cd frontend/open-planning-poker-web-app && npm install && npm start   # Angular dev server :4200
 ```
 
-Or use the convenience scripts:
-- Windows: `.\run-game-locally.ps1`
-- Linux: `./run-game-locally.sh`
+Full setup guide: [docs/setup-and-development.md](docs/setup-and-development.md)
 
-### Production Deployment
+## 📸 Screenshots
 
-```bash
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-```
+### Main Screen
 
-For CI/CD deployment, use the GitHub Actions workflows in `.github/workflows/`:
-- `deploy-opp.yaml` — Deploy all application services
-- `deploy-postgresql.yaml` — Deploy PostgreSQL
-- `deploy-redis.yaml` — Deploy Redis
-- `deploy-opp-website.yaml` — Deploy marketing website
-- `deploy-monitoring-services.yaml` — Deploy monitoring stack
+![Main screen](./images/open-planning-poker-game-demo.png)
 
-### Environment Variables
+### Game History
 
-| Variable | Description |
-|----------|-------------|
-| `ASPNETCORE_ENVIRONMENT` | `Development` or `Production` |
-| `POSTGRES_DB` | PostgreSQL database name |
-| `POSTGRES_USER` | PostgreSQL user |
-| `POSTGRES_PASSWORD` | PostgreSQL password |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | OpenTelemetry collector URL |
-| `DOCKER_REGISTRY` | Container registry prefix (optional) |
+![History screen](./images/open-planning-poker-game-demo-history.png)
 
-### Access Open Planning Poker online
+## 🛠️ Technology Stack
 
-You can access the app by visiting this [link.](https://openplanningpoker.com)
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | Angular 19, TypeScript, Angular Material, Apollo Client, SCSS |
+| **Backend** | .NET 9, HotChocolate GraphQL, MediatR, Entity Framework Core |
+| **Gateway** | YARP Reverse Proxy, HotChocolate Fusion |
+| **Database** | PostgreSQL 15.5 |
+| **Cache** | Redis 7 |
+| **Monitoring** | OpenTelemetry, Prometheus, Loki, Grafana |
+| **Infrastructure** | Docker, Nginx, GitHub Actions, Let's Encrypt |
+| **Shared** | OpenPlanningPoker.Shared NuGet package |
 
-## License
+## 🗺️ Roadmap
 
-Project is under [GNU General Public License](https://github.com/bokunda/open-planning-poker/blob/main/LICENSE)
+- [ ] Import user stories from CSV / Jira
+- [ ] Multiple deck types (Fibonacci, T-shirt sizes, custom)
+- [ ] Advanced game settings (voting time limits, break rounds)
+- [ ] User accounts with history
+- [ ] Dark mode theme
+- [ ] WebP image optimization
+- [ ] Multi-language support (i18n)
+
+## 📄 License
+
+This project is licensed under the [GNU General Public License v3.0](LICENSE).
+
+---
+
+Built with ❤️ by [Bojan Piskulic](https://github.com/bokunda)
+
