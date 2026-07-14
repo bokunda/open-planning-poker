@@ -1,0 +1,35 @@
+.breadcrumb-list {
+  list-style: none;
+  padding: 8px 16px;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.breadcrumb-item a {
+  color: #7e3af2;
+  text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-separator {
+  color: #9ca3af;
+  user-select: none;
+}
+
+.breadcrumb-current {
+  color: #6b7280;
+  font-weight: 500;
+}

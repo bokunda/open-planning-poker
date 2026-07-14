@@ -20,6 +20,7 @@ import { GET_VOTES } from './gql/getVotes.graphql';
 import { GET_TICKETS } from './gql/getTickets.graphql';
 import { GENERATE_GAME_REPORT } from './gql/generateGameReport.graphql';
 import { map } from 'rxjs';
+import { BreadcrumbItem } from './breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-game',
@@ -34,6 +35,7 @@ export class GameComponent implements OnInit {
   tickets: Ticket[] = [];
   players: ApiCollectionOfGamePlayer | undefined;
   votes: Vote[] = [];
+  breadcrumbItems: BreadcrumbItem[] = [];
 
   readonly dialog = inject(MatDialog);
   readonly router = inject(Router);
@@ -55,7 +57,21 @@ export class GameComponent implements OnInit {
           this.subscribeToVoteActions(ticketId);
         }
       }
+      this.updateBreadcrumb(gameId, ticketId);
     });
+  }
+
+  private updateBreadcrumb(gameId: string | null, ticketId: string | null): void {
+    const items: BreadcrumbItem[] = [
+      { label: 'Home', url: '/' }
+    ];
+    if (gameId) {
+      items.push({ label: 'Game', url: `/game/${gameId}` });
+    }
+    if (ticketId) {
+      items.push({ label: 'Voting' });
+    }
+    this.breadcrumbItems = items;
   }
 
   handleCreateGame() {

@@ -12,6 +12,7 @@ import { GameDetailsComponent } from './details/game-details.component';
 import { PlayersComponent } from './players/players.component';
 import { VotingComponent } from './voting/voting.component';
 import { VotingHistoryComponent } from './voting-history/voting-history.component';
+import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 
 
 
@@ -26,7 +27,8 @@ import { VotingHistoryComponent } from './voting-history/voting-history.componen
     GameComponent,
     VotingComponent,
     VotingHistoryComponent,
-    PlayersComponent
+    PlayersComponent,
+    BreadcrumbComponent
   ],
   imports: [
     CommonModule,
