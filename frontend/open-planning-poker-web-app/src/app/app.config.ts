@@ -1,7 +1,7 @@
 import { ApplicationConfig, inject, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import { HttpLink } from 'apollo-angular/http';
 import { provideApollo } from 'apollo-angular';
 import { ApolloLink, DefaultOptions, InMemoryCache, split } from '@apollo/client/core';
@@ -9,17 +9,19 @@ import { setContext } from '@apollo/client/link/context';
 import { createClient } from 'graphql-ws';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition } from '@apollo/client/utilities';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(withFetch()),
+    provideClientHydration(withEventReplay()),
     provideApollo(() => {
 
       const httpLink = inject(HttpLink);
 
-      const config = (window as any).appConfig;
+      const config = (typeof window !== 'undefined' ? (window as any).appConfig : null);
 
       const gqlGateway = config?.gqlGateway ?? 'http://localhost:10010/graphql';
       const gqlGatewayWss = config?.gqlGatewayWss ?? 'ws://localhost:10010/graphql';
@@ -29,6 +31,8 @@ export const appConfig: ApplicationConfig = {
       }));
 
       const auth = setContext((operation, context) => {
+        if (typeof localStorage === 'undefined') return {};
+
         const token = localStorage.getItem('token');
 
         if (token === null) {
@@ -44,8 +48,9 @@ export const appConfig: ApplicationConfig = {
 
       const wsLink = new GraphQLWsLink(createClient({
         url: gqlGatewayWss,
-        connectionParams: {
-          authToken: localStorage.getItem('token'),
+        connectionParams: () => {
+          if (typeof localStorage === 'undefined') return {};
+          return { authToken: localStorage.getItem('token') };
         },
       }));
 
