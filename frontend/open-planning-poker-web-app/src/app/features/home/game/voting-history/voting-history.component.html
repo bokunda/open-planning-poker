@@ -7,12 +7,23 @@
           <mat-panel-title>
             {{ticket.name}}
           </mat-panel-title>
-          <mat-panel-description>Average voting value: {{ticket.averageVotingValue}} </mat-panel-description>
+          <mat-panel-description>
+            Average voting value:
+            <ng-container *ngIf="ticket.id !== currentTicketId || votesRevealed; else hiddenAvg">
+              {{ticket.averageVotingValue}}
+            </ng-container>
+            <ng-template #hiddenAvg>?</ng-template>
+          </mat-panel-description>
         </mat-expansion-panel-header>
         <div *ngIf="ticket?.votes?.items && ticket!.votes!.totalCount > 0; else noItems">
           <p>Voting result history.</p>
           <span *ngFor="let vote of ticket?.votes?.items">
-            <p><strong>{{vote.playerName}}:</strong> {{vote.value}}</p>
+            <p><strong>{{vote.playerName}}:</strong>
+              <ng-container *ngIf="ticket.id !== currentTicketId || votesRevealed; else hiddenVote">
+                {{vote.value}}
+              </ng-container>
+              <ng-template #hiddenVote>?</ng-template>
+            </p>
           </span>
         </div>
       </mat-expansion-panel>

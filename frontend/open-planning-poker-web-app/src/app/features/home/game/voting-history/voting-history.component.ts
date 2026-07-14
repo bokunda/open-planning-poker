@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Ticket } from '../../../../graphql/graphql-gateway.service';
 
 @Component({
@@ -11,4 +11,6 @@ import { Ticket } from '../../../../graphql/graphql-gateway.service';
 export class VotingHistoryComponent {
 
   @Input() tickets: Ticket[] = [];
+  @Input() votesRevealed = false;
+  @Input() currentTicketId: string | undefined;
 }

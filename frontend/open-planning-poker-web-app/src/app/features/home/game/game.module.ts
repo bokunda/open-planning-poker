@@ -36,7 +36,8 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
     RouterModule
   ],
   exports: [
-    GameComponent
+    GameComponent,
+    BreadcrumbComponent
   ]
 })
 export class GameModule { }

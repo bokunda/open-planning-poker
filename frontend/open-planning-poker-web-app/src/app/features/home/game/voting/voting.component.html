@@ -3,7 +3,8 @@
     <div class="voting-item-details">
       <h2 class="center">{{ticket?.name}}</h2>
       <p class="center">Average voting value:
-        <strong class="voting-item-value">{{ ticket?.averageVotingValue }}</strong>
+        <strong class="voting-item-value" *ngIf="votesRevealed">{{ ticket?.averageVotingValue }}</strong>
+        <strong class="voting-item-value vote-hidden" *ngIf="!votesRevealed && ticket?.averageVotingValue">?</strong>
       </p>
     </div>
   </div>

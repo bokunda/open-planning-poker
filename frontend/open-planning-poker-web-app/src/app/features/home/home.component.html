@@ -1,7 +1,8 @@
 <main class="home-wrapper">
-  <div class="home">
+  <div class="home" style="display:flex;flex-direction:column;">
     <app-header></app-header>
+    <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
     <app-user [username]="username"></app-user>
-    <app-game *ngIf="userExists()" class="center"></app-game>
+    <app-game *ngIf="userExists()" class="center" style="width:100%"></app-game>
   </div>
 </main>

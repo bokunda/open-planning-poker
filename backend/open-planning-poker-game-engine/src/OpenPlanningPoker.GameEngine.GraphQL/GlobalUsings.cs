@@ -6,6 +6,7 @@ global using System.Reflection;
 global using OpenPlanningPoker.GameEngine.GraphQL.Extensions;
 global using OpenPlanningPoker.GameEngine.GraphQL.Middleware;
 global using OpenPlanningPoker.GameEngine.Application;
+global using OpenPlanningPoker.GameEngine.Domain.Games;
 global using OpenPlanningPoker.GameEngine.Infrastructure;
 global using HealthChecks.UI.Client;
 global using MediatR;

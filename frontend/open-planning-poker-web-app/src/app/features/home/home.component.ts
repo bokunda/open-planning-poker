@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Mutation, Query, RegisterUserInput, User } from '../../graphql/graphql-gateway.service';
 import { GET_USER } from './user/gql/getUser.graphql';
 import { REGISTER_USER } from './user/gql/registerUser.graphql';
+import { BreadcrumbItem } from './game/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-home',
@@ -15,6 +16,7 @@ import { REGISTER_USER } from './user/gql/registerUser.graphql';
 export class HomeComponent implements OnInit {
 
   username: string = '';
+  breadcrumbItems: BreadcrumbItem[] = [];
 
   private readonly title = inject(Title);
   private readonly meta = inject(Meta);
@@ -25,6 +27,22 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.setupUser();
     this.updatePageMeta();
+    this.route.paramMap.subscribe(params => {
+      this.updateBreadcrumb(params.get('id'), params.get('ticketId'));
+    });
+  }
+
+  private updateBreadcrumb(gameId: string | null, ticketId: string | null): void {
+    const items: BreadcrumbItem[] = [
+      { label: 'Home', url: '/' }
+    ];
+    if (gameId) {
+      items.push({ label: 'Game', url: `/game/${gameId}` });
+    }
+    if (ticketId) {
+      items.push({ label: 'Voting' });
+    }
+    this.breadcrumbItems = items;
   }
 
   private updatePageMeta(): void {
@@ -41,7 +59,6 @@ export class HomeComponent implements OnInit {
       this.title.setTitle('Open Planning Poker — Free Agile Estimation Tool');
       this.meta.updateTag({ name: 'description', content: 'Play Planning Poker online for free. Create a game room, invite your team, and estimate user stories collaboratively.' });
     }
-  }
   }
 
   public userExists(): boolean {

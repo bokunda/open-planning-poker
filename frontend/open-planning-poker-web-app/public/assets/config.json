@@ -1,4 +1,4 @@
 {
-  "gqlGateway": "https://gateway.openplanningpoker.com/graphql",
-  "gqlGatewayWss": "wss://ge.openplanningpoker.com/graphql"
+  "gqlGateway": "http://localhost:10010/graphql",
+  "gqlGatewayWss": "ws://localhost:10010/graphql"
 }

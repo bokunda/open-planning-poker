@@ -91,6 +91,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .player-item-vote-text {
@@ -103,9 +105,7 @@
   background-color: #7e3af2;
   color: #fff;
   font-weight: bold;
-  font-size: 1.2em;
-  border-radius: 8px;
-  padding: 4px 12px;
+  border-color: #7e3af2;
 }
 
 // Responsive table representation

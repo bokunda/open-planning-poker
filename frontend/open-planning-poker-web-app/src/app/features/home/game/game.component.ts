@@ -20,7 +20,6 @@ import { GET_VOTES } from './gql/getVotes.graphql';
 import { GET_TICKETS } from './gql/getTickets.graphql';
 import { GENERATE_GAME_REPORT } from './gql/generateGameReport.graphql';
 import { map } from 'rxjs';
-import { BreadcrumbItem } from './breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-game',
@@ -36,7 +35,6 @@ export class GameComponent implements OnInit {
   players: ApiCollectionOfGamePlayer | undefined;
   votes: Vote[] = [];
   votesRevealed = false;
-  breadcrumbItems: BreadcrumbItem[] = [];
 
   readonly dialog = inject(MatDialog);
   readonly router = inject(Router);
@@ -58,21 +56,7 @@ export class GameComponent implements OnInit {
           this.subscribeToVoteActions(ticketId);
         }
       }
-      this.updateBreadcrumb(gameId, ticketId);
     });
-  }
-
-  private updateBreadcrumb(gameId: string | null, ticketId: string | null): void {
-    const items: BreadcrumbItem[] = [
-      { label: 'Home', url: '/' }
-    ];
-    if (gameId) {
-      items.push({ label: 'Game', url: `/game/${gameId}` });
-    }
-    if (ticketId) {
-      items.push({ label: 'Voting' });
-    }
-    this.breadcrumbItems = items;
   }
 
   handleCreateGame() {
@@ -150,7 +134,10 @@ export class GameComponent implements OnInit {
     .valueChanges
     .subscribe({
       next: ({ data }) => {
-        if (data.gamePlayers) {
+        if (data.gamePlayers?.items) {
+          // Merge with existing to avoid duplicates from subscription race condition
+          const existingIds = new Set((this.players?.items ?? []).map(p => p.id));
+          data.gamePlayers.items.forEach(p => { if (!existingIds.has(p.id)) existingIds.add(p.id); });
           this.players = data.gamePlayers;
         }
       }
@@ -245,6 +232,7 @@ export class GameComponent implements OnInit {
         if (data?.createTicket?.ticket) {
           this.ticket = data?.createTicket?.ticket;
           this.votes = [];
+          this.votesRevealed = false;
           this.subscribeToPlayerJoined(gameId);
           this.getTickets(gameId);
           this.router.navigate([`/game/${gameId}/ticket/${this.ticket.id}`]);
@@ -263,6 +251,7 @@ export class GameComponent implements OnInit {
       next: ({ data }) => {
         if (data) {
           this.ticket = data?.ticket;
+          this.votesRevealed = false;
           this.getVotes(this.ticket.id);
           this.getTickets(this.ticket.gameId);
         }
@@ -295,6 +284,7 @@ export class GameComponent implements OnInit {
         }
         this.ticket = result.data?.onTicketCreated as Ticket;
         this.votes = [];
+        this.votesRevealed = false;
         this.router.navigate([`/game/${gameId}/ticket/${this.ticket.id}`]);
       },
       error: (err) => {
