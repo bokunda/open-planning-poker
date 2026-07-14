@@ -26,10 +26,7 @@ var app = builder.Build();
 
 app.UseRateLimiter();
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+app.MapOpenApi();
 
 app.UseHttpsRedirection();
 

@@ -36,10 +36,11 @@ app.ApplyMigrations();
 // Dynamic sitemap endpoint — serves active game URLs for SEO
 app.MapGet("/sitemap.xml", async (OpenPlanningPokerGameEngineDbContext db) =>
 {
+    var now = DateTime.UtcNow.ToString("yyyy-MM-dd");
     var games = await db.Set<Game>()
         .OrderByDescending(g => EF.Property<DateTime>(g, "CreatedAt"))
         .Take(1000)
-        .Select(g => new { g.Id })
+        .Select(g => new { g.Id, CreatedAt = EF.Property<DateTime>(g, "CreatedAt") })
         .ToListAsync();
 
     var sb = new System.Text.StringBuilder();
@@ -47,11 +48,13 @@ app.MapGet("/sitemap.xml", async (OpenPlanningPokerGameEngineDbContext db) =>
     sb.AppendLine("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
     sb.AppendLine("  <url>");
     sb.AppendLine("    <loc>https://app.openplanningpoker.com/</loc>");
+    sb.AppendLine($"    <lastmod>{now}</lastmod>");
     sb.AppendLine("    <changefreq>weekly</changefreq>");
     sb.AppendLine("    <priority>1.0</priority>");
     sb.AppendLine("  </url>");
     sb.AppendLine("  <url>");
     sb.AppendLine("    <loc>https://app.openplanningpoker.com/game</loc>");
+    sb.AppendLine($"    <lastmod>{now}</lastmod>");
     sb.AppendLine("    <changefreq>weekly</changefreq>");
     sb.AppendLine("    <priority>0.8</priority>");
     sb.AppendLine("  </url>");
@@ -59,6 +62,7 @@ app.MapGet("/sitemap.xml", async (OpenPlanningPokerGameEngineDbContext db) =>
     {
         sb.AppendLine("  <url>");
         sb.AppendLine($"    <loc>https://app.openplanningpoker.com/game/{game.Id}</loc>");
+        sb.AppendLine($"    <lastmod>{game.CreatedAt:yyyy-MM-dd}</lastmod>");
         sb.AppendLine("    <changefreq>daily</changefreq>");
         sb.AppendLine("    <priority>0.6</priority>");
         sb.AppendLine("  </url>");

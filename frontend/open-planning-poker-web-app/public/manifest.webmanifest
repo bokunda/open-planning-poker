@@ -1,0 +1,23 @@
+{
+  "name": "Open Planning Poker",
+  "short_name": "Planning Poker",
+  "description": "Free online Planning Poker tool for agile Scrum teams",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#7e3af2",
+  "icons": [
+    {
+      "src": "/assets/open-planning-poker-game-logo-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/open-planning-poker-game-logo-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
