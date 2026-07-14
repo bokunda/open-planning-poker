@@ -1,6 +1,11 @@
 <!DOCTYPE html>
- <html lang="en">
+<html lang="en">
 <head>
+
+    <!-- Preconnect to critical origins -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+    <link rel="preconnect" href="https://app.openplanningpoker.com">
+    <link rel="dns-prefetch" href="https://buttons.github.io">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-03VCK0K926"></script>
@@ -8,52 +13,81 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-03VCK0K926');
     </script>
 
-    <link rel="canonical" href="https://openplanningpoker.com/" />
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Open Planning Poker</title>
+    <meta name="theme-color" content="#7e3af2">
 
-    <!-- Meta SEO -->
-    <meta name="title" content="Open Planning Poker">
-    <meta name="description" content="Get started with a free and open-source Open Planning Poker game.">
-    <meta name="robots" content="index, follow">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="language" content="English">
+    <!-- Primary Meta Tags -->
+    <title>Open Planning Poker — Free & Open Source Agile Estimation Tool</title>
+    <meta name="title" content="Open Planning Poker — Free & Open Source Agile Estimation Tool">
+    <meta name="description" content="Open Planning Poker is a free, open-source agile estimation tool for Scrum teams. Simplify sprint planning with collaborative voting, real-time results, and PDF exports. No registration required.">
+    <meta name="keywords" content="planning poker, scrum poker, agile estimation, sprint planning, scrum tool, free planning poker, open source planning poker, story points, estimation tool">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="author" content="Bojan Piskulic">
+    <link rel="canonical" href="https://openplanningpoker.com/">
 
-    <!-- Social media share -->
-    <meta property="og:title" content="Open Planning Poker">
-    <meta property="og:site_name" content="Open Planning Poker">
-    <meta property="og:url" content="https://openplanningpoker.com/">
-    <meta property="og:description" content="Get started with a free and open-source Open Planning Poker game.">
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://openplanningpoker.com/">
+    <meta property="og:title" content="Open Planning Poker — Free & Open Source Agile Estimation Tool">
+    <meta property="og:description" content="Open Planning Poker is a free, open-source agile estimation tool for Scrum teams. Simplify sprint planning with collaborative voting, real-time results, and PDF exports.">
     <meta property="og:image" content="https://openplanningpoker.com/images/open-planning-poker-game-logo.png">
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:site" content="@openplanningpoker" />
-    <meta name="twitter:creator" content="@openplanningpoker" />
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:image:alt" content="Open Planning Poker logo">
+    <meta property="og:site_name" content="Open Planning Poker">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://openplanningpoker.com/">
+    <meta name="twitter:title" content="Open Planning Poker — Free & Open Source Agile Estimation Tool">
+    <meta name="twitter:description" content="Free, open-source agile estimation tool for Scrum teams. Collaborative voting, real-time results, PDF exports. No registration required.">
+    <meta name="twitter:image" content="https://openplanningpoker.com/images/open-planning-poker-game-logo.png">
+    <meta name="twitter:image:alt" content="Open Planning Poker logo">
+    <meta name="twitter:site" content="@openplanningpoker">
+    <meta name="twitter:creator" content="@openplanningpoker">
 
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="/images/open-planning-poker-game-logo-180x180.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/open-planning-poker-game-logo-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/open-planning-poker-game-logo-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="msapplication-TileColor" content="#7e3af2">
+
     <link href="./output.css" rel="stylesheet">
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
-    <!-- Structured Data -->
+    <!-- Structured Data: WebSite + SearchAction -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Open Planning Poker",
+      "url": "https://openplanningpoker.com",
+      "description": "Free and open-source agile estimation tool for Scrum teams.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://openplanningpoker.com/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- Structured Data: SoftwareApplication -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "Open Planning Poker",
-      "description": "Get started with a free and open-source Open Planning Poker game.",
+      "description": "Free and open-source agile estimation tool for Scrum teams. Collaborative voting, real-time results, and PDF exports.",
       "url": "https://openplanningpoker.com",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
@@ -66,6 +100,72 @@
         "@type": "Person",
         "name": "Bojan Piskulic"
       }
+    }
+    </script>
+
+    <!-- Structured Data: FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Open Planning Poker?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Open Planning Poker is a collaborative agile estimation tool designed to streamline your sprint planning sessions. It's an engaging and effective way for development teams to estimate the effort required for each user story or task in a project."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does Open Planning Poker work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The team gathers to discuss and estimate the complexity of user stories. Each team member privately selects an estimation value using a deck of cards. The selected values are revealed simultaneously, fostering discussion and convergence. Repeat until a consensus is reached for each user story."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Open Planning Poker really free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! Open Planning Poker is a free, open source project. You can use the application on our server or you can self-host it yourself."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the technology stack?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Open Planning Poker is built with Angular, .NET, GraphQL, Redis, and PostgreSQL."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What data is collected?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We collect minimal anonymous usage data via Google Analytics to improve the service. No personal data is required to use the application."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- Structured Data: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://openplanningpoker.com/"
+        }
+      ]
     }
     </script>
 </head>
@@ -103,7 +203,7 @@
                 </div>
             </div>
             <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
-                <img src="./images/hero.png" alt="hero image">
+                <img src="./images/hero.png" alt="Open Planning Poker — Agile estimation tool interface showing planning poker game session" width="600" height="400">
             </div>                
         </div>
     </section>
@@ -141,7 +241,7 @@
                     </ul>
                     <p class="mb-8 font-light lg:text-xl">Play the game on our servers on or your self-hosted instance.</p>
                 </div>
-                <img class="hidden w-full mb-4 rounded-lg lg:mb-0 lg:flex" src="./images/open-planning-poker-game-demo.png" alt="dashboard feature image">
+                <img class="hidden w-full mb-4 rounded-lg lg:mb-0 lg:flex" src="./images/open-planning-poker-game-demo.png" alt="Open Planning Poker main game dashboard showing voting cards and player list" width="600" height="400" loading="lazy">
             </div>
         </div>
       </section>

@@ -2,23 +2,79 @@
 <html lang="en">
 <head>
 
+  <!-- Preconnect to critical origins -->
+  <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://gateway.openplanningpoker.com">
+
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-DEXZ4JTESJ"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-DEXZ4JTESJ');
   </script>
 
   <meta charset="utf-8">
-  <title>Open Planning Poker</title>
+  <title>Open Planning Poker — Free Agile Estimation Tool</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#7e3af2">
+  <meta name="description" content="Play Planning Poker online for free. Create a game room, invite your team, and estimate user stories collaboratively. No registration required. Open source.">
+  <meta name="keywords" content="planning poker, scrum poker, agile estimation, sprint planning, free online planning poker">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Bojan Piskulic">
+  <link rel="canonical" href="https://app.openplanningpoker.com/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://app.openplanningpoker.com/">
+  <meta property="og:title" content="Open Planning Poker — Free Agile Estimation Tool">
+  <meta property="og:description" content="Play Planning Poker online for free. Create a game room, invite your team, and estimate user stories collaboratively. No registration required.">
+  <meta property="og:image" content="https://openplanningpoker.com/images/open-planning-poker-game-logo.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Open Planning Poker logo">
+  <meta property="og:site_name" content="Open Planning Poker">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://app.openplanningpoker.com/">
+  <meta name="twitter:title" content="Open Planning Poker — Free Agile Estimation Tool">
+  <meta name="twitter:description" content="Play Planning Poker online for free. Create a game room, invite your team, and estimate user stories collaboratively.">
+  <meta name="twitter:image" content="https://openplanningpoker.com/images/open-planning-poker-game-logo.png">
+  <meta name="twitter:image:alt" content="Open Planning Poker logo">
+  <meta name="twitter:site" content="@openplanningpoker">
+  <meta name="twitter:creator" content="@openplanningpoker">
+
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Structured Data: WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Open Planning Poker",
+    "description": "Free online Planning Poker tool for agile Scrum teams. Create games, invite team members, and estimate stories collaboratively.",
+    "url": "https://app.openplanningpoker.com",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Bojan Piskulic"
+    }
+  }
+  </script>
 </head>
 <body class="mat-typography">
   <app-root></app-root>
