@@ -7,16 +7,13 @@
   <!-- Preconnect to critical origins -->
   <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://apigateway.openplanningpoker.com">
-  <link rel="preconnect" href="https://ge.openplanningpoker.com">
+  <link rel="preconnect" href="https://apigateway.openplanningpoker.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DEXZ4JTESJ"></script>
+  <!-- Google tag (gtag.js) — deferred to idle to avoid blocking critical path -->
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-DEXZ4JTESJ');
+    function loadGTM(){var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-DEXZ4JTESJ';document.head.appendChild(s);window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-DEXZ4JTESJ');}
+    if('requestIdleCallback' in window){requestIdleCallback(loadGTM)}else{setTimeout(loadGTM,2000)}
   </script>
 
   <title>Open Planning Poker — Free Agile Estimation Tool</title>
