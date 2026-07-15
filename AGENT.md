@@ -126,7 +126,9 @@ npm start  # http://localhost:4200
 5. **Duplicate players** — getGamePlayers() was overwriting list. Fixed with merge logic.
 6. **config.json localhost** — CI/CD overwrites during build. Safe to keep localhost for dev.
 7. **Angular Material imports** — `MatSelectModule`, `MatProgressSpinnerModule`, `MatSlideToggleModule`, `MatBadgeModule` added to MaterialModule.
-8. **Chat requires gateway.fgp regeneration** — New `ChatMessage` type, `sendChatMessage` mutation, `onChatMessage` subscription added to GameEngine schema. Run `generate-schema.ps1` to rebuild gateway package.
+8. **Chat/Reveal require gateway.fgp regeneration** — New types added to GameEngine schema. Run `.\generate-schema.ps1` then `docker compose build` + `up -d`.
+9. **takeUntilDestroyed context error (NG0203)** — Must inject `DestroyRef` and pass to `takeUntilDestroyed(this.destroyRef)` when used outside injection context (e.g., in paramMap subscription callbacks).
+10. **RedisValue ambiguity** — `JsonSerializer.Deserialize<T>(RedisValue)` is ambiguous; cast to `(string)value` explicitly.
 
 ## Features Implemented (2026-07-15)
 
@@ -166,13 +168,24 @@ npm start  # http://localhost:4200
 - Purple-colored QR code (#7e3af2), copy link button with clipboard API
 - Share button (qr_code icon) in game details next to copy button
 
-### Chat/Discussion (Ephemeral, Redis)
+### Chat/Discussion (Redis, 24h TTL)
 - Backend: `ChatMessage` GraphQL type, `ChatMutations.SendChatMessageAsync`, `ChatSubscriptions.OnChatMessage`
 - Uses `ICurrentUserProvider` for player name, `ITopicEventSender` for Redis pub-sub
-- Frontend: `ChatComponent` — fixed-position FAB toggle, slide-up panel
-- Real-time message delivery via GraphQL WebSocket subscription
-- Messages not persisted to DB — live pub-sub only (Redis topic per game)
-- Dark mode support for chat panel
+- **Persistence**: Messages stored in Redis list (`chat:{gameId}`) with 24h TTL (max 100 messages)
+- **History**: `ChatQueries.GetChatMessagesAsync` — `chatMessages(gameId)` query fetches on page refresh
+- Frontend: `ChatComponent` — FAB toggle, slide-up panel, `ngOnChanges` for gameId binding
+- Real-time delivery via WebSocket subscription + history via watchQuery
+- Dark mode: black message bubbles (#000), white text (#fff), purple author names
+
+### Reveal Votes (Broadcast)
+- Backend: `RevealVotesAsync` mutation + `OnVotesRevealed` subscription
+- `VotesRevealed` type: `{ ticketId, revealedBy }`
+- When host clicks "Reveal Votes": mutation publishes event, all clients receive subscription → `votesRevealed = true`
+- Replaces previous client-side-only flag
+
+### Consensus Counter Fix
+- `subscribeToPlayerJoined` now increments `totalCount` when adding new players
+- `consensusLabel` properly updates to reflect "X/Y voted" after players join
 
 ### Performance Optimizations
 - `takeUntilDestroyed()` on all subscription-based methods
