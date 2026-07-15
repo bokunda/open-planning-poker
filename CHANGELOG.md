@@ -17,15 +17,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Import Tickets** — bulk paste (one per line) or file upload (CSV/JSON) dialog
-- **Footer component** with logo, links (Website, GitHub), theme toggle, and About dialog
+- **Footer component** with logo, links, theme toggle, About dialog, and version number
 - **Ticket navigation arrows** (◀ ▶) for switching between tickets without page reload
 - **Ticket description** — expandable panel below ticket name (multi-paragraph support)
 - **Re-vote on past tickets** from voting history with `Re-vote this ticket` button
 - **Active ticket badge** in voting history indicating current ticket
 - **Average voting value** displayed inline next to ticket title (only when votes exist)
 - **Chat link support** — URLs auto-converted to clickable links (`linkify`)
-- **Fluid transitions** — fade/slide animations for landing↔dashboard using `@angular/animations`
-- **Website changelog page** — auto-generated from `CHANGELOG.md` using `marked`
+- **Fluid transitions** — fade/slide animations using `@angular/animations`
+- **Website changelog page** — auto-generated from `CHANGELOG.md` using `marked` (build-time)
+- **Website "What's New" section** — changelog preview on homepage with version badges
+- **Cross-platform build script** (`build.js`) for the marketing website
+- **`llms.txt`** for AI agent browsing compliance
+- **`MatMenuModule`, `MatTabsModule`, `MatDividerModule`** added to Material module
 
 ### Changed
 - **Header redesign**: hamburger menu on left, brand text smaller, username on right
@@ -42,6 +46,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Edit username** — clicking username text or edit icon opens update modal
 - **Ticket navigation** uses `Location.replaceState` instead of route navigation (no blink)
 - **Home layout** refactored to flex-based (no vertical scroll on short pages)
+- **Website redesign**: smooth scroll, fade-in animations, hover-lift effects, consistent nav/footer
+- **Footer text contrast** improved (`text-muted` → `text-secondary`) for accessibility
+- **Footer logo** upgraded to 64x64 PNG for retina displays
+- **Website nav**: backdrop-blur header, gradient top border on What's New section
 
 ### Fixed
 - Chat collapse showing white background (HostBinding + CSS fix)
@@ -54,6 +62,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Footer double margin causing vertical scroll
 - `mat-option` selected state low contrast (global CSS override)
 - Hardcoded colors replaced with design tokens in create-game component
+- **Lighthouse optimizations**: charset first in `<head>`, non-blocking CSS, image dimensions, preconnects
+- **Hero image aspect ratio** corrected to natural dimensions (1064×832)
+- **Social links** missing `aria-label` attributes (accessibility)
+- **Changelog page 404** — now built as `/changelog/index.html` for nginx static serving
+- **CI changelog build** — copy `CHANGELOG.md` to website dir before Docker build
 
 ## [1.0.0] — 2026-07-14
 
