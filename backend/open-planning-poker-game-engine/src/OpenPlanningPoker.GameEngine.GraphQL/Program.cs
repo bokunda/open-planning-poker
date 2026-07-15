@@ -37,16 +37,10 @@ if (args.Contains("schema"))
 
 app.ApplyMigrations();
 
-// Dynamic sitemap endpoint — serves active game URLs for SEO
-app.MapGet("/sitemap.xml", async (OpenPlanningPokerGameEngineDbContext db) =>
+// Dynamic sitemap endpoint — static routes only (games have TTL, avoid 404s)
+app.MapGet("/sitemap.xml", (HttpContext ctx) =>
 {
     var now = DateTime.UtcNow.ToString("yyyy-MM-dd");
-    var games = await db.Set<Game>()
-        .OrderByDescending(g => EF.Property<DateTimeOffset>(g, "CreatedOn"))
-        .Take(500)
-        .Select(g => new { g.Id, CreatedOn = EF.Property<DateTimeOffset>(g, "CreatedOn") })
-        .ToListAsync();
-
     var sb = new System.Text.StringBuilder();
     sb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
     sb.AppendLine("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
@@ -62,15 +56,6 @@ app.MapGet("/sitemap.xml", async (OpenPlanningPokerGameEngineDbContext db) =>
     sb.AppendLine("    <changefreq>weekly</changefreq>");
     sb.AppendLine("    <priority>0.8</priority>");
     sb.AppendLine("  </url>");
-    foreach (var game in games)
-    {
-        sb.AppendLine("  <url>");
-        sb.AppendLine($"    <loc>https://app.openplanningpoker.com/game/{game.Id}</loc>");
-        sb.AppendLine($"    <lastmod>{game.CreatedOn:yyyy-MM-dd}</lastmod>");
-        sb.AppendLine("    <changefreq>daily</changefreq>");
-        sb.AppendLine("    <priority>0.6</priority>");
-        sb.AppendLine("  </url>");
-    }
     sb.AppendLine("</urlset>");
 
     ctx.Response.Headers["Cache-Control"] = "public, max-age=3600";
