@@ -36,6 +36,11 @@
         <div class="ticket-info">
           <h2 class="ticket-name">
             {{ticket?.name}}
+            <span class="ticket-avg" *ngIf="votes.length > 0">
+              (Avg:
+              <ng-container *ngIf="votesRevealed; else avgHidden">{{ ticket?.averageVotingValue }}</ng-container>
+              <ng-template #avgHidden>?</ng-template>)
+            </span>
             <button
               *ngIf="ticket?.description"
               mat-icon-button
@@ -50,11 +55,6 @@
           <div class="ticket-description" *ngIf="ticket?.description" [class.ticket-description--expanded]="descriptionExpanded">
             <p *ngFor="let paragraph of ticket!.description!.split('\n')" class="ticket-description-p">{{ paragraph }}</p>
           </div>
-          <p class="ticket-average" *ngIf="ticket?.averageVotingValue">
-            Average:
-            <strong *ngIf="votesRevealed">{{ ticket?.averageVotingValue }}</strong>
-            <strong class="vote-hidden" *ngIf="!votesRevealed">?</strong>
-          </p>
         </div>
 
         <button

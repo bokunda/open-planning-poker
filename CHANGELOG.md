@@ -8,6 +8,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Import Tickets** — bulk paste (one per line) or file upload (CSV/JSON) dialog
+- **Footer component** with logo, links (Website, GitHub), theme toggle, and About dialog
+- **Ticket navigation arrows** (◀ ▶) for switching between tickets without page reload
+- **Ticket description** — expandable panel below ticket name (multi-paragraph support)
+- **Re-vote on past tickets** from voting history with `Re-vote this ticket` button
+- **Active ticket badge** in voting history indicating current ticket
+- **Average voting value** displayed inline next to ticket title (only when votes exist)
+- **Chat link support** — URLs auto-converted to clickable links (`linkify`)
+- **Fluid transitions** — fade/slide animations for landing↔dashboard using `@angular/animations`
+- **MatMenuModule, MatTabsModule, MatDividerModule** added to Material module
+
+### Changed
+- **Header redesign**: hamburger menu on left, brand text smaller, username on right
+- **Welcome/username** moved from dedicated row into header toolbar (saves vertical space)
+- **Theme toggle** moved into header menu (no longer standalone icon)
+- **Landing page** now uses hero CTA style matching "Create Ticket" (🎯, big buttons)
+- **All game actions** (New Ticket, Reveal Votes, Vote Again) unified below voting cards
+- **Players & Chat panels** are now collapsible with smooth toggle
+- **Timer** always visible (disabled/dimmed after votes revealed)
+- **Chat messages**: own messages right-aligned with purple background, others left-aligned
+- **Players list**: current user bolded with purple highlight background
+- **Voting history** only visible after first ticket created
+- **Join Game** field accepts full URL (auto-extracts game ID)
+- **Edit username** — clicking username text or edit icon opens update modal
+- **Ticket navigation** uses `Location.replaceState` instead of route navigation (no blink)
+- **Home layout** refactored to flex-based (no vertical scroll on short pages)
+
+### Fixed
+- Chat collapse showing white background (HostBinding + CSS fix)
+- Chat messages not scrolling (max-height constraint + flex chain fixes)
+- Dark mode chat text unreadable (added dark overrides for primary-50/100/200)
+- Mobile sidebar overlapping vote history (responsive overflow fixes)
+- Vote count showing wrong numbers when switching tickets (data leak fix)
+- Re-vote navigation 404 (missing `/ticket/` path segment)
+- Empty players-actions div when no buttons to show
+- Footer double margin causing vertical scroll
+- `mat-option` selected state low contrast (global CSS override)
+- Hardcoded colors replaced with design tokens in create-game component
 - Dynamic sitemap endpoint on Game Engine (serves active game URLs)
 - Microsoft Clarity analytics integration (ID: `xmim6e317s`)
 - Breadcrumb navigation with `BreadcrumbList` structured data

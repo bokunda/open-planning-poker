@@ -1,4 +1,5 @@
 import { Component, inject, Input, OnInit, DestroyRef } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Apollo } from 'apollo-angular';
 import { ApiCollectionOfGamePlayer, ApiCollectionOfTicket, ApiCollectionOfVote, BaseUserProfile, Game, GamePlayer, Mutation, MutationCreateGameArgs, MutationCreateOrUpdateVoteArgs, MutationCreateTicketArgs, MutationJoinGameArgs, Ticket, Vote } from '../../../graphql/graphql-gateway.service';
@@ -8,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CreateGameDialogComponent } from './create/dialog/create-game-dialog.component';
 import { JoinGameDialogComponent } from './join/dialog/join-game-dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { JOIN_GAME } from './gql/joinGame.graphql';
 import { GET_GAME_PLAYERS } from './gql/getPlayers.graphql';
 import { ON_PLAYER_JOINED } from './gql/onPlayerJoined.graphql';
@@ -32,7 +34,24 @@ import { map } from 'rxjs';
   selector: 'app-game',
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',
-  standalone: false
+  standalone: false,
+  animations: [
+    trigger('fadeSlide', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(12px)' }),
+        animate('250ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('200ms ease-in', style({ opacity: 0, transform: 'translateY(-8px)' }))
+      ])
+    ]),
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('300ms ease-out', style({ opacity: 1 }))
+      ])
+    ])
+  ]
 })
 export class GameComponent implements OnInit {
 
@@ -44,6 +63,7 @@ export class GameComponent implements OnInit {
   votesRevealed = false;
 
   @Input() currentUserId: string = '';
+  @Input() currentUserName: string = '';
 
   playersCollapsed = false;
   chatCollapsed = false;
@@ -67,6 +87,7 @@ export class GameComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   readonly router = inject(Router);
   readonly route = inject(ActivatedRoute);
+  readonly location = inject(Location);
   readonly destroyRef = inject(DestroyRef);
 
   constructor(private apollo: Apollo) {}
@@ -141,7 +162,12 @@ export class GameComponent implements OnInit {
   }
 
   handleReVoteTicket(ticketId: string) {
-    this.router.navigate([`/game/${this.game?.id}/ticket/${ticketId}`]);
+    // Update URL without full navigation
+    this.location.replaceState(`/game/${this.game?.id}/ticket/${ticketId}`);
+    this.votesRevealed = false;
+    this.getTicket(ticketId);
+    this.subscribeToVoteActions(ticketId);
+    this.subscribeToVotesRevealed(ticketId);
   }
 
   handleImportTickets() {

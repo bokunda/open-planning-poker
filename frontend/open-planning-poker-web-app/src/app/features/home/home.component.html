@@ -3,7 +3,7 @@
   <div class="home">
     <app-header [username]="username"></app-header>
     <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
-    <app-game *ngIf="userExists()" class="center" style="width:100%" [currentUserId]="userId"></app-game>
+    <app-game *ngIf="userExists()" class="center" style="width:100%" [currentUserId]="userId" [currentUserName]="username"></app-game>
     <app-footer></app-footer>
   </div>
 </main>

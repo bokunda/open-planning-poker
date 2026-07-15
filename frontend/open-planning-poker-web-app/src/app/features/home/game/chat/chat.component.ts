@@ -16,6 +16,7 @@ import { GET_CHAT_MESSAGES } from '../gql/getChatMessages.graphql';
 export class ChatComponent implements OnChanges, OnDestroy {
   @Input() gameId: string = '';
   @Input() currentUserId: string = '';
+  @Input() currentUserName: string = '';
   @Input() collapsed = false;
 
   @Output() collapsedChange = new EventEmitter<boolean>();

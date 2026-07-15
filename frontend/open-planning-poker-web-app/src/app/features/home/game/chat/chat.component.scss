@@ -85,16 +85,30 @@
 .chat-msg {
   display: flex;
   flex-direction: column;
-  background: var(--opp-primary-50);
-  border-radius: var(--opp-radius-sm);
-  padding: var(--opp-space-1) var(--opp-space-2);
-  max-width: 90%;
-  max-width: 90%;
+  background: var(--opp-surface-elevated);
+  border: 1px solid var(--opp-border-light);
+  border-radius: var(--opp-radius-md);
+  padding: var(--opp-space-2) var(--opp-space-3);
+  max-width: 85%;
   align-self: flex-start;
 
   &.chat-msg-own {
     align-self: flex-end;
-    background: var(--opp-primary-100);
+    background: var(--opp-primary);
+    color: var(--opp-text-on-primary);
+    border-color: var(--opp-primary);
+
+    .chat-msg-author {
+      color: var(--opp-primary-200);
+    }
+
+    .chat-msg-text {
+      color: var(--opp-text-on-primary);
+    }
+
+    .chat-msg-time {
+      color: var(--opp-primary-200);
+    }
   }
 }
 

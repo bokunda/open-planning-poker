@@ -10,13 +10,12 @@
       <span class="header-spacer"></span>
 
       <!-- Username -->
-      <span class="header-welcome" *ngIf="username">
+      <span class="header-welcome" *ngIf="username" (click)="handleUpdateUser()" role="button" tabindex="0" matTooltip="Edit username">
         {{ username }}
         <button
           mat-icon-button
           class="header-edit-btn"
-          matTooltip="Edit username"
-          (click)="handleUpdateUser()"
+          (click)="$event.stopPropagation(); handleUpdateUser()"
           aria-label="Edit username">
           <mat-icon>edit</mat-icon>
         </button>

@@ -32,6 +32,13 @@
   flex: 1;
 }
 
+.ticket-avg {
+  font-size: var(--opp-font-size-base);
+  font-weight: 400;
+  color: var(--opp-text-muted);
+  margin-left: var(--opp-space-2);
+}
+
 .ticket-desc-toggle {
   opacity: 0.5;
   transition: opacity var(--opp-transition-fast), color var(--opp-transition-fast);

@@ -21,6 +21,7 @@ mat-toolbar {
   font-weight: 500;
   color: var(--opp-text-secondary);
   white-space: nowrap;
+  cursor: pointer;
 
   .header-edit-btn {
     transform: scale(0.6);

@@ -1,7 +1,7 @@
 <main class="game-wrapper" id="main-content">
   <!-- Landing (no game) -->
   <ng-container *ngIf="!game">
-    <div class="game-landing">
+    <div class="game-landing" @fadeSlide>
       <div class="hero-cta">
         <div class="hero-illustration">🎯</div>
         <h2 class="hero-title">Ready to plan?</h2>
@@ -18,10 +18,10 @@
     </div>
   </ng-container>
 
-  <app-loading *ngIf="isLoading" message="Loading game..."></app-loading>
+  <app-loading *ngIf="isLoading" @fadeIn message="Loading game..."></app-loading>
 
   <!-- Game active: dashboard layout -->
-  <div class="game-dashboard" *ngIf="game">
+  <div class="game-dashboard" *ngIf="game" @fadeSlide>
     <!-- Main column -->
     <div class="game-main">
       <app-game-details
@@ -73,6 +73,7 @@
       <app-chat
         [gameId]="game.id"
         [currentUserId]="currentUserId"
+        [currentUserName]="currentUserName"
         [(collapsed)]="chatCollapsed">
       </app-chat>
     </aside>
