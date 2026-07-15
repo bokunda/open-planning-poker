@@ -42,9 +42,9 @@ app.MapGet("/sitemap.xml", async (OpenPlanningPokerGameEngineDbContext db) =>
 {
     var now = DateTime.UtcNow.ToString("yyyy-MM-dd");
     var games = await db.Set<Game>()
-        .OrderByDescending(g => EF.Property<DateTime>(g, "CreatedAt"))
-        .Take(1000)
-        .Select(g => new { g.Id, CreatedAt = EF.Property<DateTime>(g, "CreatedAt") })
+        .OrderByDescending(g => EF.Property<DateTimeOffset>(g, "CreatedOn"))
+        .Take(500)
+        .Select(g => new { g.Id, CreatedOn = EF.Property<DateTimeOffset>(g, "CreatedOn") })
         .ToListAsync();
 
     var sb = new System.Text.StringBuilder();
@@ -66,13 +66,14 @@ app.MapGet("/sitemap.xml", async (OpenPlanningPokerGameEngineDbContext db) =>
     {
         sb.AppendLine("  <url>");
         sb.AppendLine($"    <loc>https://app.openplanningpoker.com/game/{game.Id}</loc>");
-        sb.AppendLine($"    <lastmod>{game.CreatedAt:yyyy-MM-dd}</lastmod>");
+        sb.AppendLine($"    <lastmod>{game.CreatedOn:yyyy-MM-dd}</lastmod>");
         sb.AppendLine("    <changefreq>daily</changefreq>");
         sb.AppendLine("    <priority>0.6</priority>");
         sb.AppendLine("  </url>");
     }
     sb.AppendLine("</urlset>");
 
+    ctx.Response.Headers["Cache-Control"] = "public, max-age=3600";
     return Results.Content(sb.ToString(), "application/xml; charset=utf-8");
 });
 
