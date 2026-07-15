@@ -26,10 +26,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Timer duration selector** disabled instead of hidden while timer is running
 - **SSR crashes** fixed — `document` access guarded in chat scroll, WebSocket client only created in browser
 - **`--restart unless-stopped`** added to all 8 Docker containers in CI pipelines
+- **Vote subscriptions** now properly set up on all code paths (host create, player join, re-vote)
+- **Join Game** accepts full URLs without validation errors (label: "Game ID or URL")
+- **Ticket navigation arrows** visible to all players for browsing; Re-vote in history restricted to host
 
 ### Changed
 - Timer controls visible only to host with configurable duration (1-5 minutes)
 - Smarter waiting message: distinguishes "no tickets" from "host not selecting a ticket"
+- Arrows restore ticket browsing for all players; Re-vote action is host-only
 
 ## [1.2.0] — 2026-07-15
 
