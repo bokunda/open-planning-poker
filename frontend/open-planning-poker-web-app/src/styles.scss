@@ -1,71 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
 
+@import 'styles/variables';
+
 html, body { height: 100%; }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: #fafafa;
-  color: #1a1a1a;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: var(--opp-font);
+  background-color: var(--opp-bg);
+  color: var(--opp-text);
+  transition: background-color var(--opp-transition-base), color var(--opp-transition-base);
 }
 
-/* Dark theme overrides */
-.dark-theme body,
-body.dark-theme,
-.dark-theme {
-  background-color: #121212;
-  color: #e0e0e0;
-}
-
-.dark-theme .table-players {
-  background-color: #333;
-  color: #e0e0e0;
-}
-
-.dark-theme .player-item-vote {
-  border-color: #555;
-}
-
-.dark-theme .mat-toolbar {
-  background-color: #1e1e1e;
-  color: #e0e0e0;
-}
-
-.dark-theme a {
-  color: #b49bff;
-}
-
-/* Accessibility: skip-to-content link (visually hidden until focused) */
+/* Accessibility: skip-to-content link */
 .skip-link {
   position: absolute;
   top: -40px;
   left: 0;
-  background: #7e3af2;
-  color: #fff;
-  padding: 8px 16px;
-  z-index: 10000;
+  background: var(--opp-primary);
+  color: var(--opp-text-on-primary);
+  padding: var(--opp-space-2) var(--opp-space-4);
+  z-index: var(--opp-z-tooltip);
   text-decoration: none;
-  border-radius: 0 0 4px 0;
+  border-radius: 0 0 var(--opp-radius-sm) 0;
 }
 .skip-link:focus {
   top: 0;
 }
 
-.center-text {
-  text-align: center;
-}
+.center-text { text-align: center; }
 
 .center {
   display: flex;
   justify-content: center;
-  height: 100%; /* Adjust as needed */
 }
 
-.full-width {
-  width: 100%;
-}
+.full-width { width: 100%; }
 
-/* Screen reader only */
 .sr-only {
   position: absolute;
   width: 1px;

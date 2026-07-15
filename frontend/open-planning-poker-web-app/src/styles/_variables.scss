@@ -1,0 +1,114 @@
+/* ============================================
+   Open Planning Poker — Design Tokens
+   Single source of truth for all colors, spacing, typography
+   ============================================ */
+
+:root {
+  /* ── Primary palette (purple) ── */
+  --opp-primary: #7e3af2;
+  --opp-primary-50: #f3f0ff;
+  --opp-primary-100: #e9e2ff;
+  --opp-primary-200: #d3c9ff;
+  --opp-primary-300: #b49bff;
+  --opp-primary-400: #9068ff;
+  --opp-primary-500: #7e3af2;
+  --opp-primary-600: #6c2bd9;
+  --opp-primary-700: #5521b5;
+  --opp-primary-800: #441b93;
+  --opp-primary-900: #361778;
+
+  /* ── Surfaces ── */
+  --opp-surface: #ffffff;
+  --opp-surface-elevated: #fafafa;
+  --opp-surface-hover: #f3f0ff;
+  --opp-bg: #fafafa;
+  --opp-bg-page: #f5f5f5;
+
+  /* ── Text ── */
+  --opp-text: #1a1a1a;
+  --opp-text-secondary: #666;
+  --opp-text-muted: #999;
+  --opp-text-on-primary: #ffffff;
+
+  /* ── Borders & dividers ── */
+  --opp-border: #e5e7eb;
+  --opp-border-light: #f0f0f0;
+
+  /* ── Semantic ── */
+  --opp-success: #22c55e;
+  --opp-warning: #f59e0b;
+  --opp-danger: #ef4444;
+  --opp-info: #3b82f6;
+
+  /* ── Shadows ── */
+  --opp-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --opp-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --opp-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --opp-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.16);
+
+  /* ── Spacing scale (4px base) ── */
+  --opp-space-1: 4px;
+  --opp-space-2: 8px;
+  --opp-space-3: 12px;
+  --opp-space-4: 16px;
+  --opp-space-5: 20px;
+  --opp-space-6: 24px;
+  --opp-space-8: 32px;
+  --opp-space-10: 40px;
+  --opp-space-12: 48px;
+
+  /* ── Border radius ── */
+  --opp-radius-sm: 6px;
+  --opp-radius-md: 10px;
+  --opp-radius-lg: 16px;
+  --opp-radius-xl: 24px;
+  --opp-radius-full: 9999px;
+
+  /* ── Typography ── */
+  --opp-font: 'Roboto', 'Helvetica Neue', sans-serif;
+  --opp-font-mono: 'Roboto Mono', monospace;
+  --opp-font-size-xs: 0.75rem;
+  --opp-font-size-sm: 0.875rem;
+  --opp-font-size-base: 1rem;
+  --opp-font-size-lg: 1.125rem;
+  --opp-font-size-xl: 1.25rem;
+  --opp-font-size-2xl: 1.5rem;
+  --opp-font-size-3xl: 1.875rem;
+
+  /* ── Layout ── */
+  --opp-sidebar-width: 320px;
+  --opp-max-content: 960px;
+
+  /* ── Transitions ── */
+  --opp-transition-fast: 150ms ease;
+  --opp-transition-base: 250ms ease;
+  --opp-transition-slow: 350ms ease;
+
+  /* ── Z-index scale ── */
+  --opp-z-sidebar: 100;
+  --opp-z-header: 200;
+  --opp-z-overlay: 500;
+  --opp-z-modal: 1000;
+  --opp-z-tooltip: 1100;
+}
+
+/* ── Dark theme overrides ── */
+.dark-theme {
+  --opp-surface: #1e1e1e;
+  --opp-surface-elevated: #252525;
+  --opp-surface-hover: #2a2a2a;
+  --opp-bg: #121212;
+  --opp-bg-page: #0a0a0a;
+
+  --opp-text: #e0e0e0;
+  --opp-text-secondary: #aaa;
+  --opp-text-muted: #777;
+
+  --opp-border: #333;
+  --opp-border-light: #2a2a2a;
+
+  --opp-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --opp-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --opp-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --opp-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+}
