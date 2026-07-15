@@ -53,3 +53,13 @@ body {
   background: var(--opp-primary-50) !important;
   color: var(--opp-primary-600) !important;
 }
+
+/* Font Awesome: ensure font-display swap for better FCP */
+@font-face {
+  font-family: 'Font Awesome 6 Brands';
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Font Awesome 6 Free';
+  font-display: swap;
+}
