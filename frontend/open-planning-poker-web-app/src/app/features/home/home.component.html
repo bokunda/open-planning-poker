@@ -3,11 +3,7 @@
   <div class="home">
     <app-header [username]="username"></app-header>
     <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
-    @defer (when userExists()) {
-      <app-game class="center" style="width:100%" [currentUserId]="userId" [currentUserName]="username"></app-game>
-    } @placeholder {
-      <app-loading message="Preparing game..."></app-loading>
-    }
+    <app-game class="center" style="width:100%" [currentUserId]="userId" [currentUserName]="username"></app-game>
     <app-footer></app-footer>
   </div>
 </main>
