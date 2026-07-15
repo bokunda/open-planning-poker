@@ -24,7 +24,7 @@ public class ChatMutations
             GameId = gameId,
             PlayerName = user.Value?.UserName ?? "Unknown",
             Content = content,
-            Timestamp = DateTime.UtcNow
+            Timestamp = DateTime.UtcNow.ToString("o")
         };
 
         await eventSender.SendAsync(
