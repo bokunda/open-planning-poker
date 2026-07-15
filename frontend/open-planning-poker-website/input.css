@@ -1,3 +1,46 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Changelog content (generated from markdown) ── */
+@layer components {
+  .changelog-content {
+    @apply text-gray-600 dark:text-gray-400 leading-relaxed;
+  }
+  .changelog-content h1 {
+    @apply text-4xl font-extrabold text-gray-900 dark:text-white mb-2;
+  }
+  .changelog-content h2 {
+    @apply text-2xl font-bold text-gray-900 dark:text-white mt-12 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700;
+  }
+  .changelog-content h3 {
+    @apply text-lg font-semibold text-purple-600 dark:text-purple-400 mt-6 mb-2;
+  }
+  .changelog-content p {
+    @apply mt-2 mb-4;
+  }
+  .changelog-content ul {
+    @apply list-disc pl-5 space-y-1 mt-2 mb-4;
+  }
+  .changelog-content ol {
+    @apply list-decimal pl-5 space-y-1 mt-2 mb-4;
+  }
+  .changelog-content li {
+    @apply pl-1;
+  }
+  .changelog-content strong {
+    @apply font-semibold text-gray-900 dark:text-white;
+  }
+  .changelog-content code {
+    @apply bg-gray-100 dark:bg-gray-700 text-purple-600 dark:text-purple-400 px-1.5 py-0.5 rounded text-sm;
+  }
+  .changelog-content a {
+    @apply text-purple-600 dark:text-purple-400 underline hover:text-purple-800;
+  }
+  .changelog-content blockquote {
+    @apply border-l-4 border-purple-300 dark:border-purple-600 pl-4 my-4 italic text-gray-500 dark:text-gray-400;
+  }
+  .changelog-content hr {
+    @apply my-8 border-gray-200 dark:border-gray-700;
+  }
+}

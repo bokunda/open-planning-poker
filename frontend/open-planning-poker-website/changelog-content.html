@@ -1,0 +1,156 @@
+<div class="changelog-content"><h1>Changelog</h1>
+<p>All notable changes to Open Planning Poker are documented in this file.</p>
+<p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
+and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<h2>[Unreleased]</h2>
+<h3>Added</h3>
+<h3>Changed</h3>
+<h3>Fixed</h3>
+<h2>[1.1.0] — 2026-07-15</h2>
+<h3>Added</h3>
+<ul>
+<li><strong>Import Tickets</strong> — bulk paste (one per line) or file upload (CSV/JSON) dialog</li>
+<li><strong>Footer component</strong> with logo, links (Website, GitHub), theme toggle, and About dialog</li>
+<li><strong>Ticket navigation arrows</strong> (◀ ▶) for switching between tickets without page reload</li>
+<li><strong>Ticket description</strong> — expandable panel below ticket name (multi-paragraph support)</li>
+<li><strong>Re-vote on past tickets</strong> from voting history with <code>Re-vote this ticket</code> button</li>
+<li><strong>Active ticket badge</strong> in voting history indicating current ticket</li>
+<li><strong>Average voting value</strong> displayed inline next to ticket title (only when votes exist)</li>
+<li><strong>Chat link support</strong> — URLs auto-converted to clickable links (<code>linkify</code>)</li>
+<li><strong>Fluid transitions</strong> — fade/slide animations for landing↔dashboard using <code>@angular/animations</code></li>
+<li><strong>Website changelog page</strong> — auto-generated from <code>CHANGELOG.md</code> using <code>marked</code></li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li><strong>Header redesign</strong>: hamburger menu on left, brand text smaller, username on right</li>
+<li><strong>Welcome/username</strong> moved from dedicated row into header toolbar (saves vertical space)</li>
+<li><strong>Theme toggle</strong> moved into header menu (no longer standalone icon)</li>
+<li><strong>Landing page</strong> now uses hero CTA style matching &quot;Create Ticket&quot; (🎯, big buttons)</li>
+<li><strong>All game actions</strong> (New Ticket, Reveal Votes, Vote Again) unified below voting cards</li>
+<li><strong>Players &amp; Chat panels</strong> are now collapsible with smooth toggle</li>
+<li><strong>Timer</strong> always visible (disabled/dimmed after votes revealed)</li>
+<li><strong>Chat messages</strong>: own messages right-aligned with purple background, others left-aligned</li>
+<li><strong>Players list</strong>: current user bolded with purple highlight background</li>
+<li><strong>Voting history</strong> only visible after first ticket created</li>
+<li><strong>Join Game</strong> field accepts full URL (auto-extracts game ID)</li>
+<li><strong>Edit username</strong> — clicking username text or edit icon opens update modal</li>
+<li><strong>Ticket navigation</strong> uses <code>Location.replaceState</code> instead of route navigation (no blink)</li>
+<li><strong>Home layout</strong> refactored to flex-based (no vertical scroll on short pages)</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Chat collapse showing white background (HostBinding + CSS fix)</li>
+<li>Chat messages not scrolling (max-height constraint + flex chain fixes)</li>
+<li>Dark mode chat text unreadable (added dark overrides for primary-50/100/200)</li>
+<li>Mobile sidebar overlapping vote history (responsive overflow fixes)</li>
+<li>Vote count showing wrong numbers when switching tickets (data leak fix)</li>
+<li>Re-vote navigation 404 (missing <code>/ticket/</code> path segment)</li>
+<li>Empty players-actions div when no buttons to show</li>
+<li>Footer double margin causing vertical scroll</li>
+<li><code>mat-option</code> selected state low contrast (global CSS override)</li>
+<li>Hardcoded colors replaced with design tokens in create-game component</li>
+</ul>
+<h2>[1.0.0] — 2026-07-14</h2>
+<blockquote>
+<p>First stable release. Previously the application existed as <strong>beta [0.0.1]</strong> which
+contained most of the same features but was unstable, had unpolished UI, and
+lacked production hardening.</p>
+</blockquote>
+<h3>Added</h3>
+<ul>
+<li><strong>Microservices architecture</strong> with GraphQL Federation<ul>
+<li>API Gateway (YARP reverse proxy)</li>
+<li>GraphQL Fusion Gateway (HotChocolate)</li>
+<li>Game Engine (game rooms, tickets, voting, PDF reports)</li>
+<li>User Management (anonymous usernames, JWT auth, Redis-backed)</li>
+</ul>
+</li>
+<li><strong>Angular 19 Web App</strong> with:<ul>
+<li>Real-time voting via GraphQL WebSocket subscriptions</li>
+<li>Hidden votes mechanism (votes concealed until &quot;Reveal&quot; clicked)</li>
+<li>Server-Side Rendering (SSR) with prerendering for <code>/</code> and <code>/game</code></li>
+<li>PWA support with service worker and installable manifest</li>
+<li>Apollo Angular GraphQL client with typed codegen</li>
+<li>Angular Material UI with azure-blue theme</li>
+</ul>
+</li>
+<li><strong>Marketing Website</strong> with Tailwind CSS + Flowbite</li>
+<li><strong>SEO Optimizations:</strong><ul>
+<li>Comprehensive meta tags (OG, Twitter, canonical, hreflang)</li>
+<li>JSON-LD structured data (WebSite, SoftwareApplication, FAQPage, WebApplication, BreadcrumbList)</li>
+<li>robots.txt and sitemap.xml for both domains</li>
+<li>Dynamic per-route page titles and meta descriptions</li>
+<li>Semantic HTML landmarks and skip-to-content link</li>
+<li>Dynamic sitemap endpoint on Game Engine</li>
+</ul>
+</li>
+<li><strong>CI/CD Pipeline</strong> (GitHub Actions):<ul>
+<li>Multi-stage deployment workflow with dependency ordering</li>
+<li>Docker image builds pushed to GitHub Container Registry (ghcr.io)</li>
+<li>SSH deployment to production servers</li>
+<li>Separate workflows for infrastructure (PostgreSQL, Redis, monitoring)</li>
+</ul>
+</li>
+<li><strong>Monitoring Stack</strong> (OpenTelemetry, Prometheus, Loki, Grafana)</li>
+<li><strong>Rate limiting</strong> on API Gateway (100 req/min fixed window)</li>
+<li><strong>Security headers</strong> on all Nginx configs (CSP, HSTS, X-Frame-Options, etc.)</li>
+<li><strong>Nginx reverse proxy</strong> with SSL termination (Let&#39;s Encrypt)</li>
+<li>Infrastructure split: public application server + private database server</li>
+<li>Central .NET package management (<code>Directory.Packages.props</code>)</li>
+<li>Clean Architecture across all backend services</li>
+<li>QuestPDF for PDF game report generation</li>
+<li>EF Core with PostgreSQL (code-first migrations)</li>
+<li>Redis caching (HybridCache + StackExchange.Redis)</li>
+<li>Shared NuGet package (<code>OpenPlanningPoker.Shared</code>) published to NuGet.org</li>
+<li>Health checks with UI response writer</li>
+<li>Game report PDF download</li>
+<li>Custom 404 error pages</li>
+<li>Microsoft Clarity analytics integration (ID: <code>xmim6e317s</code>)</li>
+<li>Breadcrumb navigation with <code>BreadcrumbList</code> structured data</li>
+<li>Comprehensive documentation (<code>docs/</code>, <code>CONTRIBUTING.md</code>, <code>SECURITY.md</code>, <code>CODE_OF_CONDUCT.md</code>)</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li>Upgraded Node.js Docker images to 22 LTS (from 23 non-LTS and 18 EOL)</li>
+<li>Replaced <code>apollo-client</code> v2 with <code>@apollo/client</code> v3</li>
+<li>Exported BreadcrumbComponent from GameModule for use in HomeComponent</li>
+<li>Moved breadcrumb above player name in home layout</li>
+<li>Tailwind primary color palette aligned to brand purple (#7e3af2)</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li><strong>CRITICAL: <code>Database.Migrate()</code> was commented out</strong> — database never created on fresh deploy</li>
+<li>Double COPY in website Dockerfile (security: source tree was copied to production image)</li>
+<li>CORS middleware ordering (now executes before GraphQL endpoint)</li>
+<li><code>HeaderPropagationHandler</code> fragile Bearer token parsing</li>
+<li><code>ApplicationErrorContants</code> typo → <code>ApplicationErrorConstants</code></li>
+<li>FAQ structured data mismatched with visible HTML content</li>
+<li><code>site.webmanifest</code> had empty <code>name</code> and <code>short_name</code> fields</li>
+<li>Twitter card typo: <code>@openplanninpoker</code> → <code>@openplanningpoker</code></li>
+<li>User Management nginx proxy port (9091 → 9090)</li>
+<li>Footer copyright year updated to 2026</li>
+<li>Duplicate player display on game table (race condition in <code>getGamePlayers</code>)</li>
+<li>Hidden vote card width mismatch (added <code>box-sizing: border-box</code>)</li>
+<li>Enter key now submits create game form</li>
+<li>Voting history now respects hidden votes state</li>
+<li><code>generate-schema.ps1</code> paths corrected in both projects</li>
+<li>Game Engine GraphQL project: added <code>Domain.Games</code> to GlobalUsings</li>
+</ul>
+<h2>[0.0.1] — 2026-06 (Beta)</h2>
+<blockquote>
+<p>Initial beta release. The application was functional end-to-end but had
+rough UI edges, missing polish, and stability issues that were addressed in v1.0.0.</p>
+</blockquote>
+<h3>Added</h3>
+<ul>
+<li>Basic game room creation and joining</li>
+<li>Real-time voting with GraphQL subscriptions</li>
+<li>Ticket creation and management</li>
+<li>Vote reveal mechanism</li>
+<li>PDF game report generation</li>
+<li>Angular Material UI (pre-redesign)</li>
+<li>Initial microservices setup (Game Engine, User Management, API Gateway)</li>
+<li>Docker Compose for local development</li>
+<li>Basic nginx configuration</li>
+</ul>
+</div>

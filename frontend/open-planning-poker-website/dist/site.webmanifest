@@ -1,0 +1,23 @@
+{
+    "name": "Open Planning Poker",
+    "short_name": "Planning Poker",
+    "description": "Free and open-source agile estimation tool for Scrum teams",
+    "start_url": "/",
+    "icons": [
+        {
+            "src": "/images/open-planning-poker-game-logo-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/images/open-planning-poker-game-logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "theme_color": "#7e3af2",
+    "background_color": "#ffffff",
+    "display": "standalone"
+}
