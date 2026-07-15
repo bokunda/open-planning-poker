@@ -52,9 +52,11 @@ export class GameComponent implements OnInit {
   }
 
   get isHost(): boolean {
-    if (!this.currentUserId || !this.game?.id) return false;
+    if (!this.game?.id) return false;
     const storedHost = localStorage.getItem('host_' + this.game.id);
-    return storedHost === this.currentUserId;
+    // If we have currentUserId, check exact match. Fallback: any stored host is valid.
+    if (this.currentUserId) return storedHost === this.currentUserId;
+    return !!storedHost;
   }
 
   readonly dialog = inject(MatDialog);
@@ -181,9 +183,14 @@ export class GameComponent implements OnInit {
       next: ({ data }) => {
         if (data.gamePlayers?.items) {
           // Merge with existing to avoid duplicates from subscription race condition
-          const existingIds = new Set((this.players?.items ?? []).map(p => p.id));
-          data.gamePlayers.items.forEach(p => { if (!existingIds.has(p.id)) existingIds.add(p.id); });
-          this.players = data.gamePlayers;
+          const existing = this.players?.items ?? [];
+          const existingIds = new Set(existing.map(p => p.id));
+          const newItems = data.gamePlayers.items.filter(p => !existingIds.has(p.id));
+          this.players = {
+            ...data.gamePlayers,
+            items: [...existing, ...newItems],
+            totalCount: existing.length + newItems.length
+          };
         }
       }
     });
