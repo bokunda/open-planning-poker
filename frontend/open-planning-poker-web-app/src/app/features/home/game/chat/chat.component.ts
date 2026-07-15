@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, inject, DestroyRef } from '@angular/core';
+import { Component, Input, OnDestroy, OnChanges, SimpleChanges, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Apollo } from 'apollo-angular';
 import { ChatMessage } from '../../../../graphql/graphql-gateway.service';
@@ -11,7 +11,7 @@ import { SEND_CHAT_MESSAGE } from '../gql/sendChatMessage.graphql';
   styleUrl: './chat.component.scss',
   standalone: false
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnChanges, OnDestroy {
   @Input() gameId: string = '';
   @Input() currentUserId: string = '';
 
@@ -22,23 +22,28 @@ export class ChatComponent implements OnInit {
   private apollo = inject(Apollo);
   private destroyRef = inject(DestroyRef);
 
-  ngOnInit(): void {
-    if (this.gameId) {
-      this.apollo.subscribe<{ onChatMessage: ChatMessage }>({
-        query: ON_CHAT_MESSAGE,
-        variables: { gameId: this.gameId }
-      }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: ({ data }) => {
-          if (data?.onChatMessage) {
-            this.messages = [...this.messages, data.onChatMessage].slice(-100);
-            setTimeout(() => this.scrollToBottom(), 50);
-          }
-        }
-      });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['gameId'] && this.gameId) {
+      this.subscribeToChat();
     }
   }
 
   ngOnDestroy(): void {}
+
+  private subscribeToChat(): void {
+    this.apollo.subscribe<{ onChatMessage: ChatMessage }>({
+      query: ON_CHAT_MESSAGE,
+      variables: { gameId: this.gameId }
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: ({ data }) => {
+        if (data?.onChatMessage) {
+          this.messages = [...this.messages, data.onChatMessage].slice(-100);
+          setTimeout(() => this.scrollToBottom(), 50);
+        }
+      },
+      error: (err) => console.error('Chat subscription error:', err)
+    });
+  }
 
   sendMessage(): void {
     const content = this.newMessage.trim();
@@ -47,7 +52,9 @@ export class ChatComponent implements OnInit {
     this.apollo.mutate({
       mutation: SEND_CHAT_MESSAGE,
       variables: { input: { gameId: this.gameId, content } }
-    }).subscribe();
+    }).subscribe({
+      error: (err) => console.error('Chat send error:', err)
+    });
 
     this.newMessage = '';
   }
