@@ -22,7 +22,7 @@ public class ChatQueries
         {
             try
             {
-                var msg = JsonSerializer.Deserialize<ChatMessage>(value!);
+                var msg = JsonSerializer.Deserialize<ChatMessage>((string)value!);
                 if (msg != null) messages.Add(msg);
             }
             catch { /* skip malformed */ }
