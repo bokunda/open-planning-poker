@@ -2,6 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Smooth scroll & base ── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Reveal-on-scroll animation ── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-reveal {
+  animation: fadeInUp 0.6s ease-out both;
+}
+
+.animate-reveal-delay-1 { animation-delay: 0.1s; }
+.animate-reveal-delay-2 { animation-delay: 0.2s; }
+.animate-reveal-delay-3 { animation-delay: 0.3s; }
+
+/* ── Hover lift ── */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(126, 58, 242, 0.15);
+}
+
+/* ── What's New section ── */
+.whats-new-card {
+  position: relative;
+  border-left: 4px solid #7e3af2;
+  transition: border-color 0.3s ease;
+}
+.whats-new-card::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: linear-gradient(180deg, #7e3af2, #b49bff);
+  border-radius: 4px 0 0 4px;
+}
+
 /* ── Changelog content (generated from markdown) ── */
 @layer components {
   .changelog-content {

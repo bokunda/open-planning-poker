@@ -210,9 +210,9 @@
     </script>
 </head>
 <body>
-    <header class="fixed w-full">
-        <nav class="bg-white border-gray-200 py-2.5 dark:bg-gray-900">
-            <div class="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
+    <header class="fixed w-full z-50">
+        <nav class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
+            <div class="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto py-2.5">
                 <a href="#" class="flex items-center">
                     <img src="./images/logo.svg" class="h-6 mr-3 sm:h-9" alt="Open Planning Poker Logo" width="36" height="36" />
                     <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Open Planning Poker</span>
@@ -221,7 +221,7 @@
                     <div class="hidden mt-2 mr-4 sm:inline-block">
                         <a class="github-button" href="https://github.com/bokunda/open-planning-poker" data-size="large" data-icon="octicon-star" data-show-count="true" aria-label="Star bokunda/open-planning-poker on GitHub">Star</a>
                     </div>
-                    <a href="https://app.openplanningpoker.com" target="_blank" rel="noopener noreferrer" class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800">Play!</a>
+                    <a href="https://app.openplanningpoker.com" target="_blank" rel="noopener noreferrer" class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800 transition-colors">Play!</a>
                 </div>
             </div>
         </nav>
@@ -289,32 +289,34 @@
       </section>
     <!-- End block -->
     <!-- Start block: Recent Updates -->
-    <section class="bg-gray-50 dark:bg-gray-800">
-        <div class="max-w-screen-xl px-4 py-8 mx-auto lg:py-16 lg:px-6">
-            <div class="max-w-screen-md mx-auto text-center">
-                <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">📋 What's New</h2>
-                <p class="mt-4 text-gray-500 dark:text-gray-400">Latest updates and improvements to Open Planning Poker.</p>
+    <section class="relative bg-gray-50 dark:bg-gray-800">
+        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-purple-400 to-purple-300"></div>
+        <div class="max-w-screen-xl px-4 py-12 mx-auto lg:py-20 lg:px-6">
+            <div class="max-w-screen-md mx-auto text-center animate-reveal">
+                <span class="text-purple-600 dark:text-purple-400 font-semibold text-sm tracking-wider uppercase">What's New</span>
+                <h2 class="mt-2 text-3xl font-extrabold text-gray-900 dark:text-white">Latest Updates</h2>
+                <p class="mt-3 text-gray-500 dark:text-gray-400 text-lg">See what's been improved in Open Planning Poker.</p>
             </div>
-            <div class="max-w-screen-md mx-auto mt-8 space-y-6">
-                <div class="p-6 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 text-xs font-semibold px-2.5 py-0.5 rounded-full">v1.1.0</span>
-                        <span class="text-sm text-gray-500 dark:text-gray-400">July 15, 2026</span>
+            <div class="max-w-screen-md mx-auto mt-10 space-y-6">
+                <div class="whats-new-card p-6 bg-white dark:bg-gray-900 rounded-r-lg shadow-sm hover-lift animate-reveal animate-reveal-delay-1">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 text-xs font-bold px-3 py-1 rounded-full tracking-wide">v1.1.0</span>
+                        <span class="text-sm text-gray-400 dark:text-gray-500">July 15, 2026</span>
                     </div>
-                    <ul class="space-y-2 text-gray-600 dark:text-gray-400 text-sm">
-                        <li class="flex gap-2"><span class="text-purple-500 mt-0.5">✦</span> <strong class="text-gray-900 dark:text-white">Import Tickets</strong> — bulk paste or file upload (CSV/JSON)</li>
-                        <li class="flex gap-2"><span class="text-purple-500 mt-0.5">✦</span> <strong class="text-gray-900 dark:text-white">Redesigned header</strong> with hamburger menu and cleaner layout</li>
-                        <li class="flex gap-2"><span class="text-purple-500 mt-0.5">✦</span> <strong class="text-gray-900 dark:text-white">Collapsible sidebar</strong> panels for Players and Chat</li>
-                        <li class="flex gap-2"><span class="text-purple-500 mt-0.5">✦</span> <strong class="text-gray-900 dark:text-white">Ticket navigation arrows</strong> for quick switching between tickets</li>
-                        <li class="flex gap-2"><span class="text-purple-500 mt-0.5">✦</span> <strong class="text-gray-900 dark:text-white">Chat improvements</strong> — right-aligned own messages, clickable links</li>
-                        <li class="flex gap-2"><span class="text-purple-500 mt-0.5">✦</span> <strong class="text-gray-900 dark:text-white">Dark mode & mobile fixes</strong> across the app</li>
+                    <ul class="space-y-2.5 text-gray-600 dark:text-gray-400 text-sm">
+                        <li class="flex gap-2.5"><span class="text-purple-500 mt-0.5 text-lg leading-none">✦</span> <span><strong class="text-gray-900 dark:text-white font-semibold">Import Tickets</strong> — bulk paste or file upload (CSV/JSON)</span></li>
+                        <li class="flex gap-2.5"><span class="text-purple-500 mt-0.5 text-lg leading-none">✦</span> <span><strong class="text-gray-900 dark:text-white font-semibold">Redesigned header</strong> with hamburger menu and cleaner layout</span></li>
+                        <li class="flex gap-2.5"><span class="text-purple-500 mt-0.5 text-lg leading-none">✦</span> <span><strong class="text-gray-900 dark:text-white font-semibold">Collapsible sidebar</strong> panels for Players and Chat</span></li>
+                        <li class="flex gap-2.5"><span class="text-purple-500 mt-0.5 text-lg leading-none">✦</span> <span><strong class="text-gray-900 dark:text-white font-semibold">Ticket navigation arrows</strong> for quick switching</span></li>
+                        <li class="flex gap-2.5"><span class="text-purple-500 mt-0.5 text-lg leading-none">✦</span> <span><strong class="text-gray-900 dark:text-white font-semibold">Chat improvements</strong> — right-aligned own messages, clickable links</span></li>
+                        <li class="flex gap-2.5"><span class="text-purple-500 mt-0.5 text-lg leading-none">✦</span> <span><strong class="text-gray-900 dark:text-white font-semibold">Dark mode & mobile fixes</strong> across the app</span></li>
                     </ul>
                 </div>
             </div>
-            <div class="max-w-screen-md mx-auto mt-6 text-center">
-                <a href="/changelog/" class="inline-flex items-center text-purple-600 dark:text-purple-400 hover:underline font-medium text-sm">
+            <div class="max-w-screen-md mx-auto mt-8 text-center animate-reveal animate-reveal-delay-2">
+                <a href="/changelog/" class="inline-flex items-center text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 font-semibold text-sm transition-colors duration-200 group">
                     View full changelog
-                    <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    <svg class="w-4 h-4 ml-1.5 transition-transform duration-200 group-hover:translate-x-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                 </a>
             </div>
         </div>
