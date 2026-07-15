@@ -78,6 +78,7 @@ export class GameComponent implements OnInit {
   playersCollapsed = false;
   chatCollapsed = false;
   private gameSubsInitialized = false;
+  private currentSubscribedTicketId: string | undefined;
 
   get isLoading(): boolean {
     // Only show loading when navigating to a specific game route (has gameId in URL)
@@ -117,11 +118,12 @@ export class GameComponent implements OnInit {
           this.gameSubsInitialized = true;
         }
 
-        if (ticketId) {
+        if (ticketId && ticketId !== this.currentSubscribedTicketId) {
           // Reset ticket state before loading new ticket
           this.votes = [];
           this.votesRevealed = false;
           this.ticket = undefined;
+          this.currentSubscribedTicketId = ticketId;
           this.getTicket(ticketId);
           this.subscribeToVoteActions(ticketId);
           this.subscribeToVotesRevealed(ticketId);
@@ -171,6 +173,9 @@ export class GameComponent implements OnInit {
   handleVoteAgain() {
     this.votesRevealed = false;
     this.votes = [];
+    if (this.ticket?.id) {
+      this.getVotes(this.ticket.id);
+    }
   }
 
   handleReVoteTicket(ticketId: string) {
@@ -546,8 +551,11 @@ export class GameComponent implements OnInit {
           if (!this.ticket && this.tickets.length > 0) {
             const firstTicket = this.tickets[0];
             this.ticket = firstTicket;
-            if (firstTicket?.id) {
+            if (firstTicket?.id && firstTicket.id !== this.currentSubscribedTicketId) {
+              this.currentSubscribedTicketId = firstTicket.id;
               this.getVotes(firstTicket.id);
+              this.subscribeToVoteActions(firstTicket.id);
+              this.subscribeToVotesRevealed(firstTicket.id);
             }
           }
 
