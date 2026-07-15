@@ -129,6 +129,26 @@ npm start  # http://localhost:4200
 8. **Chat/Reveal require gateway.fgp regeneration** — New types added to GameEngine schema. Run `.\generate-schema.ps1` then `docker compose build` + `up -d`.
 9. **takeUntilDestroyed context error (NG0203)** — Must inject `DestroyRef` and pass to `takeUntilDestroyed(this.destroyRef)` when used outside injection context (e.g., in paramMap subscription callbacks).
 10. **RedisValue ambiguity** — `JsonSerializer.Deserialize<T>(RedisValue)` is ambiguous; cast to `(string)value` explicitly.
+11. **Shared project is a NuGet package** — `OpenPlanningPoker.Shared` v1.0.1-preview1. Local changes to `backend/open-planning-poker-shared/` are **ignored by Docker**. Register services directly in the consuming project's `Program.cs` instead.
+12. **Gateway regeneration workflow** — After schema/C# changes to GameEngine GraphQL types, always run: `generate-schema.ps1` → `docker compose build` → `docker compose up -d --force-recreate`.
+
+## Technical Notes
+
+### Redis & Chat Infrastructure
+- `IConnectionMultiplexer` registered as singleton in GameEngine `Program.cs` (not in Shared NuGet pkg)
+- Chat messages stored in Redis list with key `chat:{gameId}`, 100 msg max, 24h TTL
+- Pub-sub via `ITopicEventSender` (HotChocolate) for real-time delivery
+- History query `chatMessages(gameId)` reads from Redis via `IDatabase.ListRangeAsync`
+
+### HotChocolate Mutation Conventions
+- Payload field name = camelCase of **return type** (e.g., `VotesRevealed` → `votesRevealed`), NOT method name
+- `[MutationType]` + `[SubscriptionType]` attributes auto-generate schema types
+- Topic format: `{nameof(MutationMethod)}_{parameterValue}`
+
+### Frontend Subscription Lifecycle
+- Use `takeUntilDestroyed(this.destroyRef)` (with injected `DestroyRef`) when subscribing outside injection context
+- `ngOnChanges` for inputs that arrive after init (e.g., `gameId` via `@Input()`)
+- Apollo subscriptions via `this.apollo.subscribe()`, queries via `this.apollo.watchQuery().valueChanges`
 
 ## Features Implemented (2026-07-15)
 
