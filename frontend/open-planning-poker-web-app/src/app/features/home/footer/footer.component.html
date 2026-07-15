@@ -9,20 +9,19 @@
 
     <div class="footer-links">
       <button mat-button (click)="toggleTheme()">
-        <mat-icon>
-          <i [class]="isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon'"></i>
-        </mat-icon>
+        <mat-icon>{{ isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
         {{ isDark ? 'Light' : 'Dark' }}
       </button>
       <button mat-button (click)="openInfoDialog()">
-        <mat-icon><i class="fa-solid fa-circle-info"></i></mat-icon>
+        <mat-icon>info</mat-icon>
         About
       </button>
       <a mat-button href="{{ websiteUrl }}" target="_blank" rel="noopener noreferrer">
+        <mat-icon>language</mat-icon>
         Website
       </a>
       <a mat-button href="{{ githubUrl }}" target="_blank" rel="noopener noreferrer">
-        <mat-icon><i class="fa-brands fa-github"></i></mat-icon>
+        <mat-icon svgIcon="github"></mat-icon>
         GitHub
       </a>
     </div>

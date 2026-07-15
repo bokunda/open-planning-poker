@@ -23,22 +23,20 @@
 
       <mat-menu #moreMenu="matMenu">
         <button mat-menu-item (click)="toggleTheme()">
-          <mat-icon>
-            <i [class]="isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon'"></i>
-          </mat-icon>
+          <mat-icon>{{ isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
           <span>{{ isDark ? 'Light mode' : 'Dark mode' }}</span>
         </button>
         <mat-divider></mat-divider>
         <a mat-menu-item href="{{githubRepoUrl}}" target="_blank" rel="noopener noreferrer">
-          <mat-icon><i class="fa-brands fa-github"></i></mat-icon>
+          <mat-icon svgIcon="github"></mat-icon>
           <span>GitHub</span>
         </a>
         <a mat-menu-item href="{{websiteUrl}}" target="_blank" rel="noopener noreferrer">
-          <mat-icon><i class="fa-solid fa-globe"></i></mat-icon>
+          <mat-icon>language</mat-icon>
           <span>Website</span>
         </a>
         <button mat-menu-item (click)="openInfoDialog()">
-          <mat-icon><i class="fa-solid fa-circle-info"></i></mat-icon>
+          <mat-icon>info</mat-icon>
           <span>About</span>
         </button>
       </mat-menu>
