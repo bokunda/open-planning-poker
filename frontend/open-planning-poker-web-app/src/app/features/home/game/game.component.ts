@@ -539,6 +539,15 @@ export class GameComponent implements OnInit {
         if (data) {
           this.tickets = data?.tickets?.items ?? [];
 
+          // Auto-select first ticket for players who join with no ticket selected
+          if (!this.ticket && this.tickets.length > 0) {
+            const firstTicket = this.tickets[0];
+            this.ticket = firstTicket;
+            if (firstTicket?.id) {
+              this.getVotes(firstTicket.id);
+            }
+          }
+
           if (!this.ticket || !this.tickets) {
             return;
           }
