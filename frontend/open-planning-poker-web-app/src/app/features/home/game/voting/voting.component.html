@@ -1,6 +1,7 @@
 <section class="voting-wrapper" aria-label="Voting area">
   <!-- No ticket: big CTA for host -->
   <div class="no-ticket-cta" *ngIf="!ticket?.id && isHost">
+    <div class="no-ticket-illustration">🎯</div>
     <h2 class="no-ticket-title">Ready to start?</h2>
     <p class="no-ticket-desc">Create your first ticket to begin estimating.</p>
     <div class="no-ticket-actions">

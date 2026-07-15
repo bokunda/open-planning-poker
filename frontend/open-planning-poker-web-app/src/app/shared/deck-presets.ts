@@ -7,22 +7,22 @@ export interface DeckPreset {
 export const DECK_PRESETS: DeckPreset[] = [
   {
     label: 'Fibonacci',
-    value: '0,0.5,1,2,3,5,8,13,?,P',
+    value: '0,0.5,1,2,3,5,8,13,❓,⏸️',
     example: '0, ½, 1, 2, 3, 5, 8, 13...'
   },
   {
     label: 'Modified Fibonacci',
-    value: '0,1,2,3,5,8,13,20,40,100,?,P',
+    value: '0,1,2,3,5,8,13,20,40,100,❓,⏸️',
     example: '0, 1, 2, 3, 5, 8, 13, 20, 40, 100...'
   },
   {
     label: 'T-Shirt Sizes',
-    value: 'XS,S,M,L,XL,XXL,?,P',
+    value: 'XS,S,M,L,XL,XXL,❓,⏸️',
     example: 'XS, S, M, L, XL, XXL...'
   },
   {
     label: 'Powers of 2',
-    value: '1,2,4,8,16,32,64,?,P',
+    value: '1,2,4,8,16,32,64,❓,⏸️',
     example: '1, 2, 4, 8, 16, 32, 64...'
   }
 ];

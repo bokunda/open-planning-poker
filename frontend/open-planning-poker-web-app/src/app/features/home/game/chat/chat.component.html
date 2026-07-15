@@ -9,7 +9,7 @@
   <div class="chat-panel" *ngIf="!collapsed">
     <div class="chat-messages">
       <div class="chat-empty" *ngIf="messages.length === 0">
-        No messages yet. Say hello!
+        No messages yet. Say hello! 👋
       </div>
       <div class="chat-msg" *ngFor="let msg of messages; let i = index"
         [class.chat-msg-own]="msg.playerName === currentUserName">
