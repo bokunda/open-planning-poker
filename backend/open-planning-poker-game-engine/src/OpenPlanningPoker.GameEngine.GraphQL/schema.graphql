@@ -107,6 +107,8 @@ type LeaveGamePayload {
 
 "Base Game Engine mutation."
 type Mutation {
+  "Sends a chat message to a game."
+  sendChatMessage(input: SendChatMessageInput!): SendChatMessagePayload! @cost(weight: "10")
   "Join Game"
   joinGame(input: JoinGameInput!): JoinGamePayload! @cost(weight: "10")
   "Leave a Game"
@@ -128,8 +130,6 @@ type Mutation {
   deleteTicket(input: DeleteTicketInput!): DeleteTicketPayload! @cost(weight: "10")
   "Creates or updates a vote."
   createOrUpdateVote(input: CreateOrUpdateVoteInput!): CreateOrUpdateVotePayload! @cost(weight: "10")
-  "Sends a chat message to a game."
-  sendChatMessage(input: SendChatMessageInput!): SendChatMessagePayload! @cost(weight: "10")
 }
 
 type PingPayload {
@@ -156,30 +156,23 @@ type Query {
   votes(ticketId: UUID!): VotesResult! @cost(weight: "10")
 }
 
+type SendChatMessagePayload {
+  chatMessage: ChatMessage
+  errors: [SendChatMessageError!]
+}
+
 type Settings {
   id: UUID!
   gameId: UUID!
   deckSetup: String!
 }
 
-type SendChatMessagePayload {
-  chatMessage: ChatMessage
-  errors: [SendChatMessageError!]
-}
-
-union SendChatMessageError = ApplicationError
-
-input SendChatMessageInput {
-  gameId: UUID!
-  content: String!
-}
-
 type Subscription {
+  onChatMessage(gameId: UUID!): ChatMessage!
   onPlayerJoined(gameId: UUID!): BaseUserProfile!
   onPlayerLeave(gameId: UUID!): BaseUserProfile!
   onTicketCreated(gameId: UUID!): Ticket!
   onVoteCreatedOrUpdated(ticketId: UUID!): Vote!
-  onChatMessage(gameId: UUID!): ChatMessage!
 }
 
 type Ticket {
@@ -229,6 +222,8 @@ union InfoResult = Info | ApplicationError
 union JoinGameError = ApplicationError
 
 union LeaveGameError = ApplicationError
+
+union SendChatMessageError = ApplicationError
 
 union SettingsDetailsResult = Settings | ApplicationError
 
@@ -280,6 +275,11 @@ input JoinGameInput {
 
 input LeaveGameInput {
   gameId: UUID!
+}
+
+input SendChatMessageInput {
+  gameId: UUID!
+  content: String!
 }
 
 input UpdateSettingsInput {
