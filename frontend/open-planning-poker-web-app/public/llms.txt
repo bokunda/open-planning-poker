@@ -1,0 +1,19 @@
+# Open Planning Poker
+
+> Free and open-source agile estimation tool for Scrum teams. Collaborative voting, real-time results, and PDF exports.
+
+## Links
+
+- [Open Planning Poker App](https://app.openplanningpoker.com): Main web application for playing planning poker
+- [Website](https://openplanningpoker.com): Marketing website with FAQs and changelog
+- [GitHub Repository](https://github.com/bokunda/open-planning-poker): Source code, issues, and contributions
+- [Changelog](https://openplanningpoker.com/changelog/): Release notes and version history
+
+## About
+
+Open Planning Poker is built with Angular, .NET 9, GraphQL (HotChocolate Fusion), PostgreSQL, and Redis. It supports real-time collaborative estimation, hidden votes, custom voting decks, game timers, chat, PDF reports, and more.
+
+## API
+
+- GraphQL endpoint: `https://apigateway.openplanningpoker.com/graphql`
+- WebSocket endpoint: `wss://apigateway.openplanningpoker.com/graphql`

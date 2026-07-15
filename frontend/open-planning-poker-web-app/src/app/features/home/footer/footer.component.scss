@@ -32,15 +32,15 @@
 }
 
 .footer-copy {
-  color: var(--opp-text-muted);
+  color: var(--opp-text-secondary);
   font-size: var(--opp-font-size-xs);
   white-space: nowrap;
 }
 
 .footer-version {
-  color: var(--opp-text-muted);
+  color: var(--opp-text-secondary);
   font-size: 0.65rem;
-  opacity: 0.6;
+  opacity: 0.7;
   white-space: nowrap;
 }
 
@@ -70,7 +70,7 @@
 .footer-tagline {
   width: 100%;
   text-align: center;
-  color: var(--opp-text-muted);
+  color: var(--opp-text-secondary);
   font-size: var(--opp-font-size-xs);
   padding-top: var(--opp-space-2);
 }
