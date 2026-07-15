@@ -41,7 +41,10 @@ export class GameComponent implements OnInit {
   @Input() currentUserId: string = '';
 
   get isLoading(): boolean {
-    return !this.game;
+    // Only show loading when navigating to a specific game route (has gameId in URL)
+    // and game data hasn't loaded yet. On the landing page (!gameId), don't show loader.
+    const hasGameId = !!this.route.snapshot.paramMap.get('id');
+    return hasGameId && !this.game;
   }
 
   get isHost(): boolean {

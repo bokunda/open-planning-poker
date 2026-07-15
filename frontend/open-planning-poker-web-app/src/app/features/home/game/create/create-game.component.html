@@ -10,7 +10,8 @@
         <mat-label>Voting Deck</mat-label>
         <mat-select formControlName="deckSetup">
           <mat-option *ngFor="let deck of deckPresets" [value]="deck.value">
-            {{ deck.label }}
+            <span class="deck-option-label">{{ deck.label }}</span>
+            <span class="deck-option-example">{{ deck.example }}</span>
           </mat-option>
           <mat-option value="__custom__">🎨 Custom Deck...</mat-option>
         </mat-select>

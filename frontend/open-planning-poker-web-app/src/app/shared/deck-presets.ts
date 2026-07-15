@@ -1,24 +1,29 @@
 export interface DeckPreset {
   label: string;
   value: string;   // CSV deck setup string
+  example: string;  // Short example for display
 }
 
 export const DECK_PRESETS: DeckPreset[] = [
   {
     label: 'Fibonacci',
-    value: '0,0.5,1,2,3,5,8,13,❓,⏸️'
+    value: '0,0.5,1,2,3,5,8,13,❓,⏸️',
+    example: '0, ½, 1, 2, 3, 5, 8, 13...'
   },
   {
     label: 'Modified Fibonacci',
-    value: '0,1,2,3,5,8,13,20,40,100,❓,⏸️'
+    value: '0,1,2,3,5,8,13,20,40,100,❓,⏸️',
+    example: '0, 1, 2, 3, 5, 8, 13, 20, 40, 100...'
   },
   {
     label: 'T-Shirt Sizes',
-    value: 'XS,S,M,L,XL,XXL,❓,⏸️'
+    value: 'XS,S,M,L,XL,XXL,❓,⏸️',
+    example: 'XS, S, M, L, XL, XXL...'
   },
   {
     label: 'Powers of 2',
-    value: '1,2,4,8,16,32,64,❓,⏸️'
+    value: '1,2,4,8,16,32,64,❓,⏸️',
+    example: '1, 2, 4, 8, 16, 32, 64...'
   }
 ];
 

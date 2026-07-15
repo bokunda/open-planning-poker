@@ -78,7 +78,7 @@ export type ChatMessage = {
   gameId: Scalars['UUID']['output'];
   id: Scalars['UUID']['output'];
   playerName: Scalars['String']['output'];
-  timestamp: Scalars['DateTime']['output'];
+  timestamp: Scalars['String']['output'];
 };
 
 export type CreateGameError = ApplicationError;
