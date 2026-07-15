@@ -13,6 +13,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [1.2.0] — 2026-07-15
+
+### Architecture — Standalone Components Migration
+- **All 26 components converted to standalone** — removed 9 NgModule files (app, home, game, ticket, user, errors, shared, material, server)
+- **Per-component Material imports** — each component imports only the Material modules it uses (no more 17-module `MaterialModule` barrel)
+- **`bootstrapApplication`** replaces `platformBrowserDynamic` — modern Angular bootstrapping
+- **`provideAnimations()`** replaces `BrowserAnimationsModule` in app config
+- **Deleted `AppServerModule`** — SSR now uses default bootstrap export (`main.server.ts`)
+
+### Performance — SSR & Optimizations
+- **SSR enabled in production** — Node.js Express server replaces nginx for static file serving
+- **Prerendered 2 static routes** (`/` and `/game`) — near-instant FCP via pre-rendered HTML
+- **Critical CSS inlining** (`inlineCritical: true`) — Beasties extracts above-the-fold CSS, no render-blocking stylesheet
+- **Font Awesome removed** — replaced with Material Icons + inline SVG for GitHub icon
+- **CSS bundle reduced 63%** (29 kB → 11 kB gzipped)
+- **Source maps disabled in production** (saved ~2-3 MB download)
+- **Build budgets tightened** — 1.5 MB warning, 2.5 MB error (was 5/10 MB)
+- **Google Tag Manager deferred** to `requestIdleCallback` — no longer in critical path
+- **Preconnect hints optimized** — removed unused origins, fixed `crossorigin` attributes
+- **Environment files introduced** (`environment.ts` / `environment.prod.ts`) with `fileReplacements`
+- **Removed runtime `config.json` fetch** — build-time config via environment files eliminates blocking network call on bootstrap
+
+### Performance — Landing Page Rendering
+- **Landing UI visible immediately** — GameComponent renders in SSR HTML without waiting for user registration
+- **`setupUser()` deferred** via `afterNextRender` — runs in background after hydration
+- **ThemeService hardened for SSR** — `localStorage` access guarded with `isPlatformBrowser`
+- **All `localStorage` calls guarded** for SSR compatibility (GameComponent, HomeComponent, ThemeService)
+
+### Fixes
+- **Duplicate meta tags** removed from `index.html` (charset, viewport, theme-color)
+- **Font loading** — Google Fonts and Material Icons now loaded asynchronously (`preload` + `onload`)
+- **Microsoft Clarity** moved to end of `<head>` to avoid blocking parsing
+- **Allowed hosts** configured in `CommonEngine` constructor (SSR was falling back to CSR)
+- **SSR hydration mismatch** fixed — `afterNextRender` prevents client/server DOM differences
+- **Dockerfile updated** — production stage uses `node:22-alpine` with Express SSR server
+- **CI pipeline** — gateway URL injection via `sed` replaced with Node.js script (handles URL characters safely) then `env:`-based injection
+
+### Breaking Changes
+- **Docker container port changed** — app now listens on port 4000 (was 80). Docker Compose port mapping updated (`10000:4000`).
+- **`public/assets/config.json` deleted** — gateway URLs now configured via `environment.prod.ts`
+- **All NgModule files deleted** — any external imports of these modules must be updated
+
+### Changed
+- **Voting history UI redesigned** — ticket title dominates panel space, AVG value minimal right-aligned, active chip badge
+- **GitHub icon** now uses registered SVG via `MatIconRegistry` instead of Font Awesome
+
 ## [1.1.0] — 2026-07-15
 
 ### Added
