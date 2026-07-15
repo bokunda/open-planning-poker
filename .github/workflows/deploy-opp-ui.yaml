@@ -57,6 +57,7 @@ jobs:
             docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokerui:${{ github.run_number }}
             docker rm -f OpenPlanningPoker.UI || true
             docker run -d \
+              --restart unless-stopped \
               --name OpenPlanningPoker.UI \
               --network oppnetwork \
               -p 10000:4000 \

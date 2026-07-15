@@ -41,6 +41,7 @@ jobs:
             docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokerwebsite:${{ github.run_number }}
             docker rm -f OpenPlanningPoker.Website || true
             docker run -d \
+              --restart unless-stopped \
               --name OpenPlanningPoker.Website \
               --network oppnetwork \
               -p 9010:80 \

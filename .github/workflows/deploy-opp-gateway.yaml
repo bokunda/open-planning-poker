@@ -79,6 +79,7 @@ jobs:
             docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:${{ github.run_number }}
             docker rm -f OpenPlanningPoker.Fusion.Gateway || true
             docker run -d \
+              --restart unless-stopped \
               --name OpenPlanningPoker.Fusion.Gateway \
               --network oppnetwork \
               -e ASPNETCORE_ENVIRONMENT=Development \

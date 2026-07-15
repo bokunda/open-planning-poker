@@ -19,6 +19,7 @@ jobs:
             docker pull postgres:15.5
             docker rm -f OpenPlanningPoker.Db || true
             docker run -d \
+              --restart unless-stopped \
               --name OpenPlanningPoker.Db \
               --network oppnetwork \
               -e POSTGRES_DB=${{ vars.POSTGRES_DB }} \

@@ -57,6 +57,7 @@ jobs:
             docker pull ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }}
             docker rm -f OpenPlanningPoker.GameEngine.GraphQL || true
             docker run -d \
+              --restart unless-stopped \
               --name OpenPlanningPoker.GameEngine.GraphQL \
               --network oppnetwork \
               -e ASPNETCORE_ENVIRONMENT=Development \
