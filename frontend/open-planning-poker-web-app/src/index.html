@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://apigateway.openplanningpoker.com">
+  <link rel="preconnect" href="https://ge.openplanningpoker.com">
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-DEXZ4JTESJ"></script>
@@ -18,20 +19,8 @@
     gtag('config', 'G-DEXZ4JTESJ');
   </script>
 
-  <!-- Microsoft Clarity -->
-  <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "xmim6e317s");
-  </script>
-  <!-- END Microsoft Clarity -->
-
-  <meta charset="utf-8">
   <title>Open Planning Poker — Free Agile Estimation Tool</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#7e3af2">
   <meta name="description" content="Play Planning Poker online for free. Create a game room, invite your team, and estimate user stories collaboratively. No registration required. Open source.">
   <meta name="keywords" content="planning poker, scrum poker, agile estimation, sprint planning, free online planning poker">
@@ -67,8 +56,12 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/open-planning-poker-game-logo-512x512.png">
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#7e3af2">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Fonts: async load to unblock first paint -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" href="https://fonts.googleapis.com/icon?family=Material+Icons" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></noscript>
 
   <!-- Structured Data: WebApplication -->
   <script type="application/ld+json">
@@ -90,6 +83,15 @@
       "name": "Bojan Piskulic"
     }
   }
+  </script>
+
+  <!-- Microsoft Clarity (non-blocking: loaded at end of body) -->
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "xmim6e317s");
   </script>
 </head>
 <body class="mat-typography">

@@ -40,12 +40,13 @@
           },
           "configurations": {
             "production": {
-              "sourceMap": true,
+              "optimization": true,
+              "sourceMap": false,
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "5MB",
-                  "maximumError": "10MB"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
