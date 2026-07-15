@@ -53,10 +53,22 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+    color: #1a1a1a;
 
     &:hover, &.selected {
       transform: translateY(-20px);
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
+  }
+}
+
+/* Dark theme card buttons */
+.dark-theme .voting-item-options .card-button {
+  color: #fff;
+  border-color: #555;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+
+  &:hover, &.selected {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
   }
 }
