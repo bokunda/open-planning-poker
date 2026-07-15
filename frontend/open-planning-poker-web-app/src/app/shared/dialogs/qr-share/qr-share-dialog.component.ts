@@ -1,6 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import * as QRCode from 'qrcode';
 
 export interface QrShareData {
   url: string;
@@ -14,7 +13,11 @@ export interface QrShareData {
       <h2 mat-dialog-title>Share Game: {{ data.gameName }}</h2>
       <mat-dialog-content>
         <div class="qr-container">
-          <canvas #qrCanvas></canvas>
+          <img
+            [src]="qrImageUrl"
+            alt="QR code to share this game"
+            width="220" height="220"
+            class="qr-image" />
         </div>
         <div class="qr-url">
           <code>{{ data.url }}</code>
@@ -32,6 +35,7 @@ export interface QrShareData {
   styles: [`
     .qr-share-wrapper { text-align: center; }
     .qr-container { display: flex; justify-content: center; padding: 16px 0; }
+    .qr-image { border-radius: 8px; }
     .qr-url { margin: 8px 0; }
     .qr-url code { word-break: break-all; font-size: 0.8rem; }
     .copy-btn { margin-top: 8px; }
@@ -39,21 +43,15 @@ export interface QrShareData {
   `],
   standalone: false
 })
-export class QrShareDialogComponent implements OnInit {
+export class QrShareDialogComponent {
   copied = false;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: QrShareData) {}
-
-  async ngOnInit(): Promise<void> {
-    const canvas = document.querySelector('canvas') as HTMLCanvasElement | null;
-    if (canvas) {
-      await QRCode.toCanvas(canvas, this.data.url, {
-        width: 220,
-        margin: 2,
-        color: { dark: '#7e3af2', light: '#ffffff' }
-      });
-    }
+  get qrImageUrl(): string {
+    const encoded = encodeURIComponent(this.data.url);
+    return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encoded}&color=7e3af2&bgcolor=ffffff&margin=4`;
   }
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: QrShareData) {}
 
   copyUrl(): void {
     navigator.clipboard.writeText(this.data.url).then(() => {
