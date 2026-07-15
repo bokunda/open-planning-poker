@@ -1,20 +1,10 @@
-﻿using StackExchange.Redis;
-
-namespace OpenPlanningPoker.Shared.Extensions;
+﻿namespace OpenPlanningPoker.Shared.Extensions;
 
 public static class RedisExtensions
 {
-    public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration)
-    {
-        var connectionString = configuration["ConnectionStrings:Cache"]!;
-        var multiplexer = ConnectionMultiplexer.Connect(connectionString);
-        services.AddSingleton<IConnectionMultiplexer>(multiplexer);
-
+    public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration) => 
         services.AddStackExchangeRedisCache(options =>
         {
-            options.Configuration = connectionString;
+            options.Configuration = configuration["ConnectionStrings:Cache"];
         });
-
-        return services;
-    }
 }

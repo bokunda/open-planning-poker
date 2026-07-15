@@ -15,6 +15,10 @@ builder.Services.AddTransient<IUserService, CacheUserService>();
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 
+// Register IConnectionMultiplexer for Redis pub-sub and chat persistence
+builder.Services.AddSingleton<IConnectionMultiplexer>(
+    ConnectionMultiplexer.Connect(builder.Configuration["ConnectionStrings:Cache"]!));
+
 var corsConfig = new CorsConfiguration();
 builder.Configuration.GetSection("Cors").Bind(corsConfig);
 builder.Services.AddCors(corsConfig.PolicyName, corsConfig.AllowedOrigins);
