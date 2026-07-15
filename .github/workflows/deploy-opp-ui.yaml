@@ -24,8 +24,8 @@ jobs:
         run: |
           node -e "
             const fs = require('fs');
-            const gateway = process.env.OPP_API_GATEWAY;
-            const wss = process.env.OPP_WSS_URL;
+            const gateway = process.env.OPP_API_GATEWAY.trim();
+            const wss = process.env.OPP_WSS_URL.trim();
             let c = fs.readFileSync('src/environments/environment.prod.ts', 'utf8');
             c = c.replace(/gqlGateway: '.*?'/, \"gqlGateway: '\" + gateway + \"'\");
             c = c.replace(/gqlGatewayWss: '.*?'/, \"gqlGatewayWss: '\" + wss + \"'\");
