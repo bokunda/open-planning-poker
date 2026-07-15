@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
-import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, afterNextRender, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Title, Meta } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Mutation, Query, RegisterUserInput, User } from '../../graphql/graphql-gateway.service';
@@ -29,11 +29,16 @@ export class HomeComponent implements OnInit {
   private readonly title = inject(Title);
   private readonly meta = inject(Meta);
   private readonly route = inject(ActivatedRoute);
+  private readonly platformId = inject(PLATFORM_ID);
 
-  constructor(private apollo: Apollo) { }
+  constructor(private apollo: Apollo) {
+    // Delay user setup until after hydration to avoid SSR/client mismatch
+    afterNextRender(() => {
+      this.setupUser();
+    });
+  }
 
   ngOnInit(): void {
-    this.setupUser();
     this.updatePageMeta();
     this.route.paramMap.subscribe(params => {
       this.updateBreadcrumb(params.get('id'), params.get('ticketId'));
