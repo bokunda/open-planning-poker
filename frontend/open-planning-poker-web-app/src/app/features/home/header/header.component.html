@@ -23,6 +23,15 @@
       </a>
       <button
         mat-icon-button
+        (click)="toggleTheme()"
+        [attr.aria-label]="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+        [matTooltip]="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+        <mat-icon class="header-icon">
+          <i [class]="isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon'"></i>
+        </mat-icon>
+      </button>
+      <button
+        mat-icon-button
         (click)="openInfoDialog()"
         aria-label="About the project!"
         matTooltip="About the project!">

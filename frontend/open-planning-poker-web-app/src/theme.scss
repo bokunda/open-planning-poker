@@ -65,4 +65,19 @@ $opp-theme: mat.m2-define-light-theme((
   density: 0,
 ));
 
+// Dark theme
+$opp-dark-theme: mat.m2-define-dark-theme((
+  color: (
+    primary: $opp-primary,
+    accent: mat.m2-define-palette(mat.$m2-grey-palette, 400, 300, 500),
+    warn: $opp-warn,
+  ),
+  typography: mat.m2-define-typography-config(),
+  density: 0,
+));
+
 @include mat.all-component-themes($opp-theme);
+
+.dark-theme {
+  @include mat.all-component-colors($opp-dark-theme);
+}

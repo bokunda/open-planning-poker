@@ -1,7 +1,39 @@
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #fafafa;
+  color: #1a1a1a;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark theme overrides */
+.dark-theme body,
+body.dark-theme,
+.dark-theme {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark-theme .table-players {
+  background-color: #333;
+  color: #e0e0e0;
+}
+
+.dark-theme .player-item-vote {
+  border-color: #555;
+}
+
+.dark-theme .mat-toolbar {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+.dark-theme a {
+  color: #b49bff;
+}
 
 /* Accessibility: skip-to-content link (visually hidden until focused) */
 .skip-link {
