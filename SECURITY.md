@@ -14,7 +14,7 @@ If you discover a security vulnerability in Open Planning Poker, please report i
 
 Instead, please email the maintainer at:
 
-📧 **bokunda@outlook.com**
+📧 **bpiskulic1996@gmail.com**
 
 ### What to include
 
