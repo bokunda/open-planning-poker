@@ -1,17 +1,24 @@
 import { Apollo } from 'apollo-angular';
 import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Title, Meta } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Mutation, Query, RegisterUserInput, User } from '../../graphql/graphql-gateway.service';
 import { GET_USER } from './user/gql/getUser.graphql';
 import { REGISTER_USER } from './user/gql/registerUser.graphql';
 import { BreadcrumbItem } from './game/breadcrumb/breadcrumb.component';
+import { HeaderComponent } from './header/header.component';
+import { BreadcrumbComponent } from './game/breadcrumb/breadcrumb.component';
+import { GameComponent } from './game/game.component';
+import { FooterComponent } from './footer/footer.component';
+import { LoadingComponent } from '../../shared/loading/loading.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
-  standalone: false
+  standalone: true,
+  imports: [CommonModule, HeaderComponent, BreadcrumbComponent, GameComponent, FooterComponent, LoadingComponent]
 })
 export class HomeComponent implements OnInit {
 

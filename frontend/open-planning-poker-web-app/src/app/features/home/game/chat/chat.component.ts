@@ -1,6 +1,10 @@
 import { Component, EventEmitter, HostBinding, Input, Output, OnDestroy, OnChanges, SimpleChanges, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { Apollo } from 'apollo-angular';
 import { ChatMessage } from '../../../../graphql/graphql-gateway.service';
 import { ON_CHAT_MESSAGE } from '../gql/onChatMessage.graphql';
@@ -11,7 +15,8 @@ import { GET_CHAT_MESSAGES } from '../gql/getChatMessages.graphql';
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
-  standalone: false
+  standalone: true,
+  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule]
 })
 export class ChatComponent implements OnChanges, OnDestroy {
   @Input() gameId: string = '';

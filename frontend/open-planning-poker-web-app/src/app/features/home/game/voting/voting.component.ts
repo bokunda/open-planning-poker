@@ -1,11 +1,16 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ApiCollectionOfGamePlayer, Settings, SettingsDetailsResult, Ticket, Vote } from '../../../../graphql/graphql-gateway.service';
 
 @Component({
   selector: 'app-voting',
   templateUrl: './voting.component.html',
   styleUrl: './voting.component.scss',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class VotingComponent implements OnInit, OnDestroy, OnChanges {

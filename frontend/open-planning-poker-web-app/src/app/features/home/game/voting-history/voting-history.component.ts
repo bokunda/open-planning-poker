@@ -1,11 +1,16 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { Ticket } from '../../../../graphql/graphql-gateway.service';
 
 @Component({
   selector: 'app-voting-history',
   templateUrl: './voting-history.component.html',
   styleUrl: './voting-history.component.scss',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, MatExpansionModule, MatButtonModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VotingHistoryComponent {

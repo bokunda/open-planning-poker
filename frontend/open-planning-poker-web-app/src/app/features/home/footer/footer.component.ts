@@ -1,5 +1,8 @@
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { OPP_APP_VERSION, OPP_GITHUB_REPO_URL, OPP_WEBSITE_URL } from '../../../shared/constants';
 import { InfoDialogComponent } from '../../../shared/dialogs/info/info.component';
 import { ThemeService } from '../../../shared/theme.service';
@@ -8,7 +11,8 @@ import { ThemeService } from '../../../shared/theme.service';
   selector: 'app-footer',
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',
-  standalone: false
+  standalone: true,
+  imports: [CommonModule, MatButtonModule, MatIconModule]
 })
 export class FooterComponent {
   private readonly dialog = inject(MatDialog);

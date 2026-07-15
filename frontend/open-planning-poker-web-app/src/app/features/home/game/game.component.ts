@@ -1,7 +1,10 @@
 import { Component, inject, Input, OnInit, DestroyRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Apollo } from 'apollo-angular';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { ApiCollectionOfGamePlayer, ApiCollectionOfTicket, ApiCollectionOfVote, BaseUserProfile, Game, GamePlayer, Mutation, MutationCreateGameArgs, MutationCreateOrUpdateVoteArgs, MutationCreateTicketArgs, MutationJoinGameArgs, Ticket, Vote } from '../../../graphql/graphql-gateway.service';
 import { GET_GAME } from './gql/getGame.graphql';
 import { CREATE_GAME } from './gql/createGame.graphql';
@@ -28,13 +31,20 @@ import { GENERATE_GAME_REPORT } from './gql/generateGameReport.graphql';
 import { UPDATE_SETTINGS } from './gql/updateSettings.graphql';
 import { MutationRevealVotesArgs, MutationUpdateSettingsArgs, RevealVotesPayload, UpdateSettingsPayload, VotesRevealed } from '../../../graphql/graphql-gateway.service';
 import { CreateGameResult } from './create/create-game.component';
+import { LoadingComponent } from '../../../shared/loading/loading.component';
+import { GameDetailsComponent } from './details/game-details.component';
+import { VotingComponent } from './voting/voting.component';
+import { VotingHistoryComponent } from './voting-history/voting-history.component';
+import { PlayersComponent } from './players/players.component';
+import { ChatComponent } from './chat/chat.component';
 import { map } from 'rxjs';
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, MatButtonModule, MatIconModule, LoadingComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent],
   animations: [
     trigger('fadeSlide', [
       transition(':enter', [

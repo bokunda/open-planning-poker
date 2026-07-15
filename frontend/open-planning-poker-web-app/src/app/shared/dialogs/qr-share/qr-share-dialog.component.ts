@@ -1,5 +1,8 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 export interface QrShareData {
   url: string;
@@ -8,6 +11,8 @@ export interface QrShareData {
 
 @Component({
   selector: 'app-qr-share-dialog',
+  standalone: true,
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
   template: `
     <div class="qr-share-wrapper">
       <h2 mat-dialog-title>Share Game: {{ data.gameName }}</h2>
@@ -41,7 +46,6 @@ export interface QrShareData {
     .copy-btn { margin-top: 8px; }
     .copied-msg { color: #4caf50; margin-left: 8px; font-weight: 600; }
   `],
-  standalone: false
 })
 export class QrShareDialogComponent {
   copied = false;

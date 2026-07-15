@@ -1,7 +1,11 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Game } from '../../../../graphql/graphql-gateway.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '../../../../shared/constants';
 import { QrShareDialogComponent } from '../../../../shared/dialogs/qr-share/qr-share-dialog.component';
 
@@ -9,7 +13,8 @@ import { QrShareDialogComponent } from '../../../../shared/dialogs/qr-share/qr-s
   selector: 'app-game-details',
   templateUrl: './game-details.component.html',
   styleUrl: './game-details.component.scss',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameDetailsComponent {

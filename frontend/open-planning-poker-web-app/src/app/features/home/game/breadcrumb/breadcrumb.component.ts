@@ -1,7 +1,7 @@
 import { Component, inject, Input, OnChanges } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
-import { DOCUMENT } from '@angular/common';
 
 export interface BreadcrumbItem {
   label: string;
@@ -12,7 +12,8 @@ export interface BreadcrumbItem {
   selector: 'app-breadcrumb',
   templateUrl: './breadcrumb.component.html',
   styleUrl: './breadcrumb.component.scss',
-  standalone: false
+  standalone: true,
+  imports: [CommonModule, RouterModule]
 })
 export class BreadcrumbComponent implements OnChanges {
   @Input() items: BreadcrumbItem[] = [];

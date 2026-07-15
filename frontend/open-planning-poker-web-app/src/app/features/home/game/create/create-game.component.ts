@@ -1,6 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { CreateGameDialogComponent } from './dialog/create-game-dialog.component';
 import { DECK_PRESETS, DEFAULT_DECK } from '../../../../shared/deck-presets';
 
@@ -14,7 +20,8 @@ export interface CreateGameResult {
   selector: 'app-create-game',
   templateUrl: './create-game.component.html',
   styleUrl: './create-game.component.scss',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateGameComponent {

@@ -1,13 +1,19 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormGroup, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { JoinGameDialogComponent } from './dialog/join-game-dialog.component';
 
 @Component({
   selector: 'app-join-game',
   templateUrl: './join-game.component.html',
   styleUrl: './join-game.component.scss',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JoinGameComponent {

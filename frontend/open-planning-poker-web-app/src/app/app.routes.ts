@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home.component';
-import { ErrorsComponent } from './features/errors/errors.component';
 
 export const routes: Routes = [
   {
@@ -29,7 +28,7 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    component: ErrorsComponent,
+    loadComponent: () => import('./features/errors/errors.component').then(m => m.ErrorsComponent),
     title: '404 — Page Not Found | Open Planning Poker'
   }
 ];

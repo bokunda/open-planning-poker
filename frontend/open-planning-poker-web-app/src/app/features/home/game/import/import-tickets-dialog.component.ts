@@ -1,5 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 export interface ImportedTicket {
   name: string;
@@ -10,7 +15,8 @@ export interface ImportedTicket {
   selector: 'app-import-tickets-dialog',
   templateUrl: './import-tickets-dialog.component.html',
   styleUrl: './import-tickets-dialog.component.scss',
-  standalone: false
+  standalone: true,
+  imports: [CommonModule, FormsModule, MatDialogModule, MatTabsModule, MatButtonModule, MatIconModule]
 })
 export class ImportTicketsDialogComponent {
   readonly dialogRef = inject(MatDialogRef<ImportTicketsDialogComponent>);
