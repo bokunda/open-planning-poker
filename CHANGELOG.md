@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Average voting value** displayed inline next to ticket title (only when votes exist)
 - **Chat link support** — URLs auto-converted to clickable links (`linkify`)
 - **Fluid transitions** — fade/slide animations for landing↔dashboard using `@angular/animations`
-- **MatMenuModule, MatTabsModule, MatDividerModule** added to Material module
+- **Website changelog page** — auto-generated from `CHANGELOG.md` using `marked`
 
 ### Changed
 - **Header redesign**: hamburger menu on left, brand text smaller, username on right
@@ -46,49 +46,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Footer double margin causing vertical scroll
 - `mat-option` selected state low contrast (global CSS override)
 - Hardcoded colors replaced with design tokens in create-game component
-- Dynamic sitemap endpoint on Game Engine (serves active game URLs)
-- Microsoft Clarity analytics integration (ID: `xmim6e317s`)
-- Breadcrumb navigation with `BreadcrumbList` structured data
-- Comprehensive documentation (`docs/`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`)
-- **Hidden votes mechanism** — votes concealed behind "?" until "Reveal Votes" clicked
-- **Hidden average voting value** — average hidden until votes revealed (voting + history)
-- Auto-reset voting state on new ticket creation
-- PWA support (service worker, manifest, installable)
-- Security headers in nginx (CSP, HSTS, X-Frame-Options, X-Content-Type-Options)
-- Rate limiting on API Gateway (100 req/min fixed window)
-- Console logging for local development (Serilog console sink in Dev configs)
-
-### Changed
-- Upgraded Node.js Docker images to 22 LTS (from 23 non-LTS and 18 EOL)
-- Replaced `apollo-client` v2 with `@apollo/client` v3
-- Exported BreadcrumbComponent from GameModule for use in HomeComponent
-- Moved breadcrumb above player name in home layout
-
-### Fixed
-- **CRITICAL: `Database.Migrate()` was commented out** — database never created on fresh deploy
-- Double COPY in website Dockerfile (security: source tree was copied to production image)
-- CORS middleware ordering (now executes before GraphQL endpoint)
-- `HeaderPropagationHandler` fragile Bearer token parsing
-- `ApplicationErrorContants` typo → `ApplicationErrorConstants`
-- FAQ structured data mismatched with visible HTML content
-- `site.webmanifest` had empty `name` and `short_name` fields
-- Twitter card typo: `@openplanninpoker` → `@openplanningpoker`
-- User Management nginx proxy port (9091 → 9090)
-- Footer copyright year updated to 2026
-- Tailwind primary color matched to brand purple (#7e3af2)
-- Duplicate player display on game table (race condition in `getGamePlayers`)
-- Hidden vote card width mismatch (added `box-sizing: border-box`)
-- Enter key now submits create game form
-- Voting history now respects hidden votes state
-- `generate-schema.ps1` paths corrected in both projects
-- Game Engine GraphQL project: added `Domain.Games` to GlobalUsings
-- `site.webmanifest` had empty `name` and `short_name` fields
-- Twitter card typo: `@openplanninpoker` → `@openplanningpoker`
-- User Management nginx proxy port (9091 → 9090)
-- Footer copyright year updated to 2026
-- Tailwind primary color palette aligned to brand purple (#7e3af2)
 
 ## [1.0.0] — 2026-07-14
+
+> First stable release. Previously the application existed as **beta [0.0.1]** which
+> contained most of the same features but was unstable, had unpolished UI, and
+> lacked production hardening.
 
 ### Added
 - **Microservices architecture** with GraphQL Federation
@@ -110,6 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - robots.txt and sitemap.xml for both domains
   - Dynamic per-route page titles and meta descriptions
   - Semantic HTML landmarks and skip-to-content link
+  - Dynamic sitemap endpoint on Game Engine
 - **CI/CD Pipeline** (GitHub Actions):
   - Multi-stage deployment workflow with dependency ordering
   - Docker image builds pushed to GitHub Container Registry (ghcr.io)
@@ -129,3 +93,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Health checks with UI response writer
 - Game report PDF download
 - Custom 404 error pages
+- Microsoft Clarity analytics integration (ID: `xmim6e317s`)
+- Breadcrumb navigation with `BreadcrumbList` structured data
+- Comprehensive documentation (`docs/`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`)
+
+### Changed
+- Upgraded Node.js Docker images to 22 LTS (from 23 non-LTS and 18 EOL)
+- Replaced `apollo-client` v2 with `@apollo/client` v3
+- Exported BreadcrumbComponent from GameModule for use in HomeComponent
+- Moved breadcrumb above player name in home layout
+- Tailwind primary color palette aligned to brand purple (#7e3af2)
+
+### Fixed
+- **CRITICAL: `Database.Migrate()` was commented out** — database never created on fresh deploy
+- Double COPY in website Dockerfile (security: source tree was copied to production image)
+- CORS middleware ordering (now executes before GraphQL endpoint)
+- `HeaderPropagationHandler` fragile Bearer token parsing
+- `ApplicationErrorContants` typo → `ApplicationErrorConstants`
+- FAQ structured data mismatched with visible HTML content
+- `site.webmanifest` had empty `name` and `short_name` fields
+- Twitter card typo: `@openplanninpoker` → `@openplanningpoker`
+- User Management nginx proxy port (9091 → 9090)
+- Footer copyright year updated to 2026
+- Duplicate player display on game table (race condition in `getGamePlayers`)
+- Hidden vote card width mismatch (added `box-sizing: border-box`)
+- Enter key now submits create game form
+- Voting history now respects hidden votes state
+- `generate-schema.ps1` paths corrected in both projects
+- Game Engine GraphQL project: added `Domain.Games` to GlobalUsings
+
+## [0.0.1] — 2026-06 (Beta)
+
+> Initial beta release. The application was functional end-to-end but had
+> rough UI edges, missing polish, and stability issues that were addressed in v1.0.0.
+
+### Added
+- Basic game room creation and joining
+- Real-time voting with GraphQL subscriptions
+- Ticket creation and management
+- Vote reveal mechanism
+- PDF game report generation
+- Angular Material UI (pre-redesign)
+- Initial microservices setup (Game Engine, User Management, API Gateway)
+- Docker Compose for local development
+- Basic nginx configuration
