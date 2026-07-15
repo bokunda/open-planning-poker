@@ -16,10 +16,13 @@ export class PlayersComponent implements OnInit {
   @Input() votes: Vote[] = [];
   @Input() votesRevealed = false;
   @Input() isHost = false;
+  @Input() collapsed = false;
+  @Input() currentUserId: string = '';
 
   @Output() onCreateNewTicket = new EventEmitter<void>();
   @Output() onVoteAgain = new EventEmitter<void>();
   @Output() onRevealCards = new EventEmitter<void>();
+  @Output() collapsedChange = new EventEmitter<boolean>();
 
   get topPlayers() {
     return this.players!.items.slice(0, Math.ceil(this.players!.items.length / 4));

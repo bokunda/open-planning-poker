@@ -2,10 +2,11 @@
   <div class="voting-history" *ngIf="tickets">
     <h3>History</h3>
     <mat-accordion>
-      <mat-expansion-panel *ngFor="let ticket of tickets; trackBy: trackByTicketId">
+      <mat-expansion-panel *ngFor="let ticket of tickets; trackBy: trackByTicketId" [expanded]="ticket.id === currentTicketId">
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{ticket.name}}
+            <span class="ticket-badge" *ngIf="ticket.id === currentTicketId">active</span>
           </mat-panel-title>
           <mat-panel-description>
             Average voting value:
@@ -25,6 +26,11 @@
               <ng-template #hiddenVote>?</ng-template>
             </p>
           </span>
+          <div class="ticket-actions" *ngIf="isHost && ticket.id !== currentTicketId">
+            <button mat-stroked-button color="primary" (click)="onReVoteTicket.emit(ticket.id)">
+              <mat-icon>replay</mat-icon> Re-vote this ticket
+            </button>
+          </div>
         </div>
       </mat-expansion-panel>
     </mat-accordion>

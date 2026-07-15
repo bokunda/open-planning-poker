@@ -1,22 +1,12 @@
-<div class="chat-wrapper" [class.chat-expanded]="expanded">
-  <!-- Toggle button -->
-  <button class="chat-toggle" mat-mini-fab color="primary" (click)="toggleChat()"
-    [matBadge]="expanded ? null : messages.length"
-    matBadgeColor="accent"
-    [matBadgeHidden]="expanded || messages.length === 0"
-    aria-label="Toggle chat">
-    <mat-icon>chat</mat-icon>
-  </button>
+<div class="chat-wrapper" [class.chat-wrapper--collapsed]="collapsed">
+  <div class="chat-header" (click)="collapsedChange.emit(!collapsed)" role="button" tabindex="0" aria-label="Toggle chat panel">
+    <span>💬 Game Chat</span>
+    <button mat-icon-button class="chat-toggle-btn" (click)="$event.stopPropagation(); collapsedChange.emit(!collapsed)" aria-label="Toggle chat">
+      <mat-icon>{{ collapsed ? 'expand_more' : 'expand_less' }}</mat-icon>
+    </button>
+  </div>
 
-  <!-- Chat panel -->
-  <div class="chat-panel" *ngIf="expanded">
-    <div class="chat-header">
-      <span>Game Chat</span>
-      <button mat-icon-button (click)="toggleChat()" aria-label="Close chat">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
-
+  <div class="chat-panel" *ngIf="!collapsed">
     <div class="chat-messages">
       <div class="chat-empty" *ngIf="messages.length === 0">
         No messages yet. Say hello! 👋

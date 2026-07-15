@@ -44,6 +44,10 @@ export class GameComponent implements OnInit {
 
   @Input() currentUserId: string = '';
 
+  playersCollapsed = false;
+  chatCollapsed = false;
+  private gameSubsInitialized = false;
+
   get isLoading(): boolean {
     // Only show loading when navigating to a specific game route (has gameId in URL)
     // and game data hasn't loaded yet. On the landing page (!gameId), don't show loader.
@@ -71,11 +75,19 @@ export class GameComponent implements OnInit {
       const gameId = params.get('id');
       const ticketId = params.get('ticketId');
       if (gameId) {
-        this.getGame(gameId);
-        this.subscribeToPlayerJoined(gameId);
-        this.subscribeToTicketCreated(gameId);
+        // Game-level subs: only once
+        if (!this.gameSubsInitialized) {
+          this.getGame(gameId);
+          this.subscribeToPlayerJoined(gameId);
+          this.subscribeToTicketCreated(gameId);
+          this.gameSubsInitialized = true;
+        }
 
         if (ticketId) {
+          // Reset ticket state before loading new ticket
+          this.votes = [];
+          this.votesRevealed = false;
+          this.ticket = undefined;
           this.getTicket(ticketId);
           this.subscribeToVoteActions(ticketId);
           this.subscribeToVotesRevealed(ticketId);
@@ -94,6 +106,7 @@ export class GameComponent implements OnInit {
 
   handleLeaveGame() {
     this.game = undefined;
+    this.gameSubsInitialized = false;
     this.router.navigate([`/game`]);
   }
 
@@ -124,6 +137,10 @@ export class GameComponent implements OnInit {
   handleVoteAgain() {
     this.votesRevealed = false;
     this.votes = [];
+  }
+
+  handleReVoteTicket(ticketId: string) {
+    this.router.navigate([`/game/${this.game?.id}/ticket/${ticketId}`]);
   }
 
   private getGame(id: string): void {
@@ -348,6 +365,7 @@ export class GameComponent implements OnInit {
   }
 
   private getVotes(ticketId: string) {
+    this.votes = [];
     this.apollo.watchQuery<{ votes: ApiCollectionOfVote }>({
       query: GET_VOTES,
       variables: { ticketId }
@@ -355,12 +373,8 @@ export class GameComponent implements OnInit {
     .valueChanges
     .subscribe({
       next: ({ data }) => {
-        if (data) {
-          if (data?.votes?.items) {
-            data.votes.items.forEach(vote => {
-              this.votes.push(vote);
-            });
-          }
+        if (data?.votes?.items) {
+          this.votes = data.votes.items;
         }
       }
     });

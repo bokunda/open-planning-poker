@@ -1,178 +1,142 @@
-.players {
-  padding: 10% 0;
-}
-
-.players-list {
-  padding: 15% 0 15% 0;
-  font-weight: bold;
-}
-
-.table-container {
-  position: relative;
-  max-width: 750px;
-  width: 100%;
-  height: 350px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-}
-
-.table-players {
-  max-width: 250px;
-  width: 33%;
-  min-width: 180px;
-  height: 150px;
-  background-color: #444;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  border-radius: 225px;
-  flex-direction: column;
-  gap: 6px;
-  padding: 12px;
-}
-
-.consensus-label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #a78bfa;
-  letter-spacing: 0.5px;
-}
-
-.mobile-consensus {
-  display: none;
-}
-
-.top-players,
-.bottom-players,
-.left-players,
-.right-players {
-  position: absolute;
-  display: flex;
-  gap: 30px;
-  text-align: center;
-}
-
-.top-players {
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.bottom-players {
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.left-players {
-  left: 0;
-  top: 50%;
-  flex-direction: column;
-  transform: translateY(-50%);
-}
-
-.right-players {
-  right: 0;
-  top: 50%;
-  flex-direction: column;
-  transform: translateY(-50%);
-}
-
-.right-players, .left-players {
-  .player {
-    display: flex;
-  }
-}
-
-.player-item-name {
-  padding: 7px;
-  font-size: larger;
-}
-
-.player-item-vote-wrapper {
-  display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-}
-
-.player-item-vote {
-  border: 3px solid #000;
-  border-radius: 10px;
-  min-width: 36px;
-  height: 35px;
-  padding: 0 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
+/* ── Players Sidebar Panel ── */
+.players-panel {
+  background: var(--opp-surface);
+  border-radius: var(--opp-radius-md);
+  box-shadow: var(--opp-shadow-sm);
+  border: 1px solid var(--opp-border);
   overflow: hidden;
 }
 
-.player-item-vote-text {
+.players-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--opp-space-2) var(--opp-space-3);
+  background: var(--opp-primary);
+  color: var(--opp-text-on-primary);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--opp-transition-fast);
+
+  &:hover {
+    background: var(--opp-primary-600);
+  }
+}
+
+.players-title {
+  font-weight: 600;
+  font-size: var(--opp-font-size-sm);
+}
+
+.players-consensus {
+  font-size: var(--opp-font-size-xs);
+  font-weight: 600;
+  opacity: 0.9;
+  flex: 1;
+  text-align: right;
+  margin-right: var(--opp-space-2);
+}
+
+.players-toggle {
+  color: var(--opp-text-on-primary);
+  flex-shrink: 0;
+}
+
+.players-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--opp-space-1);
+  padding: var(--opp-space-2);
+  border-bottom: 1px solid var(--opp-border);
+
+  button {
+    flex: 1;
+    font-size: var(--opp-font-size-xs);
+    min-width: 0;
+  }
+}
+
+.players-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.player-row {
+  display: flex;
+  align-items: center;
+  gap: var(--opp-space-2);
+  padding: var(--opp-space-2) var(--opp-space-3);
+  border-bottom: 1px solid var(--opp-border-light);
+  transition: background var(--opp-transition-fast);
+
+  &:hover {
+    background: var(--opp-surface-hover);
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &--me {
+    background: var(--opp-primary-50);
+
+    .player-name {
+      font-weight: 700;
+      color: var(--opp-primary);
+    }
+  }
+}
+
+.player-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--opp-radius-full);
+  background: var(--opp-primary-100);
+  color: var(--opp-primary-600);
   display: flex;
   align-items: center;
   justify-content: center;
-}
+  font-weight: 700;
+  font-size: var(--opp-font-size-xs);
+  flex-shrink: 0;
 
-.vote-hidden {
-  background-color: #7e3af2;
-  color: #fff;
-  font-weight: bold;
-  border-color: #7e3af2;
-}
-
-// Responsive table representation
-@media (min-width: 768px) {
-  .players-table-wrapper {
-    display: none;
+  &--voted {
+    background: var(--opp-primary);
+    color: var(--opp-text-on-primary);
   }
 }
 
-@media (max-width: 768px) {
-  .table-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: auto;
-    align-items: center;
-  }
+.player-name {
+  flex: 1;
+  font-size: var(--opp-font-size-sm);
+  color: var(--opp-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-  .top-players,
-  .bottom-players,
-  .left-players,
-  .right-players {
-    display: none;
-  }
+.player-vote {
+  min-width: 36px;
+  height: 32px;
+  border: 2px solid var(--opp-border);
+  border-radius: var(--opp-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--opp-font-size-sm);
+  background: var(--opp-surface);
 
-  .mobile-consensus {
-    display: block;
-    text-align: center;
-    padding-bottom: 8px;
+  &--hidden {
+    background: var(--opp-primary);
+    color: var(--opp-text-on-primary);
+    border-color: var(--opp-primary);
   }
+}
 
-  .players-table {
-    display: table;
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  .player-row {
-    display: table-row;
-  }
-
-  .player-cell {
-    display: table-cell;
-    padding: 10px;
-    border-bottom: 1px solid #000;
-    text-align: center;
-    min-width: 36px;
-  }
-
-  .table-players {
-    display: none;
-  }
+.players-empty {
+  padding: var(--opp-space-6);
+  text-align: center;
+  color: var(--opp-text-muted);
+  font-size: var(--opp-font-size-sm);
 }

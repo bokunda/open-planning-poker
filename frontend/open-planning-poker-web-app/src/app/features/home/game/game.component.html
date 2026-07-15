@@ -1,6 +1,7 @@
 <main class="game-wrapper" id="main-content">
-  <div class="game">
-    <div class="center">
+  <!-- Landing (no game) -->
+  <ng-container *ngIf="!game">
+    <div class="game-landing">
       <app-options
         [inGame]="!game"
         (onCreateGameClick)="handleCreateGame()"
@@ -8,40 +9,64 @@
         (onLeaveGameClick)="handleLeaveGame()">
       </app-options>
     </div>
-    <app-loading *ngIf="isLoading" message="Loading game..."></app-loading>
-    <div class="game-details" *ngIf="game">
-      <div class="center">
-        <app-game-details
-          [game]="game"
-          (onLeaveGameClick)="handleLeaveGame()"
-          (onGameReportClick)="handleGameReport()"></app-game-details>
-      </div>
+  </ng-container>
 
-      <div class="center">
-        <app-voting
-          [players]="players"
-          [gameSettings]="game.settingsDetails"
-          [ticket]="ticket"
-          [votes]="votes"
-          [votesRevealed]="votesRevealed"
-          [isHost]="isHost"
-          (onCreateNewTicket)="handleCreateTicket()"
-          (OnVote)="handleVoteAction($event)"
-          (onRevealVotes)="handleRevealVotes()"
-          (onVoteAgain)="handleVoteAgain()"
-          ></app-voting>
-      </div>
+  <app-loading *ngIf="isLoading" message="Loading game..."></app-loading>
 
-      <div class="center">
-        <div class="full-width" >
-          <app-voting-history
-            [tickets]="tickets"
-            [votesRevealed]="votesRevealed"
-            [currentTicketId]="ticket?.id"
-          ></app-voting-history>
-        </div>
-      </div>
+  <!-- Game active: dashboard layout -->
+  <div class="game-dashboard" *ngIf="game">
+    <!-- Main column -->
+    <div class="game-main">
+      <app-game-details
+        [game]="game"
+        [isHost]="isHost"
+        (onLeaveGameClick)="handleLeaveGame()"
+        (onGameReportClick)="handleGameReport()"
+        (onCreateNewTicket)="handleCreateTicket()"></app-game-details>
+
+      <app-voting
+        [players]="players"
+        [gameSettings]="game.settingsDetails"
+        [ticket]="ticket"
+        [tickets]="tickets"
+        [votes]="votes"
+        [votesRevealed]="votesRevealed"
+        [isHost]="isHost"
+        (onCreateNewTicket)="handleCreateTicket()"
+        (OnVote)="handleVoteAction($event)"
+        (onRevealVotes)="handleRevealVotes()"
+        (onVoteAgain)="handleVoteAgain()"
+        (onNavigateTicket)="handleReVoteTicket($event)"
+        ></app-voting>
+
+      <app-voting-history
+        [tickets]="tickets"
+        [votesRevealed]="votesRevealed"
+        [currentTicketId]="ticket?.id"
+        [isHost]="isHost"
+        (onReVoteTicket)="handleReVoteTicket($event)"
+      ></app-voting-history>
     </div>
+
+    <!-- Sidebar -->
+    <aside class="game-sidebar">
+      <app-players
+        [players]="players"
+        [votes]="votes"
+        [votesRevealed]="votesRevealed"
+        [isHost]="isHost"
+        [currentUserId]="currentUserId"
+        [(collapsed)]="playersCollapsed"
+        (onRevealCards)="handleRevealVotes()"
+        (onVoteAgain)="handleVoteAgain()"
+        (onCreateNewTicket)="handleCreateTicket()">
+      </app-players>
+
+      <app-chat
+        [gameId]="game.id"
+        [currentUserId]="currentUserId"
+        [(collapsed)]="chatCollapsed">
+      </app-chat>
+    </aside>
   </div>
-  <app-chat [gameId]="game?.id ?? ''" [currentUserId]="currentUserId"></app-chat>
 </main>

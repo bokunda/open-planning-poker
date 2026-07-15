@@ -13,6 +13,7 @@ export class VotingComponent implements OnInit, OnDestroy {
   @Input() gameSettings: SettingsDetailsResult | undefined;
   @Input() players: ApiCollectionOfGamePlayer | undefined;
   @Input() ticket: Ticket | undefined;
+  @Input() tickets: Ticket[] = [];
   @Input() votes: Vote[] = [];
   @Input() votesRevealed = false;
   @Input() isHost = false;
@@ -21,6 +22,7 @@ export class VotingComponent implements OnInit, OnDestroy {
   @Output() OnVote = new EventEmitter<string>();
   @Output() onVoteAgain = new EventEmitter<void>();
   @Output() onRevealVotes = new EventEmitter<void>();
+  @Output() onNavigateTicket = new EventEmitter<string>();
 
   voteOptions: string[] = [];
   selectedOption: string | null = null;
@@ -52,6 +54,32 @@ export class VotingComponent implements OnInit, OnDestroy {
 
   handleOnCreateNewTicket() {
     this.onCreateNewTicket.emit();
+  }
+
+  get currentTicketIndex(): number {
+    return this.tickets.findIndex(t => t.id === this.ticket?.id);
+  }
+
+  get hasPrevTicket(): boolean {
+    return this.currentTicketIndex > 0;
+  }
+
+  get hasNextTicket(): boolean {
+    return this.currentTicketIndex >= 0 && this.currentTicketIndex < this.tickets.length - 1;
+  }
+
+  get prevTicketId(): string | undefined {
+    return this.hasPrevTicket ? this.tickets[this.currentTicketIndex - 1]?.id : undefined;
+  }
+
+  get nextTicketId(): string | undefined {
+    return this.hasNextTicket ? this.tickets[this.currentTicketIndex + 1]?.id : undefined;
+  }
+
+  navigateToTicket(ticketId: string | undefined): void {
+    if (ticketId) {
+      this.onNavigateTicket.emit(ticketId);
+    }
   }
 
   // --- Timer methods ---

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { Ticket } from '../../../../graphql/graphql-gateway.service';
 
 @Component({
@@ -13,6 +13,9 @@ export class VotingHistoryComponent {
   @Input() tickets: Ticket[] = [];
   @Input() votesRevealed = false;
   @Input() currentTicketId: string | undefined;
+  @Input() isHost = false;
+
+  @Output() onReVoteTicket = new EventEmitter<string>();
 
   trackByTicketId(index: number, ticket: { id: string }): string {
     return ticket.id;

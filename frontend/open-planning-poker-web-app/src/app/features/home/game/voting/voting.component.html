@@ -1,57 +1,103 @@
 <section class="voting-wrapper" aria-label="Voting area">
-  <div class="voting">
+  <!-- No ticket: big CTA for host -->
+  <div class="no-ticket-cta" *ngIf="!ticket?.id && isHost">
+    <div class="no-ticket-illustration">🎯</div>
+    <h2 class="no-ticket-title">Ready to start?</h2>
+    <p class="no-ticket-desc">Create your first ticket to begin estimating.</p>
+    <button mat-raised-button color="primary" class="new-ticket-btn--hero" (click)="handleOnCreateNewTicket()">
+      <mat-icon>add</mat-icon> Create New Ticket
+    </button>
+  </div>
+
+  <!-- No ticket: waiting message for non-host -->
+  <div class="no-ticket-waiting" *ngIf="!ticket?.id && !isHost">
+    <span class="waiting-icon">⏳</span>
+    <p>Waiting for host to create a ticket...</p>
+  </div>
+
+  <!-- Active ticket -->
+  <ng-container *ngIf="ticket?.id">
     <div class="voting-item-details">
-      <h2 class="center">{{ticket?.name}}</h2>
-      <p class="center">Average voting value:
-        <strong class="voting-item-value" *ngIf="votesRevealed">{{ ticket?.averageVotingValue }}</strong>
-        <strong class="voting-item-value vote-hidden" *ngIf="!votesRevealed && ticket?.averageVotingValue">?</strong>
-      </p>
-    </div>
-  </div>
+      <div class="ticket-nav">
+        <button
+          mat-icon-button
+          class="ticket-nav-btn"
+          [disabled]="!hasPrevTicket"
+          (click)="navigateToTicket(prevTicketId)"
+          aria-label="Previous ticket">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
 
-  <div class="voting-players-wrapper">
-    <div class="voting-players-wrapper center">
-      <app-players
-        [players]="players"
-        [votes]="votes"
-        [votesRevealed]="votesRevealed"
-        [isHost]="isHost"
-        (onRevealCards)="onRevealVotes.emit()"
-        (onVoteAgain)="onVoteAgain.emit()"
-        (onCreateNewTicket)="handleOnCreateNewTicket()">
-      </app-players>
-    </div>
-  </div>
+        <div class="ticket-info">
+          <h2 class="ticket-name">{{ticket?.name}}</h2>
+          <p class="ticket-average" *ngIf="ticket?.averageVotingValue">
+            Average:
+            <strong *ngIf="votesRevealed">{{ ticket?.averageVotingValue }}</strong>
+            <strong class="vote-hidden" *ngIf="!votesRevealed">?</strong>
+          </p>
+        </div>
 
-  <div class="voting-options-wrapper">
-    <!-- Timer -->
-    <div class="timer-wrapper center" *ngIf="isHost && !votesRevealed">
-      <span class="timer-display" [class.timer-warning]="timerWarning">
-        ⏱ {{ timerDisplay }}
+        <button
+          mat-icon-button
+          class="ticket-nav-btn"
+          [disabled]="!hasNextTicket"
+          (click)="navigateToTicket(nextTicketId)"
+          aria-label="Next ticket">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Timer (always visible while ticket active, disabled after reveal) -->
+    <div class="timer-wrapper" [class.timer-wrapper--disabled]="votesRevealed">
+      <span class="timer-display" [class.timer-warning]="timerWarning" [class.timer-display--dim]="votesRevealed">
+        ⏱ {{ votesRevealed ? '--:--' : timerDisplay }}
       </span>
-      <div class="timer-controls">
-        <button mat-icon-button color="primary" *ngIf="!timerRunning" (click)="startTimer()" aria-label="Start timer">
+      <div class="timer-controls" *ngIf="isHost">
+        <button mat-icon-button color="primary" *ngIf="!timerRunning" (click)="startTimer()"
+          [disabled]="votesRevealed" aria-label="Start timer">
           <mat-icon>play_arrow</mat-icon>
         </button>
-        <button mat-icon-button color="warn" *ngIf="timerRunning" (click)="stopTimer()" aria-label="Stop timer">
+        <button mat-icon-button color="warn" *ngIf="timerRunning" (click)="stopTimer()"
+          [disabled]="votesRevealed" aria-label="Stop timer">
           <mat-icon>stop</mat-icon>
         </button>
-        <button mat-icon-button (click)="resetTimer()" aria-label="Reset timer">
+        <button mat-icon-button (click)="resetTimer()"
+          [disabled]="votesRevealed" aria-label="Reset timer">
           <mat-icon>restart_alt</mat-icon>
         </button>
       </div>
     </div>
 
-    <div class="voting-item-options">
+    <div class="voting-cards">
       <button *ngFor="let voteOption of voteOptions; trackBy: trackByOption"
-        mat-raised-button
-        color="primary"
-        class="card-button"
+        class="vote-card"
+        [class.vote-card--selected]="selectedOption === voteOption"
+        [class.vote-card--disabled]="ticket?.id == null"
         [disabled]="ticket?.id == null"
-        [ngClass]="{'selected': selectedOption === voteOption}"
         (click)="selectOption(voteOption)">
-        {{ voteOption }}
+        <span class="vote-card-value">{{ voteOption }}</span>
       </button>
     </div>
-  </div>
+
+    <!-- Host action bar (below vote cards) -->
+    <div class="voting-actions" *ngIf="isHost">
+      <!-- Pre-reveal: has votes -->
+      <ng-container *ngIf="!votesRevealed && votes.length > 0">
+        <button mat-flat-button color="accent" class="action-btn action-btn--reveal" (click)="onRevealVotes.emit()">
+          <mat-icon>visibility</mat-icon> Reveal Votes
+        </button>
+      </ng-container>
+
+      <!-- Post-reveal: vote again -->
+      <button mat-flat-button color="primary" class="action-btn" *ngIf="votesRevealed" (click)="onVoteAgain.emit()">
+        <mat-icon>replay</mat-icon> Vote Again
+      </button>
+
+      <!-- Always available -->
+      <button mat-stroked-button color="primary" class="action-btn" (click)="handleOnCreateNewTicket()">
+        <mat-icon>add</mat-icon> New Ticket
+      </button>
+    </div>
+  </ng-container>
 </section>

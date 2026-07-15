@@ -14,9 +14,11 @@ import { QrShareDialogComponent } from '../../../../shared/dialogs/qr-share/qr-s
 })
 export class GameDetailsComponent {
   @Input() game: Game | undefined;
+  @Input() isHost = false;
 
   @Output() onLeaveGameClick = new EventEmitter<void>();
   @Output() onGameReportClick = new EventEmitter<void>();
+  @Output() onCreateNewTicket = new EventEmitter<void>();
 
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);

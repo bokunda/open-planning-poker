@@ -2,3 +2,25 @@
   padding: 16px;
   padding-bottom: 36px;
 }
+
+.ticket-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--opp-primary);
+  color: var(--opp-text-on-primary);
+  padding: 2px 6px;
+  border-radius: var(--opp-radius-full);
+  margin-left: var(--opp-space-2);
+  vertical-align: middle;
+}
+
+.ticket-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--opp-space-2);
+  border-top: 1px solid var(--opp-border-light);
+  margin-top: var(--opp-space-2);
+}

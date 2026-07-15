@@ -1,145 +1,150 @@
+/* ── Sidebar mode (inside .game-sidebar) ── */
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+
+  &.chat-collapsed {
+    flex: 0 0 auto;
+    min-height: unset;
+  }
+}
+
 .chat-wrapper {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background: var(--opp-surface);
+  border-radius: var(--opp-radius-md);
+  box-shadow: var(--opp-shadow-sm);
+  overflow: hidden;
+  border: 1px solid var(--opp-border);
+
+  &--collapsed {
+    flex: 0 0 auto;
+  }
 }
 
 .chat-toggle {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: none; // hidden in sidebar mode
 }
 
 .chat-panel {
-  position: absolute;
-  bottom: 60px;
-  right: 0;
-  width: 320px;
-  max-width: calc(100vw - 40px);
-  height: 420px;
-  max-height: calc(100vh - 120px);
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  flex: 1;
+  min-height: 0;
 }
 
 .chat-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
-  background: #7e3af2;
-  color: #fff;
+  padding: var(--opp-space-2) var(--opp-space-3);
+  background: var(--opp-primary);
+  color: var(--opp-text-on-primary);
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: var(--opp-font-size-sm);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--opp-transition-fast);
+
+  &:hover {
+    background: var(--opp-primary-600);
+  }
+
+  button { color: var(--opp-text-on-primary); }
+}
+
+.chat-toggle-btn {
+  color: var(--opp-text-on-primary);
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .chat-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 12px;
+  padding: var(--opp-space-2);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--opp-space-1);
+  background: var(--opp-bg);
 }
 
 .chat-empty {
   text-align: center;
-  color: #999;
-  padding: 24px;
+  color: var(--opp-text-muted);
+  padding: var(--opp-space-6);
   font-style: italic;
+  font-size: var(--opp-font-size-sm);
 }
 
 .chat-msg {
   display: flex;
   flex-direction: column;
-  background: #f3f0ff;
-  border-radius: 8px;
-  padding: 6px 10px;
-  max-width: 85%;
+  background: var(--opp-primary-50);
+  border-radius: var(--opp-radius-sm);
+  padding: var(--opp-space-1) var(--opp-space-2);
+  max-width: 90%;
+  max-width: 90%;
   align-self: flex-start;
 
   &.chat-msg-own {
     align-self: flex-end;
-    background: #e9e2ff;
+    background: var(--opp-primary-100);
   }
 }
 
 .chat-msg-author {
-  font-size: 0.75rem;
+  font-size: var(--opp-font-size-xs);
   font-weight: 700;
-  color: #7e3af2;
+  color: var(--opp-primary);
 }
 
 .chat-msg-text {
-  font-size: 0.9rem;
+  font-size: var(--opp-font-size-sm);
   word-break: break-word;
-  color: #1a1a1a;
+  color: var(--opp-text);
 }
 
 .chat-msg-time {
   font-size: 0.65rem;
-  color: #999;
+  color: var(--opp-text-muted);
   align-self: flex-end;
 }
 
 .chat-input {
   display: flex;
   align-items: center;
-  padding: 8px;
-  border-top: 1px solid #eee;
-  gap: 4px;
+  padding: var(--opp-space-2);
+  border-top: 1px solid var(--opp-border);
+  gap: var(--opp-space-1);
 
   input {
     flex: 1;
-    border: none;
+    border: 1px solid var(--opp-border);
     outline: none;
-    padding: 8px 10px;
-    border-radius: 20px;
-    background: #f5f5f5;
-    font-size: 0.9rem;
-  }
-}
-
-/* Dark theme */
-.dark-theme .chat-panel {
-  background: #121212;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-}
-
-.dark-theme .chat-msg {
-  background: #000;
-  color: #fff;
-
-  &.chat-msg-own {
-    background: #1a1a1a;
-    border: 1px solid #333;
-  }
-}
-
-.dark-theme .chat-msg-author {
-  color: #b49bff;
-}
-
-.dark-theme .chat-msg-text {
-  color: #fff;
-}
-
-.dark-theme .chat-msg-time {
-  color: #999;
-}
-
-.dark-theme .chat-input {
-  border-top-color: #333;
-
-  input {
-    background: #000;
-    color: #fff;
+    padding: var(--opp-space-2) var(--opp-space-3);
+    border-radius: var(--opp-radius-full);
+    background: var(--opp-bg);
+    color: var(--opp-text);
+    font-size: var(--opp-font-size-sm);
 
     &::placeholder {
-      color: #666;
+      color: var(--opp-text-muted);
     }
+  }
+}
+
+/* ── Mobile: constrain height ── */
+@media (max-width: 1023px) {
+  :host {
+    flex: 0 0 auto;
+  }
+
+  .chat-wrapper {
+    max-height: 320px;
   }
 }

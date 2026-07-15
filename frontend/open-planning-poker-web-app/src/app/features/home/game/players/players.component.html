@@ -1,93 +1,30 @@
-<div class="players-wrapper">
-  <div class="players">
-    <div class="table-container" *ngIf="players?.items">
-      <!-- Top Players -->
-      <div class="top-players">
-        <div class="player" *ngFor="let player of topPlayers; trackBy: trackByPlayerId">
-          <span class="player-item-name">{{ player.name }}</span>
-          <div class="player-item-vote-wrapper">
-            <span class="player-item-vote" [class.vote-hidden]="!votesRevealed && getVoteData(player.id)">{{ getVoteDisplay(player.id) }}</span>
-          </div>
-        </div>
-      </div>
+<div class="players-panel">
+  <!-- Header -->
+  <div class="players-header" (click)="collapsedChange.emit(!collapsed)" role="button" tabindex="0" aria-label="Toggle players panel">
+    <span class="players-title">👥 Players</span>
+    <span class="players-consensus" *ngIf="!collapsed && consensusLabel">{{ consensusLabel }}</span>
+    <button mat-icon-button class="players-toggle" (click)="$event.stopPropagation(); collapsedChange.emit(!collapsed)" aria-label="Toggle players">
+      <mat-icon>{{ collapsed ? 'expand_more' : 'expand_less' }}</mat-icon>
+    </button>
+  </div>
 
-      <!-- Left Players -->
-      <div class="left-players">
-        <div class="player" *ngFor="let player of leftPlayers; trackBy: trackByPlayerId">
-          <span class="player-item-name">{{ player.name }}</span>
-          <div class="player-item-vote-wrapper">
-            <span class="player-item-vote" [class.vote-hidden]="!votesRevealed && getVoteData(player.id)">{{ getVoteDisplay(player.id) }}</span>
-          </div>
+  <ng-container *ngIf="!collapsed">
+    <!-- Player list -->
+    <div class="players-list" *ngIf="players?.items">
+      <div class="player-row" *ngFor="let player of players?.items; trackBy: trackByPlayerId"
+        [class.player-row--me]="player.id === currentUserId">
+        <div class="player-avatar" [class.player-avatar--voted]="getVoteData(player.id)">
+          {{ player.name?.charAt(0) || '?' }}
         </div>
-      </div>
-
-      <!-- Table (Rectangle) -->
-      <div class="table-players">
-        <span class="consensus-label" *ngIf="consensusLabel">{{ consensusLabel }}</span>
-        <ng-container *ngIf="isHost">
-          <button
-            mat-flat-button
-            color="accent"
-            *ngIf="!votesRevealed && hasAnyVotes"
-            (click)="onRevealCards.emit()">
-            Reveal Votes
-          </button>
-          <button
-            mat-flat-button
-            *ngIf="votesRevealed"
-            (click)="onVoteAgain.emit()">
-            Vote Again
-          </button>
-          <button mat-flat-button (click)="onCreateNewTicket.emit()">New Ticket</button>
-        </ng-container>
-      </div>
-
-      <!-- Right Players -->
-      <div class="right-players">
-        <div class="player" *ngFor="let player of rightPlayers; trackBy: trackByPlayerId">
-          <div class="player-item-vote-wrapper">
-            <span class="player-item-vote" [class.vote-hidden]="!votesRevealed && getVoteData(player.id)">{{ getVoteDisplay(player.id) }}</span>
-          </div>
-          <span class="player-item-name">{{ player.name }}</span>
-        </div>
-      </div>
-
-      <!-- Bottom Players -->
-      <div class="bottom-players">
-        <div class="player" *ngFor="let player of bottomPlayers; trackBy: trackByPlayerId">
-          <div class="player-item-vote-wrapper">
-            <span class="player-item-vote" [class.vote-hidden]="!votesRevealed && getVoteData(player.id)">{{ getVoteDisplay(player.id) }}</span>
-          </div>
-          <span class="player-item-name">{{ player.name }}</span>
-        </div>
-      </div>
-
-      <!-- Responsive representation of players -->
-      <div class="players-table-wrapper">
-        <span class="consensus-label mobile-consensus" *ngIf="consensusLabel">{{ consensusLabel }}</span>
-        <div class="center" *ngIf="isHost">
-          <button
-            mat-flat-button
-            color="accent"
-            *ngIf="!votesRevealed && hasAnyVotes"
-            (click)="onRevealCards.emit()">
-            Reveal Votes
-          </button>
-          <button
-            mat-flat-button
-            *ngIf="votesRevealed"
-            (click)="onVoteAgain.emit()">
-            Vote Again
-          </button>
-          <button mat-flat-button (click)="onCreateNewTicket.emit()">New Ticket</button>
-        </div>
-        <div class="players-table" *ngIf="players?.items">
-          <div class="player-row" *ngFor="let player of players?.items; trackBy: trackByPlayerId">
-            <div class="player-cell">{{ player.name }}</div>
-            <div class="player-cell">{{ getVoteDisplay(player.id) }}</div>
-          </div>
-        </div>
+        <span class="player-name">{{ player.name }}</span>
+        <span class="player-vote" [class.player-vote--hidden]="!votesRevealed && getVoteData(player.id)">
+          {{ getVoteDisplay(player.id) }}
+        </span>
       </div>
     </div>
-  </div>
+
+    <div class="players-empty" *ngIf="!players?.items?.length">
+      Waiting for players to join...
+    </div>
+  </ng-container>
 </div>

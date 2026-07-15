@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnChanges, SimpleChanges, inject, DestroyRef } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, Output, OnDestroy, OnChanges, SimpleChanges, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Apollo } from 'apollo-angular';
 import { ChatMessage } from '../../../../graphql/graphql-gateway.service';
@@ -15,10 +15,14 @@ import { GET_CHAT_MESSAGES } from '../gql/getChatMessages.graphql';
 export class ChatComponent implements OnChanges, OnDestroy {
   @Input() gameId: string = '';
   @Input() currentUserId: string = '';
+  @Input() collapsed = false;
+
+  @Output() collapsedChange = new EventEmitter<boolean>();
+
+  @HostBinding('class.chat-collapsed') get isCollapsed() { return this.collapsed; }
 
   messages: ChatMessage[] = [];
   newMessage = '';
-  expanded = false;
 
   private apollo = inject(Apollo);
   private destroyRef = inject(DestroyRef);
@@ -73,18 +77,6 @@ export class ChatComponent implements OnChanges, OnDestroy {
     });
 
     this.newMessage = '';
-  }
-
-  toggleChat(): void {
-    this.expanded = !this.expanded;
-    if (this.expanded) {
-      setTimeout(() => this.scrollToBottom(), 100);
-    }
-  }
-
-  get unreadCount(): number {
-    // Simple: count messages received while collapsed
-    return this.expanded ? 0 : this.messages.length;
   }
 
   private scrollToBottom(): void {
