@@ -245,6 +245,8 @@ export type Mutation = {
   registerUser: RegisterUserPayload;
   /** Reveals votes for a ticket, broadcasting to all players. */
   revealVotes: RevealVotesPayload;
+  /** Re-votes a ticket by broadcasting it as the active ticket to all players in the game. */
+  reVoteTicket: ReVoteTicketPayload;
   /** Sends a chat message to a game. */
   sendChatMessage: SendChatMessagePayload;
   /** Updates Game Settings. */
@@ -410,6 +412,7 @@ export type Subscription = {
   onPlayerJoined: BaseUserProfile;
   onPlayerLeave: BaseUserProfile;
   onTicketCreated: Ticket;
+  onTicketReVoted: Ticket;
   onVoteCreatedOrUpdated: Vote;
   onVotesRevealed: VotesRevealed;
 };
@@ -518,6 +521,27 @@ export type VotesRevealed = {
   __typename?: 'VotesRevealed';
   revealedBy: Scalars['String']['output'];
   ticketId: Scalars['UUID']['output'];
+};
+
+export type ReVoteTicketInput = {
+  gameId: Scalars['UUID']['input'];
+  ticketId: Scalars['UUID']['input'];
+};
+
+export type ReVoteTicketError = ApplicationError;
+
+export type ReVoteTicketPayload = {
+  __typename?: 'ReVoteTicketPayload';
+  errors?: Maybe<Array<ReVoteTicketError>>;
+  ticket?: Maybe<Ticket>;
+};
+
+export type MutationReVoteTicketArgs = {
+  input: ReVoteTicketInput;
+};
+
+export type SubscriptionOnTicketReVotedArgs = {
+  gameId: Scalars['UUID']['input'];
 };
 
 export type RevealVotesInput = {

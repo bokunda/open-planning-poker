@@ -126,6 +126,8 @@ type Mutation {
   createTicket(input: CreateTicketInput!): CreateTicketPayload! @cost(weight: "10")
   "Updates a ticket for given game."
   updateTicket(input: UpdateTicketInput!): UpdateTicketPayload! @cost(weight: "10")
+  "Re-votes a ticket by broadcasting it as the active ticket to all players in the game."
+  reVoteTicket(input: ReVoteTicketInput!): ReVoteTicketPayload! @cost(weight: "10")
   "Deletes a ticket for given game."
   deleteTicket(input: DeleteTicketInput!): DeleteTicketPayload! @cost(weight: "10")
   "Creates or updates a vote."
@@ -160,6 +162,11 @@ type Query {
   votes(ticketId: UUID!): VotesResult! @cost(weight: "10")
 }
 
+type ReVoteTicketPayload {
+  ticket: Ticket
+  errors: [ReVoteTicketError!]
+}
+
 type RevealVotesPayload {
   votesRevealed: VotesRevealed
   errors: [RevealVotesError!]
@@ -181,6 +188,7 @@ type Subscription {
   onPlayerJoined(gameId: UUID!): BaseUserProfile!
   onPlayerLeave(gameId: UUID!): BaseUserProfile!
   onTicketCreated(gameId: UUID!): Ticket!
+  onTicketReVoted(gameId: UUID!): Ticket!
   onVoteCreatedOrUpdated(ticketId: UUID!): Vote!
   onVotesRevealed(ticketId: UUID!): VotesRevealed!
 }
@@ -238,6 +246,8 @@ union JoinGameError = ApplicationError
 
 union LeaveGameError = ApplicationError
 
+union ReVoteTicketError = ApplicationError
+
 union RevealVotesError = ApplicationError
 
 union SendChatMessageError = ApplicationError
@@ -292,6 +302,11 @@ input JoinGameInput {
 
 input LeaveGameInput {
   gameId: UUID!
+}
+
+input ReVoteTicketInput {
+  gameId: UUID!
+  ticketId: UUID!
 }
 
 input RevealVotesInput {

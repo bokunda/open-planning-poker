@@ -50,6 +50,32 @@ public class TicketMutations
     }
 
     /// <summary>
+    /// Re-votes a ticket by broadcasting it as the active ticket to all players in the game.
+    /// </summary>
+    public async Task<FieldResult<Ticket, ApplicationError>> ReVoteTicketAsync(
+        [Service] ISender sender,
+        [Service] IMapper mapper,
+        [Service] ITopicEventSender eventSender,
+        [Required] Guid gameId,
+        [Required] Guid ticketId,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await sender.Send(new GetTicketQuery(ticketId), cancellationToken);
+
+        if (result.IsSuccess)
+        {
+            await eventSender.SendAsync(
+                $"{nameof(ReVoteTicketAsync)}_{gameId}",
+                mapper.Map<Ticket>(result.Value),
+                cancellationToken);
+        }
+
+        return result.IsSuccess
+            ? mapper.Map<Ticket>(result.Value)
+            : result.Error!;
+    }
+
+    /// <summary>
     /// Deletes a ticket for given game.
     /// </summary>
     public async Task<FieldResult<Ticket, ApplicationError>> DeleteTicketAsync(

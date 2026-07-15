@@ -21,15 +21,17 @@ import { ImportTicketsDialogComponent, ImportedTicket } from './import/import-ti
 import { CREATE_TICKET } from './gql/createTicket.graphql';
 import { GET_TICKET } from './gql/getTicket.graphql';
 import { ON_TICKET_CREATED } from './gql/onTicketCreated.graphql';
+import { ON_TICKET_RE_VOTED } from './gql/onTicketReVoted.graphql';
 import { ON_VOTE_CREATED_OR_UPDATED } from './gql/onVoteCreatedOrUpdated.graphql';
 import { CREATE_OR_UPDATE_VOTE } from './gql/createVote.graphql';
 import { GET_VOTES } from './gql/getVotes.graphql';
+import { RE_VOTE_TICKET } from './gql/reVoteTicket.graphql';
 import { REVEAL_VOTES } from './gql/revealVotes.graphql';
 import { ON_VOTES_REVEALED } from './gql/onVotesRevealed.graphql';
 import { GET_TICKETS } from './gql/getTickets.graphql';
 import { GENERATE_GAME_REPORT } from './gql/generateGameReport.graphql';
 import { UPDATE_SETTINGS } from './gql/updateSettings.graphql';
-import { MutationRevealVotesArgs, MutationUpdateSettingsArgs, RevealVotesPayload, UpdateSettingsPayload, VotesRevealed } from '../../../graphql/graphql-gateway.service';
+import { MutationReVoteTicketArgs, MutationRevealVotesArgs, MutationUpdateSettingsArgs, ReVoteTicketPayload, RevealVotesPayload, UpdateSettingsPayload, VotesRevealed } from '../../../graphql/graphql-gateway.service';
 import { CreateGameResult } from './create/create-game.component';
 import { LoadingComponent } from '../../../shared/loading/loading.component';
 import { GameDetailsComponent } from './details/game-details.component';
@@ -115,6 +117,7 @@ export class GameComponent implements OnInit {
           this.getGame(gameId);
           this.subscribeToPlayerJoined(gameId);
           this.subscribeToTicketCreated(gameId);
+          this.subscribeToTicketReVoted(gameId);
           this.gameSubsInitialized = true;
         }
 
@@ -177,15 +180,14 @@ export class GameComponent implements OnInit {
   }
 
   handleReVoteTicket(ticketId: string) {
-    // Update URL without full navigation
-    this.location.replaceState(`/game/${this.game?.id}/ticket/${ticketId}`);
-    this.votesRevealed = false;
-    this.getTicket(ticketId);
-    if (ticketId !== this.currentSubscribedTicketId) {
-      this.currentSubscribedTicketId = ticketId;
-      this.subscribeToVoteActions(ticketId);
-      this.subscribeToVotesRevealed(ticketId);
-    }
+    if (!this.game?.id) return;
+    // Call the mutation which broadcasts to all players via subscription
+    this.apollo.mutate<ReVoteTicketPayload, MutationReVoteTicketArgs>({
+      mutation: RE_VOTE_TICKET,
+      variables: { input: { gameId: this.game.id, ticketId } }
+    }).subscribe({
+      error: (err) => console.error('Re-vote ticket error:', err)
+    });
   }
 
   handleImportTickets() {
@@ -477,6 +479,33 @@ export class GameComponent implements OnInit {
       },
       error: (err) => {
         console.error('Subscription error (onTicketCreated):', err);
+      }
+    });
+  }
+
+  private subscribeToTicketReVoted(gameId: string): void {
+    this.apollo.subscribe<{ onTicketReVoted: Ticket }>({
+      query: ON_TICKET_RE_VOTED,
+      variables: { gameId },
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (result) => {
+        if (!result?.data?.onTicketReVoted) {
+          return;
+        }
+        const ticket = result.data.onTicketReVoted as Ticket;
+        this.ticket = ticket;
+        this.votes = [];
+        this.votesRevealed = false;
+        this.getTickets(gameId);
+        if (ticket.id !== this.currentSubscribedTicketId) {
+          this.currentSubscribedTicketId = ticket.id;
+          this.subscribeToVoteActions(ticket.id);
+          this.subscribeToVotesRevealed(ticket.id);
+        }
+        this.location.replaceState(`/game/${gameId}/ticket/${ticket.id}`);
+      },
+      error: (err) => {
+        console.error('Subscription error (onTicketReVoted):', err);
       }
     });
   }
