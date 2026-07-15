@@ -79,8 +79,9 @@ export class GameComponent implements OnInit {
   get isHost(): boolean {
     if (!this.game?.id) return false;
     const storedHost = localStorage.getItem('host_' + this.game.id);
-    // If we have currentUserId, check exact match. Fallback: any stored host is valid.
-    if (this.currentUserId) return storedHost === this.currentUserId;
+    // Exact match when we know our userId
+    if (this.currentUserId && storedHost) return storedHost === this.currentUserId;
+    // Fallback: any non-empty stored host means we're the host
     return !!storedHost;
   }
 
@@ -199,7 +200,9 @@ export class GameComponent implements OnInit {
       next: ({ data }) => {
         if (data?.createGame?.game) {
           this.game = data?.createGame?.game;
-          localStorage.setItem('host_' + this.game.id, this.currentUserId);
+          if (this.currentUserId) {
+            localStorage.setItem('host_' + this.game.id, this.currentUserId);
+          }
 
           // Apply deck setup via updateSettings (gateway.fgp doesn't have deckSetup in CreateGameInput yet)
           const settingsId = (data.createGame.game as any).settingsDetails?.id;
