@@ -34,15 +34,16 @@ server {
     gzip_min_length 1024;
     gzip_types text/plain text/css text/xml text/javascript application/javascript application/json image/svg+xml font/woff2 font/woff;
 
-    # Cache static assets (1 year)
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff2|woff)$ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
+    # Sitemap — proxy directly to GameEngine
+    location = /sitemap.xml {
+        proxy_pass http://127.0.0.1:9091;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
     }
 
     # Reverse proxy for HTTP requests
     location / {
-        proxy_pass http://162.55.213.9:10000;
+        proxy_pass http://127.0.0.1:10000;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -52,7 +53,7 @@ server {
 
     # WebSocket support for GraphQL subscriptions
     location /graphql {
-        proxy_pass http://162.55.213.9:10000;
+        proxy_pass http://127.0.0.1:10000;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";
@@ -62,6 +63,9 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
+```
+
+> ⚠️ **Important**: Use `127.0.0.1` for proxy_pass (localhost), not the public IP. The `location ~*` static asset cache block was removed — without `proxy_pass` inside it, assets 404.
 ```
 
 ### Create link

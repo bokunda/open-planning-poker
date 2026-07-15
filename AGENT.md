@@ -131,6 +131,11 @@ npm start  # http://localhost:4200
 10. **RedisValue ambiguity** — `JsonSerializer.Deserialize<T>(RedisValue)` is ambiguous; cast to `(string)value` explicitly.
 11. **Shared project is a NuGet package** — `OpenPlanningPoker.Shared` v1.0.1-preview1. Local changes to `backend/open-planning-poker-shared/` are **ignored by Docker**. Register services directly in the consuming project's `Program.cs` instead.
 12. **Gateway regeneration workflow** — After schema/C# changes to GameEngine GraphQL types, always run: `generate-schema.ps1` → `docker compose build` → `docker compose up -d --force-recreate`.
+13. **Nginx: `location ~*` blocks without `proxy_pass`** — These capture static asset requests but don't forward to containers. Remove them when proxying to Docker containers; use only `location /` with `proxy_pass`.
+14. **Nginx: use `127.0.0.1` not public IP** — Proxy to `127.0.0.1:PORT` for Docker containers on the same host. Public IP loops through external network.
+15. **Website container shows default nginx page** — Build script (`package.json`) must copy HTML, images, robots.txt etc. to `dist/`. Fixed: `cp` commands added to `npm run build`.
+16. **Sitemap entity property: `CreatedOn`** — Domain entity uses `DateTimeOffset CreatedOn`, column in PostgreSQL is `"CreatedOn"`. Not `CreatedAt`.
+17. **DNS propagation after nameserver change** — Use `nslookup domain.com 8.8.8.8` for global check. Local ISP DNS may lag 24-48h. Google DNS can be set manually as workaround.
 
 ## Technical Notes
 
@@ -229,8 +234,8 @@ npm start  # http://localhost:4200
 - **GitHub Actions**: `actions/checkout@v4.2.2`, `actions/setup-dotnet@v4.3.0` (Node 24 support)
 - **Lazy Redis connection**: `IConnectionMultiplexer` uses factory lambda to avoid connect during `schema export` in CI
 - **Angular 19 schema**: `serviceWorker` must be string path (`"ngsw-config.json"`), not boolean `true`
-- **Website Dockerfile fix**: Build script copies ALL assets (CSS, HTML, images, robots.txt, sitemap) to `dist/` before container packaging
-- **Nginx website proxy**: Uses `127.0.0.1:9010` (localhost Docker container), no static asset cache block (delegates to container nginx)
+- **Website Dockerfile fix**: Build script copies ALL assets (CSS, HTML, images, robots.txt, sitemap) to `dist/` before container packaging. Uses `cp` commands in `npm run build`.
+- **Nginx proxy**: Both website and app use `127.0.0.1` for Docker container proxy. No `location ~*` blocks — all traffic goes through `location /` with `proxy_pass`. Sitemap endpoint on app proxies to GameEngine on port 9091.
 
 ## Naming Conventions
 - Docker containers: PascalCase with dots (OpenPlanningPoker.GameEngine.GraphQL)
