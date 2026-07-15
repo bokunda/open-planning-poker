@@ -205,7 +205,7 @@ export class GameComponent implements OnInit {
             this.joinGame(this.game.id);
           }
           this.getTickets(this.game.id);
-          this.location.replaceState(`/game/${this.game.id}`);
+          this.router.navigate([`/game/${this.game.id}`], { replaceUrl: true });
         }
       }
     });
