@@ -19,10 +19,15 @@ jobs:
       - name: Set gateway URLs in environment.prod.ts
         working-directory: frontend/open-planning-poker-web-app
         run: |
-          sed -i "s|gqlGateway: '.*'|gqlGateway: '${{ vars.OPP_API_GATEWAY }}'|" src/environments/environment.prod.ts
-          sed -i "s|gqlGatewayWss: '.*'|gqlGatewayWss: '${{ vars.OPP_WSS_URL }}'|" src/environments/environment.prod.ts
-          echo "Updated environment.prod.ts:"
-          cat src/environments/environment.prod.ts
+          node -e "
+            const fs = require('fs');
+            let c = fs.readFileSync('src/environments/environment.prod.ts', 'utf8');
+            c = c.replace(/gqlGateway: '.*?'/, \"gqlGateway: '\${{ vars.OPP_API_GATEWAY }}'\");
+            c = c.replace(/gqlGatewayWss: '.*?'/, \"gqlGatewayWss: '\${{ vars.OPP_WSS_URL }}'\");
+            fs.writeFileSync('src/environments/environment.prod.ts', c);
+            console.log('Updated environment.prod.ts:');
+            console.log(c);
+          "
 
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
