@@ -3,7 +3,7 @@ import { gql } from 'apollo-angular';
 const REVEAL_VOTES = gql`
   mutation RevealVotes($input: RevealVotesInput!) {
     revealVotes(input: $input) {
-      revealVotes {
+      votesRevealed {
         ticketId
         revealedBy
       }

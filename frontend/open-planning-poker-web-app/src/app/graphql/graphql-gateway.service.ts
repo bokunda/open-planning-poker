@@ -529,7 +529,7 @@ export type RevealVotesError = ApplicationError;
 export type RevealVotesPayload = {
   __typename?: 'RevealVotesPayload';
   errors?: Maybe<Array<RevealVotesError>>;
-  revealVotes?: Maybe<VotesRevealed>;
+  votesRevealed?: Maybe<VotesRevealed>;
 };
 
 export type MutationRevealVotesArgs = {
