@@ -115,7 +115,9 @@ export class HomeComponent implements OnInit {
     }).subscribe({
       next: ({ data }) => {
         if (data?.registerUser?.registerUserResponse?.token) {
-          localStorage.setItem('token', data.registerUser.registerUserResponse.token);
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('token', data.registerUser.registerUserResponse.token);
+          }
           this.username = data.registerUser.registerUserResponse.userName;
         }
       }

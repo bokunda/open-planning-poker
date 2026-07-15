@@ -26,7 +26,7 @@ services:
 
   openplanning.poker.webapp:
     ports:
-      - 10000:80
+      - 10000:4000
 
   opp-db:
     environment:

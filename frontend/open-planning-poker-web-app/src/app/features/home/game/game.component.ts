@@ -88,6 +88,7 @@ export class GameComponent implements OnInit {
 
   get isHost(): boolean {
     if (!this.game?.id) return false;
+    if (typeof localStorage === 'undefined') return false;
     const storedHost = localStorage.getItem('host_' + this.game.id);
     // Exact match when we know our userId
     if (this.currentUserId && storedHost) return storedHost === this.currentUserId;
@@ -211,7 +212,9 @@ export class GameComponent implements OnInit {
         if (data?.createGame?.game) {
           this.game = data?.createGame?.game;
           if (this.currentUserId) {
-            localStorage.setItem('host_' + this.game.id, this.currentUserId);
+            if (typeof localStorage !== 'undefined') {
+              localStorage.setItem('host_' + this.game.id, this.currentUserId);
+            }
           }
 
           // Apply deck setup via updateSettings (gateway.fgp doesn't have deckSetup in CreateGameInput yet)

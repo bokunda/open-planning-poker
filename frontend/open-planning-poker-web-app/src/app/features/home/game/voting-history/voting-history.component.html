@@ -4,12 +4,12 @@
     <mat-accordion>
       <mat-expansion-panel *ngFor="let ticket of tickets; trackBy: trackByTicketId" [expanded]="ticket.id === currentTicketId">
         <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{ticket.name}}
-            <span class="ticket-badge" *ngIf="ticket.id === currentTicketId">active</span>
+          <mat-panel-title class="history-title">
+            <span class="history-title-text">{{ticket.name}}</span>
+            <span class="ticket-chip" *ngIf="ticket.id === currentTicketId">Active</span>
           </mat-panel-title>
-          <mat-panel-description>
-            Average voting value:
+          <mat-panel-description class="history-avg">
+            AVG:
             <ng-container *ngIf="ticket.id !== currentTicketId || votesRevealed; else hiddenAvg">
               {{ticket.averageVotingValue}}
             </ng-container>

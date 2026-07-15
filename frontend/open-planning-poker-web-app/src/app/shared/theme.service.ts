@@ -9,13 +9,15 @@ const THEME_KEY = 'opp-theme';
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private readonly _current = new BehaviorSubject<ThemeMode>('light');
+  private readonly isBrowser: boolean;
   readonly current$ = this._current.asObservable();
 
   get current(): ThemeMode { return this._current.value; }
   get isDark(): boolean { return this._current.value === 'dark'; }
 
   constructor(@Inject(PLATFORM_ID) platformId: object) {
-    if (isPlatformBrowser(platformId)) {
+    this.isBrowser = isPlatformBrowser(platformId);
+    if (this.isBrowser) {
       const saved = localStorage.getItem(THEME_KEY) as ThemeMode | null;
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const initial: ThemeMode = saved ?? (prefersDark ? 'dark' : 'light');
@@ -33,7 +35,7 @@ export class ThemeService {
 
   private apply(mode: ThemeMode): void {
     this._current.next(mode);
-    if (typeof document !== 'undefined') {
+    if (this.isBrowser) {
       document.documentElement.classList.toggle('dark-theme', mode === 'dark');
       localStorage.setItem(THEME_KEY, mode);
     }

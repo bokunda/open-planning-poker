@@ -3,6 +3,48 @@
   padding-bottom: 36px;
 }
 
+// Title row: ticket name dominates, AVG is minimal
+.history-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--opp-space-2);
+}
+
+.history-title-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+// Active chip
+.ticket-chip {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--opp-primary);
+  color: var(--opp-text-on-primary);
+  padding: 2px 8px;
+  border-radius: var(--opp-radius-full);
+  line-height: 1.4;
+}
+
+// AVG: minimal, right-aligned
+.history-avg {
+  flex: 0 0 auto;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--opp-text-secondary);
+}
+
 .ticket-desc {
   margin: 0;
   padding: var(--opp-space-2) var(--opp-space-4);
@@ -12,20 +54,6 @@
   line-height: 1.5;
   background: var(--opp-primary-50);
   border-left: 3px solid var(--opp-primary-300);
-}
-
-.ticket-badge {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  background: var(--opp-primary);
-  color: var(--opp-text-on-primary);
-  padding: 2px 6px;
-  border-radius: var(--opp-radius-full);
-  margin-left: var(--opp-space-2);
-  vertical-align: middle;
 }
 
 .ticket-actions {

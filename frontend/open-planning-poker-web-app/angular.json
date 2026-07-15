@@ -20,6 +20,7 @@
             "outputPath": "dist/open-planning-poker-ui",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "server": "src/main.server.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -41,6 +42,10 @@
             "production": {
               "optimization": true,
               "sourceMap": false,
+              "ssr": {
+                "entry": "server.ts"
+              },
+              "prerender": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
