@@ -217,6 +217,19 @@ npm start  # http://localhost:4200
 - Apollo error link in `app.config.ts` for global error handling
 - Loading state in game component while game data loads
 
+### SEO Optimizations (2026-07-15)
+- **Deleted static `public/sitemap.xml`** — dynamic Game Engine endpoint serves game URLs (`/game/{id}`, `/game/{id}/ticket/{ticketId}`)
+- **Dynamic canonical URL** per route — `HomeComponent.updatePageMeta()` updates `og:title`, `og:description`, `og:url`, `twitter:title`, `twitter:description`
+- **Nginx cache headers**: `expires 1y` + `Cache-Control: public, immutable` for static assets (JS, CSS, images, fonts)
+- **App `index.html`**: added `hreflang`, `apple-touch-icon`, `twitter:image:width/height`, granular `robots` meta
+- **Website**: aligned FAQ structured data with visible HTML, uncommented footer logo, PNG logo instead of SVG
+- **`font/woff2 font/woff`** added to `gzip_types` in all nginx configs
+
+### CI/CD Notes
+- **GitHub Actions**: `actions/checkout@v4.2.2`, `actions/setup-dotnet@v4.3.0` (Node 24 support)
+- **Lazy Redis connection**: `IConnectionMultiplexer` uses factory lambda to avoid connect during `schema export` in CI
+- **Angular 19 schema**: `serviceWorker` must be string path (`"ngsw-config.json"`), not boolean `true`
+
 ## Naming Conventions
 - Docker containers: PascalCase with dots (OpenPlanningPoker.GameEngine.GraphQL)
 - Docker DNS: lowercase with dots (openplanningpoker.gameengine.graphql)
