@@ -104,6 +104,7 @@ export class ChatComponent implements OnChanges, OnDestroy {
   }
 
   private scrollToBottom(): void {
+    if (typeof document === 'undefined') return;
     const el = document.querySelector('.chat-messages');
     if (el) {
       el.scrollTop = el.scrollHeight;

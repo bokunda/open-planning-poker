@@ -80,13 +80,16 @@ export const appConfig: ApplicationConfig = {
         }
       });
 
-      const wsLink = new GraphQLWsLink(createClient({
-        url: gqlGatewayWss,
-        connectionParams: () => {
-          if (typeof localStorage === 'undefined') return {};
-          return { authToken: localStorage.getItem('token') };
-        },
-      }));
+      // WebSocket client only in browser (SSR has no WebSocket)
+      const wsLink = typeof WebSocket !== 'undefined'
+        ? new GraphQLWsLink(createClient({
+            url: gqlGatewayWss,
+            connectionParams: () => {
+              if (typeof localStorage === 'undefined') return {};
+              return { authToken: localStorage.getItem('token') };
+            },
+          }))
+        : null;
 
       const http = httpLink.create({ uri: gqlGateway });
 
@@ -101,17 +104,21 @@ export const appConfig: ApplicationConfig = {
         },
       }
 
-      const link = split(
-        ({ query }) => {
-          const definition = getMainDefinition(query);
-          return (
-            definition.kind === 'OperationDefinition' &&
-            definition.operation === 'subscription'
-          );
-        },
-        wsLink,
-        ApolloLink.from([errorLink, basic, auth, http])
-      );
+      const httpChain = ApolloLink.from([errorLink, basic, auth, http]);
+
+      const link = wsLink
+        ? split(
+            ({ query }) => {
+              const definition = getMainDefinition(query);
+              return (
+                definition.kind === 'OperationDefinition' &&
+                definition.operation === 'subscription'
+              );
+            },
+            wsLink,
+            httpChain
+          )
+        : httpChain;
 
       return {
         link,
