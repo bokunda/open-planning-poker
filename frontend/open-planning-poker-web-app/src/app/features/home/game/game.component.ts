@@ -240,11 +240,12 @@ export class GameComponent implements OnInit {
           } else {
             this.players = {
               ...this.players,
-              items: [...this.players.items, item]
+              items: [...this.players.items, item],
+              totalCount: (this.players.totalCount ?? 0) + 1
             };
           }
         } else {
-          this.players = { items: [item] } as ApiCollectionOfGamePlayer;
+          this.players = { items: [item], totalCount: 1 } as ApiCollectionOfGamePlayer;
         }
       },
       error: (err) => {
