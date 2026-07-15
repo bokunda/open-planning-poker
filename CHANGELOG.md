@@ -15,25 +15,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.1] — 2026-07-16
 
+### Added
+- **Re-vote syncs across all players** — new `reVoteTicket` GraphQL mutation broadcasts ticket re-activation to all connected clients via `onTicketReVoted` subscription; all players see the re-voted ticket, votes reset, URL updated
+
+### Changed
+- **Vote Again unified with Re-vote** — both buttons now use identical logic (URL update via `replaceState`, vote reset, subscription re-binding)
+- Timer controls visible only to host with configurable duration (1-5 minutes)
+- Smarter waiting message: distinguishes "no tickets" from "host not selecting a ticket"
+- Arrows restore ticket browsing for all players; Re-vote action is host-only
+
 ### Fixed
 - **Reveal votes** now syncs to all players — auto-selected tickets set up vote subscriptions
-- **Vote Again** now refetches votes from server instead of only clearing local state
-- **Join Game** extracts game ID from full URLs (e.g. `/game/UUID` or `https://...`)
+- **Join Game** extracts game ID from full URLs (e.g. `/game/UUID` or `https://...`) and supports UUIDs with dashes
 - **URL now updates** when joining a game (`/game/:id`) or creating a ticket (`/game/:id/ticket/:ticketId`)
 - **Page blink eliminated** — replaced `router.navigate` with `location.replaceState` for in-game navigation
 - **Empty player** no longer joins — `joinGame` guarded with `currentUserId` check
 - **Ticket auto-select** when joining a game with existing tickets (no more "Waiting for host..." when tickets exist)
+- **Import tickets preserves input order** — tickets are now sorted by their original order in the import input
 - **Timer duration selector** disabled instead of hidden while timer is running
 - **SSR crashes** fixed — `document` access guarded in chat scroll, WebSocket client only created in browser
 - **`--restart unless-stopped`** added to all 8 Docker containers in CI pipelines
 - **Vote subscriptions** now properly set up on all code paths (host create, player join, re-vote)
-- **Join Game** accepts full URLs without validation errors (label: "Game ID or URL")
 - **Ticket navigation arrows** visible to all players for browsing; Re-vote in history restricted to host
-
-### Changed
-- Timer controls visible only to host with configurable duration (1-5 minutes)
-- Smarter waiting message: distinguishes "no tickets" from "host not selecting a ticket"
-- Arrows restore ticket browsing for all players; Re-vote action is host-only
 
 ## [1.2.0] — 2026-07-15
 
