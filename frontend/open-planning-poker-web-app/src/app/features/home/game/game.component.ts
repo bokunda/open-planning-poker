@@ -20,6 +20,8 @@ import { CREATE_OR_UPDATE_VOTE } from './gql/createVote.graphql';
 import { GET_VOTES } from './gql/getVotes.graphql';
 import { GET_TICKETS } from './gql/getTickets.graphql';
 import { GENERATE_GAME_REPORT } from './gql/generateGameReport.graphql';
+import { UPDATE_SETTINGS } from './gql/updateSettings.graphql';
+import { MutationUpdateSettingsArgs, UpdateSettingsPayload } from '../../../graphql/graphql-gateway.service';
 import { CreateGameResult } from './create/create-game.component';
 import { map } from 'rxjs';
 
@@ -131,17 +133,31 @@ export class GameComponent implements OnInit {
   private createGame(name: string, description: string, deckSetup: string): void {
     this.apollo.mutate<Mutation, MutationCreateGameArgs>({
       mutation: CREATE_GAME,
-      variables: {input: {name, description, deckSetup}}
+      variables: {input: {name, description}}
     }).subscribe({
       next: ({ data }) => {
         if (data?.createGame?.game) {
           this.game = data?.createGame?.game;
           localStorage.setItem('host_' + this.game.id, this.currentUserId);
+
+          // Apply deck setup via updateSettings (gateway.fgp doesn't have deckSetup in CreateGameInput yet)
+          const settingsId = (data.createGame.game as any).settingsDetails?.id;
+          if (settingsId && deckSetup) {
+            this.applyDeckSetup(this.game.id, settingsId, deckSetup);
+          }
+
           this.joinGame(this.game.id);
           this.router.navigate([`/game/${this.game.id}`]);
         }
       }
     });
+  }
+
+  private applyDeckSetup(gameId: string, settingsId: string, deckSetup: string): void {
+    this.apollo.mutate<UpdateSettingsPayload, MutationUpdateSettingsArgs>({
+      mutation: UPDATE_SETTINGS,
+      variables: { input: { id: settingsId, gameId, deckSetup } }
+    }).subscribe();
   }
 
   private getGamePlayers(gameId: string): void {

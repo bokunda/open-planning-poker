@@ -84,7 +84,6 @@ export type ChatMessage = {
 export type CreateGameError = ApplicationError;
 
 export type CreateGameInput = {
-  deckSetup?: InputMaybe<Scalars['String']['input']>;
   description: Scalars['String']['input'];
   name: Scalars['String']['input'];
 };

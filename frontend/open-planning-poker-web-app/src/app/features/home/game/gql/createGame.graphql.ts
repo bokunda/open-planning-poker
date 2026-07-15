@@ -7,6 +7,11 @@ const CREATE_GAME = gql `
         id
         name
         description
+        settingsDetails {
+          ... on Settings {
+            id
+          }
+        }
       }
       errors {
         ... on ApplicationError {
