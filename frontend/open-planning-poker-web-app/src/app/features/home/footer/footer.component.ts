@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { OPP_GITHUB_REPO_URL, OPP_WEBSITE_URL } from '../../../shared/constants';
+import { OPP_APP_VERSION, OPP_GITHUB_REPO_URL, OPP_WEBSITE_URL } from '../../../shared/constants';
 import { InfoDialogComponent } from '../../../shared/dialogs/info/info.component';
 import { ThemeService } from '../../../shared/theme.service';
 
@@ -14,6 +14,7 @@ export class FooterComponent {
   private readonly dialog = inject(MatDialog);
   readonly themeService = inject(ThemeService);
 
+  readonly appVersion = OPP_APP_VERSION;
   readonly githubUrl = OPP_GITHUB_REPO_URL;
   readonly websiteUrl = OPP_WEBSITE_URL;
   readonly currentYear = new Date().getFullYear();

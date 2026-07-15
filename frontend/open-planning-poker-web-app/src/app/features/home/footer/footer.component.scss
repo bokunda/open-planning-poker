@@ -37,6 +37,13 @@
   white-space: nowrap;
 }
 
+.footer-version {
+  color: var(--opp-text-muted);
+  font-size: 0.65rem;
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
 .footer-links {
   display: flex;
   align-items: center;
