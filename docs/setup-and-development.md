@@ -131,7 +131,7 @@ User Management `appsettings.json`:
 }
 ```
 
-> **⚠️ Production warning:** Do not use hardcoded credentials in production. Use environment variables or a secrets manager.
+> ** Production warning:** Do not use hardcoded credentials in production. Use environment variables or a secrets manager.
 
 ## Running Tests
 

@@ -22,7 +22,7 @@ Open Planning Poker is a free, open-source agile estimation tool for Scrum teams
 ### Frontend
 | App | Port | Tech |
 |-----|------|------|
-| Web App | 4200/10000 | Angular 19, Apollo, Angular Material, SSR, PWA |
+| Web App | 4200/10000 (ext) / 4000 (container) | Angular 19, Apollo, Angular Material, SSR, PWA |
 | Website | 9010 | Tailwind CSS, Flowbite |
 
 ### Infrastructure
@@ -45,9 +45,10 @@ Open Planning Poker is a free, open-source agile estimation tool for Scrum teams
 ### Frontend Critical Files
 - `frontend/open-planning-poker-web-app/src/app/features/home/game/game.component.ts` — Main game logic, voting state
 - `frontend/open-planning-poker-web-app/src/app/features/home/home.component.ts` — Home + breadcrumb
-- `frontend/open-planning-poker-web-app/src/app/app.config.ts` — Apollo setup, SSR-safe guards
+- `frontend/open-planning-poker-web-app/src/app/app.config.ts` — Apollo setup, SSR-safe guards, GitHub icon registration
 - `frontend/open-planning-poker-web-app/src/app/app.routes.ts` — Routes with SEO titles
-- `frontend/open-planning-poker-web-app/public/assets/config.json` — **Locale URLs for dev. CI/CD overwrites for prod.**
+- `frontend/open-planning-poker-web-app/src/environments/environment.ts` — Dev gateway URLs (localhost)
+- `frontend/open-planning-poker-web-app/src/environments/environment.prod.ts` — Production gateway URLs (CI/CD may override)
 - `frontend/open-planning-poker-website/index.html` — Landing page with structured data
 
 ### Config Files
@@ -89,8 +90,12 @@ Open Planning Poker is a free, open-source agile estimation tool for Scrum teams
 - JWT: no issuer/audience validation
 - CORS only localhost in appsettings (CI/CD overwrites)
 - `ASPNETCORE_ENVIRONMENT=Development` in CI/CD workflows
-- Node 22-alpine for both Dockerfiles
+- Node 22-alpine for both Docker stages
 - Apollo client uses `--legacy-peer-deps` due to version conflicts
+- App container runs Node.js SSR server on port 4000 (not nginx on 80)
+- All components are standalone (NgModules removed in 1.2.0)
+- Font Awesome removed (1.2.0); replaced with Material Icons + inline SVG
+- Gateway URLs configured via environment.ts/environment.prod.ts (not config.json)
 
 ## Local Development Setup
 ```bash

@@ -4,7 +4,7 @@
 
 | Version | Supported |
 |---------|-----------|
-| 1.x (main) | ✅ Active |
+| 1.x (main) |  Active |
 
 ## Reporting a Vulnerability
 
@@ -14,7 +14,7 @@ If you discover a security vulnerability in Open Planning Poker, please report i
 
 Instead, please email the maintainer at:
 
-📧 **bpiskulic1996@gmail.com**
+ **bpiskulic1996@gmail.com**
 
 ### What to include
 

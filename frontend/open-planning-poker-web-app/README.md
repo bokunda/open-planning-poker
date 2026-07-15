@@ -1,4 +1,4 @@
-# Open Planning Pokger - Web Game
+# Open Planning Poker - Web Game
 
 Web Application for Open Planning Poker game.
 
@@ -10,8 +10,8 @@ Important dependencies:
 - [Angular Material](https://material.angular.io/) with custom purple theme (#7e3af2)
 - [Apollo GraphQL Client](https://the-guild.dev/graphql/apollo-angular/docs)
 - [graphql-ws](https://the-guild.dev/graphql/ws) for real-time subscriptions
-- [Fontawesome](https://fontawesome.com/)
-- [QRCode](https://www.npmjs.com/package/qrcode) for game sharing
+- [Material Icons](https://fonts.google.com/icons) with custom SVG icons via MatIconRegistry
+- QR code generation via api.qrserver.com (zero npm dependencies)
 
 ## Features
 - **Multiple Voting Decks**: Fibonacci, Modified Fibonacci, T-Shirt Sizes, Powers of 2, Custom
@@ -48,7 +48,7 @@ Application will be running on 4200 port.
 docker build -t open-planning-poker-web-app .
 
 # Start container
-docker run --name open-planning-poker-web-app -d -p 4200:80 open-planning-poker-web-app
+docker run --name open-planning-poker-web-app -d -p 4200:4000 open-planning-poker-web-app
 
 # Stop container
 docker stop open-planning-poker-web-app

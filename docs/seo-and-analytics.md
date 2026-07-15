@@ -99,17 +99,17 @@ Clarity provides heatmaps, session recordings, and user behavior insights.
 
 | Criterion | Status |
 |-----------|--------|
-| Valid `robots.txt` | ✅ Both domains |
-| Valid `sitemap.xml` | ✅ Static + dynamic |
-| Unique, descriptive title tags | ✅ Dynamic per route |
-| Unique meta descriptions | ✅ Dynamic per route |
-| `hreflang` tags | ✅ Website |
-| Canonical tags | ✅ Both domains |
-| Valid structured data | ✅ 5 schema types (website) + 2 (web app) |
-| Mobile-friendly | ✅ Responsive Tailwind + Angular Material |
-| HTTPS enforced | ✅ Via nginx 301 redirects |
-| Semantic HTML landmarks | ✅ `<header>`, `<main>`, `<footer>`, `<section>`, `<nav>` |
-| Accessible skip-to-content link | ✅ Web app |
-| Proper 404 page | ✅ Both domains |
-| Image alt text | ✅ All images |
-| Page speed | ✅ SSR, PWA caching, gzip, lazy loading |
+| Valid `robots.txt` |  Both domains |
+| Valid `sitemap.xml` |  Static + dynamic |
+| Unique, descriptive title tags |  Dynamic per route |
+| Unique meta descriptions |  Dynamic per route |
+| `hreflang` tags |  Website |
+| Canonical tags |  Both domains |
+| Valid structured data |  5 schema types (website) + 2 (web app) |
+| Mobile-friendly |  Responsive Tailwind + Angular Material |
+| HTTPS enforced |  Via nginx 301 redirects |
+| Semantic HTML landmarks |  `<header>`, `<main>`, `<footer>`, `<section>`, `<nav>` |
+| Accessible skip-to-content link |  Web app |
+| Proper 404 page |  Both domains |
+| Image alt text |  All images |
+| Page speed |  SSR, PWA caching, gzip, lazy loading |

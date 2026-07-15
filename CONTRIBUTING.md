@@ -1,6 +1,6 @@
 # Contributing to Open Planning Poker
 
-Thank you for your interest in contributing! 🎉
+Thank you for your interest in contributing! 
 
 ## Code of Conduct
 
@@ -89,7 +89,7 @@ cd frontend/open-planning-poker-web-app && npm install && npm start
 
 ### Angular / TypeScript
 
-- Use **standalone components** where possible
+- All components are standalone. NgModules removed in 1.2.0. Use `standalone: true` with per-component Material imports.
 - Use **SCSS** for styling with Angular Material
 - Type-safe GraphQL via `graphql-codegen` generated types
 - Lazy-load routes for better performance

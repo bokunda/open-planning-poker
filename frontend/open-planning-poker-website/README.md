@@ -3,7 +3,7 @@
 This is a presentational website of Open Planning Poker project.
 For mor details visit the main [Open Planning Poker page](https://github.com/bokunda/open-planning-poker).
 
-🌍 [Project website.](https://openplanningpoker.com)
+ [Project website.](https://openplanningpoker.com)
 
 ## Description
 

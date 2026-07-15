@@ -81,7 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Header redesign**: hamburger menu on left, brand text smaller, username on right
 - **Welcome/username** moved from dedicated row into header toolbar (saves vertical space)
 - **Theme toggle** moved into header menu (no longer standalone icon)
-- **Landing page** now uses hero CTA style matching "Create Ticket" (🎯, big buttons)
+- **Landing page** now uses hero CTA style matching "Create Ticket" (, big buttons)
 - **All game actions** (New Ticket, Reveal Votes, Vote Again) unified below voting cards
 - **Players & Chat panels** are now collapsible with smooth toggle
 - **Timer** always visible (disabled/dimmed after votes revealed)

@@ -65,7 +65,7 @@ server {
 }
 ```
 
-> ⚠️ **Important**: Use `127.0.0.1` for proxy_pass (localhost), not the public IP. The `location ~*` static asset cache block was removed — without `proxy_pass` inside it, assets 404.
+>  **Important**: Use `127.0.0.1` for proxy_pass (localhost), not the public IP. The `location ~*` static asset cache block was removed — without `proxy_pass` inside it, assets 404.
 ```
 
 ### Create link
