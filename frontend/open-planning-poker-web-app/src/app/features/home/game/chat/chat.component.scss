@@ -71,6 +71,7 @@
   flex-direction: column;
   gap: var(--opp-space-1);
   background: var(--opp-bg);
+  max-height: 526px;
 }
 
 .chat-empty {
@@ -113,6 +114,17 @@
   font-size: 0.65rem;
   color: var(--opp-text-muted);
   align-self: flex-end;
+}
+
+/* ── Links in chat ── */
+:host ::ng-deep .chat-link {
+  color: var(--opp-primary);
+  text-decoration: underline;
+  word-break: break-all;
+
+  &:hover {
+    color: var(--opp-primary-600);
+  }
 }
 
 .chat-input {

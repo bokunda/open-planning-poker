@@ -1,0 +1,204 @@
+:host {
+  display: block;
+  min-width: 420px;
+  max-width: 600px;
+}
+
+mat-dialog-content {
+  padding-top: var(--opp-space-2) !important;
+}
+
+.import-tab-content {
+  padding: var(--opp-space-4) 0;
+}
+
+.import-hint {
+  color: var(--opp-text-secondary);
+  font-size: var(--opp-font-size-sm);
+  margin: 0 0 var(--opp-space-3);
+  line-height: 1.5;
+
+  code {
+    background: var(--opp-primary-50);
+    color: var(--opp-primary-600);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.85em;
+  }
+}
+
+.import-textarea {
+  width: 100%;
+  min-height: 180px;
+  padding: var(--opp-space-3);
+  border: 2px dashed var(--opp-border);
+  border-radius: var(--opp-radius-md);
+  background: var(--opp-bg);
+  color: var(--opp-text);
+  font-family: var(--opp-font-mono);
+  font-size: var(--opp-font-size-sm);
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+  transition: border-color var(--opp-transition-fast);
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: var(--opp-primary-400);
+    border-style: solid;
+  }
+
+  &::placeholder {
+    color: var(--opp-text-muted);
+    font-family: var(--opp-font);
+    font-size: var(--opp-font-size-xs);
+  }
+}
+
+/* ── Dropzone ── */
+.import-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--opp-space-2);
+  padding: var(--opp-space-8) var(--opp-space-4);
+  border: 2px dashed var(--opp-border);
+  border-radius: var(--opp-radius-md);
+  background: var(--opp-bg);
+  text-align: center;
+  transition: border-color var(--opp-transition-fast), background var(--opp-transition-fast);
+
+  &:hover {
+    border-color: var(--opp-primary-300);
+    background: var(--opp-primary-50);
+  }
+}
+
+.dropzone-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.dropzone-text {
+  font-size: var(--opp-font-size-base);
+  color: var(--opp-text);
+  margin: 0;
+  font-weight: 500;
+}
+
+.dropzone-or {
+  color: var(--opp-text-muted);
+  font-size: var(--opp-font-size-sm);
+  margin: 0;
+}
+
+.dropzone-label {
+  cursor: pointer;
+}
+
+.dropzone-btn {
+  display: inline-block;
+  padding: var(--opp-space-2) var(--opp-space-5);
+  background: var(--opp-primary);
+  color: var(--opp-text-on-primary);
+  border-radius: var(--opp-radius-full);
+  font-weight: 600;
+  font-size: var(--opp-font-size-sm);
+  transition: background var(--opp-transition-fast);
+
+  &:hover {
+    background: var(--opp-primary-600);
+  }
+}
+
+.dropzone-formats {
+  color: var(--opp-text-muted);
+  font-size: var(--opp-font-size-xs);
+  margin: var(--opp-space-2) 0 0;
+}
+
+/* ── Preview ── */
+.import-preview {
+  margin-top: var(--opp-space-4);
+  border: 1px solid var(--opp-border);
+  border-radius: var(--opp-radius-md);
+  overflow: hidden;
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--opp-space-2) var(--opp-space-3);
+  background: var(--opp-primary-50);
+  border-bottom: 1px solid var(--opp-border);
+}
+
+.preview-count {
+  font-weight: 700;
+  font-size: var(--opp-font-size-sm);
+  color: var(--opp-primary-600);
+}
+
+.preview-table-wrapper {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--opp-font-size-sm);
+
+  th {
+    text-align: left;
+    padding: var(--opp-space-1) var(--opp-space-3);
+    background: var(--opp-surface-elevated);
+    color: var(--opp-text-secondary);
+    font-weight: 600;
+    font-size: var(--opp-font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--opp-border);
+    position: sticky;
+    top: 0;
+  }
+
+  td {
+    padding: var(--opp-space-1) var(--opp-space-3);
+    border-bottom: 1px solid var(--opp-border-light);
+    vertical-align: middle;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.preview-num {
+  width: 36px;
+  color: var(--opp-text-muted);
+  font-size: var(--opp-font-size-xs);
+  text-align: center;
+}
+
+.preview-name {
+  font-weight: 600;
+  color: var(--opp-text);
+}
+
+.preview-desc {
+  color: var(--opp-text-secondary);
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Responsive ── */
+@media (max-width: 500px) {
+  :host {
+    min-width: unset;
+  }
+}

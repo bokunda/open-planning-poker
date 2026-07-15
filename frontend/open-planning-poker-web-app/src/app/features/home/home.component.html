@@ -1,9 +1,9 @@
 <main class="home-wrapper">
   <h1 class="sr-only">Open Planning Poker — Free Agile Estimation Tool</h1>
-  <div class="home" style="display:flex;flex-direction:column;">
-    <app-header></app-header>
+  <div class="home">
+    <app-header [username]="username"></app-header>
     <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
-    <app-user [username]="username"></app-user>
     <app-game *ngIf="userExists()" class="center" style="width:100%" [currentUserId]="userId"></app-game>
+    <app-footer></app-footer>
   </div>
 </main>

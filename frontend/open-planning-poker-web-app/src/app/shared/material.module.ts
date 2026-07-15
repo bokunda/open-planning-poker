@@ -15,6 +15,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [],
@@ -34,7 +37,10 @@ import { MatBadgeModule } from '@angular/material/badge';
     MatSelectModule,
     MatProgressSpinnerModule,
     MatSlideToggleModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatTabsModule,
+    MatMenuModule,
+    MatDividerModule
   ]
 })
 export class MaterialModule { }

@@ -1,10 +1,34 @@
+mat-toolbar {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.header-brand {
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
 .header-spacer {
   flex: 1 1 auto;
 }
 
-.header-icon i {
-  line-height: 1; /* Align properly */
+.header-welcome {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--opp-text-secondary);
+  white-space: nowrap;
+
+  .header-edit-btn {
+    transform: scale(0.6);
+    opacity: 0.5;
+    transition: opacity var(--opp-transition-fast);
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 }

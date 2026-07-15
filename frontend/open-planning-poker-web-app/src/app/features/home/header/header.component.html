@@ -1,42 +1,48 @@
 <header class="header-wrapper">
   <div class="header">
     <mat-toolbar>
-      <span>Open Planning Poker</span>
+      <!-- Hamburger menu -->
+      <button mat-icon-button [matMenuTriggerFor]="moreMenu" matTooltip="Menu" aria-label="Menu">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <span class="header-brand">Open Planning Poker</span>
       <span class="header-spacer"></span>
-      <a
-        mat-icon-button
-        href="{{githubRepoUrl}}"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Give us a star on GitHub!"
-        matTooltip="Give us a star on GitHub!">
-        <mat-icon class="header-icon"><i class="fa-brands fa-github"></i></mat-icon>
-      </a>
-      <a
-        mat-icon-button
-        href="{{websiteUrl}}"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Visit project page!"
-        matTooltip="Visit project page!">
-        <mat-icon class="header-icon"><i class="fa-solid fa-globe"></i></mat-icon>
-      </a>
-      <button
-        mat-icon-button
-        (click)="toggleTheme()"
-        [attr.aria-label]="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
-        [matTooltip]="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
-        <mat-icon class="header-icon">
-          <i [class]="isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon'"></i>
-        </mat-icon>
-      </button>
-      <button
-        mat-icon-button
-        (click)="openInfoDialog()"
-        aria-label="About the project!"
-        matTooltip="About the project!">
-        <mat-icon class="header-icon"><i class="fa-solid fa-circle-info"></i></mat-icon>
-      </button>
+
+      <!-- Username -->
+      <span class="header-welcome" *ngIf="username">
+        {{ username }}
+        <button
+          mat-icon-button
+          class="header-edit-btn"
+          matTooltip="Edit username"
+          (click)="handleUpdateUser()"
+          aria-label="Edit username">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </span>
+
+      <mat-menu #moreMenu="matMenu">
+        <button mat-menu-item (click)="toggleTheme()">
+          <mat-icon>
+            <i [class]="isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon'"></i>
+          </mat-icon>
+          <span>{{ isDark ? 'Light mode' : 'Dark mode' }}</span>
+        </button>
+        <mat-divider></mat-divider>
+        <a mat-menu-item href="{{githubRepoUrl}}" target="_blank" rel="noopener noreferrer">
+          <mat-icon><i class="fa-brands fa-github"></i></mat-icon>
+          <span>GitHub</span>
+        </a>
+        <a mat-menu-item href="{{websiteUrl}}" target="_blank" rel="noopener noreferrer">
+          <mat-icon><i class="fa-solid fa-globe"></i></mat-icon>
+          <span>Website</span>
+        </a>
+        <button mat-menu-item (click)="openInfoDialog()">
+          <mat-icon><i class="fa-solid fa-circle-info"></i></mat-icon>
+          <span>About</span>
+        </button>
+      </mat-menu>
     </mat-toolbar>
   </div>
 </header>

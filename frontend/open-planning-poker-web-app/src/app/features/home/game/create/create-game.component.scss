@@ -10,11 +10,22 @@
 .deck-option-example {
   display: block;
   font-size: 0.75rem;
-  color: #999;
+  color: var(--opp-text-muted);
   margin-top: 3px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Fix selected option readability */
+::ng-deep .mat-option.mat-selected {
+  .deck-option-label {
+    color: var(--opp-primary);
+  }
+
+  .deck-option-example {
+    color: var(--opp-text-secondary);
+  }
 }
 
 .custom-deck-preview {
@@ -27,7 +38,7 @@
 
 .preview-label {
   font-size: 0.8rem;
-  color: #888;
+  color: var(--opp-text-muted);
   margin-right: 4px;
 }
 
@@ -38,10 +49,10 @@
   min-width: 32px;
   height: 28px;
   padding: 2px 6px;
-  border: 1px solid #7e3af2;
+  border: 1px solid var(--opp-primary);
   border-radius: 6px;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #7e3af2;
-  background: #f3f0ff;
+  color: var(--opp-primary);
+  background: var(--opp-primary-50);
 }

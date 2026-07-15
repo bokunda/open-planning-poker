@@ -2,12 +2,19 @@
   <!-- Landing (no game) -->
   <ng-container *ngIf="!game">
     <div class="game-landing">
-      <app-options
-        [inGame]="!game"
-        (onCreateGameClick)="handleCreateGame()"
-        (onJoinGameClick)="handleJoinGame()"
-        (onLeaveGameClick)="handleLeaveGame()">
-      </app-options>
+      <div class="hero-cta">
+        <div class="hero-illustration">🎯</div>
+        <h2 class="hero-title">Ready to plan?</h2>
+        <p class="hero-desc">Create a game room and invite your team to start estimating.</p>
+        <div class="hero-actions">
+          <button mat-raised-button color="primary" class="hero-btn hero-btn--primary" (click)="handleCreateGame()">
+            <mat-icon>add</mat-icon> Create Game
+          </button>
+          <button mat-stroked-button color="primary" class="hero-btn" (click)="handleJoinGame()">
+            <mat-icon>login</mat-icon> Join Game
+          </button>
+        </div>
+      </div>
     </div>
   </ng-container>
 
@@ -33,6 +40,7 @@
         [votesRevealed]="votesRevealed"
         [isHost]="isHost"
         (onCreateNewTicket)="handleCreateTicket()"
+        (onImportTickets)="handleImportTickets()"
         (OnVote)="handleVoteAction($event)"
         (onRevealVotes)="handleRevealVotes()"
         (onVoteAgain)="handleVoteAgain()"

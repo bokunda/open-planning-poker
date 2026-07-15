@@ -12,6 +12,7 @@ import { JOIN_GAME } from './gql/joinGame.graphql';
 import { GET_GAME_PLAYERS } from './gql/getPlayers.graphql';
 import { ON_PLAYER_JOINED } from './gql/onPlayerJoined.graphql';
 import { CreateTicketDialogComponent } from './ticket/create-ticket/dialog/create-ticket-dialog.component';
+import { ImportTicketsDialogComponent, ImportedTicket } from './import/import-tickets-dialog.component';
 import { CREATE_TICKET } from './gql/createTicket.graphql';
 import { GET_TICKET } from './gql/getTicket.graphql';
 import { ON_TICKET_CREATED } from './gql/onTicketCreated.graphql';
@@ -141,6 +142,10 @@ export class GameComponent implements OnInit {
 
   handleReVoteTicket(ticketId: string) {
     this.router.navigate([`/game/${this.game?.id}/ticket/${ticketId}`]);
+  }
+
+  handleImportTickets() {
+    this.openImportTicketsDialog();
   }
 
   private getGame(id: string): void {
@@ -341,6 +346,47 @@ export class GameComponent implements OnInit {
       if (!result) { return; }
       this.createTicket(this.game?.id, result.name, result.description);
     });
+  }
+
+  private openImportTicketsDialog(): void {
+    const dialogRef = this.dialog.open(ImportTicketsDialogComponent, {
+      width: '560px',
+      maxWidth: '95vw',
+      enterAnimationDuration: '150ms',
+      exitAnimationDuration: '150ms'
+    });
+
+    dialogRef.afterClosed().subscribe((tickets: ImportedTicket[] | undefined) => {
+      if (!tickets?.length) return;
+      this.importTicketsSequentially(tickets);
+    });
+  }
+
+  private importTicketsSequentially(tickets: ImportedTicket[]): void {
+    let completed = 0;
+    const gameId = this.game?.id;
+    if (!gameId) return;
+
+    for (const ticket of tickets) {
+      this.apollo.mutate<Mutation, MutationCreateTicketArgs>({
+        mutation: CREATE_TICKET,
+        variables: { input: { gameId, name: ticket.name, description: ticket.description } }
+      }).subscribe({
+        next: (result) => {
+          completed++;
+          if (completed === tickets.length) {
+            this.getTickets(gameId);
+          }
+        },
+        error: (err) => {
+          completed++;
+          console.error(`Failed to import ticket "${ticket.name}":`, err);
+          if (completed === tickets.length) {
+            this.getTickets(gameId);
+          }
+        }
+      });
+    }
   }
 
   private subscribeToTicketCreated(gameId: string): void {

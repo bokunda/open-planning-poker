@@ -1,0 +1,33 @@
+<footer class="footer-wrapper">
+  <div class="footer">
+    <div class="footer-brand">
+      <img class="footer-logo" src="/open-planning-poker-game-logo-32x32.png" alt="Open Planning Poker logo" width="24" height="24" />
+      <span class="footer-name">Open Planning Poker</span>
+      <span class="footer-copy">&copy; {{ currentYear }}. All Rights Reserved.</span>
+    </div>
+
+    <div class="footer-links">
+      <button mat-button (click)="toggleTheme()">
+        <mat-icon>
+          <i [class]="isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon'"></i>
+        </mat-icon>
+        {{ isDark ? 'Light' : 'Dark' }}
+      </button>
+      <button mat-button (click)="openInfoDialog()">
+        <mat-icon><i class="fa-solid fa-circle-info"></i></mat-icon>
+        About
+      </button>
+      <a mat-button href="{{ websiteUrl }}" target="_blank" rel="noopener noreferrer">
+        Website
+      </a>
+      <a mat-button href="{{ githubUrl }}" target="_blank" rel="noopener noreferrer">
+        <mat-icon><i class="fa-brands fa-github"></i></mat-icon>
+        GitHub
+      </a>
+    </div>
+
+    <div class="footer-tagline">
+      Free &amp; Open Source — Built for agile teams
+    </div>
+  </div>
+</footer>

@@ -47,3 +47,9 @@ body {
   white-space: nowrap;
   border: 0;
 }
+
+/* Fix mat-option selected readability in dark/light mode */
+.mat-option.mat-selected {
+  background: var(--opp-primary-50) !important;
+  color: var(--opp-primary-600) !important;
+}

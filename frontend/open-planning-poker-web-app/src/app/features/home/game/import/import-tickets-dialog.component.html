@@ -1,0 +1,71 @@
+<h2 mat-dialog-title>📥 Import Tickets</h2>
+
+<mat-dialog-content>
+  <mat-tab-group [(selectedIndex)]="activeTab" animationDuration="200ms">
+    <!-- Tab 1: Bulk Paste -->
+    <mat-tab label="📝 Bulk Paste">
+      <div class="import-tab-content">
+        <p class="import-hint">Paste one ticket per line. Use <code>|</code> to separate description.</p>
+        <textarea
+          class="import-textarea"
+          [(ngModel)]="bulkText"
+          (ngModelChange)="onBulkTextChange()"
+          (paste)="onPaste($event)"
+          placeholder="Implement user login&#10;Add dark mode support | Toggle between light and dark themes&#10;Fix navigation bug&#10;..."
+          rows="8"
+          aria-label="Paste tickets"></textarea>
+      </div>
+    </mat-tab>
+
+    <!-- Tab 2: File Upload -->
+    <mat-tab label="📄 File Upload">
+      <div
+        class="import-tab-content import-dropzone"
+        (dragover)="onDragOver($event)"
+        (drop)="onDrop($event)">
+        <div class="dropzone-icon">📁</div>
+        <p class="dropzone-text">Drag &amp; drop a CSV or JSON file here</p>
+        <p class="dropzone-or">— or —</p>
+        <label class="dropzone-label">
+          <input type="file" accept=".csv,.json" (change)="onFileSelected($event)" hidden />
+          <span class="dropzone-btn">Choose File</span>
+        </label>
+        <p class="dropzone-formats">Supports: CSV (name, description) or JSON array</p>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <!-- Preview -->
+  <div class="import-preview" *ngIf="parsedTickets.length > 0">
+    <div class="preview-header">
+      <span class="preview-count">{{ parsedTickets.length }} ticket{{ parsedTickets.length !== 1 ? 's' : '' }} ready</span>
+    </div>
+    <div class="preview-table-wrapper">
+      <table class="preview-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ticket of parsedTickets; let i = index">
+            <td class="preview-num">{{ i + 1 }}</td>
+            <td class="preview-name">{{ ticket.name }}</td>
+            <td class="preview-desc">{{ ticket.description || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary"
+    [disabled]="parsedTickets.length === 0"
+    (click)="import()">
+    <mat-icon>file_upload</mat-icon> Import {{ parsedTickets.length }} ticket{{ parsedTickets.length !== 1 ? 's' : '' }}
+  </button>
+</mat-dialog-actions>

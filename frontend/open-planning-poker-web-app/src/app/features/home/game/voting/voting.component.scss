@@ -32,6 +32,51 @@
   flex: 1;
 }
 
+.ticket-desc-toggle {
+  opacity: 0.5;
+  transition: opacity var(--opp-transition-fast), color var(--opp-transition-fast);
+  vertical-align: middle;
+
+  &:hover {
+    opacity: 1;
+    color: var(--opp-primary);
+  }
+
+  &--active {
+    opacity: 1;
+    color: var(--opp-primary);
+  }
+}
+
+.ticket-description {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+  background: var(--opp-primary-50);
+  border-left: 3px solid var(--opp-primary-300);
+  border-radius: 0 var(--opp-radius-sm) var(--opp-radius-sm) 0;
+  margin: 0 auto;
+  text-align: left;
+
+  &--expanded {
+    max-height: 400px;
+    padding: var(--opp-space-2) var(--opp-space-3);
+    margin-top: var(--opp-space-2);
+    margin-bottom: var(--opp-space-1);
+  }
+}
+
+.ticket-description-p {
+  margin: 0 0 var(--opp-space-1) 0;
+  color: var(--opp-text-secondary);
+  font-size: var(--opp-font-size-sm);
+  line-height: 1.6;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
 /* ── No Ticket CTA (Hero) ── */
 .no-ticket-cta {
   display: flex;
@@ -86,6 +131,13 @@
   mat-icon {
     margin-right: var(--opp-space-1);
   }
+}
+
+.no-ticket-actions {
+  display: flex;
+  gap: var(--opp-space-3);
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 /* ── No Ticket Waiting (non-host) ── */
@@ -184,6 +236,10 @@
     &:hover {
       box-shadow: 0 6px 22px rgba(255, 107, 53, 0.45) !important;
     }
+  }
+
+  &--import {
+    border-color: var(--opp-border);
   }
 }
 

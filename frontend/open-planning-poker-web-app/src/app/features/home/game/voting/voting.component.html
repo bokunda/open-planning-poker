@@ -4,9 +4,14 @@
     <div class="no-ticket-illustration">🎯</div>
     <h2 class="no-ticket-title">Ready to start?</h2>
     <p class="no-ticket-desc">Create your first ticket to begin estimating.</p>
-    <button mat-raised-button color="primary" class="new-ticket-btn--hero" (click)="handleOnCreateNewTicket()">
-      <mat-icon>add</mat-icon> Create New Ticket
-    </button>
+    <div class="no-ticket-actions">
+      <button mat-raised-button color="primary" class="new-ticket-btn--hero" (click)="handleOnCreateNewTicket()">
+        <mat-icon>add</mat-icon> Create New Ticket
+      </button>
+      <button mat-stroked-button color="primary" class="new-ticket-btn--hero" (click)="handleOnImportTickets()">
+        <mat-icon>file_upload</mat-icon> Import Tickets
+      </button>
+    </div>
   </div>
 
   <!-- No ticket: waiting message for non-host -->
@@ -29,7 +34,22 @@
         </button>
 
         <div class="ticket-info">
-          <h2 class="ticket-name">{{ticket?.name}}</h2>
+          <h2 class="ticket-name">
+            {{ticket?.name}}
+            <button
+              *ngIf="ticket?.description"
+              mat-icon-button
+              class="ticket-desc-toggle"
+              [class.ticket-desc-toggle--active]="descriptionExpanded"
+              (click)="toggleDescription()"
+              aria-label="Toggle ticket description"
+              matTooltip="View description">
+              <mat-icon>info</mat-icon>
+            </button>
+          </h2>
+          <div class="ticket-description" *ngIf="ticket?.description" [class.ticket-description--expanded]="descriptionExpanded">
+            <p *ngFor="let paragraph of ticket!.description!.split('\n')" class="ticket-description-p">{{ paragraph }}</p>
+          </div>
           <p class="ticket-average" *ngIf="ticket?.averageVotingValue">
             Average:
             <strong *ngIf="votesRevealed">{{ ticket?.averageVotingValue }}</strong>
@@ -97,6 +117,9 @@
       <!-- Always available -->
       <button mat-stroked-button color="primary" class="action-btn" (click)="handleOnCreateNewTicket()">
         <mat-icon>add</mat-icon> New Ticket
+      </button>
+      <button mat-stroked-button class="action-btn action-btn--import" (click)="handleOnImportTickets()">
+        <mat-icon>file_upload</mat-icon> Import
       </button>
     </div>
   </ng-container>

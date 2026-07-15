@@ -14,6 +14,7 @@ import { VotingComponent } from './voting/voting.component';
 import { VotingHistoryComponent } from './voting-history/voting-history.component';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { ChatComponent } from './chat/chat.component';
+import { ImportTicketsDialogComponent } from './import/import-tickets-dialog.component';
 import { FormsModule } from '@angular/forms';
 
 
@@ -31,7 +32,8 @@ import { FormsModule } from '@angular/forms';
     VotingHistoryComponent,
     PlayersComponent,
     BreadcrumbComponent,
-    ChatComponent
+    ChatComponent,
+    ImportTicketsDialogComponent
   ],
   imports: [
     CommonModule,

@@ -19,6 +19,7 @@ export class VotingComponent implements OnInit, OnDestroy {
   @Input() isHost = false;
 
   @Output() onCreateNewTicket = new EventEmitter<void>();
+  @Output() onImportTickets = new EventEmitter<void>();
   @Output() OnVote = new EventEmitter<string>();
   @Output() onVoteAgain = new EventEmitter<void>();
   @Output() onRevealVotes = new EventEmitter<void>();
@@ -26,6 +27,7 @@ export class VotingComponent implements OnInit, OnDestroy {
 
   voteOptions: string[] = [];
   selectedOption: string | null = null;
+  descriptionExpanded = false;
 
   // Timer
   private readonly defaultTimerSeconds = 60;
@@ -56,6 +58,10 @@ export class VotingComponent implements OnInit, OnDestroy {
     this.onCreateNewTicket.emit();
   }
 
+  handleOnImportTickets() {
+    this.onImportTickets.emit();
+  }
+
   get currentTicketIndex(): number {
     return this.tickets.findIndex(t => t.id === this.ticket?.id);
   }
@@ -79,7 +85,12 @@ export class VotingComponent implements OnInit, OnDestroy {
   navigateToTicket(ticketId: string | undefined): void {
     if (ticketId) {
       this.onNavigateTicket.emit(ticketId);
+      this.descriptionExpanded = false;
     }
+  }
+
+  toggleDescription(): void {
+    this.descriptionExpanded = !this.descriptionExpanded;
   }
 
   // --- Timer methods ---

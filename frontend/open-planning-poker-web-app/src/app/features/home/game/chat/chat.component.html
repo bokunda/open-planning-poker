@@ -14,7 +14,7 @@
       <div class="chat-msg" *ngFor="let msg of messages; let i = index"
         [class.chat-msg-own]="msg.playerName !== 'Unknown'">
         <span class="chat-msg-author">{{ msg.playerName }}</span>
-        <span class="chat-msg-text">{{ msg.content }}</span>
+        <span class="chat-msg-text" [innerHTML]="linkify(msg.content)"></span>
         <span class="chat-msg-time">{{ msg.timestamp | date:'HH:mm' }}</span>
       </div>
     </div>

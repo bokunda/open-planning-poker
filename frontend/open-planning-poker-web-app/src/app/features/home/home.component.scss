@@ -1,0 +1,15 @@
+.home-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.home {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+app-footer {
+  margin-top: auto;
+}
