@@ -243,6 +243,8 @@ export type Mutation = {
   /** Dummy health-check mutation. */
   ping: PingPayload;
   registerUser: RegisterUserPayload;
+  /** Reveals votes for a ticket, broadcasting to all players. */
+  revealVotes: RevealVotesPayload;
   /** Sends a chat message to a game. */
   sendChatMessage: SendChatMessagePayload;
   /** Updates Game Settings. */
@@ -409,6 +411,7 @@ export type Subscription = {
   onPlayerLeave: BaseUserProfile;
   onTicketCreated: Ticket;
   onVoteCreatedOrUpdated: Vote;
+  onVotesRevealed: VotesRevealed;
 };
 
 
@@ -510,3 +513,29 @@ export type Vote = {
 };
 
 export type VotesResult = ApiCollectionOfVote | ApplicationError;
+
+export type VotesRevealed = {
+  __typename?: 'VotesRevealed';
+  revealedBy: Scalars['String']['output'];
+  ticketId: Scalars['UUID']['output'];
+};
+
+export type RevealVotesInput = {
+  ticketId: Scalars['UUID']['input'];
+};
+
+export type RevealVotesError = ApplicationError;
+
+export type RevealVotesPayload = {
+  __typename?: 'RevealVotesPayload';
+  errors?: Maybe<Array<RevealVotesError>>;
+  revealVotes?: Maybe<VotesRevealed>;
+};
+
+export type MutationRevealVotesArgs = {
+  input: RevealVotesInput;
+};
+
+export type SubscriptionOnVotesRevealedArgs = {
+  ticketId: Scalars['UUID']['input'];
+};

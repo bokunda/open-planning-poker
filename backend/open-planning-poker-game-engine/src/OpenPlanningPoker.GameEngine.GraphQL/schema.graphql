@@ -130,6 +130,8 @@ type Mutation {
   deleteTicket(input: DeleteTicketInput!): DeleteTicketPayload! @cost(weight: "10")
   "Creates or updates a vote."
   createOrUpdateVote(input: CreateOrUpdateVoteInput!): CreateOrUpdateVotePayload! @cost(weight: "10")
+  "Reveals votes for a ticket, broadcasting to all players."
+  revealVotes(input: RevealVotesInput!): RevealVotesPayload! @cost(weight: "10")
 }
 
 type PingPayload {
@@ -169,12 +171,29 @@ type Settings {
   deckSetup: String!
 }
 
+type RevealVotesPayload {
+  revealVotes: VotesRevealed
+  errors: [RevealVotesError!]
+}
+
+input RevealVotesInput {
+  ticketId: UUID!
+}
+
+union RevealVotesError = ApplicationError
+
+type VotesRevealed {
+  ticketId: UUID!
+  revealedBy: String!
+}
+
 type Subscription {
   onChatMessage(gameId: UUID!): ChatMessage!
   onPlayerJoined(gameId: UUID!): BaseUserProfile!
   onPlayerLeave(gameId: UUID!): BaseUserProfile!
   onTicketCreated(gameId: UUID!): Ticket!
   onVoteCreatedOrUpdated(ticketId: UUID!): Vote!
+  onVotesRevealed(ticketId: UUID!): VotesRevealed!
 }
 
 type Ticket {

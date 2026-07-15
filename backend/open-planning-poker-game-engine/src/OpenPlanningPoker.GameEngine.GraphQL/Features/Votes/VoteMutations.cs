@@ -28,4 +28,29 @@ public class VoteMutations
             ? mapper.Map<Vote>(result.Value)
             : result.Error!;
     }
+
+    /// <summary>
+    /// Reveals all votes for a ticket. Broadcasts to all players.
+    /// </summary>
+    public async Task<FieldResult<VotesRevealed, ApplicationError>> RevealVotesAsync(
+        [Service] ICurrentUserProvider currentUserProvider,
+        [Service] ITopicEventSender eventSender,
+        [Required] Guid ticketId,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await currentUserProvider.GetAsync(cancellationToken);
+
+        var reveal = new VotesRevealed
+        {
+            TicketId = ticketId,
+            RevealedBy = user.Value?.UserName ?? "Host"
+        };
+
+        await eventSender.SendAsync(
+            $"{nameof(RevealVotesAsync)}_{ticketId}",
+            reveal,
+            cancellationToken);
+
+        return reveal;
+    }
 }

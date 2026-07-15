@@ -18,10 +18,12 @@ import { ON_TICKET_CREATED } from './gql/onTicketCreated.graphql';
 import { ON_VOTE_CREATED_OR_UPDATED } from './gql/onVoteCreatedOrUpdated.graphql';
 import { CREATE_OR_UPDATE_VOTE } from './gql/createVote.graphql';
 import { GET_VOTES } from './gql/getVotes.graphql';
+import { REVEAL_VOTES } from './gql/revealVotes.graphql';
+import { ON_VOTES_REVEALED } from './gql/onVotesRevealed.graphql';
 import { GET_TICKETS } from './gql/getTickets.graphql';
 import { GENERATE_GAME_REPORT } from './gql/generateGameReport.graphql';
 import { UPDATE_SETTINGS } from './gql/updateSettings.graphql';
-import { MutationUpdateSettingsArgs, UpdateSettingsPayload } from '../../../graphql/graphql-gateway.service';
+import { MutationRevealVotesArgs, MutationUpdateSettingsArgs, RevealVotesPayload, UpdateSettingsPayload, VotesRevealed } from '../../../graphql/graphql-gateway.service';
 import { CreateGameResult } from './create/create-game.component';
 import { map } from 'rxjs';
 
@@ -74,6 +76,7 @@ export class GameComponent implements OnInit {
         if (ticketId) {
           this.getTicket(ticketId);
           this.subscribeToVoteActions(ticketId);
+          this.subscribeToVotesRevealed(ticketId);
         }
       }
     });
@@ -106,7 +109,14 @@ export class GameComponent implements OnInit {
   }
 
   handleRevealVotes() {
-    this.votesRevealed = true;
+    if (!this.ticket?.id) return;
+    this.apollo.mutate<RevealVotesPayload, MutationRevealVotesArgs>({
+      mutation: REVEAL_VOTES,
+      variables: { input: { ticketId: this.ticket.id } }
+    }).subscribe({
+      next: () => this.votesRevealed = true,
+      error: (err) => console.error('Reveal votes error:', err)
+    });
   }
 
   handleVoteAgain() {
@@ -394,6 +404,18 @@ export class GameComponent implements OnInit {
       error: (err) => {
         console.error('Subscription error (onVoteCreatedOrUpdated):', err);
       }
+    });
+  }
+
+  private subscribeToVotesRevealed(ticketId: string): void {
+    this.apollo.subscribe<{ onVotesRevealed: VotesRevealed }>({
+      query: ON_VOTES_REVEALED,
+      variables: { ticketId },
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.votesRevealed = true;
+      },
+      error: (err) => console.error('Subscription error (onVotesRevealed):', err)
     });
   }
 
