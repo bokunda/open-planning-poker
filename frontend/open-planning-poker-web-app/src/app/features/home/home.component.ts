@@ -49,17 +49,29 @@ export class HomeComponent implements OnInit {
   private updatePageMeta(): void {
     const gameId = this.route.snapshot.paramMap.get('id');
     const ticketId = this.route.snapshot.paramMap.get('ticketId');
+    const baseUrl = 'https://app.openplanningpoker.com';
+    let pageUrl = baseUrl;
+    let pageTitle = 'Open Planning Poker — Free Agile Estimation Tool';
+    let pageDesc = 'Play Planning Poker online for free. Create a game room, invite your team, and estimate user stories collaboratively.';
 
     if (gameId && ticketId) {
-      this.title.setTitle('Planning Poker — Voting Session | Open Planning Poker');
-      this.meta.updateTag({ name: 'description', content: 'Vote on user stories in this planning poker session. Join your team and estimate collaboratively.' });
+      pageUrl = `${baseUrl}/game/${gameId}/ticket/${ticketId}`;
+      pageTitle = 'Planning Poker — Voting Session | Open Planning Poker';
+      pageDesc = 'Vote on user stories in this planning poker session. Join your team and estimate collaboratively.';
     } else if (gameId) {
-      this.title.setTitle('Planning Poker — Game Room | Open Planning Poker');
-      this.meta.updateTag({ name: 'description', content: 'Join this planning poker game room. Estimate user stories with your agile team in real-time.' });
-    } else {
-      this.title.setTitle('Open Planning Poker — Free Agile Estimation Tool');
-      this.meta.updateTag({ name: 'description', content: 'Play Planning Poker online for free. Create a game room, invite your team, and estimate user stories collaboratively.' });
+      pageUrl = `${baseUrl}/game/${gameId}`;
+      pageTitle = 'Planning Poker — Game Room | Open Planning Poker';
+      pageDesc = 'Join this planning poker game room. Estimate user stories with your agile team in real-time.';
     }
+
+    this.title.setTitle(pageTitle);
+    this.meta.updateTag({ name: 'description', content: pageDesc });
+    this.meta.updateTag({ rel: 'canonical', href: pageUrl });
+    this.meta.updateTag({ property: 'og:title', content: pageTitle });
+    this.meta.updateTag({ property: 'og:description', content: pageDesc });
+    this.meta.updateTag({ property: 'og:url', content: pageUrl });
+    this.meta.updateTag({ name: 'twitter:title', content: pageTitle });
+    this.meta.updateTag({ name: 'twitter:description', content: pageDesc });
   }
 
   public userExists(): boolean {

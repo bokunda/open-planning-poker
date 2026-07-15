@@ -31,7 +31,13 @@ server {
     gzip on;
     gzip_vary on;
     gzip_min_length 1024;
-    gzip_types text/plain text/css text/xml text/javascript application/javascript application/json image/svg+xml;
+    gzip_types text/plain text/css text/xml text/javascript application/javascript application/json image/svg+xml font/woff2 font/woff;
+
+    # Cache static assets (1 year)
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff2|woff)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
 
     # Reverse proxy for HTTP requests
     location / {
