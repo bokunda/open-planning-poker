@@ -183,8 +183,11 @@ export class GameComponent implements OnInit {
     this.location.replaceState(`/game/${this.game?.id}/ticket/${ticketId}`);
     this.votesRevealed = false;
     this.getTicket(ticketId);
-    this.subscribeToVoteActions(ticketId);
-    this.subscribeToVotesRevealed(ticketId);
+    if (ticketId !== this.currentSubscribedTicketId) {
+      this.currentSubscribedTicketId = ticketId;
+      this.subscribeToVoteActions(ticketId);
+      this.subscribeToVotesRevealed(ticketId);
+    }
   }
 
   handleImportTickets() {
@@ -360,6 +363,11 @@ export class GameComponent implements OnInit {
           this.votesRevealed = false;
           this.subscribeToPlayerJoined(gameId);
           this.getTickets(gameId);
+          if (this.ticket.id !== this.currentSubscribedTicketId) {
+            this.currentSubscribedTicketId = this.ticket.id;
+            this.subscribeToVoteActions(this.ticket.id);
+            this.subscribeToVotesRevealed(this.ticket.id);
+          }
           this.location.replaceState(`/game/${gameId}/ticket/${this.ticket.id}`);
         }
       }
