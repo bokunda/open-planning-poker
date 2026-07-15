@@ -162,8 +162,8 @@ npm start  # http://localhost:4200
 - `votedCount`, `totalPlayers`, `consensusLabel` getters in `PlayersComponent`
 
 ### QR Code Sharing
-- `QrShareDialogComponent` — QR code generation via `qrcode` npm package
-- Purple-colored QR code, copy link button with clipboard API
+- `QrShareDialogComponent` — QR code via `api.qrserver.com` (zero dependencies)
+- Purple-colored QR code (#7e3af2), copy link button with clipboard API
 - Share button (qr_code icon) in game details next to copy button
 
 ### Chat/Discussion (Ephemeral, Redis)
