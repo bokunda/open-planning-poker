@@ -68,11 +68,18 @@
       </div>
     </div>
 
-    <!-- Timer (always visible while ticket active, disabled after reveal) -->
-    <div class="timer-wrapper" [class.timer-wrapper--disabled]="votesRevealed">
-      <span class="timer-display" [class.timer-warning]="timerWarning" [class.timer-display--dim]="votesRevealed">
-        ⏱ {{ votesRevealed ? '--:--' : timerDisplay }}
-      </span>
+    <!-- Timer (host only) -->
+    <div class="timer-wrapper" *ngIf="isHost" [class.timer-wrapper--disabled]="votesRevealed">
+      <div class="timer-row">
+        <span class="timer-display" [class.timer-warning]="timerWarning" [class.timer-display--dim]="votesRevealed">
+          ⏱ {{ votesRevealed ? '--:--' : timerDisplay }}
+        </span>
+        <mat-form-field class="timer-duration" *ngIf="!timerRunning" appearance="outline">
+          <mat-select [(ngModel)]="timerDurationMinutes" [disabled]="votesRevealed" aria-label="Timer duration">
+            <mat-option *ngFor="let min of [1,2,3,4,5]" [value]="min">{{ min }} min</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
       <div class="timer-controls">
         <button mat-icon-button color="primary" *ngIf="!timerRunning" (click)="startTimer()"
           [disabled]="votesRevealed" aria-label="Start timer">

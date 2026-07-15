@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ApiCollectionOfGamePlayer, Settings, SettingsDetailsResult, Ticket, Vote } from '../../../../graphql/graphql-gateway.service';
 
@@ -10,7 +13,7 @@ import { ApiCollectionOfGamePlayer, Settings, SettingsDetailsResult, Ticket, Vot
   templateUrl: './voting.component.html',
   styleUrl: './voting.component.scss',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatSelectModule, MatTooltipModule],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class VotingComponent implements OnInit, OnDestroy, OnChanges {
@@ -35,8 +38,8 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
   descriptionExpanded = false;
 
   // Timer
-  private readonly defaultTimerSeconds = 60;
-  remainingSeconds = this.defaultTimerSeconds;
+  timerDurationMinutes = 1;
+  remainingSeconds = this.timerDurationMinutes * 60;
   timerRunning = false;
   private timerInterval: ReturnType<typeof setInterval> | null = null;
 
@@ -120,6 +123,7 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
 
   startTimer(): void {
     if (this.timerRunning) return;
+    this.remainingSeconds = this.timerDurationMinutes * 60;
     this.timerRunning = true;
     this.timerInterval = setInterval(() => {
       this.remainingSeconds--;
@@ -136,7 +140,7 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
 
   resetTimer(): void {
     this.clearTimer();
-    this.remainingSeconds = this.defaultTimerSeconds;
+    this.remainingSeconds = this.timerDurationMinutes * 60;
   }
 
   private clearTimer(): void {
