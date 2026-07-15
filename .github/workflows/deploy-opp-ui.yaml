@@ -18,12 +18,17 @@ jobs:
 
       - name: Set gateway URLs in environment.prod.ts
         working-directory: frontend/open-planning-poker-web-app
+        env:
+          OPP_API_GATEWAY: ${{ vars.OPP_API_GATEWAY }}
+          OPP_WSS_URL: ${{ vars.OPP_WSS_URL }}
         run: |
           node -e "
             const fs = require('fs');
+            const gateway = process.env.OPP_API_GATEWAY;
+            const wss = process.env.OPP_WSS_URL;
             let c = fs.readFileSync('src/environments/environment.prod.ts', 'utf8');
-            c = c.replace(/gqlGateway: '.*?'/, \"gqlGateway: '\${{ vars.OPP_API_GATEWAY }}'\");
-            c = c.replace(/gqlGatewayWss: '.*?'/, \"gqlGatewayWss: '\${{ vars.OPP_WSS_URL }}'\");
+            c = c.replace(/gqlGateway: '.*?'/, \"gqlGateway: '\" + gateway + \"'\");
+            c = c.replace(/gqlGatewayWss: '.*?'/, \"gqlGatewayWss: '\" + wss + \"'\");
             fs.writeFileSync('src/environments/environment.prod.ts', c);
             console.log('Updated environment.prod.ts:');
             console.log(c);
