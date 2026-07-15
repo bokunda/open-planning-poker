@@ -1,3 +1,14 @@
 User-agent: *
 Allow: /
+Disallow: /_health
+Crawl-delay: 10
+
 Sitemap: https://app.openplanningpoker.com/sitemap.xml
+
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 2
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 5
