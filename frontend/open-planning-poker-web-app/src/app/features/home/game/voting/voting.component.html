@@ -79,8 +79,8 @@
         <span class="timer-display" [class.timer-warning]="timerWarning" [class.timer-display--dim]="votesRevealed">
           ⏱ {{ votesRevealed ? '--:--' : timerDisplay }}
         </span>
-        <mat-form-field class="timer-duration" *ngIf="!timerRunning" appearance="outline">
-          <mat-select [(ngModel)]="timerDurationMinutes" [disabled]="votesRevealed" aria-label="Timer duration">
+        <mat-form-field class="timer-duration" appearance="outline">
+          <mat-select [(ngModel)]="timerDurationMinutes" [disabled]="timerRunning || votesRevealed" aria-label="Timer duration">
             <mat-option *ngFor="let min of [1,2,3,4,5]" [value]="min">{{ min }} min</mat-option>
           </mat-select>
         </mat-form-field>
