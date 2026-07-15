@@ -3,7 +3,7 @@
     <div class="table-container" *ngIf="players?.items">
       <!-- Top Players -->
       <div class="top-players">
-        <div class="player" *ngFor="let player of topPlayers">
+        <div class="player" *ngFor="let player of topPlayers; trackBy: trackByPlayerId">
           <span class="player-item-name">{{ player.name }}</span>
           <div class="player-item-vote-wrapper">
             <span class="player-item-vote" [class.vote-hidden]="!votesRevealed && getVoteData(player.id)">{{ getVoteDisplay(player.id) }}</span>
@@ -13,7 +13,7 @@
 
       <!-- Left Players -->
       <div class="left-players">
-        <div class="player" *ngFor="let player of leftPlayers">
+        <div class="player" *ngFor="let player of leftPlayers; trackBy: trackByPlayerId">
           <span class="player-item-name">{{ player.name }}</span>
           <div class="player-item-vote-wrapper">
             <span class="player-item-vote" [class.vote-hidden]="!votesRevealed && getVoteData(player.id)">{{ getVoteDisplay(player.id) }}</span>
@@ -22,26 +22,29 @@
       </div>
 
       <!-- Table (Rectangle) -->
-      <div class="table-players" *ngIf="isHost">
-        <button
-          mat-flat-button
-          color="accent"
-          *ngIf="!votesRevealed && hasAnyVotes"
-          (click)="onRevealCards.emit()">
-          Reveal Votes
-        </button>
-        <button
-          mat-flat-button
-          *ngIf="votesRevealed"
-          (click)="onVoteAgain.emit()">
-          Vote Again
-        </button>
-        <button mat-flat-button (click)="onCreateNewTicket.emit()">New Ticket</button>
+      <div class="table-players">
+        <span class="consensus-label" *ngIf="consensusLabel">{{ consensusLabel }}</span>
+        <ng-container *ngIf="isHost">
+          <button
+            mat-flat-button
+            color="accent"
+            *ngIf="!votesRevealed && hasAnyVotes"
+            (click)="onRevealCards.emit()">
+            Reveal Votes
+          </button>
+          <button
+            mat-flat-button
+            *ngIf="votesRevealed"
+            (click)="onVoteAgain.emit()">
+            Vote Again
+          </button>
+          <button mat-flat-button (click)="onCreateNewTicket.emit()">New Ticket</button>
+        </ng-container>
       </div>
 
       <!-- Right Players -->
       <div class="right-players">
-        <div class="player" *ngFor="let player of rightPlayers">
+        <div class="player" *ngFor="let player of rightPlayers; trackBy: trackByPlayerId">
           <div class="player-item-vote-wrapper">
             <span class="player-item-vote" [class.vote-hidden]="!votesRevealed && getVoteData(player.id)">{{ getVoteDisplay(player.id) }}</span>
           </div>
@@ -51,7 +54,7 @@
 
       <!-- Bottom Players -->
       <div class="bottom-players">
-        <div class="player" *ngFor="let player of bottomPlayers">
+        <div class="player" *ngFor="let player of bottomPlayers; trackBy: trackByPlayerId">
           <div class="player-item-vote-wrapper">
             <span class="player-item-vote" [class.vote-hidden]="!votesRevealed && getVoteData(player.id)">{{ getVoteDisplay(player.id) }}</span>
           </div>
@@ -61,6 +64,7 @@
 
       <!-- Responsive representation of players -->
       <div class="players-table-wrapper">
+        <span class="consensus-label mobile-consensus" *ngIf="consensusLabel">{{ consensusLabel }}</span>
         <div class="center" *ngIf="isHost">
           <button
             mat-flat-button
@@ -78,7 +82,7 @@
           <button mat-flat-button (click)="onCreateNewTicket.emit()">New Ticket</button>
         </div>
         <div class="players-table" *ngIf="players?.items">
-          <div class="player-row" *ngFor="let player of players?.items">
+          <div class="player-row" *ngFor="let player of players?.items; trackBy: trackByPlayerId">
             <div class="player-cell">{{ player.name }}</div>
             <div class="player-cell">{{ getVoteDisplay(player.id) }}</div>
           </div>

@@ -25,6 +25,10 @@ export class VotingComponent implements OnInit {
   voteOptions: string[] = [];
   selectedOption: string | null = null;
 
+  trackByOption(index: number, option: string): string {
+    return option;
+  }
+
   ngOnInit(): void {
     const settings = this.gameSettings as Settings;
 

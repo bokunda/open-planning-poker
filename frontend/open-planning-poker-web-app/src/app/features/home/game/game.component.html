@@ -8,6 +8,7 @@
         (onLeaveGameClick)="handleLeaveGame()">
       </app-options>
     </div>
+    <app-loading *ngIf="isLoading" message="Loading game..."></app-loading>
     <div class="game-details" *ngIf="game">
       <div class="center">
         <app-game-details

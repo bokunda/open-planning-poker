@@ -39,6 +39,10 @@ export class GameComponent implements OnInit {
 
   @Input() currentUserId: string = '';
 
+  get isLoading(): boolean {
+    return !this.game;
+  }
+
   get isHost(): boolean {
     if (!this.currentUserId || !this.game?.id) return false;
     const storedHost = localStorage.getItem('host_' + this.game.id);

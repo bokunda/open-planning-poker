@@ -17,6 +17,10 @@ export interface BreadcrumbItem {
 export class BreadcrumbComponent implements OnChanges {
   @Input() items: BreadcrumbItem[] = [];
 
+  trackByIndex(index: number): number {
+    return index;
+  }
+
   private readonly meta = inject(Meta);
   private readonly document = inject(DOCUMENT);
 

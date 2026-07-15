@@ -25,7 +25,7 @@
 
   <div class="voting-options-wrapper">
     <div class="voting-item-options">
-      <button *ngFor="let voteOption of voteOptions"
+      <button *ngFor="let voteOption of voteOptions; trackBy: trackByOption"
         mat-raised-button
         color="primary"
         class="card-button"

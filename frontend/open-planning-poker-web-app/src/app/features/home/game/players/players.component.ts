@@ -57,4 +57,21 @@ export class PlayersComponent implements OnInit {
   get hasAnyVotes(): boolean {
     return this.votes.length > 0;
   }
+
+  get votedCount(): number {
+    return this.votes.length;
+  }
+
+  get totalPlayers(): number {
+    return this.players?.totalCount ?? 0;
+  }
+
+  get consensusLabel(): string {
+    if (!this.totalPlayers) return '';
+    return `${this.votedCount}/${this.totalPlayers} voted`;
+  }
+
+  trackByPlayerId(index: number, player: { id: string }): string {
+    return player.id;
+  }
 }

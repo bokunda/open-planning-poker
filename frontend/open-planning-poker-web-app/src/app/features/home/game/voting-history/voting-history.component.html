@@ -2,7 +2,7 @@
   <div class="voting-history" *ngIf="tickets">
     <h3>History</h3>
     <mat-accordion>
-      <mat-expansion-panel *ngFor="let ticket of tickets">
+      <mat-expansion-panel *ngFor="let ticket of tickets; trackBy: trackByTicketId">
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{ticket.name}}
@@ -17,7 +17,7 @@
         </mat-expansion-panel-header>
         <div *ngIf="ticket?.votes?.items && ticket!.votes!.totalCount > 0; else noItems">
           <p>Voting result history.</p>
-          <span *ngFor="let vote of ticket?.votes?.items">
+          <span *ngFor="let vote of ticket?.votes?.items; trackBy: trackByVoteId">
             <p><strong>{{vote.playerName}}:</strong>
               <ng-container *ngIf="ticket.id !== currentTicketId || votesRevealed; else hiddenVote">
                 {{vote.value}}

@@ -13,4 +13,12 @@ export class VotingHistoryComponent {
   @Input() tickets: Ticket[] = [];
   @Input() votesRevealed = false;
   @Input() currentTicketId: string | undefined;
+
+  trackByTicketId(index: number, ticket: { id: string }): string {
+    return ticket.id;
+  }
+
+  trackByVoteId(index: number, vote: { id: string }): string {
+    return vote.id;
+  }
 }

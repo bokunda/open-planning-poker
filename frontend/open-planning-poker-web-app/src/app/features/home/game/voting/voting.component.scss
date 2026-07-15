@@ -7,10 +7,12 @@
   justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
+  padding: 0 8px;
 
   .card-button {
     height: 85px;
-    padding: 20px;
+    min-width: 60px;
+    padding: 12px 16px;
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
