@@ -13,6 +13,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [1.2.1] — 2026-07-16
+
+### Fixed
+- **Reveal votes** now syncs to all players — auto-selected tickets set up vote subscriptions
+- **Vote Again** now refetches votes from server instead of only clearing local state
+- **Join Game** extracts game ID from full URLs (e.g. `/game/UUID` or `https://...`)
+- **URL now updates** when joining a game (`/game/:id`) or creating a ticket (`/game/:id/ticket/:ticketId`)
+- **Page blink eliminated** — replaced `router.navigate` with `location.replaceState` for in-game navigation
+- **Empty player** no longer joins — `joinGame` guarded with `currentUserId` check
+- **Ticket auto-select** when joining a game with existing tickets (no more "Waiting for host..." when tickets exist)
+- **Timer duration selector** disabled instead of hidden while timer is running
+- **SSR crashes** fixed — `document` access guarded in chat scroll, WebSocket client only created in browser
+- **`--restart unless-stopped`** added to all 8 Docker containers in CI pipelines
+
+### Changed
+- Timer controls visible only to host with configurable duration (1-5 minutes)
+- Smarter waiting message: distinguishes "no tickets" from "host not selecting a ticket"
+
 ## [1.2.0] — 2026-07-15
 
 ### Architecture — Standalone Components Migration
