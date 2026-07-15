@@ -6,5 +6,5 @@ public class ChatMessage
     public Guid GameId { get; set; }
     public string PlayerName { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
-    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+    public string Timestamp { get; set; } = DateTime.UtcNow.ToString("o");
 }

@@ -22,7 +22,7 @@ public class ChatMutations
         {
             Id = Guid.NewGuid(),
             GameId = gameId,
-            PlayerName = user.Value?.userName ?? "Unknown",
+            PlayerName = user.Value?.UserName ?? "Unknown",
             Content = content,
             Timestamp = DateTime.UtcNow
         };

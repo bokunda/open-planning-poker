@@ -38,7 +38,7 @@ type ChatMessage {
   gameId: UUID!
   playerName: String!
   content: String!
-  timestamp: DateTime!
+  timestamp: String!
 }
 
 type CreateGamePayload {
