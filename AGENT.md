@@ -229,6 +229,8 @@ npm start  # http://localhost:4200
 - **GitHub Actions**: `actions/checkout@v4.2.2`, `actions/setup-dotnet@v4.3.0` (Node 24 support)
 - **Lazy Redis connection**: `IConnectionMultiplexer` uses factory lambda to avoid connect during `schema export` in CI
 - **Angular 19 schema**: `serviceWorker` must be string path (`"ngsw-config.json"`), not boolean `true`
+- **Website Dockerfile fix**: Build script copies ALL assets (CSS, HTML, images, robots.txt, sitemap) to `dist/` before container packaging
+- **Nginx website proxy**: Uses `127.0.0.1:9010` (localhost Docker container), no static asset cache block (delegates to container nginx)
 
 ## Naming Conventions
 - Docker containers: PascalCase with dots (OpenPlanningPoker.GameEngine.GraphQL)

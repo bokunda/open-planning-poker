@@ -49,15 +49,8 @@ server {
     gzip_min_length 1024;
     gzip_types text/plain text/css text/xml text/javascript application/javascript application/json image/svg+xml font/woff2 font/woff;
 
-    # Cache static assets (1 year)
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff2|woff)$ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-
-    # Reverse proxy
     location / {
-        proxy_pass http://162.55.213.9:9010;
+        proxy_pass http://127.0.0.1:9010;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
