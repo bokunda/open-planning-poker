@@ -424,6 +424,7 @@ export class GameComponent implements OnInit {
     let completed = 0;
     const gameId = this.game?.id;
     if (!gameId) return;
+    const created: Ticket[] = [];
 
     for (const ticket of tickets) {
       this.apollo.mutate<Mutation, MutationCreateTicketArgs>({
@@ -432,8 +433,17 @@ export class GameComponent implements OnInit {
       }).subscribe({
         next: (result) => {
           completed++;
+          if (result.data?.createTicket?.ticket) {
+            created.push(result.data.createTicket.ticket);
+          }
           if (completed === tickets.length) {
-            this.getTickets(gameId);
+            // Preserve input order by matching created tickets to original names
+            this.tickets = tickets
+              .map(t => created.find(c => c.name === t.name))
+              .filter(Boolean) as Ticket[];
+            if (this.tickets.length > 0 && !this.ticket) {
+              this.ticket = this.tickets[0];
+            }
           }
         },
         error: (err) => {
