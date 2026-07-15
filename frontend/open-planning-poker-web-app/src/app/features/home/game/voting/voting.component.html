@@ -73,7 +73,7 @@
       <span class="timer-display" [class.timer-warning]="timerWarning" [class.timer-display--dim]="votesRevealed">
         ⏱ {{ votesRevealed ? '--:--' : timerDisplay }}
       </span>
-      <div class="timer-controls" *ngIf="isHost">
+      <div class="timer-controls">
         <button mat-icon-button color="primary" *ngIf="!timerRunning" (click)="startTimer()"
           [disabled]="votesRevealed" aria-label="Start timer">
           <mat-icon>play_arrow</mat-icon>
