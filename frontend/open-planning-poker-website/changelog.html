@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Preconnect to critical origins -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+    <link rel="preconnect" href="https://app.openplanningpoker.com">
+    <link rel="preconnect" href="https://api.github.com">
+
+    <!-- Critical CSS: preload -->
+    <link rel="preload" as="style" href="/output.css">
+    <link rel="stylesheet" href="/output.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript><link rel="stylesheet" href="/output.css"></noscript>
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-03VCK0K926"></script>
     <script>
@@ -10,8 +23,6 @@
     gtag('config', 'G-03VCK0K926');
     </script>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#7e3af2">
 
     <title>Changelog — Open Planning Poker</title>
@@ -35,7 +46,6 @@
     <meta name="twitter:description" content="Release notes and updates for Open Planning Poker.">
     <meta name="twitter:image" content="https://openplanningpoker.com/images/open-planning-poker-game-logo.png">
 
-    <link rel="stylesheet" href="/output.css">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/open-planning-poker-game-logo-32x32.png">
     <link rel="icon" type="image/png" sizes="64x64" href="/images/open-planning-poker-game-logo-64x64.png">
 
@@ -102,7 +112,7 @@
             <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8">
             <div class="text-center">
                 <a href="/" class="flex items-center justify-center mb-5 text-2xl font-semibold text-gray-900 dark:text-white">
-                    <img src="/images/open-planning-poker-game-logo-64x64.png" class="h-6 mr-3 sm:h-9" alt="Open Planning Poker Logo" />
+                    <img src="/images/open-planning-poker-game-logo-64x64.png" class="h-6 mr-3 sm:h-9" alt="Open Planning Poker Logo" width="64" height="64" />
                     Open Planning Poker
                 </a>
                 <span class="block text-sm text-center text-gray-500 dark:text-gray-400">© 2026 Open Planning Poker™. All Rights Reserved.
