@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prerender",
+    "build": "ng build",
     "generate-types": "graphql-codegen --config codegen-graphql.yml",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
