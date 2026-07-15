@@ -7,10 +7,21 @@ Web Application for Open Planning Poker game.
 [Angular 19](https://blog.angular.dev/meet-angular-v19-7b29dfd05b84) is used to create the app.
 
 Important dependencies:
-- [Angular Material](https://material.angular.io/)
+- [Angular Material](https://material.angular.io/) with custom purple theme (#7e3af2)
 - [Apollo GraphQL Client](https://the-guild.dev/graphql/apollo-angular/docs)
-- [graphql-ws](https://the-guild.dev/graphql/ws)
+- [graphql-ws](https://the-guild.dev/graphql/ws) for real-time subscriptions
 - [Fontawesome](https://fontawesome.com/)
+- [QRCode](https://www.npmjs.com/package/qrcode) for game sharing
+
+## Features
+- **Multiple Voting Decks**: Fibonacci, Modified Fibonacci, T-Shirt Sizes, Powers of 2, Custom
+- **Dark Mode**: System preference detection + manual toggle
+- **Game Timer**: 60-second countdown with auto-reveal (host only)
+- **Chat/Discussion**: Real-time ephemeral chat via GraphQL subscriptions (Redis pub-sub)
+- **QR Code Sharing**: Share game URL via QR code
+- **Voting Consensus**: "X/Y voted" indicator
+- **Hidden Votes**: Votes hidden until host reveals
+- **PDF Game Reports**: Export game results as PDF
 
 ## Getting started
 

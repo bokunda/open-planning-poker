@@ -125,6 +125,64 @@ npm start  # http://localhost:4200
 4. **User Management / Game Engine hang** — Serilog Loki sink blocks startup if Loki unavailable. Added console sink to Dev configs.
 5. **Duplicate players** — getGamePlayers() was overwriting list. Fixed with merge logic.
 6. **config.json localhost** — CI/CD overwrites during build. Safe to keep localhost for dev.
+7. **Angular Material imports** — `MatSelectModule`, `MatProgressSpinnerModule`, `MatSlideToggleModule`, `MatBadgeModule` added to MaterialModule.
+8. **Chat requires gateway.fgp regeneration** — New `ChatMessage` type, `sendChatMessage` mutation, `onChatMessage` subscription added to GameEngine schema. Run `generate-schema.ps1` to rebuild gateway package.
+
+## Features Implemented (2026-07-15)
+
+### Custom Purple Material Theme
+- `src/theme.scss` — #7e3af2 purple palette (m2-define-palette)
+- Dark theme variant: `mat.m2-define-dark-theme` applied via `.dark-theme` class
+- `angular.json` references `src/theme.scss` instead of prebuilt CSS
+
+### Dark Mode
+- `ThemeService` (`src/app/shared/theme.service.ts`) — localStorage persistence, prefers-color-scheme detection
+- Toggle button in header with sun/moon icon
+- Material dark theme colors via `.dark-theme` class
+- CSS custom properties for non-Material elements in `styles.scss`
+
+### Host/Admin Role
+- `isHost` getter in `game.component.ts` checks `localStorage.getItem('host_' + game.id)`
+- Host stored on `createGame()`: `localStorage.setItem('host_' + gameId, userId)`
+- Host-only: Reveal Votes, Vote Again, New Ticket buttons, Timer controls
+
+### Multiple Voting Decks
+- Presets in `src/app/shared/deck-presets.ts`: Fibonacci, Modified Fibonacci, T-Shirt Sizes, Powers of 2
+- Backend: `CreateGameInput.deckSetup` optional string param in `GameMutations.CreateGameAsync`
+- Frontend: Deck selector dropdown in create-game dialog, defaults to Fibonacci
+- Custom deck editor: select "Custom Deck" and enter comma-separated values with live preview
+
+### Game Timer
+- `VotingComponent` — 60-second countdown timer (host-only)
+- Play/Stop/Reset controls, auto-reveal votes on expiry
+- Pulse animation when ≤10 seconds remaining (`timerWarning` class)
+
+### Voting Consensus Indicator
+- "X/Y voted" displayed on the poker table (center) and mobile view
+- `votedCount`, `totalPlayers`, `consensusLabel` getters in `PlayersComponent`
+
+### QR Code Sharing
+- `QrShareDialogComponent` — QR code generation via `qrcode` npm package
+- Purple-colored QR code, copy link button with clipboard API
+- Share button (qr_code icon) in game details next to copy button
+
+### Chat/Discussion (Ephemeral, Redis)
+- Backend: `ChatMessage` GraphQL type, `ChatMutations.SendChatMessageAsync`, `ChatSubscriptions.OnChatMessage`
+- Uses `ICurrentUserProvider` for player name, `ITopicEventSender` for Redis pub-sub
+- Frontend: `ChatComponent` — fixed-position FAB toggle, slide-up panel
+- Real-time message delivery via GraphQL WebSocket subscription
+- Messages not persisted to DB — live pub-sub only (Redis topic per game)
+- Dark mode support for chat panel
+
+### Performance Optimizations
+- `takeUntilDestroyed()` on all subscription-based methods
+- `trackBy` on all 9 `*ngFor` loops: breadcrumb, players (6), voting-history (2), voting cards
+- Mobile responsive: `max-width`/`width:100%` on table-container, game, voting cards
+
+### Loading & Error States
+- `LoadingComponent` with `mat-spinner` and configurable message
+- Apollo error link in `app.config.ts` for global error handling
+- Loading state in game component while game data loads
 
 ## Naming Conventions
 - Docker containers: PascalCase with dots (OpenPlanningPoker.GameEngine.GraphQL)
