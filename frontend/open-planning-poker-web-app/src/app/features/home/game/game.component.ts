@@ -171,10 +171,8 @@ export class GameComponent implements OnInit {
   }
 
   handleVoteAgain() {
-    this.votesRevealed = false;
-    this.votes = [];
     if (this.ticket?.id) {
-      this.getVotes(this.ticket.id);
+      this.handleReVoteTicket(this.ticket.id);
     }
   }
 
