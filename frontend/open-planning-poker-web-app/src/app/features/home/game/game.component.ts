@@ -452,6 +452,11 @@ export class GameComponent implements OnInit {
         this.votes = [];
         this.votesRevealed = false;
         this.getTickets(gameId);
+        if (this.ticket?.id && this.ticket.id !== this.currentSubscribedTicketId) {
+          this.currentSubscribedTicketId = this.ticket.id;
+          this.subscribeToVoteActions(this.ticket.id);
+          this.subscribeToVotesRevealed(this.ticket.id);
+        }
         this.location.replaceState(`/game/${gameId}/ticket/${this.ticket.id}`);
       },
       error: (err) => {
