@@ -24,6 +24,24 @@
   </div>
 
   <div class="voting-options-wrapper">
+    <!-- Timer -->
+    <div class="timer-wrapper center" *ngIf="isHost && !votesRevealed">
+      <span class="timer-display" [class.timer-warning]="timerWarning">
+        ⏱ {{ timerDisplay }}
+      </span>
+      <div class="timer-controls">
+        <button mat-icon-button color="primary" *ngIf="!timerRunning" (click)="startTimer()" aria-label="Start timer">
+          <mat-icon>play_arrow</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" *ngIf="timerRunning" (click)="stopTimer()" aria-label="Stop timer">
+          <mat-icon>stop</mat-icon>
+        </button>
+        <button mat-icon-button (click)="resetTimer()" aria-label="Reset timer">
+          <mat-icon>restart_alt</mat-icon>
+        </button>
+      </div>
+    </div>
+
     <div class="voting-item-options">
       <button *ngFor="let voteOption of voteOptions; trackBy: trackByOption"
         mat-raised-button

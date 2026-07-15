@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ApiCollectionOfGamePlayer, Settings, SettingsDetailsResult, Ticket, Vote } from '../../../../graphql/graphql-gateway.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { ApiCollectionOfGamePlayer, Settings, SettingsDetailsResult, Ticket, Vot
   standalone: false,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class VotingComponent implements OnInit {
+export class VotingComponent implements OnInit, OnDestroy {
 
   @Input() gameSettings: SettingsDetailsResult | undefined;
   @Input() players: ApiCollectionOfGamePlayer | undefined;
@@ -25,16 +25,24 @@ export class VotingComponent implements OnInit {
   voteOptions: string[] = [];
   selectedOption: string | null = null;
 
+  // Timer
+  private readonly defaultTimerSeconds = 60;
+  remainingSeconds = this.defaultTimerSeconds;
+  timerRunning = false;
+  private timerInterval: ReturnType<typeof setInterval> | null = null;
+
   trackByOption(index: number, option: string): string {
     return option;
   }
 
   ngOnInit(): void {
     const settings = this.gameSettings as Settings;
-
     if (!settings) { return; }
-
     this.voteOptions = settings.deckSetup.split(',');
+  }
+
+  ngOnDestroy(): void {
+    this.clearTimer();
   }
 
   selectOption(option: string): void {
@@ -44,5 +52,46 @@ export class VotingComponent implements OnInit {
 
   handleOnCreateNewTicket() {
     this.onCreateNewTicket.emit();
+  }
+
+  // --- Timer methods ---
+
+  get timerDisplay(): string {
+    const mins = Math.floor(this.remainingSeconds / 60);
+    const secs = this.remainingSeconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  get timerWarning(): boolean {
+    return this.timerRunning && this.remainingSeconds <= 10;
+  }
+
+  startTimer(): void {
+    if (this.timerRunning) return;
+    this.timerRunning = true;
+    this.timerInterval = setInterval(() => {
+      this.remainingSeconds--;
+      if (this.remainingSeconds <= 0) {
+        this.clearTimer();
+        this.onRevealVotes.emit();
+      }
+    }, 1000);
+  }
+
+  stopTimer(): void {
+    this.clearTimer();
+  }
+
+  resetTimer(): void {
+    this.clearTimer();
+    this.remainingSeconds = this.defaultTimerSeconds;
+  }
+
+  private clearTimer(): void {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+    this.timerRunning = false;
   }
 }

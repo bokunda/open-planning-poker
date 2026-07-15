@@ -3,7 +3,16 @@
     <form [formGroup]="createGameForm" (ngSubmit)="onSubmit()" (keydown.enter)="$event.preventDefault(); onSubmit()" class="create-game-form">
       <mat-form-field appearance="outline">
         <mat-label>Game Name</mat-label>
-        <input matInput formControlName="name">
+        <input matInput formControlName="name" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Voting Deck</mat-label>
+        <mat-select formControlName="deckSetup">
+          <mat-option *ngFor="let deck of deckPresets" [value]="deck.value">
+            {{ deck.label }}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
 
       <mat-form-field appearance="outline">

@@ -11,15 +11,19 @@ public class GameMutations
         [Service] IMapper mapper,
         [Required] string name,
         [Required] string description,
+        string? deckSetup,
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(new CreateGameCommand(name, description), cancellationToken);
 
         if (result.IsSuccess)
         {
+            var deck = string.IsNullOrWhiteSpace(deckSetup)
+                ? GameSettingsConstants.FibonacciDeckSetup
+                : deckSetup;
             await sender.Send(new CreateGameSettingsCommand(
-                result.Value!.Id, 
-                GameSettingsConstants.FibonacciDeckSetup), 
+                result.Value!.Id,
+                deck),
                 cancellationToken);
         }
 

@@ -2,6 +2,38 @@
   padding: 0 10px;
 }
 
+// Timer
+.timer-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 0 16px 0;
+}
+
+.timer-display {
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 1px;
+  color: #7e3af2;
+
+  &.timer-warning {
+    color: #ef4444;
+    animation: pulse 1s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.timer-controls {
+  display: flex;
+  gap: 4px;
+}
+
 .voting-item-options {
   display: flex;
   justify-content: center;

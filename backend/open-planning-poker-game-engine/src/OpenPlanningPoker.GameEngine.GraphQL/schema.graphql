@@ -224,6 +224,7 @@ union VotesResult = ApiCollectionOfVote | ApplicationError
 input CreateGameInput {
   name: String!
   description: String!
+  deckSetup: String
 }
 
 input CreateOrUpdateVoteInput {

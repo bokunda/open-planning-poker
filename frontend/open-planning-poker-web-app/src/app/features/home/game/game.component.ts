@@ -20,6 +20,7 @@ import { CREATE_OR_UPDATE_VOTE } from './gql/createVote.graphql';
 import { GET_VOTES } from './gql/getVotes.graphql';
 import { GET_TICKETS } from './gql/getTickets.graphql';
 import { GENERATE_GAME_REPORT } from './gql/generateGameReport.graphql';
+import { CreateGameResult } from './create/create-game.component';
 import { map } from 'rxjs';
 
 @Component({
@@ -124,10 +125,10 @@ export class GameComponent implements OnInit {
     });
   }
 
-  private createGame(name: string, description: string): void {
+  private createGame(name: string, description: string, deckSetup: string): void {
     this.apollo.mutate<Mutation, MutationCreateGameArgs>({
       mutation: CREATE_GAME,
-      variables: {input: {name, description}}
+      variables: {input: {name, description, deckSetup}}
     }).subscribe({
       next: ({ data }) => {
         if (data?.createGame?.game) {
@@ -171,15 +172,15 @@ export class GameComponent implements OnInit {
 
   private openCreateGameDialog() {
     const dialogRef = this.dialog.open(CreateGameDialogComponent, {
-      width: '400px',
-      maxWidth: '400px',
+      width: '440px',
+      maxWidth: '95vw',
       enterAnimationDuration: '150ms',
       exitAnimationDuration: '150ms'
     });
 
-    dialogRef.afterClosed().subscribe((result: Game | undefined) => {
+    dialogRef.afterClosed().subscribe((result: CreateGameResult | undefined) => {
       if (!result) { return; }
-      this.createGame(result.name, result.description);
+      this.createGame(result.name, result.description, result.deckSetup);
     });
   }
 
