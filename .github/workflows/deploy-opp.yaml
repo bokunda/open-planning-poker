@@ -36,3 +36,14 @@ jobs:
     secrets: 
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
 
+  indexnow:
+    name: Ping Search Engines
+    needs: [opp-ui]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping IndexNow (Bing + Yandex)
+        run: |
+          curl -s "https://www.bing.com/indexnow?url=https://openplanningpoker.com/&key=${{ secrets.INDEX_NOW }}"
+          curl -s "https://www.bing.com/indexnow?url=https://app.openplanningpoker.com/&key=${{ secrets.INDEX_NOW }}"
+          curl -s "https://www.bing.com/indexnow?url=https://openplanningpoker.com/sitemap.xml&key=${{ secrets.INDEX_NOW }}"
+          curl -s "https://www.bing.com/indexnow?url=https://app.openplanningpoker.com/sitemap.xml&key=${{ secrets.INDEX_NOW }}"
