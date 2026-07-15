@@ -16,6 +16,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
 
+      - name: Set gateway URLs in environment.prod.ts
+        working-directory: frontend/open-planning-poker-web-app
+        run: |
+          sed -i "s|gqlGateway: '.*'|gqlGateway: '${{ vars.OPP_API_GATEWAY }}'|" src/environments/environment.prod.ts
+          sed -i "s|gqlGatewayWss: '.*'|gqlGatewayWss: '${{ vars.OPP_WSS_URL }}'|" src/environments/environment.prod.ts
+          echo "Updated environment.prod.ts:"
+          cat src/environments/environment.prod.ts
+
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
