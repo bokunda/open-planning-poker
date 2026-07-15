@@ -14,7 +14,7 @@ jobs:
       packages: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Set connection string in config.json
         working-directory: frontend/open-planning-poker-web-app
@@ -50,3 +50,4 @@ jobs:
               --network oppnetwork \
               -p 10000:80 \
               ghcr.io/${{ github.repository_owner }}/openplanningpokerui:${{ github.run_number }}
+

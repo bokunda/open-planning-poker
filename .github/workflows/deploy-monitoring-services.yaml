@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Copy code to the server
         uses: appleboy/scp-action@v0.1.7
@@ -33,3 +33,4 @@ jobs:
             docker compose pull
             docker compose up -d --remove-orphans
             docker system prune -f
+

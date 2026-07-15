@@ -35,3 +35,4 @@ jobs:
     uses: ./.github/workflows/deploy-opp-ui.yaml
     secrets: 
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+
