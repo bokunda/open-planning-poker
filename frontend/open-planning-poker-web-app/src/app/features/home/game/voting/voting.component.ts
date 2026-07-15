@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ApiCollectionOfGamePlayer, Settings, SettingsDetailsResult, Ticket, Vote } from '../../../../graphql/graphql-gateway.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { ApiCollectionOfGamePlayer, Settings, SettingsDetailsResult, Ticket, Vot
   standalone: false,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class VotingComponent implements OnInit, OnDestroy {
+export class VotingComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() gameSettings: SettingsDetailsResult | undefined;
   @Input() players: ApiCollectionOfGamePlayer | undefined;
@@ -43,6 +43,14 @@ export class VotingComponent implements OnInit, OnDestroy {
     const settings = this.gameSettings as Settings;
     if (!settings) { return; }
     this.voteOptions = settings.deckSetup.split(',');
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['ticket'] && changes['ticket'].currentValue?.id !== changes['ticket'].previousValue?.id) {
+      this.resetTimer();
+      this.selectedOption = null;
+      this.descriptionExpanded = false;
+    }
   }
 
   ngOnDestroy(): void {
