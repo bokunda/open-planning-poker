@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Apollo } from 'apollo-angular';
 import { ApiCollectionOfGamePlayer, ApiCollectionOfTicket, ApiCollectionOfVote, BaseUserProfile, Game, GamePlayer, Mutation, MutationCreateGameArgs, MutationCreateOrUpdateVoteArgs, MutationCreateTicketArgs, MutationJoinGameArgs, Ticket, Vote } from '../../../graphql/graphql-gateway.service';
@@ -58,6 +58,7 @@ export class GameComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   readonly router = inject(Router);
   readonly route = inject(ActivatedRoute);
+  readonly destroyRef = inject(DestroyRef);
 
   constructor(private apollo: Apollo) {}
 
@@ -221,7 +222,7 @@ export class GameComponent implements OnInit {
     this.apollo.subscribe<{ onPlayerJoined: BaseUserProfile }>({
       query: ON_PLAYER_JOINED,
       variables: { gameId },
-    }).pipe(takeUntilDestroyed()).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result) => {
         if (!result) {
           return;
@@ -311,7 +312,7 @@ export class GameComponent implements OnInit {
     this.apollo.subscribe<{ onTicketCreated: Ticket }>({
       query: ON_TICKET_CREATED,
       variables: { gameId },
-    }).pipe(takeUntilDestroyed()).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result) => {
         if (!result) {
           return;
@@ -319,6 +320,7 @@ export class GameComponent implements OnInit {
         this.ticket = result.data?.onTicketCreated as Ticket;
         this.votes = [];
         this.votesRevealed = false;
+        this.getTickets(gameId);
         this.router.navigate([`/game/${gameId}/ticket/${this.ticket.id}`]);
       },
       error: (err) => {
@@ -372,7 +374,7 @@ export class GameComponent implements OnInit {
     this.apollo.subscribe<{ onVoteCreatedOrUpdated: any }>({
       query: ON_VOTE_CREATED_OR_UPDATED,
       variables: { ticketId },
-    }).pipe(takeUntilDestroyed()).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result) => {
         if (!result) {
           return;
