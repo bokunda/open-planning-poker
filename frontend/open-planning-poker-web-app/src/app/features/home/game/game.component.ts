@@ -196,8 +196,11 @@ export class GameComponent implements OnInit {
       next: ({ data }) => {
         if (data) {
           this.game = data?.game;
-          this.joinGame(this.game.id);
+          if (this.currentUserId) {
+            this.joinGame(this.game.id);
+          }
           this.getTickets(this.game.id);
+          this.router.navigate([`/game/${this.game.id}`], { replaceUrl: true });
         }
       }
     });
@@ -293,8 +296,8 @@ export class GameComponent implements OnInit {
       exitAnimationDuration: '150ms'
     });
 
-    dialogRef.afterClosed().subscribe((result: Game | undefined) => {
-      if (!result) { return; }
+    dialogRef.afterClosed().subscribe((result: { id: string } | undefined) => {
+      if (!result?.id) { return; }
       this.getGame(result.id);
     });
   }
