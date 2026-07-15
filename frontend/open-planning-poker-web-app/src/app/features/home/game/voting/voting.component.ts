@@ -15,6 +15,7 @@ export class VotingComponent implements OnInit {
   @Input() ticket: Ticket | undefined;
   @Input() votes: Vote[] = [];
   @Input() votesRevealed = false;
+  @Input() isHost = false;
 
   @Output() onCreateNewTicket = new EventEmitter<void>();
   @Output() OnVote = new EventEmitter<string>();

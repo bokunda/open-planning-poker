@@ -15,6 +15,7 @@ export class PlayersComponent implements OnInit {
   @Input() players: ApiCollectionOfGamePlayer | undefined;
   @Input() votes: Vote[] = [];
   @Input() votesRevealed = false;
+  @Input() isHost = false;
 
   @Output() onCreateNewTicket = new EventEmitter<void>();
   @Output() onVoteAgain = new EventEmitter<void>();

@@ -36,6 +36,14 @@ export class GameComponent implements OnInit {
   votes: Vote[] = [];
   votesRevealed = false;
 
+  @Input() currentUserId: string = '';
+
+  get isHost(): boolean {
+    if (!this.currentUserId || !this.game?.id) return false;
+    const storedHost = localStorage.getItem('host_' + this.game.id);
+    return storedHost === this.currentUserId;
+  }
+
   readonly dialog = inject(MatDialog);
   readonly router = inject(Router);
   readonly route = inject(ActivatedRoute);
@@ -119,6 +127,7 @@ export class GameComponent implements OnInit {
       next: ({ data }) => {
         if (data?.createGame?.game) {
           this.game = data?.createGame?.game;
+          localStorage.setItem('host_' + this.game.id, this.currentUserId);
           this.joinGame(this.game.id);
           this.router.navigate([`/game/${this.game.id}`]);
         }

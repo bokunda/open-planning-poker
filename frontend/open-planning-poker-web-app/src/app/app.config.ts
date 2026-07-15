@@ -5,6 +5,7 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { HttpLink } from 'apollo-angular/http';
 import { provideApollo } from 'apollo-angular';
 import { ApolloLink, DefaultOptions, InMemoryCache, split } from '@apollo/client/core';
+import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
 import { createClient } from 'graphql-ws';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
@@ -25,6 +26,18 @@ export const appConfig: ApplicationConfig = {
 
       const gqlGateway = config?.gqlGateway ?? 'http://localhost:10010/graphql';
       const gqlGatewayWss = config?.gqlGatewayWss ?? 'ws://localhost:10010/graphql';
+
+      // Error handling link
+      const errorLink = onError(({ graphQLErrors, networkError }) => {
+        if (graphQLErrors) {
+          graphQLErrors.forEach(({ message }) => {
+            console.error('[GraphQL error]:', message);
+          });
+        }
+        if (networkError) {
+          console.error('[Network error]:', networkError.message);
+        }
+      });
 
       const basic = setContext((operation, context) => ({
         headers: {},
@@ -76,7 +89,7 @@ export const appConfig: ApplicationConfig = {
           );
         },
         wsLink,
-        ApolloLink.from([basic, auth, http])
+        ApolloLink.from([errorLink, basic, auth, http])
       );
 
       return {

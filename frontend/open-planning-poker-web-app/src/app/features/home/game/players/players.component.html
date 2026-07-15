@@ -22,7 +22,7 @@
       </div>
 
       <!-- Table (Rectangle) -->
-      <div class="table-players">
+      <div class="table-players" *ngIf="isHost">
         <button
           mat-flat-button
           color="accent"
@@ -61,7 +61,7 @@
 
       <!-- Responsive representation of players -->
       <div class="players-table-wrapper">
-        <div class="center">
+        <div class="center" *ngIf="isHost">
           <button
             mat-flat-button
             color="accent"

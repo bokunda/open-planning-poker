@@ -16,6 +16,7 @@ import { BreadcrumbItem } from './game/breadcrumb/breadcrumb.component';
 export class HomeComponent implements OnInit {
 
   username: string = '';
+  userId: string = '';
   breadcrumbItems: BreadcrumbItem[] = [];
 
   private readonly title = inject(Title);
@@ -74,6 +75,7 @@ export class HomeComponent implements OnInit {
         let currentUser = data?.currentUser as User;
         if (currentUser?.userName) {
           this.username = currentUser.userName;
+          this.userId = currentUser.id;
         }
         else
         {

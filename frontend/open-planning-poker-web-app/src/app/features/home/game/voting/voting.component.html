@@ -15,6 +15,7 @@
         [players]="players"
         [votes]="votes"
         [votesRevealed]="votesRevealed"
+        [isHost]="isHost"
         (onRevealCards)="onRevealVotes.emit()"
         (onVoteAgain)="onVoteAgain.emit()"
         (onCreateNewTicket)="handleOnCreateNewTicket()">

@@ -23,6 +23,7 @@
           [ticket]="ticket"
           [votes]="votes"
           [votesRevealed]="votesRevealed"
+          [isHost]="isHost"
           (onCreateNewTicket)="handleCreateTicket()"
           (OnVote)="handleVoteAction($event)"
           (onRevealVotes)="handleRevealVotes()"
