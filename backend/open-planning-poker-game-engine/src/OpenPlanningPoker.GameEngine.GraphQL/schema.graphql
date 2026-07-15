@@ -154,6 +154,8 @@ type Query {
   tickets(gameId: UUID!): TicketsResult! @cost(weight: "10")
   "Gets votes by ticketId."
   votes(ticketId: UUID!): VotesResult! @cost(weight: "10")
+  "Gets recent chat messages for a game."
+  chatMessages(gameId: UUID!): [ChatMessage!]! @cost(weight: "10")
 }
 
 type SendChatMessagePayload {

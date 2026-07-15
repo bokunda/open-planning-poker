@@ -318,6 +318,8 @@ export type PingPayload = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Gets recent chat messages for a game. */
+  chatMessages: Array<ChatMessage>;
   currentUser: CurrentUserResult;
   /** Returns Game details. */
   game: GameResult;
@@ -338,6 +340,9 @@ export type Query = {
 };
 
 
+export type QueryChatMessagesArgs = {
+  gameId: Scalars['UUID']['input'];
+};
 export type QueryGameArgs = {
   id: Scalars['UUID']['input'];
 };

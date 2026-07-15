@@ -4,6 +4,7 @@ import { Apollo } from 'apollo-angular';
 import { ChatMessage } from '../../../../graphql/graphql-gateway.service';
 import { ON_CHAT_MESSAGE } from '../gql/onChatMessage.graphql';
 import { SEND_CHAT_MESSAGE } from '../gql/sendChatMessage.graphql';
+import { GET_CHAT_MESSAGES } from '../gql/getChatMessages.graphql';
 
 @Component({
   selector: 'app-chat',
@@ -25,10 +26,25 @@ export class ChatComponent implements OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['gameId'] && this.gameId) {
       this.subscribeToChat();
+      this.loadHistory();
     }
   }
 
   ngOnDestroy(): void {}
+
+  private loadHistory(): void {
+    this.apollo.watchQuery<{ chatMessages: ChatMessage[] }>({
+      query: GET_CHAT_MESSAGES,
+      variables: { gameId: this.gameId }
+    }).valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: ({ data }) => {
+        if (data?.chatMessages) {
+          this.messages = data.chatMessages;
+          setTimeout(() => this.scrollToBottom(), 100);
+        }
+      }
+    });
+  }
 
   private subscribeToChat(): void {
     this.apollo.subscribe<{ onChatMessage: ChatMessage }>({
