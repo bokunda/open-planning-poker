@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Apollo } from 'apollo-angular';
 import { ApiCollectionOfGamePlayer, ApiCollectionOfTicket, ApiCollectionOfVote, BaseUserProfile, Game, GamePlayer, Mutation, MutationCreateGameArgs, MutationCreateOrUpdateVoteArgs, MutationCreateTicketArgs, MutationJoinGameArgs, Ticket, Vote } from '../../../graphql/graphql-gateway.service';
 import { GET_GAME } from './gql/getGame.graphql';
@@ -196,7 +197,7 @@ export class GameComponent implements OnInit {
     this.apollo.subscribe<{ onPlayerJoined: BaseUserProfile }>({
       query: ON_PLAYER_JOINED,
       variables: { gameId },
-    }).subscribe({
+    }).pipe(takeUntilDestroyed()).subscribe({
       next: (result) => {
         if (!result) {
           return;
@@ -286,7 +287,7 @@ export class GameComponent implements OnInit {
     this.apollo.subscribe<{ onTicketCreated: Ticket }>({
       query: ON_TICKET_CREATED,
       variables: { gameId },
-    }).subscribe({
+    }).pipe(takeUntilDestroyed()).subscribe({
       next: (result) => {
         if (!result) {
           return;
@@ -347,7 +348,7 @@ export class GameComponent implements OnInit {
     this.apollo.subscribe<{ onVoteCreatedOrUpdated: any }>({
       query: ON_VOTE_CREATED_OR_UPDATED,
       variables: { ticketId },
-    }).subscribe({
+    }).pipe(takeUntilDestroyed()).subscribe({
       next: (result) => {
         if (!result) {
           return;
