@@ -30,7 +30,6 @@
     <div class="voting-item-details">
       <div class="ticket-nav">
         <button
-          *ngIf="isHost"
           mat-icon-button
           class="ticket-nav-btn"
           [disabled]="!hasPrevTicket"
@@ -64,7 +63,6 @@
         </div>
 
         <button
-          *ngIf="isHost"
           mat-icon-button
           class="ticket-nav-btn"
           [disabled]="!hasNextTicket"

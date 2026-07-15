@@ -27,7 +27,7 @@
               <ng-template #hiddenVote>?</ng-template>
             </p>
           </span>
-          <div class="ticket-actions" *ngIf="ticket.id !== currentTicketId">
+          <div class="ticket-actions" *ngIf="isHost && ticket.id !== currentTicketId">
             <button mat-stroked-button color="primary" (click)="onReVoteTicket.emit(ticket.id)">
               <mat-icon>replay</mat-icon> Re-vote this ticket
             </button>
