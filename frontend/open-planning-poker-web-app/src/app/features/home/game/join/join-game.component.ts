@@ -37,7 +37,7 @@ export class JoinGameComponent {
     private fb: FormBuilder
   ) {
     this.joinGameForm = this.fb.group({
-      id: ['', [Validators.required, Validators.minLength(36), Validators.maxLength(512)]],
+      id: [''],
     });
   }
 
