@@ -21,6 +21,8 @@ export class CreateGameComponent {
 
   createGameForm: FormGroup;
   deckPresets = DECK_PRESETS;
+  isCustomDeck = false;
+  customDeckPreview: string[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<CreateGameDialogComponent>,
@@ -29,13 +31,39 @@ export class CreateGameComponent {
     this.createGameForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
       description: ['', [Validators.maxLength(5000)]],
-      deckSetup: [DEFAULT_DECK, [Validators.required]]
+      deckSetup: [DEFAULT_DECK, [Validators.required]],
+      customDeck: ['']
     });
+
+    this.createGameForm.get('deckSetup')?.valueChanges.subscribe(value => {
+      this.isCustomDeck = value === '__custom__';
+      if (this.isCustomDeck) {
+        this.onCustomDeckChange();
+      }
+    });
+
+    this.createGameForm.get('customDeck')?.valueChanges.subscribe(() => {
+      this.onCustomDeckChange();
+    });
+  }
+
+  onCustomDeckChange(): void {
+    const raw = this.createGameForm.get('customDeck')?.value ?? '';
+    this.customDeckPreview = raw
+      .split(',')
+      .map((s: string) => s.trim())
+      .filter((s: string) => s.length > 0);
   }
 
   onSubmit(): void {
     if (this.createGameForm.valid) {
-      this.dialogRef.close(this.createGameForm.value as CreateGameResult);
+      const formValue = this.createGameForm.value;
+      const result: CreateGameResult = {
+        name: formValue.name,
+        description: formValue.description,
+        deckSetup: this.isCustomDeck ? formValue.customDeck : formValue.deckSetup
+      };
+      this.dialogRef.close(result);
     }
   }
 

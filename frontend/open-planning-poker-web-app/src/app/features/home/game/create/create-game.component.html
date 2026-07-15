@@ -12,8 +12,21 @@
           <mat-option *ngFor="let deck of deckPresets" [value]="deck.value">
             {{ deck.label }}
           </mat-option>
+          <mat-option value="__custom__">🎨 Custom Deck...</mat-option>
         </mat-select>
       </mat-form-field>
+
+      <!-- Custom deck editor -->
+      <ng-container *ngIf="isCustomDeck">
+        <mat-form-field appearance="outline">
+          <mat-label>Custom Deck Values (comma-separated)</mat-label>
+          <input matInput formControlName="customDeck" placeholder="1,2,3,5,8,13,?,☕" />
+        </mat-form-field>
+        <div class="custom-deck-preview" *ngIf="customDeckPreview.length > 0">
+          <span class="preview-label">Preview:</span>
+          <span class="preview-card" *ngFor="let card of customDeckPreview">{{ card }}</span>
+        </div>
+      </ng-container>
 
       <mat-form-field appearance="outline">
         <mat-label>Description</mat-label>

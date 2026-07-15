@@ -13,6 +13,8 @@ import { PlayersComponent } from './players/players.component';
 import { VotingComponent } from './voting/voting.component';
 import { VotingHistoryComponent } from './voting-history/voting-history.component';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
+import { ChatComponent } from './chat/chat.component';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -28,12 +30,14 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
     VotingComponent,
     VotingHistoryComponent,
     PlayersComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    ChatComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
-    RouterModule
+    RouterModule,
+    FormsModule
   ],
   exports: [
     GameComponent,

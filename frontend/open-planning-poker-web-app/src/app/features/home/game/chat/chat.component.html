@@ -1,0 +1,48 @@
+<div class="chat-wrapper" [class.chat-expanded]="expanded">
+  <!-- Toggle button -->
+  <button class="chat-toggle" mat-mini-fab color="primary" (click)="toggleChat()"
+    [matBadge]="expanded ? null : messages.length"
+    matBadgeColor="accent"
+    [matBadgeHidden]="expanded || messages.length === 0"
+    aria-label="Toggle chat">
+    <mat-icon>chat</mat-icon>
+  </button>
+
+  <!-- Chat panel -->
+  <div class="chat-panel" *ngIf="expanded">
+    <div class="chat-header">
+      <span>Game Chat</span>
+      <button mat-icon-button (click)="toggleChat()" aria-label="Close chat">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="chat-messages">
+      <div class="chat-empty" *ngIf="messages.length === 0">
+        No messages yet. Say hello! 👋
+      </div>
+      <div class="chat-msg" *ngFor="let msg of messages; let i = index"
+        [class.chat-msg-own]="msg.playerName !== 'Unknown'">
+        <span class="chat-msg-author">{{ msg.playerName }}</span>
+        <span class="chat-msg-text">{{ msg.content }}</span>
+        <span class="chat-msg-time">{{ msg.timestamp | date:'HH:mm' }}</span>
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <input
+        type="text"
+        [(ngModel)]="newMessage"
+        (keydown)="onKeyEnter($event)"
+        placeholder="Type a message..."
+        maxlength="500"
+        aria-label="Chat message input"
+      />
+      <button mat-icon-button color="primary" (click)="sendMessage()"
+        [disabled]="!newMessage.trim()"
+        aria-label="Send message">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

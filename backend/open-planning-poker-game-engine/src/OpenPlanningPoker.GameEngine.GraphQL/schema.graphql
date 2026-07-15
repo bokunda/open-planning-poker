@@ -33,6 +33,14 @@ type BaseUserProfile {
   userName: String!
 }
 
+type ChatMessage {
+  id: UUID!
+  gameId: UUID!
+  playerName: String!
+  content: String!
+  timestamp: DateTime!
+}
+
 type CreateGamePayload {
   game: Game
   errors: [CreateGameError!]
@@ -120,6 +128,8 @@ type Mutation {
   deleteTicket(input: DeleteTicketInput!): DeleteTicketPayload! @cost(weight: "10")
   "Creates or updates a vote."
   createOrUpdateVote(input: CreateOrUpdateVoteInput!): CreateOrUpdateVotePayload! @cost(weight: "10")
+  "Sends a chat message to a game."
+  sendChatMessage(input: SendChatMessageInput!): SendChatMessagePayload! @cost(weight: "10")
 }
 
 type PingPayload {
@@ -152,11 +162,24 @@ type Settings {
   deckSetup: String!
 }
 
+type SendChatMessagePayload {
+  chatMessage: ChatMessage
+  errors: [SendChatMessageError!]
+}
+
+union SendChatMessageError = ApplicationError
+
+input SendChatMessageInput {
+  gameId: UUID!
+  content: String!
+}
+
 type Subscription {
   onPlayerJoined(gameId: UUID!): BaseUserProfile!
   onPlayerLeave(gameId: UUID!): BaseUserProfile!
   onTicketCreated(gameId: UUID!): Ticket!
   onVoteCreatedOrUpdated(ticketId: UUID!): Vote!
+  onChatMessage(gameId: UUID!): ChatMessage!
 }
 
 type Ticket {

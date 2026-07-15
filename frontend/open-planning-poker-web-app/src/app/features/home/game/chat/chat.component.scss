@@ -1,0 +1,131 @@
+.chat-wrapper {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.chat-toggle {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.chat-panel {
+  position: absolute;
+  bottom: 60px;
+  right: 0;
+  width: 320px;
+  max-width: calc(100vw - 40px);
+  height: 420px;
+  max-height: calc(100vh - 120px);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #7e3af2;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chat-empty {
+  text-align: center;
+  color: #999;
+  padding: 24px;
+  font-style: italic;
+}
+
+.chat-msg {
+  display: flex;
+  flex-direction: column;
+  background: #f3f0ff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  max-width: 85%;
+  align-self: flex-start;
+
+  &.chat-msg-own {
+    align-self: flex-end;
+    background: #e9e2ff;
+  }
+}
+
+.chat-msg-author {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #7e3af2;
+}
+
+.chat-msg-text {
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
+.chat-msg-time {
+  font-size: 0.65rem;
+  color: #999;
+  align-self: flex-end;
+}
+
+.chat-input {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-top: 1px solid #eee;
+  gap: 4px;
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 8px 10px;
+    border-radius: 20px;
+    background: #f5f5f5;
+    font-size: 0.9rem;
+  }
+}
+
+/* Dark theme */
+.dark-theme .chat-panel {
+  background: #1e1e1e;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.dark-theme .chat-msg {
+  background: #2a2a2a;
+  color: #e0e0e0;
+
+  &.chat-msg-own {
+    background: #333;
+  }
+}
+
+.dark-theme .chat-msg-author {
+  color: #b49bff;
+}
+
+.dark-theme .chat-input {
+  border-top-color: #333;
+
+  input {
+    background: #2a2a2a;
+    color: #e0e0e0;
+  }
+}

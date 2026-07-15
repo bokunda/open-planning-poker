@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { Game } from '../../../../graphql/graphql-gateway.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '../../../../shared/constants';
+import { QrShareDialogComponent } from '../../../../shared/dialogs/qr-share/qr-share-dialog.component';
 
 @Component({
   selector: 'app-game-details',
@@ -17,6 +19,15 @@ export class GameDetailsComponent {
   @Output() onGameReportClick = new EventEmitter<void>();
 
   private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
+
+  openQrShare(): void {
+    this.dialog.open(QrShareDialogComponent, {
+      width: '360px',
+      maxWidth: '95vw',
+      data: { url: window.location.href, gameName: this.game?.name ?? 'Game' }
+    });
+  }
 
   copyToClipboard(): void {
     navigator.clipboard

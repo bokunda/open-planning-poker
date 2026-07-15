@@ -72,6 +72,15 @@ export type ChangeUsernamePayload = {
   errors?: Maybe<Array<ChangeUsernameError>>;
 };
 
+export type ChatMessage = {
+  __typename?: 'ChatMessage';
+  content: Scalars['String']['output'];
+  gameId: Scalars['UUID']['output'];
+  id: Scalars['UUID']['output'];
+  playerName: Scalars['String']['output'];
+  timestamp: Scalars['DateTime']['output'];
+};
+
 export type CreateGameError = ApplicationError;
 
 export type CreateGameInput = {
@@ -235,6 +244,8 @@ export type Mutation = {
   /** Dummy health-check mutation. */
   ping: PingPayload;
   registerUser: RegisterUserPayload;
+  /** Sends a chat message to a game. */
+  sendChatMessage: SendChatMessagePayload;
   /** Updates Game Settings. */
   updateSettings: UpdateSettingsPayload;
   /** Updates a ticket for given game. */
@@ -389,10 +400,16 @@ export type SettingsResult = ApplicationError | Settings;
 
 export type Subscription = {
   __typename?: 'Subscription';
+  onChatMessage: ChatMessage;
   onPlayerJoined: BaseUserProfile;
   onPlayerLeave: BaseUserProfile;
   onTicketCreated: Ticket;
   onVoteCreatedOrUpdated: Vote;
+};
+
+
+export type SubscriptionOnChatMessageArgs = {
+  gameId: Scalars['UUID']['input'];
 };
 
 
@@ -428,6 +445,23 @@ export type Ticket = {
 export type TicketResult = ApplicationError | Ticket;
 
 export type TicketsResult = ApiCollectionOfTicket | ApplicationError;
+
+export type SendChatMessageError = ApplicationError;
+
+export type SendChatMessageInput = {
+  content: Scalars['String']['input'];
+  gameId: Scalars['UUID']['input'];
+};
+
+export type SendChatMessagePayload = {
+  __typename?: 'SendChatMessagePayload';
+  chatMessage?: Maybe<ChatMessage>;
+  errors?: Maybe<Array<SendChatMessageError>>;
+};
+
+export type MutationSendChatMessageArgs = {
+  input: SendChatMessageInput;
+};
 
 export type UpdateSettingsError = ApplicationError;
 
