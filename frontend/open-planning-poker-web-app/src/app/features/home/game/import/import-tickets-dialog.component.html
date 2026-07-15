@@ -1,9 +1,9 @@
-<h2 mat-dialog-title>📥 Import Tickets</h2>
+<h2 mat-dialog-title>Import Tickets</h2>
 
 <mat-dialog-content>
   <mat-tab-group [(selectedIndex)]="activeTab" animationDuration="200ms">
     <!-- Tab 1: Bulk Paste -->
-    <mat-tab label="📝 Bulk Paste">
+    <mat-tab label="Bulk Paste">
       <div class="import-tab-content">
         <p class="import-hint">Paste one ticket per line. Use <code>|</code> to separate description.</p>
         <textarea
@@ -18,12 +18,12 @@
     </mat-tab>
 
     <!-- Tab 2: File Upload -->
-    <mat-tab label="📄 File Upload">
+    <mat-tab label="File Upload">
       <div
         class="import-tab-content import-dropzone"
         (dragover)="onDragOver($event)"
         (drop)="onDrop($event)">
-        <div class="dropzone-icon">📁</div>
+        <div class="dropzone-icon">+</div>
         <p class="dropzone-text">Drag &amp; drop a CSV or JSON file here</p>
         <p class="dropzone-or">— or —</p>
         <label class="dropzone-label">

@@ -1,7 +1,7 @@
 <div class="players-panel">
   <!-- Header -->
   <div class="players-header" (click)="collapsedChange.emit(!collapsed)" role="button" tabindex="0" aria-label="Toggle players panel">
-    <span class="players-title">👥 Players</span>
+    <span class="players-title">Players</span>
     <span class="players-consensus" *ngIf="!collapsed && consensusLabel">{{ consensusLabel }}</span>
     <button mat-icon-button class="players-toggle" (click)="$event.stopPropagation(); collapsedChange.emit(!collapsed)" aria-label="Toggle players">
       <mat-icon>{{ collapsed ? 'expand_more' : 'expand_less' }}</mat-icon>

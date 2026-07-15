@@ -13,7 +13,7 @@
             <span class="deck-option-label">{{ deck.label }}</span>
             <span class="deck-option-example">— {{ deck.example }}</span>
           </mat-option>
-          <mat-option value="__custom__">🎨 Custom Deck...</mat-option>
+          <mat-option value="__custom__">Custom Deck...</mat-option>
         </mat-select>
       </mat-form-field>
 
@@ -21,7 +21,7 @@
       <ng-container *ngIf="isCustomDeck">
         <mat-form-field appearance="outline">
           <mat-label>Custom Deck Values (comma-separated)</mat-label>
-          <input matInput formControlName="customDeck" placeholder="1,2,3,5,8,13,?,☕" />
+          <input matInput formControlName="customDeck" placeholder="1,2,3,5,8,13,?,P" />
         </mat-form-field>
         <div class="custom-deck-preview" *ngIf="customDeckPreview.length > 0">
           <span class="preview-label">Preview:</span>
