@@ -27,11 +27,14 @@ export const appConfig: ApplicationConfig = {
       const gqlGateway = config?.gqlGateway ?? 'http://localhost:10010/graphql';
       const gqlGatewayWss = config?.gqlGatewayWss ?? 'ws://localhost:10010/graphql';
 
-      // Error handling link
+      // Error handling link — suppress expected auth errors on landing page
       const errorLink = onError(({ graphQLErrors, networkError }) => {
         if (graphQLErrors) {
           graphQLErrors.forEach(({ message }) => {
-            console.error('[GraphQL error]:', message);
+            // Silently ignore auth errors (expected when no token yet)
+            if (!message?.includes('not authorized') && !message?.includes('Unauthorized')) {
+              console.error('[GraphQL error]:', message);
+            }
           });
         }
         if (networkError) {
