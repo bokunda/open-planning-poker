@@ -200,7 +200,7 @@ export class GameComponent implements OnInit {
             this.joinGame(this.game.id);
           }
           this.getTickets(this.game.id);
-          this.router.navigate([`/game/${this.game.id}`], { replaceUrl: true });
+          this.location.replaceState(`/game/${this.game.id}`);
         }
       }
     });
@@ -355,7 +355,7 @@ export class GameComponent implements OnInit {
           this.votesRevealed = false;
           this.subscribeToPlayerJoined(gameId);
           this.getTickets(gameId);
-          this.router.navigate([`/game/${gameId}/ticket/${this.ticket.id}`]);
+          this.location.replaceState(`/game/${gameId}/ticket/${this.ticket.id}`);
         }
       }
     });
@@ -447,7 +447,7 @@ export class GameComponent implements OnInit {
         this.votes = [];
         this.votesRevealed = false;
         this.getTickets(gameId);
-        this.router.navigate([`/game/${gameId}/ticket/${this.ticket.id}`]);
+        this.location.replaceState(`/game/${gameId}/ticket/${this.ticket.id}`);
       },
       error: (err) => {
         console.error('Subscription error (onTicketCreated):', err);
