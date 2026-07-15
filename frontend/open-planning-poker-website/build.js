@@ -22,14 +22,16 @@ require('./generate-changelog');
 console.log('🎨 Building Tailwind CSS...');
 execSync('npx tailwindcss -i input.css -o dist/output.css --minify', { stdio: 'inherit' });
 
-// Copy and process changelog.html (inline content)
+// Copy and process changelog.html → changelog/index.html (so /changelog works)
+const changelogDir = path.join(dist, 'changelog');
+fs.mkdirSync(changelogDir, { recursive: true });
 const changelogTemplate = fs.readFileSync(path.resolve(__dirname, 'changelog.html'), 'utf-8');
 const changelogContent = fs.readFileSync(path.resolve(__dirname, 'changelog-content.html'), 'utf-8');
 const changelogFinal = changelogTemplate.replace('<!-- CHANGELOG_CONTENT -->', changelogContent);
-fs.writeFileSync(path.join(dist, 'changelog.html'), changelogFinal);
-console.log('  ✓ changelog.html (inlined)');
+fs.writeFileSync(path.join(changelogDir, 'index.html'), changelogFinal);
+console.log('  ✓ changelog/index.html (inlined)');
 
-// Copy remaining files
+// Copy remaining files (skip changelog.html since it's now a directory)
 const files = [
   'index.html',
   'robots.txt',
