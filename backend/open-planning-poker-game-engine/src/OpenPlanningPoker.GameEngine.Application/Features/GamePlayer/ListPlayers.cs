@@ -22,9 +22,14 @@ public static class ListPlayers
         {
             var gamePlayers = await gamePlayerRepository.GetByGame(request.GameId, cancellationToken);
 
+            var distinctPlayers = gamePlayers
+                .DistinctBy(x => x.PlayerId)
+                .Select(x => new ListPlayersItem(x.PlayerId, "TODO"))
+                .ToList();
+
             return new ApiCollection<ListPlayersItem>(
-                [.. gamePlayers.Select(x => new ListPlayersItem(x.PlayerId, "TODO"))], 
-                gamePlayers.Count);
+                [.. distinctPlayers],
+                distinctPlayers.Count);
         }
     }
 }
