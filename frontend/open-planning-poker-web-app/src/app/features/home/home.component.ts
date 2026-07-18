@@ -124,6 +124,7 @@ export class HomeComponent implements OnInit {
             localStorage.setItem('token', data.registerUser.registerUserResponse.token);
           }
           this.username = data.registerUser.registerUserResponse.userName;
+          this.userId = data.registerUser.registerUserResponse.id;
         }
       }
     });

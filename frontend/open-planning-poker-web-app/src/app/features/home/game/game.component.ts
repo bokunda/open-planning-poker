@@ -74,8 +74,24 @@ export class GameComponent implements OnInit {
   votes: Vote[] = [];
   votesRevealed = false;
 
-  @Input() currentUserId: string = '';
   @Input() currentUserName: string = '';
+
+  private _currentUserId: string = '';
+  @Input()
+  set currentUserId(value: string) {
+    const previous = this._currentUserId;
+    this._currentUserId = value;
+    // When userId becomes available, update any pending host localStorage entries
+    if (value && !previous && this.game?.id && typeof localStorage !== 'undefined') {
+      const stored = localStorage.getItem('host_' + this.game.id);
+      if (!stored || stored === 'pending') {
+        localStorage.setItem('host_' + this.game.id, value);
+      }
+    }
+  }
+  get currentUserId(): string {
+    return this._currentUserId;
+  }
 
   playersCollapsed = false;
   chatCollapsed = false;
@@ -222,10 +238,10 @@ export class GameComponent implements OnInit {
       next: ({ data }) => {
         if (data?.createGame?.game) {
           this.game = data?.createGame?.game;
-          if (this.currentUserId) {
-            if (typeof localStorage !== 'undefined') {
-              localStorage.setItem('host_' + this.game.id, this.currentUserId);
-            }
+          // Store host flag immediately; 'pending' allows isHost fallback to work
+          // before currentUserId is resolved. Updated to real userId when available.
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('host_' + this.game.id, this.currentUserId || 'pending');
           }
 
           // Apply deck setup via updateSettings (gateway.fgp doesn't have deckSetup in CreateGameInput yet)
