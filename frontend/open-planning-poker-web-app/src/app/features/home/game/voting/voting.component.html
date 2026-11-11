@@ -69,33 +69,9 @@
       </div>
     </div>
 
-    <!-- Timer (host only) -->
-    <div class="timer-wrapper" *ngIf="isHost && !votesRevealed">
-      <div class="timer-row">
-        <span class="timer-display" [class.timer-warning]="timerWarning" [class.timer-display--dim]="votesRevealed">
-          ⏱ {{ votesRevealed ? '--:--' : timerDisplay }}
-        </span>
-        <mat-form-field class="timer-duration" appearance="outline">
-          <mat-select [(ngModel)]="timerDurationMinutes" [disabled]="timerRunning || votesRevealed" aria-label="Timer duration">
-            <mat-option *ngFor="let min of [1,2,3,4,5]" [value]="min">{{ min }} min</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="timer-controls">
-        <button mat-icon-button color="primary" *ngIf="!timerRunning" (click)="startTimer()"
-          [disabled]="votesRevealed" aria-label="Start timer">
-          <mat-icon>play_arrow</mat-icon>
-        </button>
-        <button mat-icon-button color="warn" *ngIf="timerRunning" (click)="stopTimer()"
-          [disabled]="votesRevealed" aria-label="Stop timer">
-          <mat-icon>stop</mat-icon>
-        </button>
-        <button mat-icon-button (click)="resetTimer()"
-          [disabled]="votesRevealed" aria-label="Reset timer">
-          <mat-icon>restart_alt</mat-icon>
-        </button>
-      </div>
-    </div>
+    <!-- Timer: the host runs it, everyone sees the countdown. Hidden (not destroyed) after the reveal. -->
+    <app-game-timer class="voting-timer" [hidden]="votesRevealed" [gameId]="gameId" [isHost]="isHost"
+      (tick)="onTimerTick($event)" (expired)="onTimerExpired()"></app-game-timer>
 
     <app-poker-table
       [players]="players"
@@ -104,8 +80,8 @@
       [currentUserId]="currentUserId"
       [deck]="voteOptions"
       [hideMyCard]="cardInFlight"
-      [timerRemaining]="isHost && timerRunning ? remainingSeconds : null"
-      [timerTotal]="timerDurationMinutes * 60">
+      [timerRemaining]="votesRevealed ? null : timerTick.remaining"
+      [timerTotal]="timerTick.total">
     </app-poker-table>
 
     <div class="voting-cards" role="group" aria-label="Your cards. Use the arrow keys to move and Enter to vote."
@@ -131,18 +107,18 @@
       <!-- Pre-reveal: has votes -->
       <ng-container *ngIf="!votesRevealed && votes.length > 0">
         <button mat-flat-button color="primary" class="action-btn action-btn--reveal" (click)="onRevealVotes.emit()">
-          <mat-icon>visibility</mat-icon> Reveal Votes
+          <mat-icon>visibility</mat-icon> Reveal cards
         </button>
       </ng-container>
 
       <!-- Post-reveal: vote again -->
       <button mat-flat-button color="primary" class="action-btn" *ngIf="votesRevealed" (click)="onVoteAgain.emit()">
-        <mat-icon>replay</mat-icon> Vote Again
+        <mat-icon>replay</mat-icon> Vote again
       </button>
 
       <!-- Always available -->
       <button mat-stroked-button color="primary" class="action-btn" (click)="handleOnCreateNewTicket()">
-        <mat-icon>add</mat-icon> New Ticket
+        <mat-icon>add</mat-icon> New ticket
       </button>
       <button mat-stroked-button class="action-btn action-btn--import" (click)="handleOnImportTickets()">
         <mat-icon>file_upload</mat-icon> Import

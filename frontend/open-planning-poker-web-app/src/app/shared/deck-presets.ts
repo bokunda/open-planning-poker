@@ -16,7 +16,7 @@ export const DECK_PRESETS: DeckPreset[] = [
     example: '0, 1, 2, 3, 5, 8, 13, 20, 40, 100...'
   },
   {
-    label: 'T-Shirt Sizes',
+    label: 'T-shirt sizes',
     value: 'XS,S,M,L,XL,XXL,❓,⏸️',
     example: 'XS, S, M, L, XL, XXL...'
   },

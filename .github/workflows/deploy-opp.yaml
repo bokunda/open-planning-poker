@@ -25,15 +25,9 @@ jobs:
     uses: ./.github/workflows/deploy-opp-gateway.yaml
     secrets: 
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-  opp-gtw:
-    name: Deploy OPP API Gateway
-    needs: [opp-graphql-gtw]
-    uses: ./.github/workflows/deploy-opp-yarp-gateway.yaml
-    secrets: 
-      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
   opp-ui:
     name: Deploy OPP UI
-    needs: [opp-gtw]
+    needs: [opp-graphql-gtw]
     uses: ./.github/workflows/deploy-opp-ui.yaml
     secrets: 
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
@@ -56,5 +50,9 @@ jobs:
           curl -s "https://www.bing.com/indexnow?url=https://openplanningpoker.com/&key=${{ secrets.INDEX_NOW }}"
           curl -s "https://www.bing.com/indexnow?url=https://app.openplanningpoker.com/&key=${{ secrets.INDEX_NOW }}"
           curl -s "https://www.bing.com/indexnow?url=https://openplanningpoker.com/changelog/&key=${{ secrets.INDEX_NOW }}"
+          curl -s "https://www.bing.com/indexnow?url=https://openplanningpoker.com/what-is-planning-poker/&key=${{ secrets.INDEX_NOW }}"
+          curl -s "https://www.bing.com/indexnow?url=https://openplanningpoker.com/how-to-run-planning-poker/&key=${{ secrets.INDEX_NOW }}"
+          curl -s "https://www.bing.com/indexnow?url=https://openplanningpoker.com/planning-poker-cards/&key=${{ secrets.INDEX_NOW }}"
+          curl -s "https://www.bing.com/indexnow?url=https://openplanningpoker.com/self-hosted-planning-poker/&key=${{ secrets.INDEX_NOW }}"
           curl -s "https://www.bing.com/indexnow?url=https://openplanningpoker.com/sitemap.xml&key=${{ secrets.INDEX_NOW }}"
           curl -s "https://www.bing.com/indexnow?url=https://app.openplanningpoker.com/sitemap.xml&key=${{ secrets.INDEX_NOW }}"

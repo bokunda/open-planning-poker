@@ -13,7 +13,6 @@ Open Planning Poker is a free, open-source agile estimation tool for Scrum teams
 ### Backend Services (Docker, .NET 9)
 | Service | Port | Purpose |
 |---------|------|---------|
-| API Gateway (YARP) | 11000 | Reverse proxy (not used by the app; its rate-limit policy is not attached to a route) |
 | Fusion Gateway (HotChocolate) | 10010 | GraphQL schema stitching, header propagation |
 | Game Engine | 9091 | Core: games, tickets, voting, PDF reports (PostgreSQL) |
 | User Management | 9090 | Auth, anonymous usernames (Redis) |

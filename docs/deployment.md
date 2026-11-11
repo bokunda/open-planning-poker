@@ -83,7 +83,6 @@ All deployment is automated via GitHub Actions workflows in `.github/workflows/`
 | `deploy-opp-game-engine.yaml` | Manual or called by parent | Game Engine GraphQL |
 | `deploy-opp-user-management.yaml` | Manual or called by parent | User Management GraphQL |
 | `deploy-opp-gateway.yaml` | Manual or called by parent | Fusion Gateway |
-| `deploy-opp-yarp-gateway.yaml` | Manual or called by parent | API Gateway (YARP) |
 | `deploy-opp-ui.yaml` | Manual or called by parent | Angular Web App |
 | `deploy-opp-website.yaml` | Manual | Marketing website |
 | `deploy-postgresql.yaml` | Manual | PostgreSQL on private server |
@@ -107,8 +106,8 @@ deploy-opp.yaml
   ├── opp-um (User Management)
   ├── opp-ge (Game Engine)
   ├── opp-graphql-gtw (Fusion Gateway)  ← depends on UM + GE
-  ├── opp-gtw (API Gateway)             ← depends on Fusion Gateway
-  └── opp-ui (Web App)                  ← depends on API Gateway
+  ├── opp-ui (Web App)                  ← depends on Fusion Gateway
+  └── opp-website (Website)             ← depends on Web App
 ```
 
 ### GitHub Variables & Secrets
@@ -134,7 +133,7 @@ The workflows use these repository variables and secrets:
 | `OPP_DEFAULT_CORS` | CORS allowed origins JSON array |
 | `OPP_GE_SUBGRAPH_URL` | Game Engine subgraph URL for fusion compose |
 | `OPP_UM_SUBGRAPH_URL` | User Management subgraph URL for fusion compose |
-| `OPP_GRAPHQL_GATEWAY` | Fusion Gateway URL for API Gateway |
+| `OPP_GRAPHQL_GATEWAY` | Fusion Gateway URL; the web app calls it directly |
 
 ## Nginx Configuration
 
@@ -149,7 +148,6 @@ The public server runs Nginx as a reverse proxy with SSL termination via Let's E
 | `gateway.openplanningpoker.com` | `localhost:10010` | Yes (`/graphql`) |
 | `ge.openplanningpoker.com` | `localhost:9091` | Yes (`/graphql`) |
 | `usermanagement.openplanningpoker.com` | `localhost:9090` | Yes (`/graphql`) |
-| `apigateway.openplanningpoker.com` | `localhost:11000` | No |
 
 ### SSL Certificate Setup
 
@@ -158,8 +156,7 @@ sudo certbot --nginx -d openplanningpoker.com \
                         -d app.openplanningpoker.com \
                         -d gateway.openplanningpoker.com \
                         -d ge.openplanningpoker.com \
-                        -d usermanagement.openplanningpoker.com \
-                        -d apigateway.openplanningpoker.com
+                        -d usermanagement.openplanningpoker.com
 ```
 
 Reference nginx configuration files are in `nginx-config/`.

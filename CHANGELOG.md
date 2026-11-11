@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Shared voting timer**: the host's timer now runs on the server, so every player sees the same countdown (and the ring on the table), including players who join while it runs. New `startTimer` / `stopTimer` mutations (host only), `gameTimer` query and `onTimerChanged` subscription; the state is kept in Redis. When it reaches zero the cards are revealed, as before
+
+### Changed
+- **Timer control**: one pill with the time, duration chips (30s, 1m, 2m, 3m, 5m) and Start/Stop, instead of a dropdown and three icon buttons
+- Sentence case for the remaining labels: "Reveal cards", "Vote again", "New ticket", "Chat", "Paste a list", "Upload a file", "T-shirt sizes"
+
 ### Project
 - **Releases**: when the version in `package.json` has no tag yet, a workflow tags `vX.Y.Z` and publishes a GitHub Release with that version's CHANGELOG section
 - **Dependabot**: weekly grouped updates for npm (app, website), NuGet (all services), Docker images and GitHub Actions
@@ -19,6 +26,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Icons**: only the 25 Material Symbols the app uses are downloaded instead of the full Material Icons font
 - **Global CSS** 168 → 74 KB: Material themes only for the components the app uses
 - **Analytics** (GA4, Clarity) load after the page has loaded and the browser is idle; almost all forced layout reads on the landing page came from Clarity
+- **Fonts served from our own domain** (app and website): no requests to Google Fonts, latin + latin-ext subsets, Bricolage Grotesque fixed at optical size 48 (42 KB instead of 77 KB), preloaded
+- **The app calls the Fusion gateway directly**; the YARP API gateway is removed (one less network hop on every request)
+- **Website caching**: the stylesheet has a content hash in its name, so a new release is never hidden behind a year-long cache; images are cached for a week
+
+### SEO
+- **Website guides**: four new pages — what planning poker is, how to run a session, cards and scales, self-hosting — with Article, FAQ, HowTo and breadcrumb structured data, linked from the home page, the header and the footer
+- **Real 404s** on the website and the app (both answered unknown URLs with 200 and the home page); the website 404 page uses the site design
+- **App**: game rooms and tickets are `noindex` (they are private and short-lived); `/game` points to `/` as canonical; the landing heading is the page's `h1`; new description and a 1200×630 social card
+- Sitemap with the guides and screenshots; `robots.txt` without `Crawl-delay`; `llms.txt` for the website
+- Shared head, header and footer partials for every website page
 
 ## [2.0.0] — 2026-11-11
 

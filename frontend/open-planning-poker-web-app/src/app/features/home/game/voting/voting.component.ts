@@ -1,14 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, QueryList, SimpleChanges, ViewChildren, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, QueryList, SimpleChanges, ViewChild, ViewChildren, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PokerCardComponent } from '../../../../shared/poker-card/poker-card.component';
 import { PokerTableComponent } from '../table/poker-table.component';
 import { VoteResultsComponent } from '../table/vote-results.component';
+import { GameTimerComponent, TimerTick } from '../timer/game-timer.component';
 import { ApiCollectionOfGamePlayer, Settings, SettingsDetailsResult, Ticket, Vote } from '../../../../graphql/graphql-gateway.service';
 
 @Component({
@@ -16,7 +14,7 @@ import { ApiCollectionOfGamePlayer, Settings, SettingsDetailsResult, Ticket, Vot
   templateUrl: './voting.component.html',
   styleUrl: './voting.component.scss',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatSelectModule, MatTooltipModule, PokerCardComponent, PokerTableComponent, VoteResultsComponent],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, PokerCardComponent, PokerTableComponent, VoteResultsComponent, GameTimerComponent],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class VotingComponent implements OnInit, OnDestroy, OnChanges {
@@ -57,11 +55,10 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
   selectedOption: string | null = null;
   descriptionExpanded = false;
 
-  // Timer
-  timerDurationMinutes = 1;
-  remainingSeconds = this.timerDurationMinutes * 60;
-  timerRunning = false;
-  private timerInterval: ReturnType<typeof setInterval> | null = null;
+  // Timer: shared by everyone, run by the server (app-game-timer); the table ring follows it.
+  @Input() gameId = '';
+  @ViewChild(GameTimerComponent) private timer?: GameTimerComponent;
+  timerTick: TimerTick = { remaining: null, total: 60 };
 
   trackByOption(index: number, option: string): string {
     return option;
@@ -76,7 +73,7 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     const ticketChanged = changes['ticket'] && changes['ticket'].currentValue?.id !== changes['ticket'].previousValue?.id;
     if (ticketChanged) {
-      this.resetTimer();
+      if (!changes['ticket'].firstChange) this.timer?.stopIfRunning();
       this.selectedOption = null;
       this.descriptionExpanded = false;
       if (!changes['ticket'].firstChange && this.ticket?.name) {
@@ -84,6 +81,9 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
       }
     }
     // A new voting round (re-vote) clears the card the user had chosen.
+    if (changes['votesRevealed']?.currentValue && !changes['votesRevealed'].firstChange) {
+      this.timer?.stopIfRunning();
+    }
     const newRound = changes['votesRevealed'] && changes['votesRevealed'].previousValue && !changes['votesRevealed'].currentValue;
     if (newRound) {
       this.selectedOption = null;
@@ -103,7 +103,6 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
-    this.clearTimer();
     clearTimeout(this.typedKeysTimer);
     clearTimeout(this.announceTimer);
   }
@@ -275,45 +274,14 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
     this.descriptionExpanded = !this.descriptionExpanded;
   }
 
-  // --- Timer methods ---
+  // --- Timer ---
 
-  get timerDisplay(): string {
-    const mins = Math.floor(this.remainingSeconds / 60);
-    const secs = this.remainingSeconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  onTimerTick(tick: TimerTick): void {
+    this.timerTick = tick;
   }
 
-  get timerWarning(): boolean {
-    return this.timerRunning && this.remainingSeconds <= 10;
-  }
-
-  startTimer(): void {
-    if (this.timerRunning) return;
-    this.remainingSeconds = this.timerDurationMinutes * 60;
-    this.timerRunning = true;
-    this.timerInterval = setInterval(() => {
-      this.remainingSeconds--;
-      if (this.remainingSeconds <= 0) {
-        this.clearTimer();
-        this.onRevealVotes.emit();
-      }
-    }, 1000);
-  }
-
-  stopTimer(): void {
-    this.clearTimer();
-  }
-
-  resetTimer(): void {
-    this.clearTimer();
-    this.remainingSeconds = this.timerDurationMinutes * 60;
-  }
-
-  private clearTimer(): void {
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-      this.timerInterval = null;
-    }
-    this.timerRunning = false;
+  /** When the countdown ends, the host's client reveals the cards (as before). */
+  onTimerExpired(): void {
+    if (this.isHost && !this.votesRevealed) this.onRevealVotes.emit();
   }
 }

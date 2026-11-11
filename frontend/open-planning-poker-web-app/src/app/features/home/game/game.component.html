@@ -1,5 +1,6 @@
 <main class="game-wrapper" id="main-content">
-  <h1 class="sr-only">Open Planning Poker — Free Agile Estimation Tool</h1>
+  <!-- The landing page has a visible h1 below; rooms keep this one for screen readers. -->
+  <h1 class="sr-only" *ngIf="game || isLoading || gameNotFound">Open Planning Poker — Free Agile Estimation Tool</h1>
   <!-- Landing (no game) -->
   <ng-container *ngIf="!game && !isLoading">
     <div class="game-landing" @fadeSlide>
@@ -11,8 +12,10 @@
             <p class="landing-desc">The link may be wrong, or the host deleted the game. Create a new game or join another one.</p>
           </ng-container>
           <ng-template #readyToPlan>
-            <span class="landing-eyebrow">Free planning poker for agile teams</span>
-            <h2 class="landing-title">Estimate together, around one table.</h2>
+            <h1 class="landing-heading">
+              <span class="landing-eyebrow">Free planning poker for agile teams</span>
+              <span class="landing-title">Estimate together, around one table.</span>
+            </h1>
             <p class="landing-desc">Create a room, share the link and vote in secret. Everyone's cards turn over at the same moment, so nobody anchors the team.</p>
           </ng-template>
 
@@ -58,6 +61,7 @@
         (onCreateNewTicket)="handleCreateTicket()"></app-game-details>
 
       <app-voting
+        [gameId]="game.id"
         [players]="players"
         [gameSettings]="game.settingsDetails"
         [ticket]="ticket"

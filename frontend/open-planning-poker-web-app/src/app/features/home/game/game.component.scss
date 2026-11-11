@@ -39,7 +39,17 @@
   &--warn { color: var(--opp-spread); }
 }
 
+/* Eyebrow + title form the page h1 (keyword first), styled as before. */
+.landing-heading {
+  display: flex;
+  flex-direction: column;
+  gap: inherit;
+  margin: 0;
+  font: inherit;
+}
+
 .landing-title {
+  display: block;
   margin: 0;
   font-size: clamp(2rem, 4.2vw, 3.2rem);
   font-weight: 800;

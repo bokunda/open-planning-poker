@@ -21,8 +21,10 @@ const GITHUB_ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24
 </svg>`;
 
 /**
- * Icons loaded from Google Fonts in index.html (the `icon_names` list there must match).
- * An icon that is not in the list renders as its name, so add new icons in both places.
+ * Icons in the self-hosted Material Symbols subset (public/fonts/material-symbols-outlined.woff2).
+ * An icon that is not in the font renders as its name. To add one: download the subset again from
+ * https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0&icon_names=<sorted list>&display=block
+ * (the woff2 URL inside that CSS) and add the name here.
  */
 export const ICON_NAMES = [
   'add',

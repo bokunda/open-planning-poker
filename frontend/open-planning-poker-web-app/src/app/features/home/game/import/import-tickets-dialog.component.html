@@ -3,7 +3,7 @@
 <mat-dialog-content>
   <mat-tab-group [(selectedIndex)]="activeTab" animationDuration="200ms">
     <!-- Tab 1: Bulk Paste -->
-    <mat-tab label="Bulk Paste">
+    <mat-tab label="Paste a list">
       <div class="import-tab-content">
         <p class="import-hint">Paste one ticket per line. Use <code>|</code> to separate description.</p>
         <textarea
@@ -18,7 +18,7 @@
     </mat-tab>
 
     <!-- Tab 2: File Upload -->
-    <mat-tab label="File Upload">
+    <mat-tab label="Upload a file">
       <div
         class="import-tab-content import-dropzone"
         (dragover)="onDragOver($event)"
@@ -28,7 +28,7 @@
         <p class="dropzone-or">— or —</p>
         <label class="dropzone-label">
           <input type="file" accept=".csv,.json" (change)="onFileSelected($event)" hidden />
-          <span class="dropzone-btn">Choose File</span>
+          <span class="dropzone-btn">Choose file</span>
         </label>
         <p class="dropzone-formats">Supports: CSV (name, description) or JSON array</p>
       </div>

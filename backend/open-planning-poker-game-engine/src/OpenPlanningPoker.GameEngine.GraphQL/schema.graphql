@@ -91,6 +91,18 @@ type GameReport {
   data: [Byte!]!
 }
 
+"""
+Voting timer of a game, shared by all players. The host starts and stops it.
+Clients count down to EndsAt and use ServerTime to correct their clock.
+"""
+type GameTimer {
+  gameId: UUID!
+  durationSeconds: Int!
+  running: Boolean!
+  endsAt: DateTime
+  serverTime: DateTime!
+}
+
 type GenerateGameReportPayload {
   gameReport: GameReport
   errors: [GenerateGameReportError!]
@@ -143,6 +155,10 @@ type Mutation {
   reVoteTicket(input: ReVoteTicketInput!): ReVoteTicketPayload! @cost(weight: "10")
   "Deletes a ticket for given game. Host only."
   deleteTicket(input: DeleteTicketInput!): DeleteTicketPayload! @cost(weight: "10")
+  "Starts (or restarts) the voting timer for everyone in the game. Host only."
+  startTimer(input: StartTimerInput!): StartTimerPayload! @cost(weight: "10")
+  "Stops the voting timer for everyone in the game. Host only."
+  stopTimer(input: StopTimerInput!): StopTimerPayload! @cost(weight: "10")
   "Creates or updates a vote. Only players who joined the game can vote."
   createOrUpdateVote(input: CreateOrUpdateVoteInput!): CreateOrUpdateVotePayload! @cost(weight: "10")
   "Reveals all votes for a ticket and broadcasts them to all players. Host only."
@@ -171,6 +187,11 @@ type Query {
   ticket(id: UUID!): TicketResult! @cost(weight: "10")
   "Gets a list of tickets by gameId."
   tickets(gameId: UUID!): TicketsResult! @cost(weight: "10")
+  """
+  Current voting timer of a game, for players who join while it runs. Null when there is none
+  or the caller is not a player of the game.
+  """
+  gameTimer(gameId: UUID!): GameTimer @cost(weight: "10")
   "Gets votes by ticketId."
   votes(ticketId: UUID!): VotesResult! @cost(weight: "10")
 }
@@ -196,12 +217,24 @@ type Settings {
   deckSetup: String!
 }
 
+type StartTimerPayload {
+  gameTimer: GameTimer
+  errors: [StartTimerError!]
+}
+
+type StopTimerPayload {
+  gameTimer: GameTimer
+  errors: [StopTimerError!]
+}
+
 type Subscription {
   onChatMessage(gameId: UUID!): ChatMessage!
   onPlayerJoined(gameId: UUID!): BaseUserProfile!
   onPlayerLeave(gameId: UUID!): BaseUserProfile!
   onTicketCreated(gameId: UUID!): Ticket!
   onTicketReVoted(gameId: UUID!): Ticket!
+  "Fires when the host starts or stops the timer."
+  onTimerChanged(gameId: UUID!): GameTimer!
   onVoteCreatedOrUpdated(ticketId: UUID!): Vote!
   onVotesRevealed(ticketId: UUID!): VotesRevealed!
 }
@@ -274,6 +307,10 @@ union SettingsDetailsResult = Settings | ApplicationError
 
 union SettingsResult = Settings | ApplicationError
 
+union StartTimerError = ApplicationError
+
+union StopTimerError = ApplicationError
+
 union TicketResult = Ticket | ApplicationError
 
 union TicketsResult = ApiCollectionOfTicket | ApplicationError
@@ -340,6 +377,15 @@ input SendChatMessageInput {
   content: String!
 }
 
+input StartTimerInput {
+  gameId: UUID!
+  durationSeconds: Int!
+}
+
+input StopTimerInput {
+  gameId: UUID!
+}
+
 input UpdateSettingsInput {
   id: UUID!
   gameId: UUID!
@@ -360,6 +406,9 @@ directive @specifiedBy("The specifiedBy URL points to a human-readable specifica
 
 "The `Byte` scalar type represents non-fractional whole numeric values. Byte can represent values between 0 and 255."
 scalar Byte
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")
 
 "The `Decimal` scalar type represents a decimal floating-point number."
 scalar Decimal

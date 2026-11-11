@@ -32,26 +32,51 @@ const changelogFinal = changelogTemplate.replace('<!-- CHANGELOG_CONTENT -->', c
 // Home page: "What's new" card and version from the newest release in CHANGELOG.md
 const release = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'release.json'), 'utf-8'));
 const latestRelease = fs.readFileSync(path.resolve(__dirname, 'latest-release.html'), 'utf-8');
+// Fingerprint the stylesheet: it is cached for a year, so a new build must use a new file name.
+const cssHash = require('crypto').createHash('sha256').update(fs.readFileSync(path.join(dist, 'output.css'))).digest('hex').slice(0, 10);
+const cssFile = `output.${cssHash}.css`;
+fs.renameSync(path.join(dist, 'output.css'), path.join(dist, cssFile));
+console.log(`  ✓ ${cssFile}`);
+
+// Shared <head> parts, header and footer (partials/), used by every page.
+const partial = name => fs.readFileSync(path.resolve(__dirname, 'partials', name), 'utf-8');
+const sitePartials = { head: partial('head.html'), header: partial('header.html'), footer: partial('footer.html') };
+
 const fillRelease = html => html
+  .replace('<!-- SITE_HEAD -->', sitePartials.head)
+  .replace('<!-- SITE_HEADER -->', sitePartials.header)
+  .replace('<!-- SITE_FOOTER -->', sitePartials.footer)
   .replace('<!-- LATEST_RELEASE -->', latestRelease)
   .replace(/<!-- APP_VERSION -->/g, `v${release.version}`)
-  .replace(/__APP_VERSION__/g, release.version);
+  .replace(/__APP_VERSION__/g, release.version)
+  .replace(/(href=")\.?\/output\.css"/g, `$1/${cssFile}"`);
 fs.writeFileSync(path.join(dist, 'index.html'), fillRelease(fs.readFileSync(path.resolve(__dirname, 'index.html'), 'utf-8')));
 fs.writeFileSync(path.join(changelogDir, 'index.html'), fillRelease(changelogFinal));
 console.log(`  ✓ index.html, changelog/index.html (v${release.version})`);
 
-// Sitemap: last modified = the newest release date
+// Sitemap: pages that change with every release (home, changelog, app) use the newest release date
 const sitemap = fs.readFileSync(path.resolve(__dirname, 'sitemap.xml'), 'utf-8')
-  .replace(/<lastmod>[^<]*<\/lastmod>/g, `<lastmod>${release.date}</lastmod>`);
+  .replace(/RELEASE_DATE/g, release.date);
 fs.writeFileSync(path.join(dist, 'sitemap.xml'), sitemap);
 console.log('  ✓ sitemap.xml');
 
 // Copy remaining files (skip changelog.html since it's now a directory)
+// Guide pages: pages/<slug>.html → /<slug>/
+const pagesDir = path.resolve(__dirname, 'pages');
+for (const file of fs.readdirSync(pagesDir).filter(f => f.endsWith('.html'))) {
+  const slug = file.replace(/\.html$/, '');
+  fs.mkdirSync(path.join(dist, slug), { recursive: true });
+  fs.writeFileSync(path.join(dist, slug, 'index.html'), fillRelease(fs.readFileSync(path.join(pagesDir, file), 'utf-8')));
+  console.log(`  ✓ ${slug}/index.html`);
+}
+
+fs.writeFileSync(path.join(dist, '404.html'), fillRelease(fs.readFileSync(path.resolve(__dirname, '404.html'), 'utf-8')));
+
 const files = [
   'robots.txt',
+  'llms.txt',
   'site.webmanifest',
-  'browserconfig.xml',
-  '404.html'
+  'browserconfig.xml'
 ];
 
 console.log('📁 Copying files...');
@@ -71,6 +96,10 @@ if (fs.existsSync(wellKnownSrc)) {
   fs.cpSync(wellKnownSrc, path.join(dist, '.well-known'), { recursive: true });
   console.log('  ✓ .well-known/');
 }
+
+// Self-hosted fonts
+fs.cpSync(path.resolve(__dirname, 'fonts'), path.join(dist, 'fonts'), { recursive: true });
+console.log('  ✓ fonts/');
 
 // Copy images directory
 const imagesSrc = path.resolve(__dirname, 'images');

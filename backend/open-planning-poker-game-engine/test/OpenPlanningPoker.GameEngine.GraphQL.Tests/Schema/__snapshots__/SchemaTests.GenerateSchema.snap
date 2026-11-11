@@ -52,6 +52,18 @@ type GameReport {
   data: [Byte!]!
 }
 
+"""
+Voting timer of a game, shared by all players. The host starts and stops it.
+Clients count down to EndsAt and use ServerTime to correct their clock.
+"""
+type GameTimer {
+  gameId: UUID!
+  durationSeconds: Int!
+  running: Boolean!
+  endsAt: DateTime
+  serverTime: DateTime!
+}
+
 type Info {
   version: String!
   author: String!
@@ -89,6 +101,10 @@ type Mutation {
   reVoteTicket(gameId: UUID! ticketId: UUID!): Ticket!
   "Deletes a ticket for given game. Host only."
   deleteTicket(id: UUID!): Boolean!
+  "Starts (or restarts) the voting timer for everyone in the game. Host only."
+  startTimer(gameId: UUID! durationSeconds: Int!): GameTimer!
+  "Stops the voting timer for everyone in the game. Host only."
+  stopTimer(gameId: UUID!): GameTimer!
   "Creates or updates a vote. Only players who joined the game can vote."
   createOrUpdateVote(ticketId: UUID! value: String!): Vote!
   "Reveals all votes for a ticket and broadcasts them to all players. Host only."
@@ -113,6 +129,11 @@ type Query {
   ticket(id: UUID!): Ticket!
   "Gets a list of tickets by gameId."
   tickets(gameId: UUID!): ApiCollectionOfTicket!
+  """
+  Current voting timer of a game, for players who join while it runs. Null when there is none
+  or the caller is not a player of the game.
+  """
+  gameTimer(gameId: UUID!): GameTimer
   "Gets votes by ticketId."
   votes(ticketId: UUID!): ApiCollectionOfVote!
 }
@@ -129,6 +150,8 @@ type Subscription {
   onPlayerLeave(gameId: UUID!): BaseUserProfile!
   onTicketCreated(gameId: UUID!): Ticket!
   onTicketReVoted(gameId: UUID!): Ticket!
+  "Fires when the host starts or stops the timer."
+  onTimerChanged(gameId: UUID!): GameTimer!
   onVoteCreatedOrUpdated(ticketId: UUID!): Vote!
   onVotesRevealed(ticketId: UUID!): VotesRevealed!
 }
@@ -162,6 +185,9 @@ directive @specifiedBy("The specifiedBy URL points to a human-readable specifica
 
 "The `Byte` scalar type represents non-fractional whole numeric values. Byte can represent values between 0 and 255."
 scalar Byte
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")
 
 "The `Decimal` scalar type represents a decimal floating-point number."
 scalar Decimal

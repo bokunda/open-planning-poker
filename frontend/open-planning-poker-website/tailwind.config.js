@@ -6,7 +6,7 @@ const violet = {
   500: '#7c4fec', 600: '#6a3ae8', 700: '#5a2bd0', 800: '#4a24a8', 900: '#3c1f86', 950: '#241455',
 };
 module.exports = {
-  content: ['index.html', 'changelog.html', '404.html', 'generate-changelog.js'],
+  content: ['index.html', 'changelog.html', '404.html', 'pages/*.html', 'partials/*.html', 'generate-changelog.js'],
   theme: {
     extend: {
       colors: {
