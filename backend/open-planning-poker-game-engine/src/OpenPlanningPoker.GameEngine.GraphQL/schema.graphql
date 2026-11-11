@@ -71,6 +71,8 @@ type Game {
   id: UUID!
   name: String!
   description: String!
+  "Id of the player who created the game. Only the host can manage tickets, settings and reveals."
+  hostId: UUID!
 }
 
 type GamePlayer {
@@ -107,32 +109,36 @@ type LeaveGamePayload {
 
 "Base Game Engine mutation."
 type Mutation {
-  "Sends a chat message to a game."
+  "Sends a chat message to a game. Only players of the game can send messages."
   sendChatMessage(input: SendChatMessageInput!): SendChatMessagePayload! @cost(weight: "10")
-  "Join Game"
+  "Join Game. Requires a valid user token."
   joinGame(input: JoinGameInput!): JoinGamePayload! @cost(weight: "10")
-  "Leave a Game"
+  "Leave a Game. Requires a valid user token."
   leaveGame(input: LeaveGameInput!): LeaveGamePayload! @cost(weight: "10")
-  "Creates a game, returns game details."
+  "Creates a game, returns game details. The caller becomes the game host."
   createGame(input: CreateGameInput!): CreateGamePayload! @cost(weight: "10")
+  "Generates a PDF report of the game. Only players of the game can generate it."
   generateGameReport(input: GenerateGameReportInput!): GenerateGameReportPayload! @cost(weight: "10")
   "Dummy health-check mutation."
   ping: PingPayload! @cost(weight: "10")
-  "Creates Game Settings."
+  "Creates Game Settings. Host only."
   createSettings(input: CreateSettingsInput!): CreateSettingsPayload! @cost(weight: "10")
-  "Updates Game Settings."
+  "Updates Game Settings. Host only."
   updateSettings(input: UpdateSettingsInput!): UpdateSettingsPayload! @cost(weight: "10")
-  "Creates a ticket for given game."
+  "Creates a ticket for given game. Host only."
   createTicket(input: CreateTicketInput!): CreateTicketPayload! @cost(weight: "10")
-  "Updates a ticket for given game."
+  "Updates a ticket for given game. Host only."
   updateTicket(input: UpdateTicketInput!): UpdateTicketPayload! @cost(weight: "10")
-  "Re-votes a ticket by broadcasting it as the active ticket to all players in the game."
+  """
+  Re-votes a ticket: hides its votes again and broadcasts it as the active ticket
+  to all players in the game. Host only.
+  """
   reVoteTicket(input: ReVoteTicketInput!): ReVoteTicketPayload! @cost(weight: "10")
-  "Deletes a ticket for given game."
+  "Deletes a ticket for given game. Host only."
   deleteTicket(input: DeleteTicketInput!): DeleteTicketPayload! @cost(weight: "10")
-  "Creates or updates a vote."
+  "Creates or updates a vote. Only players who joined the game can vote."
   createOrUpdateVote(input: CreateOrUpdateVoteInput!): CreateOrUpdateVotePayload! @cost(weight: "10")
-  "Reveals all votes for a ticket. Broadcasts to all players."
+  "Reveals all votes for a ticket and broadcasts them to all players. Host only."
   revealVotes(input: RevealVotesInput!): RevealVotesPayload! @cost(weight: "10")
 }
 
@@ -200,6 +206,7 @@ type Ticket {
   gameId: UUID!
   name: String!
   description: String!
+  votesRevealed: Boolean!
 }
 
 type UpdateSettingsPayload {
@@ -222,6 +229,8 @@ type Vote {
 type VotesRevealed {
   ticketId: UUID!
   revealedBy: String!
+  "All votes of the ticket with their values, sent once the host reveals them."
+  votes: [Vote!]!
 }
 
 union CreateGameError = ApplicationError
