@@ -48,8 +48,9 @@
               class="ticket-desc-toggle"
               [class.ticket-desc-toggle--active]="descriptionExpanded"
               (click)="toggleDescription()"
-              aria-label="Toggle ticket description"
-              matTooltip="View description">
+              [attr.aria-expanded]="descriptionExpanded"
+              aria-label="Show or hide the ticket description"
+              [matTooltip]="descriptionExpanded ? 'Hide description' : 'Show description'">
               <mat-icon>info</mat-icon>
             </button>
           </h2>

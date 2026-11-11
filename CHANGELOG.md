@@ -7,12 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] — 2026-11-12
+
+A shared timer for the whole team, a faster first load, and guides on the website.
+
+### Highlights
+- **Shared timer**: the host starts it, everyone sees the same countdown, and the cards are revealed when it runs out
+- **Faster**: about 25% less JavaScript on the first load, fonts from our own domain, the game room loads only when a game is open
+- **Room actions always visible**: copy link, export PDF and leave are buttons next to Invite instead of a menu
+- **Guides on the website**: what planning poker is, how to run a session, card scales and self-hosting
+- **Search and AI agents**: private rooms are no longer indexed, real 404 pages, and an ARD manifest (`/.well-known/ard.json`) for AI agents
+
 ### Added
 - **Shared voting timer**: the host's timer now runs on the server, so every player sees the same countdown (and the ring on the table), including players who join while it runs. New `startTimer` / `stopTimer` mutations (host only), `gameTimer` query and `onTimerChanged` subscription; the state is kept in Redis. When it reaches zero the cards are revealed, as before
 
 ### Changed
 - **Timer control**: one pill with the time, duration chips (30s, 1m, 2m, 3m, 5m) and Start/Stop, instead of a dropdown and three icon buttons
 - Sentence case for the remaining labels: "Reveal cards", "Vote again", "New ticket", "Chat", "Paste a list", "Upload a file", "T-shirt sizes"
+- **Room header**: "Copy link", "Export PDF" and "Leave" are always visible next to "Invite" (icons only on phones); the ⋮ menu is gone
+- **Ticket description** is shown by default under the ticket name; the info button hides it
+- **"Modified Fibonacci" is now "Fibonacci v2"**, with a tooltip that explains it
+- **Breadcrumb** lines up with the header on wide screens
 
 ### Project
 - **Releases**: when the version in `package.json` has no tag yet, a workflow tags `vX.Y.Z` and publishes a GitHub Release with that version's CHANGELOG section
@@ -36,6 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **App**: game rooms and tickets are `noindex` (they are private and short-lived); `/game` points to `/` as canonical; the landing heading is the page's `h1`; new description and a 1200×630 social card
 - Sitemap with the guides and screenshots; `robots.txt` without `Crawl-delay`; `llms.txt` for the website
 - Shared head, header and footer partials for every website page
+- **AI agents**: the ARD manifest is served at `/.well-known/ard.json` (the location the current spec and Lighthouse use), announced with `<link rel="ard">` and an `Agentmap:` line in `robots.txt`; `ai-catalog.json` stays for older tools. Before, `/.well-known/ard.json` returned the HTML page, which Lighthouse reported as invalid JSON
+- **Website speed**: the stylesheet is inlined (no render-blocking request), screenshots have 480/800/1200 px sizes for smaller screens, and the GitHub star button is a plain link with the count fetched at build time instead of a third-party script
 
 ## [2.0.0] — 2026-11-11
 

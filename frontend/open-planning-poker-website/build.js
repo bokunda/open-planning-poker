@@ -32,11 +32,20 @@ const changelogFinal = changelogTemplate.replace('<!-- CHANGELOG_CONTENT -->', c
 // Home page: "What's new" card and version from the newest release in CHANGELOG.md
 const release = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'release.json'), 'utf-8'));
 const latestRelease = fs.readFileSync(path.resolve(__dirname, 'latest-release.html'), 'utf-8');
-// Fingerprint the stylesheet: it is cached for a year, so a new build must use a new file name.
-const cssHash = require('crypto').createHash('sha256').update(fs.readFileSync(path.join(dist, 'output.css'))).digest('hex').slice(0, 10);
-const cssFile = `output.${cssHash}.css`;
-fs.renameSync(path.join(dist, 'output.css'), path.join(dist, cssFile));
-console.log(`  ✓ ${cssFile}`);
+// The stylesheet is small (~7 KB gzipped), so it is inlined into every page: no render-blocking request.
+const css = fs.readFileSync(path.join(dist, 'output.css'), 'utf-8');
+fs.rmSync(path.join(dist, 'output.css'));
+console.log(`  ✓ CSS inlined (${Math.round(css.length / 1024)} KB)`);
+
+// GitHub star count for the header button, fetched at build time (no third-party script on the page).
+let stars = '';
+try {
+  stars = execSync(
+    `node -e "fetch('https://api.github.com/repos/bokunda/open-planning-poker',{headers:{'User-Agent':'opp-website-build'}}).then(r=>r.json()).then(j=>console.log(j.stargazers_count ?? ''))"`,
+    { timeout: 8000, encoding: 'utf-8' }).trim();
+} catch { /* offline build: the button shows without a count */ }
+const starsHtml = /^\d+$/.test(stars) ? `<span class="star-count">${stars}</span>` : '';
+console.log(`  ✓ GitHub stars: ${stars || 'unknown'}`);
 
 // Shared <head> parts, header and footer (partials/), used by every page.
 const partial = name => fs.readFileSync(path.resolve(__dirname, 'partials', name), 'utf-8');
@@ -49,7 +58,8 @@ const fillRelease = html => html
   .replace('<!-- LATEST_RELEASE -->', latestRelease)
   .replace(/<!-- APP_VERSION -->/g, `v${release.version}`)
   .replace(/__APP_VERSION__/g, release.version)
-  .replace(/(href=")\.?\/output\.css"/g, `$1/${cssFile}"`);
+  .replace('<!-- GITHUB_STARS -->', starsHtml)
+  .replace(/<link href="\.?\/output\.css" rel="stylesheet">/g, () => `<style>${css}</style>`);
 fs.writeFileSync(path.join(dist, 'index.html'), fillRelease(fs.readFileSync(path.resolve(__dirname, 'index.html'), 'utf-8')));
 fs.writeFileSync(path.join(changelogDir, 'index.html'), fillRelease(changelogFinal));
 console.log(`  ✓ index.html, changelog/index.html (v${release.version})`);

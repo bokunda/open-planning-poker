@@ -64,6 +64,12 @@
       dark:text-white dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:focus-visible:ring-purple-700;
   }
 
+  .star-button {
+    @apply inline-flex items-center gap-1.5 h-9 px-3 text-sm font-semibold rounded-full border border-gray-200 text-gray-900
+      hover:border-purple-300 transition dark:border-gray-700 dark:text-white focus-ring;
+  }
+  .star-count { @apply pl-1.5 ml-0.5 border-l border-gray-200 text-gray-600 dark:border-gray-700 dark:text-gray-300; }
+
   .eyebrow { @apply text-xs font-bold tracking-[0.14em] uppercase text-purple-600 dark:text-purple-400; }
   .section-title { @apply mt-3 font-display text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl dark:text-white; }
   .link { @apply font-semibold text-purple-600 underline decoration-purple-300 underline-offset-2 hover:text-purple-800 dark:text-purple-400 dark:decoration-purple-700 dark:hover:text-purple-300; }

@@ -29,8 +29,29 @@
 
 .game-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--opp-space-1);
+  gap: var(--opp-space-2);
+}
+
+.room-action.mat-mdc-button-base {
+  height: 40px;
+  padding: 0 var(--opp-space-3);
+  --mdc-outlined-button-outline-color: var(--opp-border);
+  --mdc-outlined-button-label-text-color: var(--opp-text);
+  font-weight: 600;
+
+  mat-icon { margin-right: 6px; color: var(--opp-text-secondary); }
+  &:hover { --mdc-outlined-button-outline-color: var(--opp-primary-300); }
+}
+
+.room-action--leave:hover mat-icon { color: var(--opp-danger); }
+
+/* Phones: icon-only actions so the header stays on one or two lines. */
+@media (max-width: 640px) {
+  .room-action.mat-mdc-button-base { min-width: 40px; padding: 0; }
+  .room-action mat-icon { margin: 0; }
+  .room-action-label { display: none; }
 }
 
 .invite-btn mat-icon {

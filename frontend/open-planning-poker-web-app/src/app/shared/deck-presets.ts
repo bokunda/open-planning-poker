@@ -2,6 +2,8 @@ export interface DeckPreset {
   label: string;
   value: string;   // CSV deck setup string
   example: string;  // Short example for display
+  /** Longer name shown as a tooltip, e.g. the usual name of a renamed deck. */
+  hint?: string;
 }
 
 export const DECK_PRESETS: DeckPreset[] = [
@@ -11,7 +13,8 @@ export const DECK_PRESETS: DeckPreset[] = [
     example: '0, ½, 1, 2, 3, 5, 8, 13...'
   },
   {
-    label: 'Modified Fibonacci',
+    label: 'Fibonacci v2',
+    hint: 'Modified Fibonacci: larger items round to 20, 40 and 100',
     value: '0,1,2,3,5,8,13,20,40,100,❓,⏸️',
     example: '0, 1, 2, 3, 5, 8, 13, 20, 40, 100...'
   },

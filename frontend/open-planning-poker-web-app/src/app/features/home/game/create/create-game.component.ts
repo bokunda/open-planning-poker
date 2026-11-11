@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CreateGameDialogComponent } from './dialog/create-game-dialog.component';
 import { DECK_PRESETS, DEFAULT_DECK } from '../../../../shared/deck-presets';
 
@@ -21,7 +22,7 @@ export interface CreateGameResult {
   templateUrl: './create-game.component.html',
   styleUrl: './create-game.component.scss',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, MatTooltipModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateGameComponent {

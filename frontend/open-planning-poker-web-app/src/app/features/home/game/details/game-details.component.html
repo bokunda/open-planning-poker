@@ -9,20 +9,16 @@
       <button mat-flat-button color="primary" class="invite-btn" (click)="openQrShare()">
         <mat-icon>person_add</mat-icon> Invite
       </button>
-      <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More game actions" matTooltip="More">
-        <mat-icon>more_vert</mat-icon>
+      <!-- Always visible; on narrow screens only the icons show (the names stay as aria-labels). -->
+      <button mat-stroked-button class="room-action" (click)="copyToClipboard()" aria-label="Copy game link" matTooltip="Copy game link">
+        <mat-icon>link</mat-icon><span class="room-action-label">Copy link</span>
       </button>
-      <mat-menu #moreMenu="matMenu" xPosition="before">
-        <button mat-menu-item (click)="copyToClipboard()">
-          <mat-icon>link</mat-icon><span>Copy game link</span>
-        </button>
-        <button mat-menu-item (click)="onGameReportClick.emit()">
-          <mat-icon>download</mat-icon><span>Export results (PDF)</span>
-        </button>
-        <button mat-menu-item (click)="onLeaveGameClick.emit()">
-          <mat-icon>logout</mat-icon><span>Leave game</span>
-        </button>
-      </mat-menu>
+      <button mat-stroked-button class="room-action" (click)="onGameReportClick.emit()" aria-label="Export results as PDF" matTooltip="Export results (PDF)">
+        <mat-icon>download</mat-icon><span class="room-action-label">Export PDF</span>
+      </button>
+      <button mat-stroked-button class="room-action room-action--leave" (click)="onLeaveGameClick.emit()" aria-label="Leave game" matTooltip="Leave game">
+        <mat-icon>logout</mat-icon><span class="room-action-label">Leave</span>
+      </button>
     </div>
   </div>
 </section>

@@ -3,3 +3,4 @@ Allow: /
 Disallow: /_health
 
 Sitemap: https://app.openplanningpoker.com/sitemap.xml
+Agentmap: https://app.openplanningpoker.com/.well-known/ard.json
