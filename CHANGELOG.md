@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Timer control**: one pill with the time, duration chips (30s, 1m, 2m, 3m, 5m) and Start/Stop, instead of a dropdown and three icon buttons
 - Sentence case for the remaining labels: "Reveal cards", "Vote again", "New ticket", "Chat", "Paste a list", "Upload a file", "T-shirt sizes"
 
+### Project
+- **Releases**: when the version in `package.json` has no tag yet, a workflow tags `vX.Y.Z` and publishes a GitHub Release with that version's CHANGELOG section
+- **Dependabot**: weekly grouped updates for npm (app, website), NuGet (all services), Docker images and GitHub Actions
+- **Uptime check** every 15 minutes (website, changelog, app, ai-catalog, GraphQL gateway); a failure opens a GitHub issue labeled `uptime`, recovery closes it
+- The website's build output (`dist/`) and four unused images are no longer in the repository
+
 ### Performance
 - **Smaller first load**: initial JavaScript 1148 → 857 KB (raw). The game room is a separate chunk loaded once a game is open (`@defer`); dialogs (new game, join, ticket, import, invite, username, about) load on first open; the animation engine loads after start-up (`provideAnimationsAsync`)
 - **Demo table hydrates on idle**: still rendered on the server, its JS loads when the browser is idle (incremental hydration)

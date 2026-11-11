@@ -1,0 +1,63 @@
+# Weekly dependency updates. Minor and patch updates are grouped per ecosystem to keep the PR count low;
+# major updates come as separate PRs so they can be reviewed on their own.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /frontend/open-planning-poker-web-app
+    schedule: { interval: weekly, day: monday }
+    open-pull-requests-limit: 5
+    groups:
+      angular:
+        patterns: ["@angular/*", "@angular-devkit/*", "zone.js"]
+        update-types: [minor, patch]
+      apollo-graphql:
+        patterns: ["@apollo/*", "apollo-angular", "graphql", "graphql-ws"]
+        update-types: [minor, patch]
+      other:
+        patterns: ["*"]
+        update-types: [minor, patch]
+
+  - package-ecosystem: npm
+    directory: /frontend/open-planning-poker-website
+    schedule: { interval: weekly, day: monday }
+    open-pull-requests-limit: 3
+    groups:
+      all:
+        patterns: ["*"]
+        update-types: [minor, patch]
+
+  - package-ecosystem: nuget
+    directories:
+      - /backend/open-planning-poker-game-engine
+      - /backend/open-planning-poker-user-management
+      - /backend/open-planning-poker-graphql-gateway
+      - /backend/open-planning-poker-shared
+    schedule: { interval: weekly, day: monday }
+    open-pull-requests-limit: 5
+    groups:
+      hotchocolate:
+        patterns: ["HotChocolate*", "StrawberryShake*"]
+        update-types: [minor, patch]
+      dotnet:
+        patterns: ["Microsoft.*", "System.*", "Npgsql*"]
+        update-types: [minor, patch]
+      other:
+        patterns: ["*"]
+        update-types: [minor, patch]
+
+  - package-ecosystem: docker
+    directories:
+      - /frontend/open-planning-poker-web-app
+      - /frontend/open-planning-poker-website
+      - /backend/open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL
+      - /backend/open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL
+      - /backend/open-planning-poker-graphql-gateway
+    schedule: { interval: weekly, day: monday }
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly, day: monday }
+    groups:
+      actions:
+        patterns: ["*"]

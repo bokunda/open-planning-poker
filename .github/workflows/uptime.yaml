@@ -1,0 +1,87 @@
+name: Uptime
+run-name: "Uptime check"
+
+# Checks the public endpoints from outside every 15 minutes.
+# When a check fails it opens one GitHub issue labeled "uptime" (GitHub notifies repository watchers),
+# and when everything is healthy again it closes that issue.
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: uptime
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check endpoints
+        id: check
+        shell: bash
+        run: |
+          set -u
+          failures=()
+
+          # url, expected status, text the body must contain, extra curl args
+          check() {
+            local name="$1" url="$2" expect="$3" needle="$4"; shift 4
+            local body status
+            body=$(mktemp)
+            for attempt in 1 2 3; do
+              status=$(curl -sS -o "$body" -w "%{http_code}" --max-time 15 "$@" "$url" || echo "000")
+              if [ "$status" = "$expect" ] && grep -q -- "$needle" "$body"; then
+                echo "OK   $name ($status)"; return 0
+              fi
+              sleep 10
+            done
+            echo "FAIL $name: HTTP $status, expected $expect containing '$needle'"
+            failures+=("$name: HTTP $status")
+          }
+
+          check "Website"           https://openplanningpoker.com/                         200 "Open Planning Poker"
+          check "Website changelog" https://openplanningpoker.com/changelog/               200 "Changelog"
+          check "App"               https://app.openplanningpoker.com/                     200 "Open Planning Poker"
+          check "App ai-catalog"    https://app.openplanningpoker.com/.well-known/ai-catalog.json 200 '"specVersion"'
+          check "GraphQL gateway"   https://gateway.openplanningpoker.com/graphql          200 '"__typename":"Query"' \
+            -X POST -H "Content-Type: application/json" --data '{"query":"{ __typename }"}'
+
+          if [ ${#failures[@]} -gt 0 ]; then
+            printf '%s\n' "${failures[@]}" > failures.txt
+            echo "failed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "failed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open or update the uptime issue
+        if: steps.check.outputs.failed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh label create uptime --color B60205 --description "Automatic uptime alerts" --force >/dev/null
+          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          body=$(printf 'Failing checks (%s UTC):\n\n```\n%s\n```\n\nRun: %s' "$(date -u '+%Y-%m-%d %H:%M')" "$(cat failures.txt)" "$run_url")
+          existing=$(gh issue list --label uptime --state open --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "Service down: $(head -1 failures.txt)" --label uptime --body "$body"
+          fi
+          exit 1
+
+      - name: Close the uptime issue when healthy
+        if: steps.check.outputs.failed == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          for n in $(gh issue list --label uptime --state open --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "All checks pass again ($(date -u '+%Y-%m-%d %H:%M') UTC)."
+          done
