@@ -73,6 +73,11 @@ export class GameComponent implements OnInit {
   players: ApiCollectionOfGamePlayer | undefined;
   votes: Vote[] = [];
   votesRevealed = false;
+  /**
+   * Tickets whose votes were revealed in this session. Reveal events and query results can
+   * arrive in any order; only a re-vote may turn a revealed ticket back to hidden.
+   */
+  private readonly revealedTicketIds = new Set<string>();
 
   @Input() currentUserName: string = '';
 
@@ -200,12 +205,22 @@ export class GameComponent implements OnInit {
 
   /** Votes stay hidden on the server until reveal; the reveal event carries their values. */
   private applyRevealedVotes(reveal: VotesRevealed): void {
-    if (reveal.ticketId !== this.ticket?.id) return;
-    this.votesRevealed = true;
-    this.votes = reveal.votes ?? [];
+    this.revealedTicketIds.add(reveal.ticketId);
     if (this.game?.id) {
       this.getTickets(this.game.id);
     }
+    if (reveal.ticketId !== this.ticket?.id) return;
+    this.votesRevealed = true;
+    if (reveal.votes?.length) {
+      this.votes = reveal.votes;
+    } else {
+      // Payload without votes: load the (now revealed) values from the server.
+      this.getVotes(reveal.ticketId);
+    }
+  }
+
+  private isRevealed(ticket: Ticket | undefined): boolean {
+    return !!ticket && (!!ticket.votesRevealed || this.revealedTicketIds.has(ticket.id));
   }
 
   handleVoteAgain() {
@@ -430,7 +445,7 @@ export class GameComponent implements OnInit {
       next: ({ data }) => {
         if (data) {
           this.ticket = data?.ticket;
-          this.votesRevealed = !!this.ticket?.votesRevealed;
+          this.votesRevealed = this.isRevealed(this.ticket);
           this.getVotes(this.ticket.id);
           this.getTickets(this.ticket.gameId);
         }
@@ -539,6 +554,7 @@ export class GameComponent implements OnInit {
           return;
         }
         const ticket = result.data.onTicketReVoted as Ticket;
+        this.revealedTicketIds.delete(ticket.id);
         this.ticket = ticket;
         this.votes = [];
         this.votesRevealed = false;
@@ -652,7 +668,7 @@ export class GameComponent implements OnInit {
           if (!this.ticket && this.tickets.length > 0) {
             const firstTicket = this.tickets[0];
             this.ticket = firstTicket;
-            this.votesRevealed = !!firstTicket?.votesRevealed;
+            this.votesRevealed = this.isRevealed(firstTicket);
             if (firstTicket?.id && firstTicket.id !== this.currentSubscribedTicketId) {
               this.currentSubscribedTicketId = firstTicket.id;
               this.getVotes(firstTicket.id);

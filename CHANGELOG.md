@@ -15,7 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Fusion Gateway CORS** limited to configured origins (was: any origin with credentials); query plans disabled
 - **CI secrets at runtime** — DB password and JWT secret are passed as container env vars instead of being baked into images
 
+### Added
+- `deleteGame` mutation (host only) — deletes a game with its tickets, votes and players
+
 ### Fixed
+- **Re-vote starts a clean round** — `reVoteTicket` deletes the ticket's previous votes on the server, so old votes no longer count after "Vote Again"
+- **Reveal state is order-independent in the UI** — a late query result can no longer hide votes that were already revealed; only a re-vote hides them again
+- **Gateway deploy uses the freshly composed schema** — CI now composes the `gateway.fgp` that the Docker image copies (with a pinned Fusion CLI) instead of an unused file
 - Joining a game via link before the user identity resolved no longer skips the join
 - `updateSettings` can no longer move settings to another game
 - Chat messages limited to 1000 characters

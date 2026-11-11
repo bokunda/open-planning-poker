@@ -31,12 +31,13 @@ jobs:
 
       - name: Install HotChocolate.Fusion CLI
         run: |
-          dotnet tool install -g HotChocolate.Fusion.CommandLine
+          dotnet tool install -g HotChocolate.Fusion.CommandLine --version 15.1.17
 
+      # Subgraphs keep their Docker DNS addresses from subgraph-config.json: the gateway container
+      # reaches them over the oppnetwork Docker network, not over the public internet.
       - name: Pack User Management subgraph
         working-directory: backend/open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL
         run: |
-          jq '.http.baseAddress = "${{ vars.OPP_UM_SUBGRAPH_URL }}"' subgraph-config.json > temp.json && mv temp.json subgraph-config.json
           dotnet run -- schema export --output schema.graphql
           fusion subgraph pack
           cat subgraph-config.json
@@ -44,17 +45,20 @@ jobs:
       - name: Pack Game Engine subgraph
         working-directory: backend/open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL
         run: |
-          jq '.http.baseAddress = "${{ vars.OPP_GE_SUBGRAPH_URL }}"' subgraph-config.json > temp.json && mv temp.json subgraph-config.json
           dotnet run -- schema export --output schema.graphql
           fusion subgraph pack
           cat subgraph-config.json
 
+      # Compose into the gateway.fgp that the Docker image copies, so every deploy serves the
+      # current subgraph schemas (previously the composed file was written elsewhere and unused).
       - name: Compose Schema
-        working-directory: backend
+        working-directory: backend/open-planning-poker-graphql-gateway
         run: |
-          fusion compose -p gateway.fgp -s open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL/UserManagement.fsp
-          fusion compose -p gateway.fgp -s open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL/GameEngine.fsp
-          cat gateway.fgp
+          fusion compose -p gateway.fgp -s ../open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL/UserManagement.fsp
+          fusion compose -p gateway.fgp -s ../open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL/GameEngine.fsp
+          unzip -p gateway.fgp fusion.graphql | grep -q "votesRevealed" || { echo "::error::Composed gateway schema is missing expected fields"; exit 1; }
+          unzip -p gateway.fgp GameEngine/subgraph-config.json
+          unzip -p gateway.fgp UserManagement/subgraph-config.json
 
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin

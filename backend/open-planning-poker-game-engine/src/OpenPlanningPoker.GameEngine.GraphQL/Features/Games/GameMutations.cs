@@ -40,6 +40,26 @@ public class GameMutations
     }
 
     /// <summary>
+    /// Deletes a game with its tickets, votes and players. Host only.
+    /// </summary>
+    public async Task<FieldResult<bool, ApplicationError>> DeleteGameAsync(
+        [Service] ISender sender,
+        [Service] IGameAccessService gameAccess,
+        [Required] Guid gameId,
+        CancellationToken cancellationToken)
+    {
+        if (await gameAccess.EnsureHostAsync(gameId, cancellationToken) is { } accessError)
+        {
+            return accessError;
+        }
+
+        var result = await sender.Send(new DeleteGameCommand(gameId), cancellationToken);
+        return result.IsSuccess
+            ? result.Value
+            : result.Error!;
+    }
+
+    /// <summary>
     /// Generates a PDF report of the game. Only players of the game can generate it.
     /// </summary>
     public async Task<FieldResult<GameReport, ApplicationError>> GenerateGameReport(

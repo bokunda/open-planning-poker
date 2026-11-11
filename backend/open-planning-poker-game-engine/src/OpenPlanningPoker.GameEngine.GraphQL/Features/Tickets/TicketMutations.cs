@@ -60,8 +60,8 @@ public class TicketMutations
     }
 
     /// <summary>
-    /// Re-votes a ticket: hides its votes again and broadcasts it as the active ticket
-    /// to all players in the game. Host only.
+    /// Re-votes a ticket: deletes its votes, hides voting again and broadcasts it as the
+    /// active ticket to all players in the game. Host only.
     /// </summary>
     public async Task<FieldResult<Ticket, ApplicationError>> ReVoteTicketAsync(
         [Service] ISender sender,
@@ -83,10 +83,10 @@ public class TicketMutations
             return GameAccessErrors.TicketNotFound;
         }
 
-        var hideResult = await sender.Send(new SetTicketVotesRevealedCommand(ticketId, false), cancellationToken);
-        if (!hideResult.IsSuccess)
+        var resetResult = await sender.Send(new ResetTicketVotesCommand(ticketId), cancellationToken);
+        if (!resetResult.IsSuccess)
         {
-            return hideResult.Error!;
+            return resetResult.Error!;
         }
 
         var result = await sender.Send(new GetTicketQuery(ticketId), cancellationToken);
