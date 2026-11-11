@@ -54,12 +54,49 @@ body {
   color: var(--opp-primary-600) !important;
 }
 
-/* Font Awesome: ensure font-display swap for better FCP */
-@font-face {
-  font-family: 'Font Awesome 6 Brands';
-  font-display: swap;
+/* ── Redesign phase 1: typography ── */
+body {
+  font-family: var(--opp-font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-@font-face {
-  font-family: 'Font Awesome 6 Free';
-  font-display: swap;
+
+h1, h2, h3, h4,
+.mat-typography h1, .mat-typography h2, .mat-typography h3, .mat-typography h4,
+.mat-mdc-dialog-title,
+.opp-display {
+  font-family: var(--opp-font-display);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.opp-mono { font-family: var(--opp-font-mono); }
+.opp-tabular { font-variant-numeric: tabular-nums; }
+
+/* ── Buttons: pill shape for every Material button variant ── */
+:root {
+  --mdc-filled-button-container-shape: var(--opp-radius-full);
+  --mdc-protected-button-container-shape: var(--opp-radius-full);
+  --mdc-outlined-button-container-shape: var(--opp-radius-full);
+  --mdc-text-button-container-shape: var(--opp-radius-full);
+}
+
+.mat-mdc-button-base {
+  transition: transform var(--opp-transition-fast), box-shadow var(--opp-transition-fast);
+
+  &:active:not([disabled]) {
+    transform: scale(0.97);
+  }
+}
+
+/* ── Motion: respect the OS "reduce motion" setting everywhere ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
 }

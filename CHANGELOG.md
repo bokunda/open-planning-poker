@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Redesign — phase 1 (foundation)
+- **New visual foundation**: violet-tinted neutrals for both themes, a refined brand violet, and new roles for the coming table layout (felt, card face/back, consensus, spread) in `styles/_variables.scss`
+- **Typography**: Bricolage Grotesque for headings and card numbers, Figtree for text, JetBrains Mono for keys and the timer (Roboto removed)
+- **Poker card component** (`app-poker-card`): light face with corner indices, patterned back, flip animation (staggered on reveal), empty slot and a drop-in animation when a vote arrives
+- **Your cards** lift on hover and stay raised when selected; the **players list** shows small cards (empty slot / face down / revealed) instead of "?" boxes
+- **Pill buttons** across all Material button variants; motion tokens (durations, easing) and a global reduced-motion rule
+- **Room skeleton** while a game loads instead of an empty screen
+
+### Fixed
+- Opening a link to a game that no longer exists showed an empty room and redirected to `/game/undefined`; it now says the game no longer exists
+
 ### Security (P1)
 - **Rate limiting that actually applies** — per-client-IP token bucket on the Fusion gateway (the YARP policy was never attached) plus per-action limits for registration, game creation, reports, chat, tickets, votes and joins
 - **Container ports bound to 127.0.0.1** — every service was also reachable directly over plain HTTP, bypassing nginx and TLS

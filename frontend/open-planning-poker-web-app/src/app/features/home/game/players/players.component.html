@@ -11,15 +11,20 @@
   <ng-container *ngIf="!collapsed">
     <!-- Player list -->
     <div class="players-list" *ngIf="players?.items">
-      <div class="player-row" *ngFor="let player of players?.items; trackBy: trackByPlayerId"
+      <div class="player-row" *ngFor="let player of players?.items; let i = index; trackBy: trackByPlayerId"
         [class.player-row--me]="player.id === currentUserId">
         <div class="player-avatar" [class.player-avatar--voted]="getVoteData(player.id)">
           {{ player.name?.charAt(0) || '?' }}
         </div>
         <span class="player-name">{{ player.name }}</span>
-        <span class="player-vote" [class.player-vote--hidden]="!votesRevealed && getVoteData(player.id)">
-          {{ getVoteDisplay(player.id) }}
-        </span>
+        <app-poker-card
+          class="player-vote"
+          size="sm"
+          [value]="getVoteData(player.id)?.value"
+          [empty]="!getVoteData(player.id)"
+          [faceDown]="!votesRevealed"
+          [flipDelay]="i * 70">
+        </app-poker-card>
       </div>
     </div>
 

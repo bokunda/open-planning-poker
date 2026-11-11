@@ -1,50 +1,66 @@
 /* ============================================
    Open Planning Poker — Design Tokens
-   Single source of truth for all colors, spacing, typography
+   Single source of truth for colors, type, spacing and motion.
+   Redesign phase 1: "the table" — violet-tinted neutrals, a dark felt for the
+   table in both themes, light card faces, and semantic colors for vote results.
    ============================================ */
 
 :root {
-  /* ── Primary palette (purple) ── */
-  --opp-primary: #7e3af2;
-  --opp-primary-50: #f3f0ff;
-  --opp-primary-100: #e9e2ff;
-  --opp-primary-200: #d3c9ff;
-  --opp-primary-300: #b49bff;
-  --opp-primary-400: #9068ff;
-  --opp-primary-500: #7e3af2;
-  --opp-primary-600: #6c2bd9;
-  --opp-primary-700: #5521b5;
-  --opp-primary-800: #441b93;
-  --opp-primary-900: #361778;
+  /* ── Brand (violet) ── */
+  --opp-primary: #6a3ae8;
+  --opp-primary-50: #f1ecff;
+  --opp-primary-100: #e6ddff;
+  --opp-primary-200: #cfc0ff;
+  --opp-primary-300: #ad94ff;
+  --opp-primary-400: #8a66f5;
+  --opp-primary-500: #6a3ae8;
+  --opp-primary-600: #5a2bd0;
+  --opp-primary-700: #4a22ad;
+  --opp-primary-800: #3b1c8a;
+  --opp-primary-900: #2e176b;
 
-  /* ── Surfaces ── */
+  /* ── Surfaces (neutrals biased toward the violet) ── */
+  --opp-bg: #f5f4fa;
+  --opp-bg-page: #efedf6;
   --opp-surface: #ffffff;
-  --opp-surface-elevated: #fafafa;
-  --opp-surface-hover: #f3f0ff;
-  --opp-bg: #fafafa;
-  --opp-bg-page: #f5f5f5;
+  --opp-surface-elevated: #faf9fd;
+  --opp-surface-hover: #f0ecfb;
 
   /* ── Text ── */
-  --opp-text: #1a1a1a;
-  --opp-text-secondary: #666;
-  --opp-text-muted: #999;
+  --opp-text: #18152b;
+  --opp-text-secondary: #5d587a;
+  --opp-text-muted: #7f7a99;
   --opp-text-on-primary: #ffffff;
 
   /* ── Borders & dividers ── */
-  --opp-border: #e5e7eb;
-  --opp-border-light: #f0f0f0;
+  --opp-border: #e2dfee;
+  --opp-border-light: #eeecf5;
+
+  /* ── The table and the cards ── */
+  --opp-felt: #1f1a3a;            /* table surface, dark in both themes */
+  --opp-felt-edge: #2d2652;
+  --opp-felt-ink: #e9e5ff;
+  --opp-card-face: #ffffff;       /* card faces stay light, like real cards */
+  --opp-card-ink: #18152b;
+  --opp-card-back: #6a3ae8;
+  --opp-card-border: #e2dfee;
 
   /* ── Semantic ── */
-  --opp-success: #22c55e;
-  --opp-warning: #f59e0b;
-  --opp-danger: #ef4444;
-  --opp-info: #3b82f6;
+  --opp-success: #17855a;
+  --opp-warning: #b8681c;
+  --opp-danger: #d23c3c;
+  --opp-info: #2f6fdc;
+  --opp-consensus: #17855a;       /* votes agree */
+  --opp-spread: #b8681c;          /* outliers worth discussing */
 
   /* ── Shadows ── */
-  --opp-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --opp-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --opp-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
-  --opp-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.16);
+  --opp-shadow-sm: 0 1px 2px rgba(24, 21, 43, 0.06), 0 1px 3px rgba(24, 21, 43, 0.06);
+  --opp-shadow-md: 0 4px 12px rgba(24, 21, 43, 0.09);
+  --opp-shadow-lg: 0 10px 28px rgba(24, 21, 43, 0.12);
+  --opp-shadow-xl: 0 18px 48px rgba(24, 21, 43, 0.16);
+  --opp-shadow-card: 0 1px 2px rgba(24, 21, 43, 0.08);
+  --opp-shadow-card-lifted: 0 12px 24px rgba(24, 21, 43, 0.18);
+  --opp-shadow-card-selected: 0 12px 24px rgba(106, 58, 232, 0.35);
 
   /* ── Spacing scale (4px base) ── */
   --opp-space-1: 4px;
@@ -63,10 +79,15 @@
   --opp-radius-lg: 16px;
   --opp-radius-xl: 24px;
   --opp-radius-full: 9999px;
+  --opp-radius-card: 10px;
 
-  /* ── Typography ── */
-  --opp-font: 'Roboto', 'Helvetica Neue', sans-serif;
-  --opp-font-mono: 'Roboto Mono', monospace;
+  /* ── Typography ──
+     Display: Bricolage Grotesque — headings and the numbers on cards.
+     Body: Figtree. Mono: JetBrains Mono — ticket keys, timer, codes. */
+  --opp-font-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --opp-font-body: 'Figtree', 'Segoe UI', system-ui, sans-serif;
+  --opp-font: var(--opp-font-body);
+  --opp-font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', monospace;
   --opp-font-size-xs: 0.75rem;
   --opp-font-size-sm: 0.875rem;
   --opp-font-size-base: 1rem;
@@ -74,15 +95,23 @@
   --opp-font-size-xl: 1.25rem;
   --opp-font-size-2xl: 1.5rem;
   --opp-font-size-3xl: 1.875rem;
+  --opp-font-size-4xl: 2.5rem;
 
   /* ── Layout ── */
   --opp-sidebar-width: 320px;
   --opp-max-content: 960px;
 
-  /* ── Transitions ── */
-  --opp-transition-fast: 150ms ease;
-  --opp-transition-base: 250ms ease;
-  --opp-transition-slow: 350ms ease;
+  /* ── Motion ──
+     Animate only transform and opacity; reduced motion collapses durations (styles.scss). */
+  --opp-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --opp-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --opp-duration-fast: 140ms;
+  --opp-duration-base: 240ms;
+  --opp-duration-slow: 460ms;
+  --opp-stagger: 70ms;
+  --opp-transition-fast: var(--opp-duration-fast) var(--opp-ease-out);
+  --opp-transition-base: var(--opp-duration-base) var(--opp-ease-out);
+  --opp-transition-slow: var(--opp-duration-slow) var(--opp-ease-out);
 
   /* ── Z-index scale ── */
   --opp-z-sidebar: 100;
@@ -92,28 +121,48 @@
   --opp-z-tooltip: 1100;
 }
 
-/* ── Dark theme overrides ── */
+/* ── Dark theme overrides (ThemeService toggles .dark-theme on <html>) ── */
 .dark-theme {
-  --opp-surface: #1e1e1e;
-  --opp-surface-elevated: #252525;
-  --opp-surface-hover: #2a2a2a;
-  --opp-bg: #121212;
-  --opp-bg-page: #0a0a0a;
+  --opp-primary: #9d80ff;
+  --opp-primary-50: #221b3f;
+  --opp-primary-100: #2a2250;
+  --opp-primary-200: #3a2f6b;
+  --opp-primary-300: #7f63e6;
 
-  --opp-text: #e0e0e0;
-  --opp-text-secondary: #aaa;
-  --opp-text-muted: #777;
+  --opp-bg: #0e0c19;
+  --opp-bg-page: #0a0913;
+  --opp-surface: #17142a;
+  --opp-surface-elevated: #1d1933;
+  --opp-surface-hover: #241f3d;
 
-  --opp-border: #333;
-  --opp-border-light: #2a2a2a;
+  --opp-text: #ece9f8;
+  --opp-text-secondary: #b3aecd;
+  --opp-text-muted: #8a84a6;
+  --opp-text-on-primary: #ffffff;
 
-  --opp-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --opp-border: #2a2542;
+  --opp-border-light: #221e36;
+
+  --opp-felt: #1a1533;
+  --opp-felt-edge: #2e2756;
+  --opp-card-face: #f4f2fb;
+  --opp-card-ink: #18152b;
+  --opp-card-back: #7c5cf0;
+  --opp-card-border: #d9d4ea;
+
+  --opp-success: #3fc28a;
+  --opp-warning: #e59a4f;
+  --opp-danger: #f06b6b;
+  --opp-consensus: #3fc28a;
+  --opp-spread: #e59a4f;
+
+  --opp-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
   --opp-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --opp-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --opp-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+  --opp-shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.5);
+  --opp-shadow-xl: 0 18px 48px rgba(0, 0, 0, 0.6);
+  --opp-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --opp-shadow-card-lifted: 0 12px 24px rgba(0, 0, 0, 0.5);
+  --opp-shadow-card-selected: 0 12px 28px rgba(124, 92, 240, 0.45);
 
-  /* Primary palette — dark mode (muted/darker tones for bubbles, highlights) */
-  --opp-primary-50: #2a2040;
-  --opp-primary-100: #352850;
-  --opp-primary-200: #463570;
+  color-scheme: dark;
 }

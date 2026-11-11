@@ -33,7 +33,7 @@ import { GENERATE_GAME_REPORT } from './gql/generateGameReport.graphql';
 import { UPDATE_SETTINGS } from './gql/updateSettings.graphql';
 import { MutationReVoteTicketArgs, MutationRevealVotesArgs, MutationUpdateSettingsArgs, ReVoteTicketPayload, RevealVotesPayload, UpdateSettingsPayload, VotesRevealed } from '../../../graphql/graphql-gateway.service';
 import { CreateGameResult } from './create/create-game.component';
-import { LoadingComponent } from '../../../shared/loading/loading.component';
+import { RoomSkeletonComponent } from '../../../shared/room-skeleton/room-skeleton.component';
 import { GameDetailsComponent } from './details/game-details.component';
 import { VotingComponent } from './voting/voting.component';
 import { VotingHistoryComponent } from './voting-history/voting-history.component';
@@ -46,7 +46,7 @@ import { map } from 'rxjs';
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, LoadingComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent],
+  imports: [CommonModule, MatButtonModule, MatIconModule, RoomSkeletonComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent],
   animations: [
     trigger('fadeSlide', [
       transition(':enter', [
@@ -111,11 +111,14 @@ export class GameComponent implements OnInit {
   private gameSubsInitialized = false;
   private currentSubscribedTicketId: string | undefined;
 
+  /** Set when the game in the URL does not exist (or was deleted). */
+  gameNotFound = false;
+
   get isLoading(): boolean {
     // Only show loading when navigating to a specific game route (has gameId in URL)
     // and game data hasn't loaded yet. On the landing page (!gameId), don't show loader.
     const hasGameId = !!this.route.snapshot.paramMap.get('id');
-    return hasGameId && !this.game;
+    return hasGameId && !this.game && !this.gameNotFound;
   }
 
   /** The host is decided by the server (game creator); the UI only mirrors it. */
@@ -169,6 +172,7 @@ export class GameComponent implements OnInit {
 
   handleLeaveGame() {
     this.game = undefined;
+    this.gameNotFound = false;
     this.joinedGameId = undefined;
     this.gameSubsInitialized = false;
     this.router.navigate([`/game`]);
@@ -252,7 +256,14 @@ export class GameComponent implements OnInit {
     .valueChanges
     .subscribe({
       next: ({ data }) => {
+        // The query returns an ApplicationError (e.g. GameNotFound) instead of a Game
+        // when the id does not exist or the game was deleted.
+        if (data && !data.game?.id) {
+          this.gameNotFound = true;
+          return;
+        }
         if (data) {
+          this.gameNotFound = false;
           this.game = data?.game;
           // Without a user yet, the currentUserId setter joins once it is known.
           if (this.currentUserId) {

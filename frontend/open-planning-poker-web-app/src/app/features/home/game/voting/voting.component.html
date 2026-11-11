@@ -101,14 +101,17 @@
       </div>
     </div>
 
-    <div class="voting-cards">
+    <div class="voting-cards" role="group" aria-label="Your cards">
       <button *ngFor="let voteOption of voteOptions; trackBy: trackByOption"
+        type="button"
         class="vote-card"
         [class.vote-card--selected]="selectedOption === voteOption"
         [class.vote-card--disabled]="ticket?.id == null"
         [disabled]="ticket?.id == null"
+        [attr.aria-pressed]="selectedOption === voteOption"
+        [attr.aria-label]="'Vote ' + voteOption"
         (click)="selectOption(voteOption)">
-        <span class="vote-card-value">{{ voteOption }}</span>
+        <app-poker-card [value]="voteOption" size="lg" [selected]="selectedOption === voteOption"></app-poker-card>
       </button>
     </div>
 

@@ -1,0 +1,104 @@
+:host {
+  display: inline-block;
+  line-height: 1;
+}
+
+.card {
+  --card-w: 44px;
+  --card-h: 62px;
+  --card-font: 1.25rem;
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  perspective: 700px;
+  border-radius: var(--opp-radius-card);
+
+  &--sm { --card-w: 30px; --card-h: 42px; --card-font: 0.95rem; border-radius: 6px; }
+  &--md { --card-w: 44px; --card-h: 62px; --card-font: 1.25rem; }
+  &--lg { --card-w: 64px; --card-h: 92px; --card-font: 1.75rem; border-radius: 12px; }
+
+  @media (max-width: 600px) {
+    &--lg { --card-w: 54px; --card-h: 78px; --card-font: 1.45rem; }
+  }
+}
+
+.card-inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform var(--opp-duration-slow) var(--opp-ease-out);
+  transition-delay: var(--flip-delay, 0ms);
+}
+
+.is-face-down .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.card-front {
+  background: var(--opp-card-face);
+  color: var(--opp-card-ink);
+  border: 1px solid var(--opp-card-border);
+  box-shadow: var(--opp-shadow-card);
+  transition: box-shadow var(--opp-transition-base), border-color var(--opp-transition-fast);
+}
+
+.card-value {
+  font-family: var(--opp-font-display);
+  font-weight: 800;
+  font-size: var(--card-font);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* Corner indices like a real playing card (large cards only). */
+.card-pip {
+  position: absolute;
+  font-family: var(--opp-font-display);
+  font-weight: 700;
+  font-size: 0.62rem;
+  opacity: 0.55;
+
+  &--top { top: 6px; left: 7px; }
+  &--bottom { bottom: 6px; right: 7px; transform: rotate(180deg); }
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.16) 0 4px, transparent 4px 9px),
+    var(--opp-card-back);
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  box-shadow: var(--opp-shadow-card);
+}
+
+.is-selected .card-front {
+  border: 2px solid var(--opp-primary);
+  box-shadow: var(--opp-shadow-card-selected);
+}
+
+.is-empty {
+  border: 2px dashed var(--opp-border);
+}
+
+.is-dropping .card-inner {
+  animation: card-drop var(--opp-duration-slow) var(--opp-ease-spring);
+}
+
+@keyframes card-drop {
+  from {
+    opacity: 0;
+    translate: 0 -14px;
+    rotate: -8deg;
+    scale: 1.1;
+  }
+}

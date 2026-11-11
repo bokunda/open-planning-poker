@@ -116,22 +116,7 @@
 }
 
 .player-vote {
-  min-width: 36px;
-  height: 32px;
-  border: 2px solid var(--opp-border);
-  border-radius: var(--opp-radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: var(--opp-font-size-sm);
-  background: var(--opp-surface);
-
-  &--hidden {
-    background: var(--opp-primary);
-    color: var(--opp-text-on-primary);
-    border-color: var(--opp-primary);
-  }
+  flex: 0 0 auto;
 }
 
 .players-empty {
