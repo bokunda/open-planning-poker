@@ -1,44 +1,107 @@
+/* Light bar that stays on top and lets the page show through slightly. */
+:host {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: block;
+}
+
+.header-wrapper {
+  background: color-mix(in srgb, var(--opp-bg) 82%, transparent);
+  backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid var(--opp-border);
+}
+
+.header {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--opp-space-3);
+}
+
 mat-toolbar {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+  --mat-toolbar-container-background-color: transparent;
+  --mat-toolbar-container-text-color: var(--opp-text);
+  --mat-toolbar-standard-height: 60px;
+  --mat-toolbar-mobile-height: 56px;
+  gap: var(--opp-space-2);
+  padding: 0 !important;
+  background: transparent;
 }
 
 .header-brand {
-  font-size: 1.05rem;
-  font-weight: 600;
-  letter-spacing: -0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--opp-space-2);
+  color: var(--opp-text);
+  text-decoration: none;
+  border-radius: var(--opp-radius-md);
+
+  &:focus-visible { outline: 3px solid var(--opp-primary-300); outline-offset: 3px; }
 }
 
-.header-spacer {
-  flex: 1 1 auto;
+.header-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
 }
 
+.header-brand-text {
+  font-family: var(--opp-font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.header-brand-accent { color: var(--opp-primary); }
+
+.header-spacer { flex: 1 1 auto; }
+
+/* The name as a chip with an initial, like a seat at the table. */
 .header-welcome {
   display: flex;
   align-items: center;
-  gap: var(--opp-space-1);
-  padding: var(--opp-space-1) var(--opp-space-2);
-  border: 0;
+  gap: var(--opp-space-2);
+  max-width: 50vw;
+  padding: 4px var(--opp-space-3) 4px 4px;
+  border: 1px solid var(--opp-border);
   border-radius: var(--opp-radius-full);
-  background: none;
+  background: var(--opp-surface);
   font-family: inherit;
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: var(--opp-text-secondary);
+  font-size: var(--opp-font-size-sm);
+  font-weight: 600;
+  color: var(--opp-text);
   white-space: nowrap;
   cursor: pointer;
+  transition: border-color var(--opp-transition-fast), box-shadow var(--opp-transition-fast);
 
-  .header-edit-btn {
-    transform: scale(0.6);
-    opacity: 0.5;
-    transition: opacity var(--opp-transition-fast);
-
-    &:hover {
-      opacity: 1;
-    }
-  }
+  &:hover { border-color: var(--opp-primary-300); box-shadow: var(--opp-shadow-sm); }
+  &:focus-visible { outline: 3px solid var(--opp-primary-300); outline-offset: 2px; }
 }
 
-.header-welcome:hover { background: var(--opp-surface-hover); }
-.header-welcome:focus-visible { outline: 3px solid var(--opp-primary-300); outline-offset: 2px; }
-.header-edit-icon { font-size: 18px; width: 18px; height: 18px; }
+.header-avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--opp-primary);
+  color: #fff;
+  font-family: var(--opp-font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.header-username { overflow: hidden; text-overflow: ellipsis; }
+
+.header-edit-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--opp-text-muted);
+}
+
+@media (max-width: 480px) {
+  .header-brand-text { font-size: 1rem; }
+  .header-welcome { max-width: 42vw; }
+}

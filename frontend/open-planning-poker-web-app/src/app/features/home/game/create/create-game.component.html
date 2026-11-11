@@ -1,43 +1,49 @@
-<div class="create-game-wrapper">
-  <div class="create-game">
-    <form [formGroup]="createGameForm" (ngSubmit)="onSubmit()" (keydown.enter)="$event.preventDefault(); onSubmit()" class="create-game-form">
-      <mat-form-field appearance="outline">
-        <mat-label>Game Name</mat-label>
-        <input matInput formControlName="name" />
-      </mat-form-field>
+<form [formGroup]="createGameForm" (ngSubmit)="onSubmit()" class="create-game-form">
+  <mat-form-field appearance="outline">
+    <mat-label>Game name</mat-label>
+    <input matInput formControlName="name" placeholder="Sprint 42 refinement" cdkFocusInitial
+      (keydown.enter)="$event.preventDefault(); onSubmit()" />
+    <mat-error *ngIf="createGameForm.get('name')?.hasError('minlength') || createGameForm.get('name')?.hasError('required')">
+      Use at least 3 characters.
+    </mat-error>
+  </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Voting Deck</mat-label>
-        <mat-select formControlName="deckSetup">
-          <mat-option *ngFor="let deck of deckPresets" [value]="deck.value">
-            <span class="deck-option-label">{{ deck.label }}</span>
-            <span class="deck-option-example">— {{ deck.example }}</span>
-          </mat-option>
-          <mat-option value="__custom__">Custom Deck...</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <!-- Custom deck editor -->
-      <ng-container *ngIf="isCustomDeck">
-        <mat-form-field appearance="outline">
-          <mat-label>Custom Deck Values (comma-separated)</mat-label>
-          <input matInput formControlName="customDeck" placeholder="1,2,3,5,8,13,?,☕" />
-        </mat-form-field>
-        <div class="custom-deck-preview" *ngIf="customDeckPreview.length > 0">
-          <span class="preview-label">Preview:</span>
-          <span class="preview-card" *ngFor="let card of customDeckPreview">{{ card }}</span>
-        </div>
-      </ng-container>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Description</mat-label>
-        <textarea matInput formControlName="description"></textarea>
-      </mat-form-field>
-
-      <button mat-fab extended type="submit">
-        Create
-        <mat-icon>sports_esports</mat-icon>
+  <fieldset class="deck-picker">
+    <legend class="deck-legend">Cards</legend>
+    <div class="deck-options" role="radiogroup" aria-label="Voting deck">
+      <button type="button" class="deck-option" *ngFor="let deck of deckPresets"
+        role="radio" [attr.aria-checked]="selectedDeck === deck.value"
+        [class.deck-option--selected]="selectedDeck === deck.value"
+        (click)="selectDeck(deck.value)">
+        <span class="deck-name">{{ deck.label }}</span>
+        <span class="deck-cards" aria-hidden="true">
+          <span class="mini-card" *ngFor="let card of previewCards(deck.value)">{{ card }}</span>
+        </span>
       </button>
-    </form>
-  </div>
-</div>
+      <button type="button" class="deck-option" role="radio" [attr.aria-checked]="isCustomDeck"
+        [class.deck-option--selected]="isCustomDeck" (click)="selectDeck('__custom__')">
+        <span class="deck-name">Custom</span>
+        <span class="deck-hint">Your own values</span>
+      </button>
+    </div>
+  </fieldset>
+
+  <ng-container *ngIf="isCustomDeck">
+    <mat-form-field appearance="outline">
+      <mat-label>Card values, separated by commas</mat-label>
+      <input matInput formControlName="customDeck" placeholder="1, 2, 3, 5, 8, 13, ?" />
+    </mat-form-field>
+    <div class="deck-cards deck-cards--preview" *ngIf="customDeckPreview.length > 0" aria-label="Preview of your cards">
+      <span class="mini-card" *ngFor="let card of customDeckPreview">{{ card }}</span>
+    </div>
+  </ng-container>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Description (optional)</mat-label>
+    <textarea matInput formControlName="description" rows="2" placeholder="What are you estimating today?"></textarea>
+  </mat-form-field>
+
+  <button mat-flat-button color="primary" class="opp-submit" type="submit" [disabled]="createGameForm.invalid">
+    <mat-icon>add</mat-icon> Create game
+  </button>
+</form>

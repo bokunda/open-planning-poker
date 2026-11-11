@@ -15,8 +15,9 @@ export interface QrShareData {
   imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
   template: `
     <div class="qr-share-wrapper">
-      <h2 mat-dialog-title>Share Game: {{ data.gameName }}</h2>
+      <h2 mat-dialog-title>Invite your team</h2>
       <mat-dialog-content>
+        <p class="opp-dialog-lead">Share the link to {{ data.gameName }}, or let people scan the code with their phone.</p>
         <div class="qr-container">
           <img
             [src]="qrImageUrl"
@@ -27,8 +28,8 @@ export interface QrShareData {
         <div class="qr-url">
           <code>{{ data.url }}</code>
         </div>
-        <button mat-stroked-button color="primary" (click)="copyUrl()" class="copy-btn">
-          <mat-icon>content_copy</mat-icon> Copy Link
+        <button mat-flat-button color="primary" (click)="copyUrl()" class="opp-submit copy-btn">
+          <mat-icon>content_copy</mat-icon> Copy link
         </button>
         <span class="copied-msg" *ngIf="copied">Copied!</span>
       </mat-dialog-content>

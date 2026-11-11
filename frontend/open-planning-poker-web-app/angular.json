@@ -30,6 +30,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "public/.well-known",
+                "output": ".well-known"
               }
             ],
             "styles": [
@@ -103,7 +108,10 @@
         "prerender": {
           "builder": "@angular-devkit/build-angular:prerender",
           "options": {
-            "routes": ["/", "/game"]
+            "routes": [
+              "/",
+              "/game"
+            ]
           }
         },
         "serve": {

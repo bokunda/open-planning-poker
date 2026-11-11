@@ -19,6 +19,16 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', browserDistFolder);
 
+  // Agent discovery manifest (ARD). express.static ignores dot-folders by default, so without
+  // this route the SSR fallback answered /.well-known/ai-catalog.json with the HTML page.
+  server.use('/.well-known', express.static(join(browserDistFolder, '.well-known'), {
+    dotfiles: 'allow',
+    maxAge: '1h',
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('.json')) res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    },
+  }));
+
   // Serve static files from /browser
   server.get('*.*', express.static(browserDistFolder, { maxAge: '1y' }));
 

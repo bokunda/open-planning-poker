@@ -288,9 +288,22 @@
     transform: translateY(-6px) scale(0.97);
   }
 
+  /* Keyboard focus looks like hover (lifted card) with a ring that follows the card's shape,
+     instead of a large outline around the button. */
   &:focus-visible {
-    outline: 3px solid var(--opp-primary-300);
-    outline-offset: 4px;
+    outline: none;
+  }
+
+  &:focus-visible:not(.vote-card--selected) {
+    transform: translateY(-10px);
+  }
+
+  &:focus-visible app-poker-card {
+    border-radius: 12px;
+    box-shadow:
+      0 0 0 2px var(--opp-bg),
+      0 0 0 5px var(--opp-primary-300),
+      var(--opp-shadow-card-lifted);
   }
 
   &--selected {

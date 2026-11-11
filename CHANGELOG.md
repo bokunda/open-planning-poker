@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] — 2026-11-11
+
+A new look for the whole app, built around a real poker table, plus a security and reliability pass on the backend.
+
+### Highlights
+- **A real poker table**: every player has a seat, your card flies to the table, and on reveal the cards flip one after another
+- **Results that guide the talk**: distribution, average, median and a next step when the votes are far apart
+- **Pick your deck when you create a game**, with a preview of the cards
+- **Keyboard and screen reader support**: type a card's value to vote; WCAG AA contrast in light and dark mode
+- **Built for phones**: your cards stick to the bottom of the screen and the table shows everyone
+- **Safer by default**: the host role and hidden votes are enforced on the server, with rate limits and stricter GraphQL limits
+
+### Release polish
+- **Header**: light bar that stays on top, with the logo, the brand in the display font and your name as a chip with an initial
+- **Dialogs**: one style for every dialog (new game, join, new ticket, import, invite, your name, about): blurred backdrop, a line that says what the dialog is for, a full-width main button
+- **New game dialog**: deck picker with mini cards, a live preview for a custom deck, the description is optional and Enter in the name field creates the game
+- **Version**: the footer shows the version from `package.json` (it was stuck at 1.2.1)
+- **Agent discovery**: `/.well-known/ai-catalog.json` on the app and the website, served as JSON (it returned the HTML page before)
+- **Website**: new screenshots, the app's fonts and colors, and "What's new" and the version are generated from this changelog on every deploy
+
+### Fixed
+- The keyboard focus ring on a card in your hand was drawn on the flat button behind the card; it now follows the card's rounded corners and lifts it like hover
+
 ### Redesign — phase 4 (accessibility & polish)
 - **Keyboard**: the hand is one Tab stop; arrow keys, Home and End move between cards and Enter/Space votes. Typing a card's value votes for it ("5", "13", "0.5", "?") when you are not typing in a field
 - **Screen readers**: a live region announces who voted ("Ana voted. 3 of 5 voted."), a new round and the next ticket; the results panel announces the outcome

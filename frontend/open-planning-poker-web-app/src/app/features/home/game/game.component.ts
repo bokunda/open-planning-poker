@@ -383,7 +383,7 @@ export class GameComponent implements OnInit {
 
   private openCreateGameDialog() {
     const dialogRef = this.dialog.open(CreateGameDialogComponent, {
-      width: '440px',
+      width: '540px',
       maxWidth: '95vw',
       enterAnimationDuration: '150ms',
       exitAnimationDuration: '150ms'

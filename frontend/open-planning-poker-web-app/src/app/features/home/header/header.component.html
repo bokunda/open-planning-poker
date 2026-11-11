@@ -6,13 +6,17 @@
         <mat-icon>menu</mat-icon>
       </button>
 
-      <span class="header-brand">Open Planning Poker</span>
+      <a class="header-brand" routerLink="/" aria-label="Open Planning Poker, home">
+        <img class="header-logo" src="/open-planning-poker-game-logo-64x64.png" alt="" width="28" height="28">
+        <span class="header-brand-text">Open Planning <span class="header-brand-accent">Poker</span></span>
+      </a>
       <span class="header-spacer"></span>
 
       <!-- Username -->
       <!-- One button: the name and the pencil (a button inside a button is not accessible). -->
       <button type="button" class="header-welcome" *ngIf="username" (click)="handleUpdateUser()"
         matTooltip="Edit username" [attr.aria-label]="'Edit username, currently ' + username">
+        <span class="header-avatar" aria-hidden="true">{{ username.charAt(0).toUpperCase() }}</span>
         <span class="header-username">{{ username }}</span>
         <mat-icon class="header-edit-icon" aria-hidden="true">edit</mat-icon>
       </button>

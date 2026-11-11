@@ -2,13 +2,12 @@
   <div class="update-user">
     <form [formGroup]="updateUserForm" (ngSubmit)="onSubmit()" class="update-user-form">
       <mat-form-field appearance="outline">
-        <mat-label>Username</mat-label>
-        <input matInput formControlName="username">
+        <mat-label>Your name</mat-label>
+        <input matInput formControlName="username" cdkFocusInitial>
       </mat-form-field>
 
-      <button mat-fab extended type="submit">
-        Save
-        <mat-icon>save</mat-icon>
+      <button mat-flat-button color="primary" class="opp-submit" type="submit">
+        Save name
       </button>
     </form>
 
