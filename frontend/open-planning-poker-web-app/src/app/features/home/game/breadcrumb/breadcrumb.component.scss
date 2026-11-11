@@ -1,7 +1,13 @@
+:host { display: block; }
+
+/* Same column as the header (max 1280px, centered), so the first item starts right under the hamburger icon. */
 .breadcrumb-list {
   list-style: none;
-  padding: 8px 16px;
-  margin: 0 0 8px 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1280px;
+  padding: 8px calc(var(--opp-space-3) + 12px) 8px var(--opp-space-3);
+  margin: 0 auto 8px;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
@@ -26,7 +32,7 @@
 }
 
 .breadcrumb-separator {
-  color: #9ca3af;
+  color: var(--opp-text-muted);
   user-select: none;
 }
 

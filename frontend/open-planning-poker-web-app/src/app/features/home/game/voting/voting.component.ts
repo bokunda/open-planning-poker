@@ -53,7 +53,8 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
 
   voteOptions: string[] = [];
   selectedOption: string | null = null;
-  descriptionExpanded = false;
+  /** The ticket description is shown by default; the info button hides it. */
+  descriptionExpanded = true;
 
   // Timer: shared by everyone, run by the server (app-game-timer); the table ring follows it.
   @Input() gameId = '';
@@ -75,7 +76,7 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
     if (ticketChanged) {
       if (!changes['ticket'].firstChange) this.timer?.stopIfRunning();
       this.selectedOption = null;
-      this.descriptionExpanded = false;
+      this.descriptionExpanded = true;
       if (!changes['ticket'].firstChange && this.ticket?.name) {
         this.announce(`Now voting on ${this.ticket.name}. Pick a card.`);
       }
@@ -266,7 +267,7 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
   navigateToTicket(ticketId: string | undefined): void {
     if (ticketId) {
       this.onNavigateTicket.emit(ticketId);
-      this.descriptionExpanded = false;
+      this.descriptionExpanded = true;
     }
   }
 

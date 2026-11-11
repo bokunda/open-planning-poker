@@ -1,0 +1,74 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Open Planning Poker",
+    "identifier": "did:web:openplanningpoker.com",
+    "documentationUrl": "https://openplanningpoker.com/",
+    "logoUrl": "https://openplanningpoker.com/images/logo.svg"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:openplanningpoker.com:app:planning-poker",
+      "displayName": "Open Planning Poker",
+      "type": "text/html",
+      "url": "https://app.openplanningpoker.com/",
+      "description": "Free, open-source planning poker for agile teams: create a room, share the link, vote in secret and reveal the cards together. No registration.",
+      "tags": [
+        "planning poker",
+        "scrum poker",
+        "agile estimation",
+        "story points",
+        "sprint planning"
+      ],
+      "capabilities": [
+        "create-game",
+        "join-game",
+        "hidden-voting",
+        "reveal-votes",
+        "custom-decks",
+        "timer",
+        "chat",
+        "pdf-report"
+      ],
+      "representativeQueries": [
+        "free planning poker tool for my scrum team",
+        "estimate user stories with story points online",
+        "run a planning poker session without registration"
+      ],
+      "version": "2.1.0",
+      "updatedAt": "2026-11-12T00:00:00Z"
+    },
+    {
+      "identifier": "urn:air:openplanningpoker.com:docs:llms-txt",
+      "displayName": "Open Planning Poker for language models (llms.txt)",
+      "type": "text/markdown",
+      "url": "https://app.openplanningpoker.com/llms.txt",
+      "description": "Short Markdown overview of the product, its links and its public API endpoints."
+    },
+    {
+      "identifier": "urn:air:openplanningpoker.com:docs:changelog",
+      "displayName": "Open Planning Poker changelog",
+      "type": "text/html",
+      "url": "https://openplanningpoker.com/changelog/",
+      "description": "Release notes for every version of Open Planning Poker."
+    },
+    {
+      "identifier": "urn:air:openplanningpoker.com:source:github",
+      "displayName": "Open Planning Poker source code",
+      "type": "text/html",
+      "url": "https://github.com/bokunda/open-planning-poker",
+      "description": "GPL-3.0 source code (Angular, .NET 9, GraphQL Fusion), issues and contribution guide."
+    },
+    {
+      "identifier": "urn:air:openplanningpoker.com:docs:guides",
+      "displayName": "Planning poker guides",
+      "type": "text/html",
+      "url": "https://openplanningpoker.com/what-is-planning-poker/",
+      "description": "Guides: what planning poker is, how to run a session, card scales (Fibonacci, T-shirt sizes), and self-hosting Open Planning Poker.",
+      "representativeQueries": [
+        "how does planning poker work",
+        "which planning poker card scale should we use"
+      ]
+    }
+  ]
+}

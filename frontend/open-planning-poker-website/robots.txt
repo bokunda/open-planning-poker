@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://openplanningpoker.com/sitemap.xml
+Agentmap: https://openplanningpoker.com/.well-known/ard.json

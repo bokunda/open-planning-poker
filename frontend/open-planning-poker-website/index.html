@@ -17,8 +17,8 @@
 
 
     <!-- The hero screenshot is the largest element: fetch the one for the current theme early. -->
-    <link rel="preload" as="image" href="./images/app-room-light.webp" type="image/webp" media="(prefers-color-scheme: light)" fetchpriority="high">
-    <link rel="preload" as="image" href="./images/app-room-dark.webp" type="image/webp" media="(prefers-color-scheme: dark)" fetchpriority="high">
+    <link rel="preload" as="image" href="/images/app-room-light.webp" imagesrcset="/images/app-room-light-480.webp 480w, /images/app-room-light-800.webp 800w, /images/app-room-light-1200.webp 1200w, /images/app-room-light.webp 1600w" imagesizes="(min-width: 1280px) 700px, (min-width: 1024px) 56vw, calc(100vw - 32px)" type="image/webp" media="(prefers-color-scheme: light)" fetchpriority="high">
+    <link rel="preload" as="image" href="/images/app-room-dark.webp" imagesrcset="/images/app-room-dark-480.webp 480w, /images/app-room-dark-800.webp 800w, /images/app-room-dark-1200.webp 1200w, /images/app-room-dark.webp 1600w" imagesizes="(min-width: 1280px) 700px, (min-width: 1024px) 56vw, calc(100vw - 32px)" type="image/webp" media="(prefers-color-scheme: dark)" fetchpriority="high">
 
     <!-- Apple PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -173,12 +173,12 @@
                 <figure class="browser-frame">
                     <div class="browser-bar" aria-hidden="true"><span></span><span></span><span></span><div>app.openplanningpoker.com</div></div>
                     <picture>
-                        <source srcset="./images/app-room-dark.webp" media="(prefers-color-scheme: dark)" type="image/webp">
-                        <img src="./images/app-room-light.webp" width="1600" height="1000" fetchpriority="high"
+                        <source srcset="/images/app-room-dark-480.webp 480w, /images/app-room-dark-800.webp 800w, /images/app-room-dark-1200.webp 1200w, /images/app-room-dark.webp 1600w" sizes="(min-width: 1280px) 700px, (min-width: 1024px) 56vw, calc(100vw - 32px)" media="(prefers-color-scheme: dark)" type="image/webp">
+                        <img src="/images/app-room-light.webp" srcset="/images/app-room-light-480.webp 480w, /images/app-room-light-800.webp 800w, /images/app-room-light-1200.webp 1200w, /images/app-room-light.webp 1600w" sizes="(min-width: 1280px) 700px, (min-width: 1024px) 56vw, calc(100vw - 32px)" width="1600" height="1000" fetchpriority="high"
                              alt="A game room: six players around a poker table with their revealed cards, the average of 6 in the middle, and the players list with each vote">
                     </picture>
                 </figure>
-                <img src="./images/app-phone-dark.webp" width="780" height="1688" loading="lazy" class="phone-frame hidden sm:block"
+                <img src="/images/app-phone-dark-400.webp" srcset="/images/app-phone-dark-240.webp 240w, /images/app-phone-dark-400.webp 400w" sizes="180px" width="780" height="1688" loading="lazy" class="phone-frame hidden sm:block"
                      alt="The same game on a phone in dark mode: the table on top and the cards at the bottom of the screen">
             </div>
         </div>
@@ -225,7 +225,7 @@
                         <li class="check">Chat next to the table, links are clickable</li>
                     </ul>
                 </div>
-                <img class="shot" src="./images/app-voting-light.webp" width="1600" height="1000" loading="lazy"
+                <img class="shot" src="/images/app-voting-light.webp" srcset="/images/app-voting-light-480.webp 480w, /images/app-voting-light-800.webp 800w, /images/app-voting-light-1200.webp 1200w, /images/app-voting-light.webp 1600w" sizes="(min-width: 1280px) 580px, (min-width: 1024px) 45vw, calc(100vw - 32px)" width="1600" height="1000" loading="lazy"
                      alt="Voting in progress: four of six players voted, their cards lie face down on the table, a one-minute timer above">
             </div>
 
@@ -241,8 +241,8 @@
                     </ul>
                 </div>
                 <picture class="lg:order-1">
-                    <source srcset="./images/app-room-light.webp" media="(prefers-color-scheme: dark)" type="image/webp">
-                    <img class="shot" src="./images/app-room-dark.webp" width="1600" height="1000" loading="lazy"
+                    <source srcset="/images/app-room-light-480.webp 480w, /images/app-room-light-800.webp 800w, /images/app-room-light-1200.webp 1200w, /images/app-room-light.webp 1600w" sizes="(min-width: 1280px) 580px, (min-width: 1024px) 45vw, calc(100vw - 32px)" media="(prefers-color-scheme: dark)" type="image/webp">
+                    <img class="shot" src="/images/app-room-dark.webp" srcset="/images/app-room-dark-480.webp 480w, /images/app-room-dark-800.webp 800w, /images/app-room-dark-1200.webp 1200w, /images/app-room-dark.webp 1600w" sizes="(min-width: 1280px) 580px, (min-width: 1024px) 45vw, calc(100vw - 32px)" width="1600" height="1000" loading="lazy"
                          alt="After the reveal: the cards are face up, 13 and 3 are marked as outliers and the average is 6">
                 </picture>
             </div>
@@ -253,7 +253,7 @@
                     <h2 class="section-title">The cards your team already uses.</h2>
                     <p class="mt-4 text-lg leading-relaxed">Fibonacci, modified Fibonacci, T-shirt sizes and powers of 2 are one click away, with a preview of the cards. Or type your own values.</p>
                 </div>
-                <img class="shot" src="./images/app-new-game.webp" width="1600" height="1000" loading="lazy"
+                <img class="shot" src="/images/app-new-game.webp" srcset="/images/app-new-game-480.webp 480w, /images/app-new-game-800.webp 800w, /images/app-new-game-1200.webp 1200w, /images/app-new-game.webp 1600w" sizes="(min-width: 1280px) 580px, (min-width: 1024px) 45vw, calc(100vw - 32px)" width="1600" height="1000" loading="lazy"
                      alt="The New game dialog with a name field and a deck picker showing Fibonacci, modified Fibonacci, T-shirt sizes, powers of 2 and custom">
             </div>
 
