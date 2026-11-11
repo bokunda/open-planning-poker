@@ -1,0 +1,19 @@
+<div
+  class="card"
+  [ngClass]="'card--' + size"
+  [class.is-face-down]="faceDown"
+  [class.is-selected]="selected"
+  [class.is-empty]="empty"
+  [class.is-dropping]="dropping"
+  [style.--flip-delay]="flipDelay + 'ms'"
+  role="img"
+  [attr.aria-label]="ariaLabel">
+  <div class="card-inner" *ngIf="!empty">
+    <div class="card-face card-front">
+      <span class="card-pip card-pip--top" aria-hidden="true" *ngIf="size === 'lg'">{{ value }}</span>
+      <span class="card-value">{{ value }}</span>
+      <span class="card-pip card-pip--bottom" aria-hidden="true" *ngIf="size === 'lg'">{{ value }}</span>
+    </div>
+    <div class="card-face card-back" aria-hidden="true"></div>
+  </div>
+</div>

@@ -1,11 +1,17 @@
 <main class="game-wrapper" id="main-content">
   <!-- Landing (no game) -->
-  <ng-container *ngIf="!game">
+  <ng-container *ngIf="!game && !isLoading">
     <div class="game-landing" @fadeSlide>
       <div class="hero-cta">
         <div class="hero-illustration">🎯</div>
-        <h2 class="hero-title">Ready to plan?</h2>
-        <p class="hero-desc">Create a game room and invite your team to start estimating.</p>
+        <ng-container *ngIf="gameNotFound; else readyToPlan">
+          <h2 class="hero-title">This game no longer exists</h2>
+          <p class="hero-desc">The link may be wrong, or the host deleted the game. Create a new game or join another one.</p>
+        </ng-container>
+        <ng-template #readyToPlan>
+          <h2 class="hero-title">Ready to plan?</h2>
+          <p class="hero-desc">Create a game room and invite your team to start estimating.</p>
+        </ng-template>
         <div class="hero-actions">
           <button mat-raised-button color="primary" class="hero-btn hero-btn--primary" (click)="handleCreateGame()">
             <mat-icon>add</mat-icon> Create Game
@@ -18,7 +24,7 @@
     </div>
   </ng-container>
 
-  <app-loading *ngIf="isLoading" @fadeIn message="Loading game..."></app-loading>
+  <app-room-skeleton *ngIf="isLoading"></app-room-skeleton>
 
   <!-- Game active: dashboard layout -->
   <div class="game-dashboard" *ngIf="game" @fadeSlide>

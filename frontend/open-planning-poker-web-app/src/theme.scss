@@ -1,17 +1,17 @@
 @use '@angular/material' as mat;
 
-// Custom purple palette based on #7e3af2
+// Brand violet palette (redesign phase 1, matches --opp-primary-* tokens)
 $opp-purple: (
-  50: #f3f0ff,
-  100: #e9e2ff,
-  200: #d3c9ff,
-  300: #b49bff,
-  400: #9068ff,
-  500: #7e3af2,
-  600: #6c2bd9,
-  700: #5521b5,
-  800: #441b93,
-  900: #361778,
+  50: #f1ecff,
+  100: #e6ddff,
+  200: #cfc0ff,
+  300: #ad94ff,
+  400: #8a66f5,
+  500: #6a3ae8,
+  600: #5a2bd0,
+  700: #4a22ad,
+  800: #3b1c8a,
+  900: #2e176b,
   contrast: (
     50: rgba(black, 0.87),
     100: rgba(black, 0.87),
@@ -51,6 +51,10 @@ $opp-warn: (
   )
 );
 
+$opp-typography: mat.m2-define-typography-config(
+  $font-family: "'Figtree', 'Segoe UI', system-ui, sans-serif",
+);
+
 $opp-primary: mat.m2-define-palette($opp-purple, 500, 400, 700);
 $opp-accent: mat.m2-define-palette(mat.$m2-grey-palette, 700, 600, 800);
 $opp-warn: mat.m2-define-palette($opp-warn, 500);
@@ -61,7 +65,7 @@ $opp-theme: mat.m2-define-light-theme((
     accent: $opp-accent,
     warn: $opp-warn,
   ),
-  typography: mat.m2-define-typography-config(),
+  typography: $opp-typography,
   density: 0,
 ));
 
@@ -72,7 +76,7 @@ $opp-dark-theme: mat.m2-define-dark-theme((
     accent: mat.m2-define-palette(mat.$m2-grey-palette, 400, 300, 500),
     warn: $opp-warn,
   ),
-  typography: mat.m2-define-typography-config(),
+  typography: $opp-typography,
   density: 0,
 ));
 

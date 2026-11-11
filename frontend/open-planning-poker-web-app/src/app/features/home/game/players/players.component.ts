@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ApiCollectionOfGamePlayer, Vote } from '../../../../graphql/graphql-gateway.service';
+import { PokerCardComponent } from '../../../../shared/poker-card/poker-card.component';
 
 @Component({
   selector: 'app-players',
   templateUrl: './players.component.html',
   styleUrl: './players.component.scss',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, PokerCardComponent],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class PlayersComponent implements OnInit {
