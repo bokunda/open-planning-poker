@@ -19,7 +19,7 @@ type ChangeUsernamePayload {
 
 type Mutation {
   ping: PingPayload! @cost(weight: "10")
-  changeUsername(input: ChangeUsernameInput!): ChangeUsernamePayload! @cost(weight: "10")
+  changeUsername(input: ChangeUsernameInput!): ChangeUsernamePayload! @authorize @cost(weight: "10")
   registerUser(input: RegisterUserInput!): RegisterUserPayload! @cost(weight: "10")
 }
 
