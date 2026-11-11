@@ -1,0 +1,126 @@
+:host {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* Margins leave room for the seats, which sit on the table's edge. */
+.table {
+  padding: 64px 84px 72px;
+}
+
+.felt {
+  position: relative;
+  aspect-ratio: 2.3 / 1;
+  border-radius: 999px;
+  background:
+    radial-gradient(120% 90% at 50% 30%, rgba(255, 255, 255, 0.07), transparent 60%),
+    var(--opp-felt);
+  box-shadow:
+    inset 0 0 0 10px var(--opp-felt-edge),
+    inset 0 18px 40px rgba(0, 0, 0, 0.35),
+    var(--opp-shadow-lg);
+  color: var(--opp-felt-ink);
+  display: grid;
+  place-items: center;
+}
+
+.felt-center {
+  display: grid;
+  justify-items: center;
+  gap: var(--opp-space-1);
+  text-align: center;
+}
+
+.ring {
+  --p: 0;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: conic-gradient(var(--opp-primary-300) calc(var(--p) * 1turn), rgba(255, 255, 255, 0.12) 0);
+  transition: --p var(--opp-duration-slow) var(--opp-ease-out);
+}
+
+.ring-inner {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: var(--opp-felt);
+  display: grid;
+  place-items: center;
+  font-family: var(--opp-font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.felt-label {
+  font-size: var(--opp-font-size-sm);
+  opacity: 0.75;
+}
+
+.felt-result {
+  font-family: var(--opp-font-display);
+  font-weight: 800;
+  font-size: var(--opp-font-size-4xl);
+  line-height: 1;
+  animation: result-in var(--opp-duration-slow) var(--opp-ease-spring);
+}
+
+@keyframes result-in {
+  from { opacity: 0; scale: 0.6; }
+}
+
+.seat {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  translate: -50% -50%;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  width: 96px;
+  animation: seat-in var(--opp-duration-slow) var(--opp-ease-spring) both;
+}
+
+@keyframes seat-in {
+  from { opacity: 0; scale: 0.6; }
+}
+
+.seat--landing .seat-card {
+  opacity: 0;
+}
+
+.seat-name {
+  max-width: 100%;
+  padding: 2px 8px;
+  border-radius: var(--opp-radius-full);
+  background: var(--opp-surface);
+  border: 1px solid var(--opp-border);
+  color: var(--opp-text);
+  font-size: var(--opp-font-size-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.seat--me .seat-name {
+  color: var(--opp-primary);
+  border-color: var(--opp-primary-300);
+}
+
+.table--crowded {
+  .seat { width: 76px; }
+}
+
+@media (max-width: 600px) {
+  .table { padding: 52px 44px 60px; }
+  .felt { aspect-ratio: 1.35 / 1; }
+  .seat { width: 72px; }
+  .ring { width: 60px; height: 60px; }
+  .ring-inner { width: 48px; height: 48px; font-size: 0.95rem; }
+  .felt-result { font-size: var(--opp-font-size-3xl); }
+}

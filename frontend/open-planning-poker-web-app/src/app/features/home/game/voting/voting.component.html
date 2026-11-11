@@ -41,11 +41,6 @@
         <div class="ticket-info">
           <h2 class="ticket-name">
             {{ticket?.name}}
-            <span class="ticket-avg" *ngIf="votes.length > 0">
-              (Avg:
-              <ng-container *ngIf="votesRevealed; else avgHidden">{{ ticket?.averageVotingValue }}</ng-container>
-              <ng-template #avgHidden>?</ng-template>)
-            </span>
             <button
               *ngIf="ticket?.description"
               mat-icon-button
@@ -101,16 +96,25 @@
       </div>
     </div>
 
-    <div class="voting-cards" role="group" aria-label="Your cards">
+    <app-poker-table
+      [players]="players"
+      [votes]="votes"
+      [votesRevealed]="votesRevealed"
+      [currentUserId]="currentUserId"
+      [deck]="voteOptions"
+      [hideMyCard]="cardInFlight">
+    </app-poker-table>
+
+    <div class="voting-cards" role="group" aria-label="Your cards" [class.voting-cards--locked]="votesRevealed">
       <button *ngFor="let voteOption of voteOptions; trackBy: trackByOption"
         type="button"
         class="vote-card"
         [class.vote-card--selected]="selectedOption === voteOption"
         [class.vote-card--disabled]="ticket?.id == null"
-        [disabled]="ticket?.id == null"
+        [disabled]="ticket?.id == null || votesRevealed"
         [attr.aria-pressed]="selectedOption === voteOption"
         [attr.aria-label]="'Vote ' + voteOption"
-        (click)="selectOption(voteOption)">
+        (click)="selectOption(voteOption, $event)">
         <app-poker-card [value]="voteOption" size="lg" [selected]="selectedOption === voteOption"></app-poker-card>
       </button>
     </div>
@@ -119,7 +123,7 @@
     <div class="voting-actions" *ngIf="isHost">
       <!-- Pre-reveal: has votes -->
       <ng-container *ngIf="!votesRevealed && votes.length > 0">
-        <button mat-flat-button color="accent" class="action-btn action-btn--reveal" (click)="onRevealVotes.emit()">
+        <button mat-flat-button color="primary" class="action-btn action-btn--reveal" (click)="onRevealVotes.emit()">
           <mat-icon>visibility</mat-icon> Reveal Votes
         </button>
       </ng-container>
@@ -137,5 +141,7 @@
         <mat-icon>file_upload</mat-icon> Import
       </button>
     </div>
+
+    <app-vote-results *ngIf="votesRevealed" [votes]="votes" [players]="players" [deck]="voteOptions"></app-vote-results>
   </ng-container>
 </section>

@@ -611,11 +611,10 @@ export class GameComponent implements OnInit {
       next: ({ data }) => {
         if (data?.createOrUpdateVote?.vote) {
           const voteIndex = this.votes.findIndex(x => x && x.id === data!.createOrUpdateVote!.vote!.id);
-          if (voteIndex !== -1) {
-            this.votes[voteIndex].value = data.createOrUpdateVote.vote.value;
-          } else {
-            this.votes.push(data.createOrUpdateVote.vote);
-          }
+          const vote = data.createOrUpdateVote.vote;
+          this.votes = voteIndex !== -1
+            ? this.votes.map((v, i) => i === voteIndex ? { ...v, value: vote.value } : v)
+            : [...this.votes, vote];
         }
       }
     });

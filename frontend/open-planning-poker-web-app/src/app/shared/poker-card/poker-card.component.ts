@@ -25,6 +25,8 @@ export class PokerCardComponent implements OnChanges, OnDestroy {
   @Input() empty = false;
   /** Delay before the flip starts, in ms (for revealing cards one after another). */
   @Input() flipDelay = 0;
+  /** Marks a revealed card as the lowest/highest of a wide spread (worth discussing). */
+  @Input() outlier = false;
 
   dropping = false;
   private readonly cdr = inject(ChangeDetectorRef);

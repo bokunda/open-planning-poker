@@ -1,0 +1,36 @@
+<div class="table" [class.table--crowded]="crowded" role="group" aria-label="Table">
+  <div class="felt">
+    <div class="felt-center" aria-live="polite">
+      <ng-container *ngIf="!votesRevealed; else revealedCenter">
+        <div class="ring" [style.--p]="progress" role="img" [attr.aria-label]="votedCount + ' of ' + total + ' voted'">
+          <div class="ring-inner opp-tabular">{{ votedCount }}/{{ total }}</div>
+        </div>
+        <span class="felt-label">voted</span>
+      </ng-container>
+      <ng-template #revealedCenter>
+        <span class="felt-label">average</span>
+        <span class="felt-result opp-tabular">{{ average }}</span>
+      </ng-template>
+    </div>
+
+    <div
+      class="seat"
+      *ngFor="let seat of seats; trackBy: trackBySeat"
+      [class.seat--me]="seat.isMe"
+      [class.seat--landing]="seat.isMe && hideMyCard"
+      [style.--x]="seat.x + '%'"
+      [style.--y]="seat.y + '%'"
+      [attr.data-seat-player]="seat.id">
+      <app-poker-card
+        class="seat-card"
+        [size]="crowded ? 'sm' : 'md'"
+        [value]="seat.vote?.value"
+        [empty]="!seat.vote"
+        [faceDown]="!votesRevealed"
+        [flipDelay]="seat.order * 70"
+        [outlier]="votesRevealed && seat.outlier">
+      </app-poker-card>
+      <span class="seat-name" [title]="seat.name">{{ seat.isMe ? 'You' : seat.name }}</span>
+    </div>
+  </div>
+</div>
