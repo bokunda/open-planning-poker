@@ -17,6 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **The app calls the Fusion gateway directly**; the YARP API gateway is removed (one less network hop on every request)
 - **Website caching**: the stylesheet has a content hash in its name, so a new release is never hidden behind a year-long cache; images are cached for a week
 
+### SEO
+- **Website guides**: four new pages — what planning poker is, how to run a session, cards and scales, self-hosting — with Article, FAQ, HowTo and breadcrumb structured data, linked from the home page, the header and the footer
+- **Real 404s** on the website and the app (both answered unknown URLs with 200 and the home page); the website 404 page uses the site design
+- **App**: game rooms and tickets are `noindex` (they are private and short-lived); `/game` points to `/` as canonical; the landing heading is the page's `h1`; new description and a 1200×630 social card
+- Sitemap with the guides and screenshots; `robots.txt` without `Crawl-delay`; `llms.txt` for the website
+- Shared head, header and footer partials for every website page
+
 ## [2.0.0] — 2026-11-11
 
 A new look for the whole app, built around a real poker table, plus a security and reliability pass on the backend.

@@ -1,14 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://openplanningpoker.com/</loc>
-    <lastmod>2026-07-14</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>RELEASE_DATE</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image><image:loc>https://openplanningpoker.com/images/app-room-light.webp</image:loc><image:title>Planning poker game room after the reveal</image:title></image:image>
+    <image:image><image:loc>https://openplanningpoker.com/images/app-voting-light.webp</image:loc><image:title>Voting in secret with a shared timer</image:title></image:image>
+    <image:image><image:loc>https://openplanningpoker.com/images/app-new-game.webp</image:loc><image:title>Choosing a planning poker card deck</image:title></image:image>
+    <image:image><image:loc>https://openplanningpoker.com/images/app-phone-dark.webp</image:loc><image:title>Planning poker on a phone in dark mode</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://openplanningpoker.com/what-is-planning-poker/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://openplanningpoker.com/how-to-run-planning-poker/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://openplanningpoker.com/planning-poker-cards/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://openplanningpoker.com/self-hosted-planning-poker/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://openplanningpoker.com/changelog/</loc>
+    <lastmod>RELEASE_DATE</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://app.openplanningpoker.com/</loc>
-    <lastmod>2026-07-14</lastmod>
+    <lastmod>RELEASE_DATE</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>

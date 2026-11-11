@@ -13,13 +13,8 @@
     <link rel="canonical" href="https://openplanningpoker.com/">
     <link rel="alternate" hreflang="en" href="https://openplanningpoker.com/">
     <link rel="alternate" hreflang="x-default" href="https://openplanningpoker.com/">
-    <meta name="theme-color" content="#6a3ae8">
-    <meta name="color-scheme" content="light dark">
+    <!-- SITE_HEAD -->
 
-    <!-- Fonts are served from this site (input.css). Preload the ones the first screen needs. -->
-    <link rel="preload" href="/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link href="/output.css" rel="stylesheet">
 
     <!-- The hero screenshot is the largest element: fetch the one for the current theme early. -->
     <link rel="preload" as="image" href="./images/app-room-light.webp" type="image/webp" media="(prefers-color-scheme: light)" fetchpriority="high">
@@ -50,31 +45,7 @@
     <meta name="twitter:image" content="https://openplanningpoker.com/images/og-card.png">
     <meta name="twitter:image:alt" content="A planning poker table with six players and their revealed cards">
 
-    <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/open-planning-poker-game-logo-180x180.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/open-planning-poker-game-logo-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/open-planning-poker-game-logo-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <meta name="msapplication-TileColor" content="#6a3ae8">
-    <link rel="ai-catalog" href="/.well-known/ai-catalog.json" type="application/json">
 
-    <!-- Analytics load after the page is idle, so they do not block rendering or input. -->
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-03VCK0K926');
-    (function(c,l,a){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; })(window, document, 'clarity');
-    function loadAnalytics() {
-      [['https://www.googletagmanager.com/gtag/js?id=G-03VCK0K926'], ['https://www.clarity.ms/tag/xmim6e317s']].forEach(function (src) {
-        var s = document.createElement('script'); s.async = true; s.src = src[0]; document.head.appendChild(s);
-      });
-    }
-    window.addEventListener('load', function () {
-      ('requestIdleCallback' in window) ? requestIdleCallback(loadAnalytics, { timeout: 4000 }) : setTimeout(loadAnalytics, 2000);
-    });
-    </script>
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
 
     <!-- Structured Data: Organization -->
     <script type="application/ld+json">
@@ -171,30 +142,7 @@
     </script>
 </head>
 <body class="bg-white text-gray-600 font-sans antialiased dark:bg-gray-900 dark:text-gray-400">
-    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-full focus:bg-purple-600 focus:text-white">Skip to content</a>
-
-    <header class="fixed inset-x-0 top-0 z-50">
-        <nav class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md backdrop-saturate-150 border-b border-gray-200 dark:border-gray-800" aria-label="Main">
-            <div class="flex items-center justify-between max-w-screen-xl gap-4 px-4 mx-auto h-16">
-                <a href="/" class="flex items-center gap-2.5 rounded-lg focus-ring">
-                    <img src="./images/open-planning-poker-game-logo-64x64.png" class="w-8 h-8 rounded-lg" alt="" width="32" height="32">
-                    <span class="font-display text-lg font-extrabold tracking-tight text-gray-900 dark:text-white">Open Planning <span class="text-purple-600 dark:text-purple-400">Poker</span></span>
-                </a>
-                <div class="hidden md:flex items-center gap-6 text-sm font-semibold">
-                    <a href="#how" class="hover:text-gray-900 dark:hover:text-white focus-ring rounded">How it works</a>
-                    <a href="#features" class="hover:text-gray-900 dark:hover:text-white focus-ring rounded">Features</a>
-                    <a href="#whats-new" class="hover:text-gray-900 dark:hover:text-white focus-ring rounded">What's new</a>
-                    <a href="#faq" class="hover:text-gray-900 dark:hover:text-white focus-ring rounded">FAQ</a>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="hidden sm:block h-7">
-                        <a class="github-button" href="https://github.com/bokunda/open-planning-poker" data-size="large" data-icon="octicon-star" data-show-count="true" aria-label="Star bokunda/open-planning-poker on GitHub">Star</a>
-                    </div>
-                    <a href="https://app.openplanningpoker.com" class="btn-primary text-sm px-4 py-2">Open the app</a>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <!-- SITE_HEADER -->
 
     <main id="main">
 
@@ -341,6 +289,22 @@
         </div>
     </section>
 
+    <!-- Guides -->
+    <section id="guides" class="scroll-mt-20">
+        <div class="max-w-screen-xl px-4 pt-16 mx-auto lg:pt-24">
+            <div class="max-w-2xl">
+                <p class="eyebrow">Guides</p>
+                <h2 class="section-title">Learn planning poker</h2>
+            </div>
+            <ul class="grid gap-4 mt-10 sm:grid-cols-2 lg:grid-cols-4">
+                <li><a href="/what-is-planning-poker/" class="guide-card"><h3>What is planning poker?</h3><p>The rules, an example round and why secret votes work.</p></a></li>
+                <li><a href="/how-to-run-planning-poker/" class="guide-card"><h3>How to run a session</h3><p>Step by step, for remote, hybrid and in-person teams.</p></a></li>
+                <li><a href="/planning-poker-cards/" class="guide-card"><h3>Cards and scales</h3><p>Fibonacci, T-shirt sizes and powers of 2 compared.</p></a></li>
+                <li><a href="/self-hosted-planning-poker/" class="guide-card"><h3>Self-hosting</h3><p>Run Open Planning Poker on your own servers.</p></a></li>
+            </ul>
+        </div>
+    </section>
+
     <!-- FAQ -->
     <section id="faq" class="scroll-mt-20">
         <div class="max-w-screen-md px-4 py-16 mx-auto lg:py-24">
@@ -384,20 +348,6 @@
     </section>
     </main>
 
-    <footer class="border-t border-gray-200 dark:border-gray-800">
-        <div class="flex flex-col items-center justify-between max-w-screen-xl gap-6 px-4 py-10 mx-auto md:flex-row">
-            <div class="flex items-center gap-2.5">
-                <img src="./images/open-planning-poker-game-logo-64x64.png" class="w-7 h-7 rounded-lg" alt="" width="28" height="28" loading="lazy">
-                <span class="font-display font-extrabold text-gray-900 dark:text-white">Open Planning Poker</span>
-                <span class="text-sm">© 2026 · <a href="/changelog/" class="hover:text-gray-900 dark:hover:text-white"><!-- APP_VERSION --></a></span>
-            </div>
-            <ul class="flex items-center gap-6 text-sm font-semibold">
-                <li><a href="/changelog/" class="hover:text-gray-900 dark:hover:text-white focus-ring rounded">Changelog</a></li>
-                <li><a href="https://app.openplanningpoker.com" class="hover:text-gray-900 dark:hover:text-white focus-ring rounded">App</a></li>
-                <li><a href="https://github.com/bokunda/open-planning-poker" class="hover:text-gray-900 dark:hover:text-white focus-ring rounded">GitHub</a></li>
-                <li><a href="https://www.instagram.com/bokunda/" class="hover:text-gray-900 dark:hover:text-white focus-ring rounded">Instagram</a></li>
-            </ul>
-        </div>
-    </footer>
+    <!-- SITE_FOOTER -->
 </body>
 </html>
