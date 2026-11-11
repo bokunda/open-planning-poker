@@ -58,6 +58,7 @@
         (onCreateNewTicket)="handleCreateTicket()"></app-game-details>
 
       <app-voting
+        [gameId]="game.id"
         [players]="players"
         [gameSettings]="game.settingsDetails"
         [ticket]="ticket"
