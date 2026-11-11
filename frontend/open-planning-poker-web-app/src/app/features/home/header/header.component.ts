@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterLink } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { OPP_GITHUB_REPO_URL, OPP_WEBSITE_URL } from '../../../shared/constants';
 import { InfoDialogComponent } from '../../../shared/dialogs/info/info.component';
@@ -21,7 +22,7 @@ import { ChangeUsernameInput, Mutation } from '../../../graphql/graphql-gateway.
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   standalone: true,
-  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, MatTooltipModule]
+  imports: [CommonModule, RouterLink, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, MatTooltipModule]
 })
 export class HeaderComponent {
   @Input() username: string = '';

@@ -1,11 +1,111 @@
-<div class="changelog-content"><h1>Changelog</h1>
-<p>All notable changes to Open Planning Poker are documented in this file.</p>
-<p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
-and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
-<h2>[Unreleased]</h2>
-<h3>Added</h3>
-<h3>Changed</h3>
+<div class="changelog-content"><h2>[2.0.0] — 2026-11-11</h2>
+<p>A new look for the whole app, built around a real poker table, plus a security and reliability pass on the backend.</p>
+<h3>Highlights</h3>
+<ul>
+<li><strong>A real poker table</strong>: every player has a seat, your card flies to the table, and on reveal the cards flip one after another</li>
+<li><strong>Results that guide the talk</strong>: distribution, average, median and a next step when the votes are far apart</li>
+<li><strong>Pick your deck when you create a game</strong>, with a preview of the cards</li>
+<li><strong>Keyboard and screen reader support</strong>: type a card&#39;s value to vote; WCAG AA contrast in light and dark mode</li>
+<li><strong>Built for phones</strong>: your cards stick to the bottom of the screen and the table shows everyone</li>
+<li><strong>Safer by default</strong>: the host role and hidden votes are enforced on the server, with rate limits and stricter GraphQL limits</li>
+</ul>
+<h3>Release polish</h3>
+<ul>
+<li><strong>Header</strong>: light bar that stays on top, with the logo, the brand in the display font and your name as a chip with an initial</li>
+<li><strong>Dialogs</strong>: one style for every dialog (new game, join, new ticket, import, invite, your name, about): blurred backdrop, a line that says what the dialog is for, a full-width main button</li>
+<li><strong>New game dialog</strong>: deck picker with mini cards, a live preview for a custom deck, the description is optional and Enter in the name field creates the game</li>
+<li><strong>Version</strong>: the footer shows the version from <code>package.json</code> (it was stuck at 1.2.1)</li>
+<li><strong>Agent discovery</strong>: <code>/.well-known/ai-catalog.json</code> on the app and the website, served as JSON (it returned the HTML page before)</li>
+<li><strong>Website</strong>: new screenshots, the app&#39;s fonts and colors, and &quot;What&#39;s new&quot; and the version are generated from this changelog on every deploy</li>
+</ul>
 <h3>Fixed</h3>
+<ul>
+<li>The keyboard focus ring on a card in your hand was drawn on the flat button behind the card; it now follows the card&#39;s rounded corners and lifts it like hover</li>
+</ul>
+<h3>Redesign — phase 4 (accessibility &amp; polish)</h3>
+<ul>
+<li><strong>Keyboard</strong>: the hand is one Tab stop; arrow keys, Home and End move between cards and Enter/Space votes. Typing a card&#39;s value votes for it (&quot;5&quot;, &quot;13&quot;, &quot;0.5&quot;, &quot;?&quot;) when you are not typing in a field</li>
+<li><strong>Screen readers</strong>: a live region announces who voted (&quot;Ana voted. 3 of 5 voted.&quot;), a new round and the next ticket; the results panel announces the outcome</li>
+<li><strong>Contrast (WCAG AA)</strong>: darker muted text, consensus/spread/danger colors in light mode; dark text on the light violet in dark mode (panel headers, chips); lighter violet for text buttons in dark mode</li>
+<li><strong>Structure</strong>: a single <code>main</code> landmark with the page heading inside it; the username control in the header is one button (no button inside a button); panel headers no longer nest a button in a button and expose <code>aria-expanded</code></li>
+<li>The timer controls are hidden after the reveal instead of shown greyed out</li>
+<li>axe-core (WCAG 2 A/AA + best practices): 0 violations on the landing page and the game room, light and dark, before and after the reveal</li>
+</ul>
+<h3>Redesign — phase 3 (other screens)</h3>
+<ul>
+<li><strong>Landing page</strong>: a live demo table plays rounds on its own next to the pitch; &quot;Join&quot; accepts a pasted game link or code inline (no dialog) with a clear error for anything else</li>
+<li><strong>Room header</strong>: game name and description as text, a labeled <strong>Invite</strong> button (link and QR code together) and a menu for copy link, PDF export and leave</li>
+<li><strong>Tickets list</strong> replaces the history accordion: each ticket shows its revealed votes, the estimate and (for the host) a &quot;vote again&quot; button</li>
+<li><strong>Timer ring</strong>: while the host&#39;s timer runs, a ring drains around the vote counter on the table and turns orange in the last 10 seconds</li>
+<li><strong>Phone</strong>: your cards stick to the bottom of the screen and scroll sideways; the players panel is hidden (the table shows everyone) and chat starts collapsed</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Reloading a game with several tickets opened the first ticket and dropped the ticket from the URL; it now stays on the ticket in the URL</li>
+</ul>
+<h3>Redesign — phase 2 (the table and the reveal)</h3>
+<ul>
+<li><strong>Poker table</strong>: every player has a seat on the edge of a felt table with their card; the current user sits at the bottom. The center shows a progress ring (&quot;3/5 voted&quot;) and, after the reveal, the average</li>
+<li><strong>Card flight</strong>: the chosen card flies from your hand to your seat (FLIP with the Web Animations API); other players&#39; cards drop onto their seats</li>
+<li><strong>Staggered reveal</strong>: cards flip one after another around the table; the lowest and highest card of a wide spread get an orange ring</li>
+<li><strong>Results panel</strong>: distribution bars, average, median, vote count and a next step (&quot;Consensus&quot;, &quot;Close to consensus&quot;, or &quot;Ask X and Y to explain, then vote again&quot;)</li>
+<li>After the reveal the hand is locked; &quot;Vote Again&quot; clears your chosen card</li>
+<li>&quot;Reveal Votes&quot; uses the brand violet instead of the grey/orange style; the &quot;(Avg: ?)&quot; next to the ticket title is gone (the table shows it)</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Card faces briefly showed through the back while a card dropped in (opacity on a 3D element flattened it)</li>
+</ul>
+<h3>Redesign — phase 1 (foundation)</h3>
+<ul>
+<li><strong>New visual foundation</strong>: violet-tinted neutrals for both themes, a refined brand violet, and new roles for the coming table layout (felt, card face/back, consensus, spread) in <code>styles/_variables.scss</code></li>
+<li><strong>Typography</strong>: Bricolage Grotesque for headings and card numbers, Figtree for text, JetBrains Mono for keys and the timer (Roboto removed)</li>
+<li><strong>Poker card component</strong> (<code>app-poker-card</code>): light face with corner indices, patterned back, flip animation (staggered on reveal), empty slot and a drop-in animation when a vote arrives</li>
+<li><strong>Your cards</strong> lift on hover and stay raised when selected; the <strong>players list</strong> shows small cards (empty slot / face down / revealed) instead of &quot;?&quot; boxes</li>
+<li><strong>Pill buttons</strong> across all Material button variants; motion tokens (durations, easing) and a global reduced-motion rule</li>
+<li><strong>Room skeleton</strong> while a game loads instead of an empty screen</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Opening a link to a game that no longer exists showed an empty room and redirected to <code>/game/undefined</code>; it now says the game no longer exists</li>
+</ul>
+<h3>Security (P1)</h3>
+<ul>
+<li><strong>Rate limiting that actually applies</strong> — per-client-IP token bucket on the Fusion gateway (the YARP policy was never attached) plus per-action limits for registration, game creation, reports, chat, tickets, votes and joins</li>
+<li><strong>Container ports bound to 127.0.0.1</strong> — every service was also reachable directly over plain HTTP, bypassing nginx and TLS</li>
+<li><strong>GraphQL limits</strong> — max depth 10, execution timeout, 256 KB request body; introspection, Nitro IDE and exception details disabled outside Development</li>
+<li><strong>Production environment</strong> — services run with <code>ASPNETCORE_ENVIRONMENT=Production</code>; <code>/_health</code> hidden from public traffic</li>
+<li><strong>Validation runs</strong> — FluentValidation validators were registered but never executed for GraphQL requests; a MediatR <code>ValidationBehavior</code> now enforces them. Deck setups and votes are validated</li>
+<li><strong>AutoMapper removed</strong> (known high-severity vulnerability in 14.0.0) — replaced with explicit mapping code</li>
+<li>Single resilient Redis connection (<code>abortConnect=false</code>) instead of two blocking ones</li>
+</ul>
+<h3>Fixed (P1)</h3>
+<ul>
+<li><code>deleteTicket</code> returned a mapping error on every call; it now returns <code>Boolean</code></li>
+<li><code>game</code>, <code>ticket</code> and <code>settings</code> queries return <code>GameNotFound</code> / <code>TicketNotFound</code> / <code>GameSettingsNotFound</code> instead of a null-mapping error</li>
+</ul>
+<h3>Security</h3>
+<ul>
+<li><strong>Server-side host role</strong> — the game creator is the host (<code>Game.hostId</code>); only the host can create/update/delete tickets, change settings, reveal votes and start a re-vote</li>
+<li><strong>Membership checks</strong> — only players who joined a game can vote, chat or export the PDF report; anonymous requests are rejected</li>
+<li><strong>Votes are hidden on the server</strong> until the host reveals them (queries, subscriptions, averages and PDF report); re-vote hides them again</li>
+<li><strong>JWT secret rotated out of the repository</strong> — read from <code>Authentication__Secret</code> only, minimum 32 characters, issuer and audience validated</li>
+<li><strong>Fusion Gateway CORS</strong> limited to configured origins (was: any origin with credentials); query plans disabled</li>
+<li><strong>CI secrets at runtime</strong> — DB password and JWT secret are passed as container env vars instead of being baked into images</li>
+</ul>
+<h3>Added</h3>
+<ul>
+<li><code>deleteGame</code> mutation (host only) — deletes a game with its tickets, votes and players</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li><strong>Re-vote starts a clean round</strong> — <code>reVoteTicket</code> deletes the ticket&#39;s previous votes on the server, so old votes no longer count after &quot;Vote Again&quot;</li>
+<li><strong>Reveal state is order-independent in the UI</strong> — a late query result can no longer hide votes that were already revealed; only a re-vote hides them again</li>
+<li><strong>Gateway deploy uses the freshly composed schema</strong> — CI now composes the <code>gateway.fgp</code> that the Docker image copies (with a pinned Fusion CLI) instead of an unused file</li>
+<li>Joining a game via link before the user identity resolved no longer skips the join</li>
+<li><code>updateSettings</code> can no longer move settings to another game</li>
+<li>Chat messages limited to 1000 characters</li>
+</ul>
 <h2>[1.2.1] — 2026-07-16</h2>
 <h3>Added</h3>
 <ul>

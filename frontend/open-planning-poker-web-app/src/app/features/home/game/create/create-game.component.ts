@@ -31,6 +31,19 @@ export class CreateGameComponent {
   isCustomDeck = false;
   customDeckPreview: string[] = [];
 
+  get selectedDeck(): string {
+    return this.createGameForm.get('deckSetup')?.value;
+  }
+
+  selectDeck(value: string): void {
+    this.createGameForm.get('deckSetup')?.setValue(value);
+  }
+
+  /** First cards of a deck for the picker (numbers and letters, not the "?"/break cards). */
+  previewCards(deck: string): string[] {
+    return deck.split(',').map(c => c.trim()).filter(c => /^[0-9A-Za-z.]+$/.test(c)).slice(0, 6);
+  }
+
   constructor(
     private dialogRef: MatDialogRef<CreateGameDialogComponent>,
     private fb: FormBuilder

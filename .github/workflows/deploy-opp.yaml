@@ -38,14 +38,23 @@ jobs:
     secrets: 
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
 
+  # The website shows the changelog and the version, so it is rebuilt with every release.
+  opp-website:
+    name: Deploy OPP Website
+    needs: [opp-ui]
+    uses: ./.github/workflows/deploy-opp-website.yaml
+    secrets:
+      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+
   indexnow:
     name: Ping Search Engines
-    needs: [opp-ui]
+    needs: [opp-ui, opp-website]
     runs-on: ubuntu-latest
     steps:
       - name: Ping IndexNow (Bing + Yandex)
         run: |
           curl -s "https://www.bing.com/indexnow?url=https://openplanningpoker.com/&key=${{ secrets.INDEX_NOW }}"
           curl -s "https://www.bing.com/indexnow?url=https://app.openplanningpoker.com/&key=${{ secrets.INDEX_NOW }}"
+          curl -s "https://www.bing.com/indexnow?url=https://openplanningpoker.com/changelog/&key=${{ secrets.INDEX_NOW }}"
           curl -s "https://www.bing.com/indexnow?url=https://openplanningpoker.com/sitemap.xml&key=${{ secrets.INDEX_NOW }}"
           curl -s "https://www.bing.com/indexnow?url=https://app.openplanningpoker.com/sitemap.xml&key=${{ secrets.INDEX_NOW }}"

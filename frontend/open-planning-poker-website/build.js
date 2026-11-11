@@ -28,14 +28,27 @@ fs.mkdirSync(changelogDir, { recursive: true });
 const changelogTemplate = fs.readFileSync(path.resolve(__dirname, 'changelog.html'), 'utf-8');
 const changelogContent = fs.readFileSync(path.resolve(__dirname, 'changelog-content.html'), 'utf-8');
 const changelogFinal = changelogTemplate.replace('<!-- CHANGELOG_CONTENT -->', changelogContent);
-fs.writeFileSync(path.join(changelogDir, 'index.html'), changelogFinal);
-console.log('  ✓ changelog/index.html (inlined)');
+
+// Home page: "What's new" card and version from the newest release in CHANGELOG.md
+const release = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'release.json'), 'utf-8'));
+const latestRelease = fs.readFileSync(path.resolve(__dirname, 'latest-release.html'), 'utf-8');
+const fillRelease = html => html
+  .replace('<!-- LATEST_RELEASE -->', latestRelease)
+  .replace(/<!-- APP_VERSION -->/g, `v${release.version}`)
+  .replace(/__APP_VERSION__/g, release.version);
+fs.writeFileSync(path.join(dist, 'index.html'), fillRelease(fs.readFileSync(path.resolve(__dirname, 'index.html'), 'utf-8')));
+fs.writeFileSync(path.join(changelogDir, 'index.html'), fillRelease(changelogFinal));
+console.log(`  ✓ index.html, changelog/index.html (v${release.version})`);
+
+// Sitemap: last modified = the newest release date
+const sitemap = fs.readFileSync(path.resolve(__dirname, 'sitemap.xml'), 'utf-8')
+  .replace(/<lastmod>[^<]*<\/lastmod>/g, `<lastmod>${release.date}</lastmod>`);
+fs.writeFileSync(path.join(dist, 'sitemap.xml'), sitemap);
+console.log('  ✓ sitemap.xml');
 
 // Copy remaining files (skip changelog.html since it's now a directory)
 const files = [
-  'index.html',
   'robots.txt',
-  'sitemap.xml',
   'site.webmanifest',
   'browserconfig.xml',
   '404.html'
@@ -50,6 +63,13 @@ for (const file of files) {
   } else {
     console.log(`  ⚠ ${file} not found, skipping`);
   }
+}
+
+// Agent discovery manifest (ARD): /.well-known/ai-catalog.json
+const wellKnownSrc = path.resolve(__dirname, '.well-known');
+if (fs.existsSync(wellKnownSrc)) {
+  fs.cpSync(wellKnownSrc, path.join(dist, '.well-known'), { recursive: true });
+  console.log('  ✓ .well-known/');
 }
 
 // Copy images directory

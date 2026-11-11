@@ -2,13 +2,12 @@
   <div class="join-game">
     <form [formGroup]="joinGameForm" (ngSubmit)="onSubmit()" class="join-game-form">
       <mat-form-field appearance="outline">
-        <mat-label>Game ID or URL</mat-label>
-        <input matInput formControlName="id">
+        <mat-label>Game link or code</mat-label>
+        <input matInput formControlName="id" placeholder="https://app.openplanningpoker.com/game/…" cdkFocusInitial>
       </mat-form-field>
 
-      <button mat-fab extended type="submit">
-        Join
-        <mat-icon>sports_esports</mat-icon>
+      <button mat-flat-button color="primary" class="opp-submit" type="submit">
+        <mat-icon>login</mat-icon> Join game
       </button>
     </form>
 

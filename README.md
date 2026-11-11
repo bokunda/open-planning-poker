@@ -73,13 +73,13 @@ Full setup guide: [docs/setup-and-development.md](docs/setup-and-development.md)
 
 ## Screenshots
 
-### Main Screen
+### Game room
 
-![Main screen](./images/open-planning-poker-game-demo.png)
+![A game room after the reveal: six players around the table, the average in the middle and each vote in the players list](./images/open-planning-poker-game-demo.png)
 
-### Game History
+### Dark mode
 
-![History screen](./images/open-planning-poker-game-demo-history.png)
+![The same game room in dark mode](./images/open-planning-poker-game-demo-history.png)
 
 ## Technology Stack
 
