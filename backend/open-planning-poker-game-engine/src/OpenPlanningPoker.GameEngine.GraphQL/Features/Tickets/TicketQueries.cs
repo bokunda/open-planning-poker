@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Tickets;
+namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Tickets;
 
 [QueryType]
 public class TicketQueries
@@ -8,13 +8,12 @@ public class TicketQueries
     /// </summary>
     public async Task<FieldResult<Ticket, ApplicationError>> GetTicketAsync(
         [Service] ISender sender,
-        [Service] IMapper mapper,
         [Required] Guid id,
         CancellationToken cancellationToken = default)
     {
         var result = await sender.Send(new GetTicketQuery(id), cancellationToken);
         return result.IsSuccess
-            ? mapper.Map<Ticket>(result.Value)
+            ? result.Value!.ToGraphQL()
             : result.Error!;
     }
 
@@ -23,13 +22,12 @@ public class TicketQueries
     /// </summary>
     public async Task<FieldResult<ApiCollection<Ticket>, ApplicationError>> GetTicketsAsync(
         [Service] ISender sender,
-        [Service] IMapper mapper,
         [Required] Guid gameId,
         CancellationToken cancellationToken = default)
     {
         var result = await sender.Send(new GetTicketsQuery(gameId), cancellationToken);
         return result.IsSuccess
-            ? mapper.Map<ApiCollection<Ticket>>(result.Value)
+            ? result.Value.ToGraphQL(item => item.ToGraphQL())
             : result.Error!;
     }
 }

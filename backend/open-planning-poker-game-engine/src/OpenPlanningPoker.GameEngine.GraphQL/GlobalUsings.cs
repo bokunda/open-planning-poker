@@ -1,6 +1,5 @@
 // Global using directives
 
-global using AutoMapper;
 global using System.ComponentModel.DataAnnotations;
 global using System.Reflection;
 global using OpenPlanningPoker.GameEngine.GraphQL.Extensions;
@@ -35,3 +34,5 @@ global using OpenPlanningPoker.GameEngine.GraphQL.Features.Votes;
 global using Serilog;
 
 global using OpenPlanningPoker.GameEngine.Application.Abstractions.Authorization;
+global using OpenPlanningPoker.GameEngine.GraphQL.RateLimiting;
+global using HotChocolate.AspNetCore;

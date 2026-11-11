@@ -28,14 +28,33 @@ builder.Services
     .AddFusionGatewayServer()
     .ConfigureFromFile(FusionConfigFileName)
     // Query plans expose internal subgraph structure; keep them off.
-    .ModifyFusionOptions(x => x.AllowQueryPlan = false);
+    .ModifyFusionOptions(x => x.AllowQueryPlan = false)
+    .CoreBuilder
+    .AddMaxExecutionDepthRule(10)
+    .ModifyRequestOptions(options =>
+    {
+        options.ExecutionTimeout = TimeSpan.FromSeconds(15);
+        options.IncludeExceptionDetails = builder.Environment.IsDevelopment();
+    })
+    .DisableIntrospection(!builder.Environment.IsDevelopment());
+
+// The gateway is the public entry point for HTTP GraphQL traffic.
+builder.Services.AddClientRateLimiting(builder.Configuration);
+
+// GraphQL requests are small; large bodies are only an attack vector.
+builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 256 * 1024);
 
 builder.Services.AddOpenTelemetry(builder.Configuration);
 
 var app = builder.Build();
 
 app.UseCors(corsConfig.PolicyName);
+app.UseRateLimiter();
 app.UseWebSockets();
-app.MapGraphQL();
+app.MapGraphQL().WithOptions(new GraphQLServerOptions
+{
+    // The Nitro IDE is for local development only.
+    Tool = { Enable = app.Environment.IsDevelopment() }
+});
 
 app.Run();

@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Votes;
+namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Votes;
 
 [MutationType]
 public class VoteMutations
@@ -7,8 +7,8 @@ public class VoteMutations
     /// Creates or updates a vote. Only players who joined the game can vote.
     /// </summary>
     public async Task<FieldResult<Vote, ApplicationError>> CreateOrUpdateVoteAsync(
+        [Service] ActionRateLimiter rateLimiter,
         [Service] ISender sender,
-        [Service] IMapper mapper,
         [Service] ITopicEventSender eventSender,
         [Service] IGameAccessService gameAccess,
         [Required] Guid ticketId,
@@ -20,13 +20,18 @@ public class VoteMutations
             return accessError;
         }
 
+        if (rateLimiter.TryAcquire(ActionRateLimiter.Vote, gameAccess.CurrentUserId) is { } rateLimitError)
+        {
+            return rateLimitError;
+        }
+
         var result = await sender.Send(new CreateOrUpdateVoteCommand(ticketId, value), cancellationToken);
         if (!result.IsSuccess)
         {
             return result.Error!;
         }
 
-        var vote = mapper.Map<Vote>(result.Value);
+        var vote = result.Value!.ToGraphQL();
 
         // The broadcast goes to every subscriber, so it carries the value only once votes are revealed.
         var ticket = await sender.Send(new GetTicketQuery(ticketId), cancellationToken);
@@ -47,7 +52,6 @@ public class VoteMutations
     /// </summary>
     public async Task<FieldResult<VotesRevealed, ApplicationError>> RevealVotesAsync(
         [Service] ISender sender,
-        [Service] IMapper mapper,
         [Service] ICurrentUserProvider currentUserProvider,
         [Service] ITopicEventSender eventSender,
         [Service] IGameAccessService gameAccess,
@@ -72,7 +76,7 @@ public class VoteMutations
         {
             TicketId = ticketId,
             RevealedBy = user.Value?.UserName ?? "Host",
-            Votes = votes.IsSuccess ? mapper.Map<List<Vote>>(votes.Value!.Items) : []
+            Votes = votes.IsSuccess ? [.. votes.Value!.Items.Select(item => item.ToGraphQL())] : []
         };
 
         await eventSender.SendAsync(

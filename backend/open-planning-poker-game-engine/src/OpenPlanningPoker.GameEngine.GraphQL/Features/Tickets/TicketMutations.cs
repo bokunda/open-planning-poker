@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Tickets;
+namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Tickets;
 
 [MutationType]
 public class TicketMutations
@@ -7,8 +7,8 @@ public class TicketMutations
     /// Creates a ticket for given game. Host only.
     /// </summary>
     public async Task<FieldResult<Ticket, ApplicationError>> CreateTicketAsync(
+        [Service] ActionRateLimiter rateLimiter,
         [Service] ISender sender,
-        [Service] IMapper mapper,
         [Service] ITopicEventSender eventSender,
         [Service] IGameAccessService gameAccess,
         [Required] Guid gameId,
@@ -21,18 +21,23 @@ public class TicketMutations
             return accessError;
         }
 
+        if (rateLimiter.TryAcquire(ActionRateLimiter.CreateTicket, gameAccess.CurrentUserId) is { } rateLimitError)
+        {
+            return rateLimitError;
+        }
+
         var result = await sender.Send(new CreateTicketCommand(gameId, name, description), cancellationToken);
 
         if (result.IsSuccess)
         {
             await eventSender.SendAsync(
                 $"{nameof(CreateTicketAsync)}_{gameId}",
-                mapper.Map<Ticket>(result.Value),
+                result.Value!.ToGraphQL(),
                 cancellationToken);
         }
 
         return result.IsSuccess
-            ? mapper.Map<Ticket>(result.Value)
+            ? result.Value!.ToGraphQL()
             : result.Error!;
     }
 
@@ -41,7 +46,6 @@ public class TicketMutations
     /// </summary>
     public async Task<FieldResult<Ticket, ApplicationError>> UpdateTicketAsync(
         [Service] ISender sender,
-        [Service] IMapper mapper,
         [Service] IGameAccessService gameAccess,
         [Required] Guid id,
         [Required] string name,
@@ -55,7 +59,7 @@ public class TicketMutations
 
         var result = await sender.Send(new UpdateTicketCommand(id, name, description), cancellationToken);
         return result.IsSuccess
-            ? mapper.Map<Ticket>(result.Value)
+            ? result.Value!.ToGraphQL()
             : result.Error!;
     }
 
@@ -65,7 +69,6 @@ public class TicketMutations
     /// </summary>
     public async Task<FieldResult<Ticket, ApplicationError>> ReVoteTicketAsync(
         [Service] ISender sender,
-        [Service] IMapper mapper,
         [Service] ITopicEventSender eventSender,
         [Service] IGameAccessService gameAccess,
         [Required] Guid gameId,
@@ -95,21 +98,20 @@ public class TicketMutations
         {
             await eventSender.SendAsync(
                 $"{nameof(ReVoteTicketAsync)}_{ticketGameId}",
-                mapper.Map<Ticket>(result.Value),
+                result.Value!.ToGraphQL(),
                 cancellationToken);
         }
 
         return result.IsSuccess
-            ? mapper.Map<Ticket>(result.Value)
+            ? result.Value!.ToGraphQL()
             : result.Error!;
     }
 
     /// <summary>
     /// Deletes a ticket for given game. Host only.
     /// </summary>
-    public async Task<FieldResult<Ticket, ApplicationError>> DeleteTicketAsync(
+    public async Task<FieldResult<bool, ApplicationError>> DeleteTicketAsync(
         [Service] ISender sender,
-        [Service] IMapper mapper,
         [Service] IGameAccessService gameAccess,
         [Required] Guid id,
         CancellationToken cancellationToken = default)
@@ -121,7 +123,7 @@ public class TicketMutations
 
         var result = await sender.Send(new DeleteTicketCommand(id), cancellationToken);
         return result.IsSuccess
-            ? mapper.Map<Ticket>(result.Value)
+            ? result.Value
             : result.Error!;
     }
 }

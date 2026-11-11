@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.GamePlayer;
+namespace OpenPlanningPoker.GameEngine.GraphQL.Features.GamePlayer;
 
 [MutationType]
 public class GamePlayerMutations
@@ -7,6 +7,7 @@ public class GamePlayerMutations
     /// Join Game. Requires a valid user token.
     /// </summary>
     public async Task<FieldResult<bool, ApplicationError>> JoinGameAsync(
+        [Service] ActionRateLimiter rateLimiter,
         [Service] ISender sender,
         [Service] ICurrentUserProvider currentUserProvider,
         [Service] ITopicEventSender eventSender,
@@ -17,6 +18,11 @@ public class GamePlayerMutations
         if ((gameAccess.EnsureAuthenticated() ?? await gameAccess.EnsureGameExistsAsync(gameId, cancellationToken)) is { } accessError)
         {
             return accessError;
+        }
+
+        if (rateLimiter.TryAcquire(ActionRateLimiter.JoinGame, gameAccess.CurrentUserId) is { } rateLimitError)
+        {
+            return rateLimitError;
         }
 
         var user = await currentUserProvider.GetAsync(cancellationToken);

@@ -13,21 +13,19 @@ public static class GetGame
         }
     }
 
-    public sealed class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            CreateMap<Game, GetGameResponse>();
-        }
-    }
 
-    public sealed class RequestHandler(IGameRepository gameRepository, IMapper mapper)
+    public sealed class RequestHandler(IGameRepository gameRepository)
         : IRequestHandler<GetGameQuery, Result<GetGameResponse, ApplicationError>>
     {
         public async Task<Result<GetGameResponse, ApplicationError>> Handle(GetGameQuery request, CancellationToken cancellationToken = default)
         {
             var data = await gameRepository.GetByIdAsync(request.GameId, cancellationToken);
-            return mapper.Map<GetGameResponse>(data);
+            if (data is null)
+            {
+                return GameAccessErrors.GameNotFound;
+            }
+
+            return data.ToGetGameResponse();
         }
     }
 }

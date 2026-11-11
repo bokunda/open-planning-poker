@@ -22,10 +22,18 @@ public class RegisterUserMutation
         [Service] IUsernameGeneratorService usernameGeneratorService,
         [Service] IUserService userService,
         [Service] JwtSettings jwtSettings,
+        [Service] ActionRateLimiter rateLimiter,
+        [Service] IHttpContextAccessor httpContextAccessor,
         [Service] ILogger<RegisterUserMutation> logger,
         string? username,
         CancellationToken cancellationToken = default)
     {
+        var clientIp = ClientRateLimiting.GetClientIp(httpContextAccessor.HttpContext);
+        if (rateLimiter.TryAcquire(ActionRateLimiter.RegisterUser, clientIp) is { } rateLimitError)
+        {
+            return rateLimitError;
+        }
+
         if (string.IsNullOrEmpty(username))
         {
             username = await usernameGeneratorService.GenerateUsername(Language.English, cancellationToken);

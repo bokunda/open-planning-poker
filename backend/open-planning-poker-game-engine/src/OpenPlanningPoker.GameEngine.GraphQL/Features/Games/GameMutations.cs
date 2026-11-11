@@ -7,8 +7,8 @@ public class GameMutations
     /// Creates a game, returns game details. The caller becomes the game host.
     /// </summary>
     public async Task<FieldResult<Game, ApplicationError>> CreateGameAsync(
+        [Service] ActionRateLimiter rateLimiter,
         [Service] ISender sender,
-        [Service] IMapper mapper,
         [Service] IGameAccessService gameAccess,
         [Required] string name,
         [Required] string description,
@@ -19,6 +19,11 @@ public class GameMutations
         if (gameAccess.EnsureAuthenticated() is { } accessError)
         {
             return accessError;
+        }
+
+        if (rateLimiter.TryAcquire(ActionRateLimiter.CreateGame, gameAccess.CurrentUserId) is { } rateLimitError)
+        {
+            return rateLimitError;
         }
 
         var result = await sender.Send(new CreateGameCommand(name, description), cancellationToken);
@@ -35,7 +40,7 @@ public class GameMutations
         }
 
         return result.IsSuccess
-            ? mapper.Map<Game>(result.Value!)
+            ? result.Value!.ToGraphQL()
             : result.Error!;
     }
 
@@ -63,6 +68,7 @@ public class GameMutations
     /// Generates a PDF report of the game. Only players of the game can generate it.
     /// </summary>
     public async Task<FieldResult<GameReport, ApplicationError>> GenerateGameReport(
+        [Service] ActionRateLimiter rateLimiter,
         [Service] ISender sender,
         [Service] IGameAccessService gameAccess,
         [Required] Guid gameId,
@@ -71,6 +77,11 @@ public class GameMutations
         if (await gameAccess.EnsureMemberAsync(gameId, cancellationToken) is { } accessError)
         {
             return accessError;
+        }
+
+        if (rateLimiter.TryAcquire(ActionRateLimiter.GenerateReport, gameAccess.CurrentUserId) is { } rateLimitError)
+        {
+            return rateLimitError;
         }
 
         var result = await sender.Send(new CreateGameReportCommand(gameId), cancellationToken);

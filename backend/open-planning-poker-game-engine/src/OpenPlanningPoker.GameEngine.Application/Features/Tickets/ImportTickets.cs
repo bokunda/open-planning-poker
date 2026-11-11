@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.Application.Features.Tickets;
+namespace OpenPlanningPoker.GameEngine.Application.Features.Tickets;
 
 public sealed record ImportTicketItemResponse(string Name, string Description);
 public sealed record ImportTicketItem(string Name, string Description);
@@ -16,16 +16,8 @@ public static class ImportTickets
         }
     }
 
-    public sealed class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            CreateMap<ImportTicketsCommand, Ticket>();
-            CreateMap<Ticket, ImportTicketItemResponse>();
-        }
-    }
 
-    public sealed class RequestHandler(ITicketRepository ticketRepository, IMapper mapper, IUnitOfWork unitOfWork)
+    public sealed class RequestHandler(ITicketRepository ticketRepository, IUnitOfWork unitOfWork)
         : IRequestHandler<ImportTicketsCommand, Result<ApiCollection<ImportTicketItemResponse>, ApplicationError>>
     {
         public async Task<Result<ApiCollection<ImportTicketItemResponse>, ApplicationError>> Handle(ImportTicketsCommand request, CancellationToken cancellationToken = default)
@@ -34,7 +26,7 @@ public static class ImportTickets
             ticketRepository.AddRange(tickets);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var mappedTickets = mapper.Map<ICollection<ImportTicketItemResponse>>(tickets);
+            var mappedTickets = tickets.Select(item => item.ToImportTicketItemResponse()).ToList();
             return new ApiCollection<ImportTicketItemResponse>(mappedTickets, mappedTickets.Count);
         }
     }

@@ -13,21 +13,19 @@ public static class GetTicket
         }
     }
 
-    public sealed class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            CreateMap<Ticket, GetTicketResponse>();
-        }
-    }
 
-    public sealed class RequestHandler(ITicketRepository ticketRepository, IMapper mapper)
+    public sealed class RequestHandler(ITicketRepository ticketRepository)
         : IRequestHandler<GetTicketQuery, Result<GetTicketResponse, ApplicationError>>
     {
         public async Task<Result<GetTicketResponse, ApplicationError>> Handle(GetTicketQuery request, CancellationToken cancellationToken = default)
         {
             var data = await ticketRepository.GetByIdAsync(request.TicketId, cancellationToken);
-            return mapper.Map<GetTicketResponse>(data);
+            if (data is null)
+            {
+                return GameAccessErrors.TicketNotFound;
+            }
+
+            return data.ToGetTicketResponse();
         }
     }
 }

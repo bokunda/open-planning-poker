@@ -13,7 +13,7 @@ Open Planning Poker is a free, open-source agile estimation tool for Scrum teams
 ### Backend Services (Docker, .NET 9)
 | Service | Port | Purpose |
 |---------|------|---------|
-| API Gateway (YARP) | 11000 | Reverse proxy, rate limiting (100 req/min) |
+| API Gateway (YARP) | 11000 | Reverse proxy (not used by the app; its rate-limit policy is not attached to a route) |
 | Fusion Gateway (HotChocolate) | 10010 | GraphQL schema stitching, header propagation |
 | Game Engine | 9091 | Core: games, tickets, voting, PDF reports (PostgreSQL) |
 | User Management | 9090 | Auth, anonymous usernames (Redis) |
@@ -86,9 +86,7 @@ Open Planning Poker is a free, open-source agile estimation tool for Scrum teams
 - .NET SDK 10 installed locally, projects target net9.0 — need .NET 9 runtime for `dotnet run`
 - `gateway.fgp` must be regenerated for local dev (use `regenerate-gateway.sh`)
 - Fusion Gateway HTTPS port removed in local override (no dev cert in Docker)
-- `AllowQueryPlan = true` in Fusion Gateway (info disclosure)
 - CORS only localhost in appsettings (CI/CD overwrites)
-- `ASPNETCORE_ENVIRONMENT=Development` in CI/CD workflows
 - Node 22-alpine for both Docker stages
 - Apollo client uses `--legacy-peer-deps` due to version conflicts
 - App container runs Node.js SSR server on port 4000 (not nginx on 80)
@@ -183,6 +181,17 @@ npm start  # http://localhost:4200
 - `Ticket.VotesRevealed` column (migration `AddTicketVotesRevealed`; existing tickets marked revealed)
 - Before reveal `getVotes`, `Ticket.votes`, `onVoteCreatedOrUpdated` and the PDF report never expose other players' values (value `""`, average `0`)
 - `revealVotes` sets the flag and its payload/subscription carries all votes; `reVoteTicket` hides them again
+
+### Request limits & rate limiting
+- Container ports are published on `127.0.0.1` only; nginx (same host) is the single public entry. This is what makes `X-Real-IP` trustworthy.
+- Fusion gateway: token bucket per client IP (`X-Real-IP`), burst 200, 100 tokens / 10 s (`RateLimiting:*` config). The gateway forwards `X-Real-IP` to subgraphs.
+- Game Engine / User Management: the same limiter, but only for traffic that came straight from nginx (has `X-Forwarded-For`, e.g. WebSocket on ge.); gateway traffic is not counted twice.
+- Per-action limits (`ActionRateLimiter`): createGame 10/min, report 5/min, chat 30/min, createTicket 300/min, vote 120/min, joinGame 60/min per user; registerUser 30/min per IP; changeUsername 10/min per user. Error code `RateLimited`.
+- GraphQL: max depth 10, execution timeout 10 s (gateway 15 s), request body max 256 KB; introspection, Nitro IDE and exception details only in Development.
+- FluentValidation runs through `ValidationBehavior` in the MediatR pipeline (error code `ValidationFailed`). Decks: 2-30 unique cards, each up to 10 chars; votes must be a card of the game's deck.
+- `/_health` returns 404 for requests that came through nginx.
+- Production runs with `ASPNETCORE_ENVIRONMENT=Production`; logs go to the console (`docker logs`). Loki is not wired in (it never was in production).
+- Mapping is explicit code (`Application/Mappings.cs`, `GraphQL/Features/GraphQLMappings.cs`); AutoMapper was removed.
 
 ### Secrets
 - JWT secret comes only from env `Authentication__Secret` (min. 32 chars); services refuse to start without it. The old committed secret is rejected.

@@ -22,16 +22,8 @@ public static class CreateTicket
         }
     }
 
-    public sealed class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            CreateMap<CreateTicketCommand, Ticket>();
-            CreateMap<Ticket, CreateTicketResponse>();
-        }
-    }
 
-    public sealed class RequestHandler(ITicketRepository ticketRepository, IMapper mapper, IUnitOfWork unitOfWork)
+    public sealed class RequestHandler(ITicketRepository ticketRepository, IUnitOfWork unitOfWork)
         : IRequestHandler<CreateTicketCommand, Result<CreateTicketResponse, ApplicationError>>
     {
         public async Task<Result<CreateTicketResponse, ApplicationError>> Handle(CreateTicketCommand request, CancellationToken cancellationToken = default)
@@ -40,7 +32,7 @@ public static class CreateTicket
             ticketRepository.Add(ticket);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<CreateTicketResponse>(ticket);
+            return ticket.ToCreateTicketResponse();
         }
     }
 }

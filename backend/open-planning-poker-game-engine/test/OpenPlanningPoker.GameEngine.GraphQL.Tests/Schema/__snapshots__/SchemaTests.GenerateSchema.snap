@@ -88,7 +88,7 @@ type Mutation {
   """
   reVoteTicket(gameId: UUID! ticketId: UUID!): Ticket!
   "Deletes a ticket for given game. Host only."
-  deleteTicket(id: UUID!): Ticket!
+  deleteTicket(id: UUID!): Boolean!
   "Creates or updates a vote. Only players who joined the game can vote."
   createOrUpdateVote(ticketId: UUID! value: String!): Vote!
   "Reveals all votes for a ticket and broadcasts them to all players. Host only."

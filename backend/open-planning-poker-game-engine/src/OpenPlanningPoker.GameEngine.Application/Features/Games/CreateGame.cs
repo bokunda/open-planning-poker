@@ -19,16 +19,8 @@ public static class CreateGame
         }
     }
 
-    public sealed class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            CreateMap<CreateGameCommand, Game>();
-            CreateMap<Game, CreateGameResponse>();
-        }
-    }
 
-    public sealed class RequestHandler(IGameRepository gameRepository, IMapper mapper, IUnitOfWork unitOfWork)
+    public sealed class RequestHandler(IGameRepository gameRepository, IUnitOfWork unitOfWork)
         : IRequestHandler<CreateGameCommand, Result<CreateGameResponse, ApplicationError>>
     {
         public async Task<Result<CreateGameResponse, ApplicationError>> Handle(CreateGameCommand request, CancellationToken cancellationToken = default)
@@ -38,7 +30,7 @@ public static class CreateGame
             gameRepository.Add(game);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<CreateGameResponse>(game);
+            return game.ToCreateGameResponse();
         }
     }
 }

@@ -15,6 +15,7 @@ public class ChatMutations
     /// Sends a chat message to a game. Only players of the game can send messages.
     /// </summary>
     public async Task<FieldResult<ChatMessage, ApplicationError>> SendChatMessageAsync(
+        [Service] ActionRateLimiter rateLimiter,
         [Service] IGameAccessService gameAccess,
         [Service] ICurrentUserProvider currentUserProvider,
         [Service] ITopicEventSender eventSender,
@@ -26,6 +27,11 @@ public class ChatMutations
         if (await gameAccess.EnsureMemberAsync(gameId, cancellationToken) is { } accessError)
         {
             return accessError;
+        }
+
+        if (rateLimiter.TryAcquire(ActionRateLimiter.SendChatMessage, gameAccess.CurrentUserId) is { } rateLimitError)
+        {
+            return rateLimitError;
         }
 
         content = content.Trim();

@@ -22,16 +22,8 @@ public static class UpdateTicket
         }
     }
 
-    public sealed class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            CreateMap<UpdateTicketCommand, Ticket>();
-            CreateMap<Ticket, UpdateTicketResponse>();
-        }
-    }
 
-    public sealed class RequestHandler(ITicketRepository ticketRepository, IMapper mapper, IUnitOfWork unitOfWork)
+    public sealed class RequestHandler(ITicketRepository ticketRepository, IUnitOfWork unitOfWork)
         : IRequestHandler<UpdateTicketCommand, Result<UpdateTicketResponse, ApplicationError>>
     {
         public async Task<Result<UpdateTicketResponse, ApplicationError>> Handle(UpdateTicketCommand request, CancellationToken cancellationToken = default)
@@ -42,7 +34,7 @@ public static class UpdateTicket
             ticketRepository.Update(ticket);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<UpdateTicketResponse>(ticket);
+            return ticket.ToUpdateTicketResponse();
         }
     }
 }
