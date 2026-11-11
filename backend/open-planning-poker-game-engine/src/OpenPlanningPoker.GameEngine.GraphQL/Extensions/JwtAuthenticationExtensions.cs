@@ -17,6 +17,9 @@ public static class JwtAuthenticationExtensions
     // Secrets that were ever committed to the public repository. Never accept them.
     private static readonly string[] KnownPublicSecrets = ["OpenPlanningPokerDevelopmentSecretKey123"];
 
+    /// <summary>Registers JWT bearer authentication with the shared secret, issuer and audience.</summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configuration">Configuration with <c>Authentication:Secret</c> (and optional issuer/audience).</param>
     /// <param name="isSchemaExport">
     /// True when the app only exports its GraphQL schema (CI). No secret is available there,
     /// so a throwaway random key is used and the app never serves requests.

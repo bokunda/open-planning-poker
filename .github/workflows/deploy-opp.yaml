@@ -43,7 +43,7 @@ jobs:
   indexnow:
     name: Ping Search Engines
     needs: [opp-ui, opp-website]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Ping IndexNow (Bing + Yandex)
         run: |

@@ -11,6 +11,8 @@
     <PackageReference Include="EntityFramework" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <!-- Direct reference so every project gets the same Relational version as EF Core (Npgsql alone brings 9.0.1). -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

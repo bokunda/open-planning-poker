@@ -35,8 +35,8 @@
         "estimate user stories with story points online",
         "run a planning poker session without registration"
       ],
-      "version": "2.1.0",
-      "updatedAt": "2026-11-12T00:00:00Z"
+      "version": "2.1.1",
+      "updatedAt": "2026-11-13T00:00:00Z"
     },
     {
       "identifier": "urn:air:openplanningpoker.com:docs:llms-txt",

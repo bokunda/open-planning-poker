@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.1] — 2026-11-13
+
+Maintenance release: clean CI runs and builds.
+
+### Fixed
+- **Ticket votes could fail with a null reference** when the votes query returned an error; the mapping now returns an empty list instead
+- **Build warnings**: nullable warnings in the GraphQL mappings, missing XML documentation on the JWT setup, and two versions of `Microsoft.EntityFrameworkCore.Relational` in the Game Engine (now 9.0.3 everywhere). The Game Engine, User Management and the Fusion gateway build without warnings
+
+### Changed
+- **GitHub Actions on Node 24**: `actions/checkout` v7.0.1 and `actions/setup-dotnet` v6.1.0 (the old versions ran on the deprecated Node 20)
+- **Runners pinned to `ubuntu-24.04`** instead of `ubuntu-latest`, so the move of `ubuntu-latest` to Ubuntu 26 does not change the build without notice
+
 ## [2.1.0] — 2026-11-12
 
 A shared timer for the whole team, a faster first load, and guides on the website.
