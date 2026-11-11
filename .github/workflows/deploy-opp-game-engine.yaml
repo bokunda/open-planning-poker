@@ -74,7 +74,7 @@ jobs:
               --network oppnetwork \
               -e ASPNETCORE_ENVIRONMENT=Production \
               -e ASPNETCORE_HTTP_PORTS=8080 \
-              -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
+              -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.OTEL_ENDPOINT }} \
               -e 'ConnectionStrings__Database=Host=${{ vars.OPP_DB_HOST }};Port=${{ vars.OPP_DB_PORT }};Database=${{ vars.OPP_DB_GE_NAME }};Username=${{ vars.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }};' \
               -e 'ConnectionStrings__Cache=${{ vars.REDIS_HOST }}' \
               -e 'Authentication__Secret=${{ secrets.OPP_JWT_SECRET }}' \
