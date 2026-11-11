@@ -1,0 +1,17 @@
+# Open Planning Poker
+
+> Free, open-source planning poker for agile teams. Create a room, share the link, vote in secret and reveal the cards together. No sign-up, works on phones, self-hostable (GPL-3.0).
+
+## App
+- [Open Planning Poker app](https://app.openplanningpoker.com/): create or join a game
+- [App overview for language models](https://app.openplanningpoker.com/llms.txt)
+
+## Guides
+- [What is planning poker?](https://openplanningpoker.com/what-is-planning-poker/): rules, an example round, why it works, common mistakes
+- [How to run a planning poker session](https://openplanningpoker.com/how-to-run-planning-poker/): step by step for remote, hybrid and in-person teams
+- [Planning poker cards and scales](https://openplanningpoker.com/planning-poker-cards/): Fibonacci, modified Fibonacci, T-shirt sizes, powers of 2
+- [Self-hosted planning poker](https://openplanningpoker.com/self-hosted-planning-poker/): stack, requirements, data stored
+
+## Project
+- [Changelog](https://openplanningpoker.com/changelog/)
+- [Source code on GitHub](https://github.com/bokunda/open-planning-poker)

@@ -110,6 +110,10 @@
   .mini-feature h3 { @apply mb-1 font-display font-extrabold text-gray-900 dark:text-white; }
   .mini-feature p { @apply text-sm leading-relaxed; }
 
+  .guide-card { @apply block h-full p-5 border border-gray-200 rounded-2xl transition hover:border-purple-300 hover:shadow-md dark:border-gray-800 dark:hover:border-purple-700 focus-ring; }
+  .guide-card h3 { @apply mb-1 font-display font-extrabold text-gray-900 dark:text-white; }
+  .guide-card p { @apply text-sm leading-relaxed; }
+
   /* FAQ (native details, no script) */
   .faq summary {
     @apply flex items-center justify-between gap-4 py-5 font-semibold text-gray-900 cursor-pointer list-none dark:text-white focus-ring rounded;
@@ -140,6 +144,28 @@
   .whats-new-list li::before { content: '✦'; @apply absolute left-0 text-purple-500; }
   .whats-new-list strong { @apply font-semibold text-gray-900 dark:text-white; }
   .whats-new-list code { @apply px-1.5 py-0.5 text-sm rounded bg-gray-100 text-purple-700 dark:bg-gray-900 dark:text-purple-300; }
+
+  /* Guide pages (pages/*.html) */
+  .guide { @apply leading-7 text-gray-600 dark:text-gray-300; }
+  .guide h2 { @apply mt-12 mb-4 font-display text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white; }
+  .guide h3 { @apply font-display text-lg font-bold text-gray-900 dark:text-white; }
+  .guide p { @apply my-4; }
+  .guide ul { @apply my-4 pl-5 space-y-2 list-disc marker:text-purple-400; }
+  .guide ol { @apply my-4 pl-5 space-y-2 list-decimal marker:font-bold marker:text-purple-600; }
+  .guide strong { @apply font-semibold text-gray-900 dark:text-white; }
+  .guide a { @apply link; }
+  .guide ol.steps { @apply pl-0 list-none space-y-4; counter-reset: step; }
+  .guide ol.steps > li { @apply relative pl-14 py-1; counter-increment: step; }
+  .guide ol.steps > li::before {
+    content: counter(step);
+    @apply absolute left-0 top-0 grid w-10 h-10 font-display font-extrabold text-white rounded-xl place-items-center bg-purple-600;
+  }
+  .guide ol.steps p { @apply mt-1 mb-0; }
+  .guide .table-wrap { @apply my-6 overflow-x-auto border border-gray-200 rounded-2xl dark:border-gray-800; }
+  .guide table { @apply w-full text-left text-sm; }
+  .guide th { @apply px-4 py-3 font-semibold text-gray-900 bg-gray-50 dark:bg-gray-800 dark:text-white; }
+  .guide td { @apply px-4 py-3 align-top border-t border-gray-200 dark:border-gray-800; }
+  .guide details.faq { @apply border-b border-gray-200 dark:border-gray-800; }
 
   /* Changelog page content, generated from CHANGELOG.md */
   .changelog-content { @apply leading-7 text-gray-600 dark:text-gray-400; }
