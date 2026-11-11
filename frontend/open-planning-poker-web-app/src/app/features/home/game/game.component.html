@@ -33,15 +33,21 @@
           </form>
         </div>
 
+        <!-- Rendered on the server; its JS loads and hydrates when the browser is idle. -->
+        @defer (hydrate on idle) {
         <app-demo-table class="landing-demo"></app-demo-table>
+        }
       </div>
     </div>
   </ng-container>
 
   <app-room-skeleton *ngIf="isLoading"></app-room-skeleton>
 
-  <!-- Game active: dashboard layout -->
-  <div class="game-dashboard" *ngIf="game" @fadeSlide>
+  <!-- Game active: dashboard layout. The room UI is a separate chunk, loaded once a game is open,
+       so the landing page does not download it. -->
+  @if (game) {
+  @defer (on immediate) {
+  <div class="game-dashboard" @fadeSlide>
     <!-- Main column -->
     <div class="game-main">
       <app-game-details
@@ -99,4 +105,8 @@
       </app-chat>
     </aside>
   </div>
+  } @placeholder {
+  <app-room-skeleton></app-room-skeleton>
+  }
+  }
 </main>

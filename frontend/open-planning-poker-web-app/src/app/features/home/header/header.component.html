@@ -2,7 +2,7 @@
   <div class="header">
     <mat-toolbar>
       <!-- Hamburger menu -->
-      <button mat-icon-button [matMenuTriggerFor]="moreMenu" matTooltip="Menu" aria-label="Menu">
+      <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="Menu">
         <mat-icon>menu</mat-icon>
       </button>
 
@@ -14,8 +14,7 @@
 
       <!-- Username -->
       <!-- One button: the name and the pencil (a button inside a button is not accessible). -->
-      <button type="button" class="header-welcome" *ngIf="username" (click)="handleUpdateUser()"
-        matTooltip="Edit username" [attr.aria-label]="'Edit username, currently ' + username">
+      <button type="button" class="header-welcome" *ngIf="username" (click)="handleUpdateUser()" [attr.aria-label]="'Edit username, currently ' + username">
         <span class="header-avatar" aria-hidden="true">{{ username.charAt(0).toUpperCase() }}</span>
         <span class="header-username">{{ username }}</span>
         <mat-icon class="header-edit-icon" aria-hidden="true">edit</mat-icon>

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Performance
+- **Smaller first load**: initial JavaScript 1148 → 857 KB (raw). The game room is a separate chunk loaded once a game is open (`@defer`); dialogs (new game, join, ticket, import, invite, username, about) load on first open; the animation engine loads after start-up (`provideAnimationsAsync`)
+- **Demo table hydrates on idle**: still rendered on the server, its JS loads when the browser is idle (incremental hydration)
+- **Icons**: only the 25 Material Symbols the app uses are downloaded instead of the full Material Icons font
+- **Global CSS** 168 → 74 KB: Material themes only for the components the app uses
+- **Analytics** (GA4, Clarity) load after the page has loaded and the browser is idle; almost all forced layout reads on the landing page came from Clarity
+
 ## [2.0.0] — 2026-11-11
 
 A new look for the whole app, built around a real poker table, plus a security and reliability pass on the backend.
