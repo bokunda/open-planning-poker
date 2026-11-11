@@ -14,7 +14,7 @@ jobs:
       packages: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
 
       - name: Set gateway URLs in environment.prod.ts
         working-directory: frontend/open-planning-poker-web-app
