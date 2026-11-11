@@ -16,19 +16,11 @@ public static class GetVotes
         }
     }
 
-    public sealed class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            CreateMap<Vote, GetVotesItem>();
-        }
-    }
 
     public sealed class RequestHandler(
         IVoteRepository voteRepository,
         ITicketRepository ticketRepository,
-        ICurrentUserProvider currentUserProvider,
-        IMapper mapper)
+        ICurrentUserProvider currentUserProvider)
         : IRequestHandler<GetVotesQuery, Result<ApiCollection<GetVotesItem>, ApplicationError>>
     {
         public async Task<Result<ApiCollection<GetVotesItem>, ApplicationError>> Handle(GetVotesQuery request, CancellationToken cancellationToken = default)
@@ -40,7 +32,7 @@ public static class GetVotes
             }
 
             var result = await voteRepository.GetByTicket(request.TicketId, null, cancellationToken);
-            var mappedResult = mapper.Map<ICollection<GetVotesItem>>(result);
+            var mappedResult = result.Select(item => item.ToGetVotesItem()).ToList();
 
             if (!ticket.VotesRevealed)
             {

@@ -11,16 +11,14 @@ public class Ticket
     
     public async Task<ApiCollection<Vote>> GetVotes(
         [Service] ISender sender,
-        [Service] IMapper mapper,
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(new GetVotesQuery(Id), cancellationToken);
-        return mapper.Map<ApiCollection<Vote>>(result.Value);
+        return result.Value.ToGraphQL(item => item.ToGraphQL());
     }
 
     public async Task<decimal> GetAverageVotingValue(
         [Service] ISender sender,
-        [Service] IMapper mapper,
         CancellationToken cancellationToken)
     {
         if (!VotesRevealed)
@@ -28,7 +26,7 @@ public class Ticket
             return 0;
         }
 
-        var votes = await GetVotes(sender, mapper, cancellationToken);
+        var votes = await GetVotes(sender, cancellationToken);
 
         var rawVotes = votes.Items.Select(v => v.Value);
         var total = 0M;

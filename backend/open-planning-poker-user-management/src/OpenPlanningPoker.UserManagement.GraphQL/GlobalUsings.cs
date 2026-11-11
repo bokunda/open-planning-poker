@@ -17,3 +17,5 @@ global using System.ComponentModel.DataAnnotations;
 global using OpenPlanningPoker.Shared.Services;
 global using Serilog;
 global using OpenPlanningPoker.UserManagement.GraphQL.Extensions;
+global using OpenPlanningPoker.UserManagement.GraphQL.RateLimiting;
+global using HotChocolate.AspNetCore;

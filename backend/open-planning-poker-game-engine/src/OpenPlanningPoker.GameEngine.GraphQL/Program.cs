@@ -16,9 +16,12 @@ builder.Services.AddTransient<IUserService, CacheUserService>();
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// Register IConnectionMultiplexer for Redis pub-sub and chat persistence (lazy — only connects when first used)
-builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
-    ConnectionMultiplexer.Connect(builder.Configuration["ConnectionStrings:Cache"]!));
+builder.Services.AddRedisConnection(builder.Configuration);
+builder.Services.AddClientRateLimiting(builder.Configuration);
+builder.Services.AddSingleton<ActionRateLimiter>();
+
+// GraphQL requests are small; large bodies are only an attack vector.
+builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 256 * 1024);
 
 var corsConfig = new CorsConfiguration();
 builder.Configuration.GetSection("Cors").Bind(corsConfig);
@@ -63,18 +66,24 @@ app.MapGet("/sitemap.xml", (HttpContext ctx) =>
     return Results.Content(sb.ToString(), "application/xml; charset=utf-8");
 });
 
-//Future improvements, this shouldn't be visible to everyone
+// Health details are internal: requests that came through nginx (X-Forwarded-For) get 404.
 app.MapHealthChecks("/_health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
+}).AddEndpointFilter(async (context, next) =>
+    context.HttpContext.Request.Headers.ContainsKey("X-Forwarded-For")
+        ? Results.NotFound()
+        : await next(context));
 
 app.UseCustomExceptionHandler();
 
-app.UseWebSockets();
-app.MapGraphQL();
-    //.RequireAuthorization();
-
 app.UseCors(corsConfig.PolicyName);
+app.UseRateLimiter();
+app.UseWebSockets();
+app.MapGraphQL().WithOptions(new GraphQLServerOptions
+{
+    // The Nitro IDE is for local development only.
+    Tool = { Enable = app.Environment.IsDevelopment() }
+});
 
 app.RunWithGraphQLCommands(args);

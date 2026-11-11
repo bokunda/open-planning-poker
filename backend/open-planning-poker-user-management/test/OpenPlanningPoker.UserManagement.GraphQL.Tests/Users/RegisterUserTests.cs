@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 
 namespace OpenPlanningPoker.UserManagement.GraphQL.Tests.Users;
 
@@ -56,6 +56,8 @@ public class RegisterUserTests
             .AddSingleton(usernameGeneratorService)
             .AddSingleton(userService)
             .AddSingleton(configuration)
+            .AddSingleton<ActionRateLimiter>()
+            .AddSingleton<Microsoft.AspNetCore.Http.IHttpContextAccessor, Microsoft.AspNetCore.Http.HttpContextAccessor>()
             .AddSingleton(new JwtSettings(AuthenticationSecret, "open-planning-poker", "open-planning-poker", TimeSpan.FromDays(1)))
             .AddLogging()
             .AddGraphQL()
@@ -98,6 +100,8 @@ public class RegisterUserTests
             .AddSingleton(usernameGeneratorService)
             .AddSingleton(userService)
             .AddSingleton(configuration)
+            .AddSingleton<ActionRateLimiter>()
+            .AddSingleton<Microsoft.AspNetCore.Http.IHttpContextAccessor, Microsoft.AspNetCore.Http.HttpContextAccessor>()
             .AddSingleton(new JwtSettings(AuthenticationSecret, "open-planning-poker", "open-planning-poker", TimeSpan.FromDays(1)))
             .AddLogging()
             .AddGraphQL()
@@ -132,6 +136,8 @@ public class RegisterUserTests
             .AddSingleton(usernameGeneratorService)
             .AddSingleton(userService)
             .AddSingleton(configuration)
+            .AddSingleton<ActionRateLimiter>()
+            .AddSingleton<Microsoft.AspNetCore.Http.IHttpContextAccessor, Microsoft.AspNetCore.Http.HttpContextAccessor>()
             .AddSingleton(new JwtSettings(AuthenticationSecret, "open-planning-poker", "open-planning-poker", TimeSpan.FromDays(1)))
             .AddLogging()
             .AddGraphQL()

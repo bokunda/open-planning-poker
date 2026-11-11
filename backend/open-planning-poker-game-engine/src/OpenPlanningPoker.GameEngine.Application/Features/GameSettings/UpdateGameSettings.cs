@@ -18,23 +18,14 @@ public static class UpdateGameSettings
 
             RuleFor(x => x.DeckSetup)
                 .NotEmpty()
-                .Must(BeValidCsv).WithMessage("Deck must be in the CSV format.");
-        }
-
-        private bool BeValidCsv(string deckSetup) => deckSetup.Split(',').All(item => !string.IsNullOrWhiteSpace(item));
-    }
-
-    public sealed class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            CreateMap<Domain.GameSettings.GameSettings, UpdateGameSettingsResponse>();
+                .Must(GameSettingsConstants.IsValidDeck)
+                .WithMessage($"Deck must have 2-{GameSettingsConstants.MaxDeckCards} unique comma-separated cards of up to {GameSettingsConstants.MaxCardLength} characters.");
         }
     }
+
 
     public sealed class RequestHandler(
         IGameSettingsRepository gameSettingsRepository,
-        IMapper mapper,
         IUnitOfWork unitOfWork)
         : IRequestHandler<UpdateGameSettingsCommand, Result<UpdateGameSettingsResponse, ApplicationError>>
     {
@@ -51,7 +42,7 @@ public static class UpdateGameSettings
             gameSettingsRepository.Update(gameSettings);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<UpdateGameSettingsResponse>(gameSettings);
+            return gameSettings.ToUpdateGameSettingsResponse();
         }
     }
 }

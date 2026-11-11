@@ -81,7 +81,6 @@ Applied via Nginx:
 ## Known Limitations
 
 - The health check endpoint (`/_health`) is publicly accessible (planned improvement)
-- `AllowQueryPlan` is enabled in the Fusion Gateway for debugging (should be disabled in strict production)
 - JWT audience/issuer validation is currently disabled (planned improvement)
 - No CSRF protection for GraphQL mutations (mitigated by Bearer token auth via `Authorization` header)
 

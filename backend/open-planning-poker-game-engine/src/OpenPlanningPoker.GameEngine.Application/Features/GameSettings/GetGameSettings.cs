@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.Application.Features.GameSettings;
+namespace OpenPlanningPoker.GameEngine.Application.Features.GameSettings;
 
 public sealed record GetGameSettingsResponse(Guid Id, Guid GameId, string DeckSetup);
 public sealed record GetGameSettingsQuery(Guid GameId) : IRequest<Result<GetGameSettingsResponse, ApplicationError>>;
@@ -13,21 +13,19 @@ public static class GetGameSettings
         }
     }
 
-    public sealed class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            CreateMap<Domain.GameSettings.GameSettings, GetGameSettingsResponse>();
-        }
-    }
 
-    public sealed class RequestHandler(IGameSettingsRepository gameSettingsRepository, IMapper mapper)
+    public sealed class RequestHandler(IGameSettingsRepository gameSettingsRepository)
         : IRequestHandler<GetGameSettingsQuery, Result<GetGameSettingsResponse, ApplicationError>>
     {
         public async Task<Result<GetGameSettingsResponse, ApplicationError>> Handle(GetGameSettingsQuery request, CancellationToken cancellationToken = default)
         {
             var data = await gameSettingsRepository.GetByGame(request.GameId, cancellationToken);
-            return mapper.Map<GetGameSettingsResponse>(data);
+            if (data is null)
+            {
+                return new ApplicationError("GameSettingsNotFound", "Game settings not found.");
+            }
+
+            return data.ToGetGameSettingsResponse();
         }
     }
 }

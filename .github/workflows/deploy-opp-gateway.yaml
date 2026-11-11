@@ -25,8 +25,7 @@ jobs:
         working-directory: backend/open-planning-poker-graphql-gateway
         run: |
           jq '.Cors.AllowedOrigins = ${{ vars.OPP_DEFAULT_CORS }} |
-              .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}" |
-              .Serilog.WriteTo[0].Args.uri = "${{ vars.LOKI_URL }}"
+              .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}"
               ' appsettings.json > temp.json && mv temp.json appsettings.json
 
       - name: Install HotChocolate.Fusion CLI
@@ -86,10 +85,10 @@ jobs:
               --restart unless-stopped \
               --name OpenPlanningPoker.Fusion.Gateway \
               --network oppnetwork \
-              -e ASPNETCORE_ENVIRONMENT=Development \
+              -e ASPNETCORE_ENVIRONMENT=Production \
               -e ASPNETCORE_HTTP_PORTS=8080 \
               -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
-              -p 10010:8080 \
-              -p 10011:8081 \
+              -p 127.0.0.1:10010:8080 \
+              -p 127.0.0.1:10011:8081 \
               ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:${{ github.run_number }}
 

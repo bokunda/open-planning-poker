@@ -21,6 +21,7 @@ public class ChangeUsernameMutation
         [Service] ICurrentUserProvider currentUserProvider,
         [Service] IUserService userService,
         [Service] ILogger<ChangeUsernameMutation> logger,
+        [Service] ActionRateLimiter rateLimiter,
         [Required] string username,
         CancellationToken cancellationToken = default)
     {
@@ -32,6 +33,10 @@ public class ChangeUsernameMutation
         }
 
         var currentUserId = $"{currentUserProvider.Id}";
+        if (rateLimiter.TryAcquire(ActionRateLimiter.ChangeUsername, currentUserId) is { } rateLimitError)
+        {
+            return rateLimitError;
+        }
         var updatedUser = await userService.UpdateAsync(currentUserId, username, cancellationToken);
         if (updatedUser is null)
         {

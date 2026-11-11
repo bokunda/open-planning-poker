@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.Application;
+namespace OpenPlanningPoker.GameEngine.Application;
 
 public static class DependencyInjection
 {
@@ -8,11 +8,9 @@ public static class DependencyInjection
         {
             configuration.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
             configuration.AddOpenBehavior(typeof(LoggingBehavior<,>));
+            configuration.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
-        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-        services.AddFluentValidationAutoValidation();
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
-        services.AddAutoMapper(typeof(DependencyInjection).Assembly);
         services.AddRedis(configuration);
         CacheExtensions.AddHybridCache(services, true);
         services.AddScoped<IGameAccessService, GameAccessService>();

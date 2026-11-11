@@ -8,7 +8,7 @@ Open Planning Poker follows these architectural principles:
 - **Clean Architecture** — Domain → Application → Infrastructure → Presentation. Business logic is isolated from infrastructure concerns.
 - **CQRS-lite via MediatR** — Commands and queries are separated using the Mediator pattern.
 - **Backend-for-Frontend (BFF)** — The Fusion Gateway acts as a BFF, composing data from multiple subgraphs for the Angular frontend.
-- **API Gateway (YARP)** — Cross-cutting concerns (rate limiting, routing) are handled at the edge.
+- **Edge protection** — nginx is the only public entry (container ports bind to 127.0.0.1); the Fusion gateway rate-limits per client IP and subgraphs add per-action limits.
 
 ## High-Level Architecture
 
@@ -37,7 +37,7 @@ Open Planning Poker follows these architectural principles:
 
 | Service | Port | Framework | Responsibility |
 |---------|------|-----------|---------------|
-| **API Gateway** | 11000 | .NET 9 + YARP 2.3 | Reverse proxy, rate limiting, OpenAPI docs |
+| **API Gateway** | 11000 | .NET 9 + YARP 2.3 | Reverse proxy, OpenAPI docs (not used by the app) |
 | **Fusion Gateway** | 10010 | .NET 9 + HotChocolate 15 | GraphQL schema stitching, header propagation, CORS |
 | **Game Engine** | 9091 | .NET 9 + EF Core + MediatR | Game rooms, tickets, voting, PDF reports, WebSocket subscriptions |
 | **User Management** | 9090 | .NET 9 + HotChocolate + FluentValidation | Registration, anonymous usernames, JWT auth (Redis-backed) |

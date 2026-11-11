@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security (P1)
+- **Rate limiting that actually applies** — per-client-IP token bucket on the Fusion gateway (the YARP policy was never attached) plus per-action limits for registration, game creation, reports, chat, tickets, votes and joins
+- **Container ports bound to 127.0.0.1** — every service was also reachable directly over plain HTTP, bypassing nginx and TLS
+- **GraphQL limits** — max depth 10, execution timeout, 256 KB request body; introspection, Nitro IDE and exception details disabled outside Development
+- **Production environment** — services run with `ASPNETCORE_ENVIRONMENT=Production`; `/_health` hidden from public traffic
+- **Validation runs** — FluentValidation validators were registered but never executed for GraphQL requests; a MediatR `ValidationBehavior` now enforces them. Deck setups and votes are validated
+- **AutoMapper removed** (known high-severity vulnerability in 14.0.0) — replaced with explicit mapping code
+- Single resilient Redis connection (`abortConnect=false`) instead of two blocking ones
+
+### Fixed (P1)
+- `deleteTicket` returned a mapping error on every call; it now returns `Boolean`
+- `game`, `ticket` and `settings` queries return `GameNotFound` / `TicketNotFound` / `GameSettingsNotFound` instead of a null-mapping error
+
 ### Security
 - **Server-side host role** — the game creator is the host (`Game.hostId`); only the host can create/update/delete tickets, change settings, reveal votes and start a re-vote
 - **Membership checks** — only players who joined a game can vote, chat or export the PDF report; anonymous requests are rejected

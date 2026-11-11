@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Info;
+namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Info;
 
 [QueryType]
 public class InfoQueries
@@ -8,12 +8,11 @@ public class InfoQueries
     /// </summary>
     public async Task<FieldResult<Info, ApplicationError>> GetInfoAsync(
         [Service] ISender sender,
-        [Service] IMapper mapper,
         CancellationToken cancellationToken)
     {
         var result = await sender.Send(new GetInfoQuery(), cancellationToken);
         return result.IsSuccess
-            ? mapper.Map<Info>(result.Value)
+            ? result.Value!.ToGraphQL()
             : result.Error!;
     }
 }

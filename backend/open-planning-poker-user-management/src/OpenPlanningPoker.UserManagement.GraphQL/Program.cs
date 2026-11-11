@@ -27,7 +27,20 @@ builder
     .AddAuthorization()
     .AddQueryConventions()
     .AddMutationConventions()
+    .AddMaxExecutionDepthRule(10)
+    .ModifyRequestOptions(options =>
+    {
+        options.ExecutionTimeout = TimeSpan.FromSeconds(10);
+        options.IncludeExceptionDetails = builder.Environment.IsDevelopment();
+    })
+    .DisableIntrospection(!builder.Environment.IsDevelopment())
     .AddTypes();
+
+builder.Services.AddClientRateLimiting(builder.Configuration);
+builder.Services.AddSingleton<ActionRateLimiter>();
+
+// GraphQL requests are small; large bodies are only an attack vector.
+builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 256 * 1024);
 
 builder.Services.AddHttpContextAccessor();
 
@@ -48,11 +61,16 @@ if (isSchemaExport)
 
 app.UseSerilogRequestLogging();
 
+app.UseCors(corsConfig.PolicyName);
+app.UseRateLimiter();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGraphQL();
-
-app.UseCors(corsConfig.PolicyName);
+app.MapGraphQL().WithOptions(new GraphQLServerOptions
+{
+    // The Nitro IDE is for local development only.
+    Tool = { Enable = app.Environment.IsDevelopment() }
+});
 
 app.RunWithGraphQLCommands(args);

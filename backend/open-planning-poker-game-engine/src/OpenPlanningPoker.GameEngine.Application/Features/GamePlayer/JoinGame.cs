@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.Application.Features.GamePlayer;
+namespace OpenPlanningPoker.GameEngine.Application.Features.GamePlayer;
 
 public sealed record JoinGameCommand(Guid GameId, Guid UserId) : IRequest<Result<bool, ApplicationError>>;
 
@@ -16,13 +16,6 @@ public static class JoinGame
         }
     }
 
-    public sealed class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            CreateMap<JoinGameCommand, Domain.GamePlayer.GamePlayer>();
-        }
-    }
 
     public sealed class RequestHandler(
         IGamePlayerRepository gamePlayerRepository,

@@ -43,8 +43,7 @@ jobs:
           # Only non-secret values are baked into the image. Secrets (DB password, JWT secret)
           # are passed as environment variables when the container starts.
           jq '.Cors.AllowedOrigins = ${{ vars.OPP_DEFAULT_CORS }} |
-              .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}" |
-              .Serilog.WriteTo[0].Args.uri = "${{ vars.LOKI_URL }}"
+              .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}"
               ' ./src/OpenPlanningPoker.GameEngine.GraphQL/appsettings.json > temp.json && mv temp.json ./src/OpenPlanningPoker.GameEngine.GraphQL/appsettings.json
       
       - name: Log in to GitHub Container Registry
@@ -73,12 +72,12 @@ jobs:
               --restart unless-stopped \
               --name OpenPlanningPoker.GameEngine.GraphQL \
               --network oppnetwork \
-              -e ASPNETCORE_ENVIRONMENT=Development \
+              -e ASPNETCORE_ENVIRONMENT=Production \
               -e ASPNETCORE_HTTP_PORTS=8080 \
               -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
               -e 'ConnectionStrings__Database=Host=${{ vars.OPP_DB_HOST }};Port=${{ vars.OPP_DB_PORT }};Database=${{ vars.OPP_DB_GE_NAME }};Username=${{ vars.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }};' \
               -e 'ConnectionStrings__Cache=${{ vars.REDIS_HOST }}' \
               -e 'Authentication__Secret=${{ secrets.OPP_JWT_SECRET }}' \
-              -p 9091:8080 \
+              -p 127.0.0.1:9091:8080 \
               ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }}
 

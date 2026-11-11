@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.Application.Features.GameSettings;
+namespace OpenPlanningPoker.GameEngine.Application.Features.GameSettings;
 
 public sealed record CreateGameSettingsResponse(Guid Id, Guid GameId, string DeckSetup);
 
@@ -15,24 +15,14 @@ public static class CreateGameSettings
 
             RuleFor(x => x.DeckSetup)
                 .NotEmpty()
-                .Must(BeValidCsv).WithMessage("Deck must be in the CSV format.");
-        }
-
-        private bool BeValidCsv(string deckSetup) => deckSetup.Split(',').All(item => !string.IsNullOrWhiteSpace(item));
-    }
-
-    public sealed class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            CreateMap<CreateGameSettingsCommand, Domain.GameSettings.GameSettings>();
-            CreateMap<Domain.GameSettings.GameSettings, CreateGameSettingsResponse>();
+                .Must(GameSettingsConstants.IsValidDeck)
+                .WithMessage($"Deck must have 2-{GameSettingsConstants.MaxDeckCards} unique comma-separated cards of up to {GameSettingsConstants.MaxCardLength} characters.");
         }
     }
+
 
     public sealed class RequestHandler(
         IGameSettingsRepository gameSettingsRepository,
-        IMapper mapper,
         IUnitOfWork unitOfWork)
         : IRequestHandler<CreateGameSettingsCommand, Result<CreateGameSettingsResponse, ApplicationError>>
     {
@@ -42,7 +32,7 @@ public static class CreateGameSettings
             gameSettingsRepository.Add(game);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return mapper.Map<CreateGameSettingsResponse>(game);
+            return game.ToCreateGameSettingsResponse();
         }
     }
 }

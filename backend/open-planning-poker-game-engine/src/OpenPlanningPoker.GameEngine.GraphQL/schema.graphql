@@ -67,7 +67,7 @@ type DeleteGamePayload {
 }
 
 type DeleteTicketPayload {
-  ticket: Ticket
+  boolean: Boolean
   errors: [DeleteTicketError!]
 }
 

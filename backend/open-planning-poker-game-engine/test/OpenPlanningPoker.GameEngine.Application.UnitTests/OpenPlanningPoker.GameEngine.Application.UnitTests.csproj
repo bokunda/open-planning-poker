@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\OpenPlanningPoker.GameEngine.Domain\OpenPlanningPoker.GameEngine.Domain.csproj" />
+    <ProjectReference Include="..\..\src\OpenPlanningPoker.GameEngine.Application\OpenPlanningPoker.GameEngine.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
