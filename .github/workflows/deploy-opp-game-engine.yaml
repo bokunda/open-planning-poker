@@ -10,8 +10,6 @@ on:
         required: true
       OPP_JWT_SECRET:
         required: true
-      REDIS_PASSWORD:
-        required: true
 jobs:
   deploy-opp-game-engine:
     runs-on: ubuntu-latest
@@ -25,11 +23,10 @@ jobs:
       - name: Verify required secrets
         env:
           OPP_JWT_SECRET: ${{ secrets.OPP_JWT_SECRET }}
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         run: |
           missing=0
-          for name in OPP_JWT_SECRET REDIS_PASSWORD POSTGRES_PASSWORD; do
+          for name in OPP_JWT_SECRET POSTGRES_PASSWORD; do
             if [ -z "${!name}" ]; then echo "::error::Secret $name is not set"; missing=1; fi
           done
           if [ ${#OPP_JWT_SECRET} -lt 32 ]; then echo "::error::OPP_JWT_SECRET must be at least 32 characters"; missing=1; fi
@@ -43,7 +40,7 @@ jobs:
       - name: Set non-secret settings in appsettings.json
         working-directory: backend/open-planning-poker-game-engine
         run: |
-          # Only non-secret values are baked into the image. Secrets (DB/Redis passwords, JWT secret)
+          # Only non-secret values are baked into the image. Secrets (DB password, JWT secret)
           # are passed as environment variables when the container starts.
           jq '.Cors.AllowedOrigins = ${{ vars.OPP_DEFAULT_CORS }} |
               .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}" |
@@ -80,7 +77,7 @@ jobs:
               -e ASPNETCORE_HTTP_PORTS=8080 \
               -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
               -e 'ConnectionStrings__Database=Host=${{ vars.OPP_DB_HOST }};Port=${{ vars.OPP_DB_PORT }};Database=${{ vars.OPP_DB_GE_NAME }};Username=${{ vars.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }};' \
-              -e 'ConnectionStrings__Cache=${{ vars.REDIS_HOST }},password=${{ secrets.REDIS_PASSWORD }}' \
+              -e 'ConnectionStrings__Cache=${{ vars.REDIS_HOST }}' \
               -e 'Authentication__Secret=${{ secrets.OPP_JWT_SECRET }}' \
               -p 9091:8080 \
               ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }}

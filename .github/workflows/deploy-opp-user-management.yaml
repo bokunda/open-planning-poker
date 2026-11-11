@@ -8,8 +8,6 @@ on:
         required: true
       OPP_JWT_SECRET:
         required: true
-      REDIS_PASSWORD:
-        required: true
 jobs:
   deploy-opp-user-management:
     runs-on: ubuntu-latest
@@ -23,10 +21,9 @@ jobs:
       - name: Verify required secrets
         env:
           OPP_JWT_SECRET: ${{ secrets.OPP_JWT_SECRET }}
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
         run: |
           missing=0
-          for name in OPP_JWT_SECRET REDIS_PASSWORD; do
+          for name in OPP_JWT_SECRET; do
             if [ -z "${!name}" ]; then echo "::error::Secret $name is not set"; missing=1; fi
           done
           if [ ${#OPP_JWT_SECRET} -lt 32 ]; then echo "::error::OPP_JWT_SECRET must be at least 32 characters"; missing=1; fi
@@ -40,7 +37,7 @@ jobs:
       - name: Set non-secret settings in appsettings.json
         working-directory: backend/open-planning-poker-user-management
         run: |
-          # Only non-secret values are baked into the image. Secrets (Redis password, JWT secret)
+          # Only non-secret values are baked into the image. Secrets (JWT secret)
           # are passed as environment variables when the container starts.
           jq '.Cors.AllowedOrigins = ${{ vars.OPP_DEFAULT_CORS }} |
               .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}" |
@@ -76,7 +73,7 @@ jobs:
               -e ASPNETCORE_ENVIRONMENT=Development \
               -e ASPNETCORE_HTTP_PORTS=8080 \
               -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
-              -e 'ConnectionStrings__Cache=${{ vars.REDIS_HOST }},password=${{ secrets.REDIS_PASSWORD }}' \
+              -e 'ConnectionStrings__Cache=${{ vars.REDIS_HOST }}' \
               -e 'Authentication__Secret=${{ secrets.OPP_JWT_SECRET }}' \
               -p 9090:8080 \
               ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:${{ github.run_number }}

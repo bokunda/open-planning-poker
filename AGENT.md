@@ -187,8 +187,9 @@ npm start  # http://localhost:4200
 ### Secrets
 - JWT secret comes only from env `Authentication__Secret` (min. 32 chars); services refuse to start without it. The old committed secret is rejected.
 - Tokens are issued/validated with issuer + audience (`open-planning-poker`), registered locally in each service (`JwtAuthenticationExtensions`), not via the Shared NuGet
-- CI passes DB/Redis passwords and the JWT secret as container env vars at `docker run`; they are no longer baked into images
-- Required GitHub secrets: `OPP_JWT_SECRET`, `REDIS_PASSWORD`, `POSTGRES_PASSWORD`
+- CI passes the DB password and the JWT secret as container env vars at `docker run`; they are no longer baked into images
+- Required GitHub secrets: `OPP_JWT_SECRET`, `POSTGRES_PASSWORD`
+- Redis has no password yet; it is reachable only via the private network (firewall). Adding `--requirepass` is planned
 - Local dev: `launchSettings.json` and `docker-compose.override.yml` provide a local-only secret
 
 ### Multiple Voting Decks
