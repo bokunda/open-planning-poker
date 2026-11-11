@@ -1,6 +1,6 @@
-﻿namespace OpenPlanningPoker.GameEngine.Application.Features.Tickets;
+namespace OpenPlanningPoker.GameEngine.Application.Features.Tickets;
 
-public sealed record UpdateTicketResponse(Guid Id, Guid GameId, string Name, string Description);
+public sealed record UpdateTicketResponse(Guid Id, Guid GameId, string Name, string Description, bool VotesRevealed);
 
 public sealed record UpdateTicketCommand(Guid TicketId, string Name, string Description) : IRequest<Result<UpdateTicketResponse, ApplicationError>>;
 

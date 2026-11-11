@@ -8,12 +8,14 @@ namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Chat;
 public class ChatMutations
 {
     private const int MaxMessages = 100;
+    private const int MaxContentLength = 1000;
     private static readonly TimeSpan Ttl = TimeSpan.FromHours(24);
 
     /// <summary>
-    /// Sends a chat message to a game.
+    /// Sends a chat message to a game. Only players of the game can send messages.
     /// </summary>
     public async Task<FieldResult<ChatMessage, ApplicationError>> SendChatMessageAsync(
+        [Service] IGameAccessService gameAccess,
         [Service] ICurrentUserProvider currentUserProvider,
         [Service] ITopicEventSender eventSender,
         [Service] IConnectionMultiplexer redis,
@@ -21,6 +23,17 @@ public class ChatMutations
         [Required] string content,
         CancellationToken cancellationToken = default)
     {
+        if (await gameAccess.EnsureMemberAsync(gameId, cancellationToken) is { } accessError)
+        {
+            return accessError;
+        }
+
+        content = content.Trim();
+        if (content.Length == 0 || content.Length > MaxContentLength)
+        {
+            return new ApplicationError("InvalidChatMessage", $"Message must be between 1 and {MaxContentLength} characters.");
+        }
+
         var user = await currentUserProvider.GetAsync(cancellationToken);
 
         var message = new ChatMessage

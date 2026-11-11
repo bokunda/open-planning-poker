@@ -4,41 +4,65 @@
 public class GamePlayerMutations
 {
     /// <summary>
-    /// Join Game
+    /// Join Game. Requires a valid user token.
     /// </summary>
     public async Task<FieldResult<bool, ApplicationError>> JoinGameAsync(
         [Service] ISender sender,
         [Service] ICurrentUserProvider currentUserProvider,
         [Service] ITopicEventSender eventSender,
+        [Service] IGameAccessService gameAccess,
         [Required] Guid gameId,
         CancellationToken cancellationToken = default)
     {
-        var user = await currentUserProvider.GetAsync(cancellationToken);
-        var result = await sender.Send(new JoinGameCommand(gameId, currentUserProvider.Id), cancellationToken);
-        await eventSender.SendAsync($"{nameof(JoinGameAsync)}_{gameId}", user.Value, cancellationToken);
+        if ((gameAccess.EnsureAuthenticated() ?? await gameAccess.EnsureGameExistsAsync(gameId, cancellationToken)) is { } accessError)
+        {
+            return accessError;
+        }
 
-        return result.IsSuccess
-            ? result.Value
-            : result.Error!;
+        var user = await currentUserProvider.GetAsync(cancellationToken);
+        if (!user.IsSuccess)
+        {
+            return user.Error!;
+        }
+
+        var result = await sender.Send(new JoinGameCommand(gameId, currentUserProvider.Id), cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return result.Error!;
+        }
+
+        await eventSender.SendAsync($"{nameof(JoinGameAsync)}_{gameId}", user.Value!, cancellationToken);
+        return result.Value;
     }
 
     /// <summary>
-    /// Leave a Game
+    /// Leave a Game. Requires a valid user token.
     /// </summary>
     public async Task<FieldResult<bool, ApplicationError>> LeaveGameAsync(
         [Service] ISender sender,
-        [Service] IMapper mapper,
         [Service] ICurrentUserProvider currentUserProvider,
         [Service] ITopicEventSender eventSender,
+        [Service] IGameAccessService gameAccess,
         [Required] Guid gameId,
         CancellationToken cancellationToken = default)
     {
+        if (gameAccess.EnsureAuthenticated() is { } accessError)
+        {
+            return accessError;
+        }
+
         var user = await currentUserProvider.GetAsync(cancellationToken);
         var result = await sender.Send(new LeaveGameCommand(gameId, currentUserProvider.Id), cancellationToken);
-        await eventSender.SendAsync($"{nameof(LeaveGameAsync)}_{gameId}", user, cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return result.Error!;
+        }
 
-        return result.IsSuccess
-            ? result.Value
-            : result.Error!;
+        if (user.IsSuccess)
+        {
+            await eventSender.SendAsync($"{nameof(LeaveGameAsync)}_{gameId}", user.Value!, cancellationToken);
+        }
+
+        return result.Value;
     }
 }

@@ -7,6 +7,7 @@ const CREATE_GAME = gql `
         id
         name
         description
+        hostId
         settingsDetails {
           ... on Settings {
             id

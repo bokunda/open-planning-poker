@@ -1,6 +1,6 @@
-﻿namespace OpenPlanningPoker.GameEngine.Application.Features.Games;
+namespace OpenPlanningPoker.GameEngine.Application.Features.Games;
 
-public sealed record CreateGameResponse(Guid Id, string Name, string Description);
+public sealed record CreateGameResponse(Guid Id, string Name, string Description, Guid CreatedBy);
 
 public sealed record CreateGameCommand(string Name, string Description) : IRequest<Result<CreateGameResponse, ApplicationError>>;
 

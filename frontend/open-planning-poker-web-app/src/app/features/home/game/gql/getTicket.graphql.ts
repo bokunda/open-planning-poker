@@ -8,6 +8,7 @@ const GET_TICKET = gql `
         name
         description
         gameId
+        votesRevealed
       }
       ... on ApplicationError {
         code

@@ -1,19 +1,26 @@
-﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Games;
+namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Games;
 
 [MutationType]
 public class GameMutations
 {
     /// <summary>
-    /// Creates a game, returns game details.
+    /// Creates a game, returns game details. The caller becomes the game host.
     /// </summary>
     public async Task<FieldResult<Game, ApplicationError>> CreateGameAsync(
         [Service] ISender sender,
         [Service] IMapper mapper,
+        [Service] IGameAccessService gameAccess,
         [Required] string name,
         [Required] string description,
         string? deckSetup,
         CancellationToken cancellationToken)
     {
+        // The host is stored as the game's CreatedBy, so an anonymous game would have no host.
+        if (gameAccess.EnsureAuthenticated() is { } accessError)
+        {
+            return accessError;
+        }
+
         var result = await sender.Send(new CreateGameCommand(name, description), cancellationToken);
 
         if (result.IsSuccess)
@@ -32,11 +39,20 @@ public class GameMutations
             : result.Error!;
     }
 
+    /// <summary>
+    /// Generates a PDF report of the game. Only players of the game can generate it.
+    /// </summary>
     public async Task<FieldResult<GameReport, ApplicationError>> GenerateGameReport(
         [Service] ISender sender,
+        [Service] IGameAccessService gameAccess,
         [Required] Guid gameId,
         CancellationToken cancellationToken)
     {
+        if (await gameAccess.EnsureMemberAsync(gameId, cancellationToken) is { } accessError)
+        {
+            return accessError;
+        }
+
         var result = await sender.Send(new CreateGameReportCommand(gameId), cancellationToken);
 
         if (!result.IsSuccess)

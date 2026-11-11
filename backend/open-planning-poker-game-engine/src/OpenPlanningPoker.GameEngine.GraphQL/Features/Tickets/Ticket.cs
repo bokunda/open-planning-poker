@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Tickets;
+namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Tickets;
 
 public class Ticket
 {
@@ -6,6 +6,7 @@ public class Ticket
     public Guid GameId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    public bool VotesRevealed { get; set; }
     public ApiCollection<Vote> Votes { get; set; } = new([], 0);
     
     public async Task<ApiCollection<Vote>> GetVotes(
@@ -22,6 +23,11 @@ public class Ticket
         [Service] IMapper mapper,
         CancellationToken cancellationToken)
     {
+        if (!VotesRevealed)
+        {
+            return 0;
+        }
+
         var votes = await GetVotes(sender, mapper, cancellationToken);
 
         var rawVotes = votes.Items.Select(v => v.Value);

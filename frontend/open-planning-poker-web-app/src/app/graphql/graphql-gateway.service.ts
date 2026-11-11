@@ -155,6 +155,8 @@ export type Error = {
 export type Game = {
   __typename?: 'Game';
   description: Scalars['String']['output'];
+  /** Id of the player who created the game. Only the host can manage tickets, settings and reveals. */
+  hostId: Scalars['UUID']['output'];
   id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
   settingsDetails: SettingsDetailsResult;
@@ -450,6 +452,7 @@ export type Ticket = {
   id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
   votes: ApiCollectionOfVote;
+  votesRevealed: Scalars['Boolean']['output'];
 };
 
 export type TicketResult = ApplicationError | Ticket;
@@ -521,6 +524,8 @@ export type VotesRevealed = {
   __typename?: 'VotesRevealed';
   revealedBy: Scalars['String']['output'];
   ticketId: Scalars['UUID']['output'];
+  /** All votes of the ticket with their values, sent once the host reveals them. */
+  votes: Array<Vote>;
 };
 
 export type ReVoteTicketInput = {

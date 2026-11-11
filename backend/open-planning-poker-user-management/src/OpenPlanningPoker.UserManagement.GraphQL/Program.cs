@@ -1,4 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
+var isSchemaExport = args.Contains("schema");
 
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
@@ -19,7 +20,7 @@ builder.Services
 builder.Services.AddRedis(builder.Configuration);
 CacheExtensions.AddHybridCache(builder.Services);
 
-builder.Services.AddAuthentication(builder.Configuration);
+builder.Services.AddJwtAuthentication(builder.Configuration, isSchemaExport);
 
 builder
     .AddGraphQL()
@@ -38,7 +39,7 @@ builder.Services.AddCors(corsConfig.PolicyName, corsConfig.AllowedOrigins);
 
 var app = builder.Build();
 
-if (args.Contains("schema"))
+if (isSchemaExport)
 {
     app.MapGraphQL();
     app.RunWithGraphQLCommands(args);

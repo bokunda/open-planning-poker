@@ -229,6 +229,10 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("name");
 
+                    b.Property<bool>("VotesRevealed")
+                        .HasColumnType("boolean")
+                        .HasColumnName("votes_revealed");
+
                     b.HasKey("Id")
                         .HasName("pk_tickets");
 

@@ -24,11 +24,21 @@ type BaseUserProfile {
   userName: String!
 }
 
+type ChatMessage {
+  id: UUID!
+  gameId: UUID!
+  playerName: String!
+  content: String!
+  timestamp: String!
+}
+
 type Game {
   settingsDetails: Settings!
   id: UUID!
   name: String!
   description: String!
+  "Id of the player who created the game. Only the host can manage tickets, settings and reveals."
+  hostId: UUID!
 }
 
 type GamePlayer {
@@ -50,31 +60,43 @@ type Info {
 
 "Base Game Engine mutation."
 type Mutation {
-  "Join Game"
+  "Sends a chat message to a game. Only players of the game can send messages."
+  sendChatMessage(gameId: UUID! content: String!): ChatMessage!
+  "Join Game. Requires a valid user token."
   joinGame(gameId: UUID!): Boolean!
-  "Leave a Game"
+  "Leave a Game. Requires a valid user token."
   leaveGame(gameId: UUID!): Boolean!
-  "Creates a game, returns game details."
-  createGame(name: String! description: String!): Game!
+  "Creates a game, returns game details. The caller becomes the game host."
+  createGame(name: String! description: String! deckSetup: String): Game!
+  "Generates a PDF report of the game. Only players of the game can generate it."
   generateGameReport(gameId: UUID!): GameReport!
   "Dummy health-check mutation."
   ping: String!
-  "Creates Game Settings."
+  "Creates Game Settings. Host only."
   createSettings(gameId: UUID! deckSetup: String): Settings!
-  "Updates Game Settings."
+  "Updates Game Settings. Host only."
   updateSettings(id: UUID! gameId: UUID! deckSetup: String): Settings!
-  "Creates a ticket for given game."
+  "Creates a ticket for given game. Host only."
   createTicket(gameId: UUID! name: String! description: String!): Ticket!
-  "Updates a ticket for given game."
+  "Updates a ticket for given game. Host only."
   updateTicket(id: UUID! name: String! description: String!): Ticket!
-  "Deletes a ticket for given game."
+  """
+  Re-votes a ticket: hides its votes again and broadcasts it as the active ticket
+  to all players in the game. Host only.
+  """
+  reVoteTicket(gameId: UUID! ticketId: UUID!): Ticket!
+  "Deletes a ticket for given game. Host only."
   deleteTicket(id: UUID!): Ticket!
-  "Creates or updates a vote."
+  "Creates or updates a vote. Only players who joined the game can vote."
   createOrUpdateVote(ticketId: UUID! value: String!): Vote!
+  "Reveals all votes for a ticket and broadcasts them to all players. Host only."
+  revealVotes(ticketId: UUID!): VotesRevealed!
 }
 
 "Base Game Engine query."
 type Query {
+  "Returns recent chat messages for a game (from Redis, 24h TTL)."
+  chatMessages(gameId: UUID!): [ChatMessage!]!
   "Returns game with participants"
   gamePlayers(gameId: UUID!): ApiCollectionOfGamePlayer!
   "Returns Game details."
@@ -100,10 +122,13 @@ type Settings {
 }
 
 type Subscription {
+  onChatMessage(gameId: UUID!): ChatMessage!
   onPlayerJoined(gameId: UUID!): BaseUserProfile!
   onPlayerLeave(gameId: UUID!): BaseUserProfile!
   onTicketCreated(gameId: UUID!): Ticket!
+  onTicketReVoted(gameId: UUID!): Ticket!
   onVoteCreatedOrUpdated(ticketId: UUID!): Vote!
+  onVotesRevealed(ticketId: UUID!): VotesRevealed!
 }
 
 type Ticket {
@@ -113,6 +138,7 @@ type Ticket {
   gameId: UUID!
   name: String!
   description: String!
+  votesRevealed: Boolean!
 }
 
 type Vote {
@@ -120,6 +146,13 @@ type Vote {
   id: UUID!
   playerId: UUID!
   value: String!
+}
+
+type VotesRevealed {
+  ticketId: UUID!
+  revealedBy: String!
+  "All votes of the ticket with their values, sent once the host reveals them."
+  votes: [Vote!]!
 }
 
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."

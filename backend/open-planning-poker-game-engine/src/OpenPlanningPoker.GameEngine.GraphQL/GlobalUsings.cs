@@ -33,3 +33,5 @@ global using StackExchange.Redis;
 global using OpenPlanningPoker.GameEngine.GraphQL.Features.Tickets;
 global using OpenPlanningPoker.GameEngine.GraphQL.Features.Votes;
 global using Serilog;
+
+global using OpenPlanningPoker.GameEngine.Application.Abstractions.Authorization;

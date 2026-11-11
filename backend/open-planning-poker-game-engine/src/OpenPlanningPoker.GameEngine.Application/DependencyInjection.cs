@@ -15,6 +15,7 @@ public static class DependencyInjection
         services.AddAutoMapper(typeof(DependencyInjection).Assembly);
         services.AddRedis(configuration);
         CacheExtensions.AddHybridCache(services, true);
+        services.AddScoped<IGameAccessService, GameAccessService>();
 
         return services;
     }

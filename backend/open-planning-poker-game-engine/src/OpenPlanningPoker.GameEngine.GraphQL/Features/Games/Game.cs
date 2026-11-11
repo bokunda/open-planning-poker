@@ -1,10 +1,15 @@
-﻿namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Games;
+namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Games;
 
 public sealed class Game
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Id of the player who created the game. Only the host can manage tickets, settings and reveals.
+    /// </summary>
+    public Guid HostId { get; set; }
 
     public async Task<FieldResult<Settings.Settings, ApplicationError>> GetSettingsDetailsAsync(
             [Service] ISender sender,

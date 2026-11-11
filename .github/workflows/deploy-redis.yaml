@@ -9,6 +9,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
 
+      - name: Verify required secrets
+        env:
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+        run: |
+          if [ ${#REDIS_PASSWORD} -lt 24 ]; then echo "::error::REDIS_PASSWORD must be set and at least 24 characters"; exit 1; fi
+
       - name: Deploy using SSH
         uses: appleboy/ssh-action@v1
         with:
@@ -16,8 +22,13 @@ jobs:
           username: ${{ vars.SSH_PRIVATE_USER }}
           password: ${{ secrets.SSH_PRIVATE_PASSWORD }}
           script: |
-            docker pull redis:latest
+            docker pull redis:7.4-alpine
             docker rm -f OpenPlanningPoker.Cache || true
-            docker run -d --restart unless-stopped --name OpenPlanningPoker.Cache --network oppnetwork -p 6379:6379 redis:latest
+            # Redis is reached from the public app server, so the port stays published:
+            # it is protected by a password, and the firewall must only allow the app server's IP.
+            docker run -d --restart unless-stopped --name OpenPlanningPoker.Cache --network oppnetwork \
+              -p 6379:6379 \
+              redis:7.4-alpine \
+              redis-server --requirepass '${{ secrets.REDIS_PASSWORD }}' --protected-mode yes
             docker system prune -f
 

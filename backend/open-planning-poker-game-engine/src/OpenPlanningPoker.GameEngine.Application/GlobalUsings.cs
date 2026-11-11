@@ -21,3 +21,4 @@ global using OpenPlanningPoker.Shared.Extensions;
 global using OpenPlanningPoker.Shared.Identity;
 global using QuestPDF.Fluent;
 global using QuestPDF.Helpers;
+global using OpenPlanningPoker.GameEngine.Application.Abstractions.Authorization;

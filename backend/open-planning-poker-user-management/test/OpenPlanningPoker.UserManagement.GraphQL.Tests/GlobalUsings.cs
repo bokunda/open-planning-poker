@@ -6,3 +6,4 @@ global using OpenPlanningPoker.UserManagement.GraphQL.Services;
 global using Snapshooter.Xunit;
 global using OpenPlanningPoker.Shared.Services;
 global using OpenPlanningPoker.Shared.Models;
+global using OpenPlanningPoker.UserManagement.GraphQL.Extensions;
