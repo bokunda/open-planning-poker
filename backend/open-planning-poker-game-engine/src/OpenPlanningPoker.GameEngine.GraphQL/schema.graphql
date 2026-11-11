@@ -61,6 +61,11 @@ type CreateTicketPayload {
   errors: [CreateTicketError!]
 }
 
+type DeleteGamePayload {
+  boolean: Boolean
+  errors: [DeleteGameError!]
+}
+
 type DeleteTicketPayload {
   ticket: Ticket
   errors: [DeleteTicketError!]
@@ -117,6 +122,8 @@ type Mutation {
   leaveGame(input: LeaveGameInput!): LeaveGamePayload! @cost(weight: "10")
   "Creates a game, returns game details. The caller becomes the game host."
   createGame(input: CreateGameInput!): CreateGamePayload! @cost(weight: "10")
+  "Deletes a game with its tickets, votes and players. Host only."
+  deleteGame(input: DeleteGameInput!): DeleteGamePayload! @cost(weight: "10")
   "Generates a PDF report of the game. Only players of the game can generate it."
   generateGameReport(input: GenerateGameReportInput!): GenerateGameReportPayload! @cost(weight: "10")
   "Dummy health-check mutation."
@@ -130,8 +137,8 @@ type Mutation {
   "Updates a ticket for given game. Host only."
   updateTicket(input: UpdateTicketInput!): UpdateTicketPayload! @cost(weight: "10")
   """
-  Re-votes a ticket: hides its votes again and broadcasts it as the active ticket
-  to all players in the game. Host only.
+  Re-votes a ticket: deletes its votes, hides voting again and broadcasts it as the
+  active ticket to all players in the game. Host only.
   """
   reVoteTicket(input: ReVoteTicketInput!): ReVoteTicketPayload! @cost(weight: "10")
   "Deletes a ticket for given game. Host only."
@@ -241,6 +248,8 @@ union CreateSettingsError = ApplicationError
 
 union CreateTicketError = ApplicationError
 
+union DeleteGameError = ApplicationError
+
 union DeleteTicketError = ApplicationError
 
 union GamePlayersResult = ApiCollectionOfGamePlayer | ApplicationError
@@ -295,6 +304,10 @@ input CreateTicketInput {
   gameId: UUID!
   name: String!
   description: String!
+}
+
+input DeleteGameInput {
+  gameId: UUID!
 }
 
 input DeleteTicketInput {
