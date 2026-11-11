@@ -7,6 +7,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_HTTP_PORTS=8080
       - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_ENDPOINT}
+      - Authentication__Secret=${OPP_JWT_SECRET:?OPP_JWT_SECRET must be set}
     restart: unless-stopped
 
   OpenPlanningPoker.GameEngine.GraphQL:
@@ -14,6 +15,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_HTTP_PORTS=8080
       - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_ENDPOINT}
+      - Authentication__Secret=${OPP_JWT_SECRET:?OPP_JWT_SECRET must be set}
     restart: unless-stopped
 
   openplanningpoker.fusion.gateway:

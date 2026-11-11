@@ -7,11 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-
-### Changed
+### Security
+- **Server-side host role** — the game creator is the host (`Game.hostId`); only the host can create/update/delete tickets, change settings, reveal votes and start a re-vote
+- **Membership checks** — only players who joined a game can vote, chat or export the PDF report; anonymous requests are rejected
+- **Votes are hidden on the server** until the host reveals them (queries, subscriptions, averages and PDF report); re-vote hides them again
+- **JWT secret rotated out of the repository** — read from `Authentication__Secret` only, minimum 32 characters, issuer and audience validated
+- **Fusion Gateway CORS** limited to configured origins (was: any origin with credentials); query plans disabled
+- **CI secrets at runtime** — DB password and JWT secret are passed as container env vars instead of being baked into images
 
 ### Fixed
+- Joining a game via link before the user identity resolved no longer skips the join
+- `updateSettings` can no longer move settings to another game
+- Chat messages limited to 1000 characters
 
 ## [1.2.1] — 2026-07-16
 

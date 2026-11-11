@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.UserManagement.GraphQL.Features.Users;
+namespace OpenPlanningPoker.UserManagement.GraphQL.Features.Users;
 
 [MutationType]
 public class ChangeUsernameMutation
@@ -16,6 +16,7 @@ public class ChangeUsernameMutation
         }
     }
 
+    [Authorize]
     public async Task<FieldResult<bool, ApplicationError>> ChangeUsernameAsync(
         [Service] ICurrentUserProvider currentUserProvider,
         [Service] IUserService userService,
@@ -31,7 +32,11 @@ public class ChangeUsernameMutation
         }
 
         var currentUserId = $"{currentUserProvider.Id}";
-        await userService.UpdateAsync(currentUserId, username, cancellationToken);
+        var updatedUser = await userService.UpdateAsync(currentUserId, username, cancellationToken);
+        if (updatedUser is null)
+        {
+            return new ApplicationError("UserNotFound", "User not found");
+        }
 
         logger.LogInformation("Username changed for user {userId} to {newUsername}", currentUserId, username);
 

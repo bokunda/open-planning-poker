@@ -6,6 +6,12 @@ const REVEAL_VOTES = gql`
       votesRevealed {
         ticketId
         revealedBy
+        votes {
+          id
+          playerId
+          value
+          playerName
+        }
       }
       errors {
         ... on ApplicationError {

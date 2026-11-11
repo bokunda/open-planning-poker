@@ -1,13 +1,14 @@
 QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
+var isSchemaExport = args.Contains("schema");
 
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 builder.AddGraphQLServices(builder.Configuration);
 builder.Services.AddHealthCheckServices(builder.Configuration);
-builder.Services.AddAuthentication(builder.Configuration);
+builder.Services.AddJwtAuthentication(builder.Configuration, isSchemaExport);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ICurrentUserProvider, HttpCurrentUserProvider>();
 builder.Services.AddTransient<IUserService, CacheUserService>();
@@ -27,7 +28,7 @@ builder.Services.AddOpenTelemetry(builder.Configuration);
 
 var app = builder.Build();
 
-if (args.Contains("schema"))
+if (isSchemaExport)
 {
     app.MapGraphQL();
         // .RequireAuthorization();

@@ -5,6 +5,12 @@ const ON_VOTES_REVEALED = gql`
     onVotesRevealed(ticketId: $ticketId) {
       ticketId
       revealedBy
+      votes {
+        id
+        playerId
+        value
+        playerName
+      }
     }
   }`;
 

@@ -1,4 +1,4 @@
-﻿using OpenPlanningPoker.Shared.Services;
+using OpenPlanningPoker.Shared.Services;
 
 namespace OpenPlanningPoker.GameEngine.Application.Features.Games;
 
@@ -61,7 +61,7 @@ public static class CreateGameReport
                                 {
                                     column.Item()
                                         .PaddingLeft(16, QuestPDF.Infrastructure.Unit.Point)
-                                        .Text("No votes yet")
+                                        .Text(ticket.VotesRevealed ? "No votes yet" : "Votes not revealed yet")
                                         .FontSize(14);
                                     continue;
                                 }
@@ -117,7 +117,10 @@ public static class CreateGameReport
 
             foreach (var ticket in tickets)
             {
-                ticket.Votes = [.. votes.Where(vote => vote.TicketId == ticket.Id)];
+                // Unrevealed votes must not leak through the report.
+                ticket.Votes = ticket.VotesRevealed
+                    ? [.. votes.Where(vote => vote.TicketId == ticket.Id)]
+                    : [];
             }
             game.Tickets = [.. tickets];
             return game;

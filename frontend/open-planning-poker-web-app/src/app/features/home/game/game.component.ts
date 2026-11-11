@@ -81,17 +81,25 @@ export class GameComponent implements OnInit {
   set currentUserId(value: string) {
     const previous = this._currentUserId;
     this._currentUserId = value;
-    // When userId becomes available, update any pending host localStorage entries
-    if (value && !previous && this.game?.id && typeof localStorage !== 'undefined') {
-      const stored = localStorage.getItem('host_' + this.game.id);
-      if (!stored || stored === 'pending') {
-        localStorage.setItem('host_' + this.game.id, value);
-      }
+    if (!value || previous) {
+      return;
+    }
+    // The server only accepts game actions from a known user, so anything requested
+    // before the user identity resolved runs now.
+    if (this.pendingCreateGame) {
+      const pending = this.pendingCreateGame;
+      this.pendingCreateGame = undefined;
+      this.createGame(pending.name, pending.description, pending.deckSetup);
+    } else if (this.game?.id) {
+      this.joinGame(this.game.id);
     }
   }
   get currentUserId(): string {
     return this._currentUserId;
   }
+
+  private pendingCreateGame: CreateGameResult | undefined;
+  private joinedGameId: string | undefined;
 
   playersCollapsed = false;
   chatCollapsed = false;
@@ -105,14 +113,9 @@ export class GameComponent implements OnInit {
     return hasGameId && !this.game;
   }
 
+  /** The host is decided by the server (game creator); the UI only mirrors it. */
   get isHost(): boolean {
-    if (!this.game?.id) return false;
-    if (typeof localStorage === 'undefined') return false;
-    const storedHost = localStorage.getItem('host_' + this.game.id);
-    // Exact match when we know our userId
-    if (this.currentUserId && storedHost) return storedHost === this.currentUserId;
-    // Fallback: any non-empty stored host means we're the host
-    return !!storedHost;
+    return !!this.game?.hostId && !!this.currentUserId && this.game.hostId === this.currentUserId;
   }
 
   readonly dialog = inject(MatDialog);
@@ -161,6 +164,7 @@ export class GameComponent implements OnInit {
 
   handleLeaveGame() {
     this.game = undefined;
+    this.joinedGameId = undefined;
     this.gameSubsInitialized = false;
     this.router.navigate([`/game`]);
   }
@@ -180,13 +184,28 @@ export class GameComponent implements OnInit {
 
   handleRevealVotes() {
     if (!this.ticket?.id) return;
-    this.apollo.mutate<RevealVotesPayload, MutationRevealVotesArgs>({
+    this.apollo.mutate<{ revealVotes: RevealVotesPayload }, MutationRevealVotesArgs>({
       mutation: REVEAL_VOTES,
       variables: { input: { ticketId: this.ticket.id } }
     }).subscribe({
-      next: () => this.votesRevealed = true,
+      next: ({ data }) => {
+        const reveal = data?.revealVotes?.votesRevealed;
+        if (reveal) {
+          this.applyRevealedVotes(reveal);
+        }
+      },
       error: (err) => console.error('Reveal votes error:', err)
     });
+  }
+
+  /** Votes stay hidden on the server until reveal; the reveal event carries their values. */
+  private applyRevealedVotes(reveal: VotesRevealed): void {
+    if (reveal.ticketId !== this.ticket?.id) return;
+    this.votesRevealed = true;
+    this.votes = reveal.votes ?? [];
+    if (this.game?.id) {
+      this.getTickets(this.game.id);
+    }
   }
 
   handleVoteAgain() {
@@ -220,6 +239,7 @@ export class GameComponent implements OnInit {
       next: ({ data }) => {
         if (data) {
           this.game = data?.game;
+          // Without a user yet, the currentUserId setter joins once it is known.
           if (this.currentUserId) {
             this.joinGame(this.game.id);
           }
@@ -231,6 +251,12 @@ export class GameComponent implements OnInit {
   }
 
   private createGame(name: string, description: string, deckSetup: string): void {
+    // The creator becomes host on the server, so the game can only be created with a known user.
+    if (!this.currentUserId) {
+      this.pendingCreateGame = { name, description, deckSetup } as CreateGameResult;
+      return;
+    }
+
     this.apollo.mutate<Mutation, MutationCreateGameArgs>({
       mutation: CREATE_GAME,
       variables: {input: {name, description}}
@@ -238,11 +264,6 @@ export class GameComponent implements OnInit {
       next: ({ data }) => {
         if (data?.createGame?.game) {
           this.game = data?.createGame?.game;
-          // Store host flag immediately; 'pending' allows isHost fallback to work
-          // before currentUserId is resolved. Updated to real userId when available.
-          if (typeof localStorage !== 'undefined') {
-            localStorage.setItem('host_' + this.game.id, this.currentUserId || 'pending');
-          }
 
           // Apply deck setup via updateSettings (gateway.fgp doesn't have deckSetup in CreateGameInput yet)
           const settingsId = (data.createGame.game as any).settingsDetails?.id;
@@ -288,12 +309,21 @@ export class GameComponent implements OnInit {
   }
 
   private joinGame(gameId: string): void {
+    if (this.joinedGameId === gameId) {
+      this.getGamePlayers(gameId);
+      return;
+    }
+    this.joinedGameId = gameId;
     this.apollo.mutate<Mutation, MutationJoinGameArgs>({
       mutation: JOIN_GAME,
       variables: {input: {gameId}}
     }).subscribe({
-      next: ({ data }) => {
+      next: () => {
         this.getGamePlayers(gameId);
+      },
+      error: (err) => {
+        this.joinedGameId = undefined;
+        console.error('Join game error:', err);
       }
     });
   }
@@ -400,7 +430,7 @@ export class GameComponent implements OnInit {
       next: ({ data }) => {
         if (data) {
           this.ticket = data?.ticket;
-          this.votesRevealed = false;
+          this.votesRevealed = !!this.ticket?.votesRevealed;
           this.getVotes(this.ticket.id);
           this.getTickets(this.ticket.gameId);
         }
@@ -573,15 +603,17 @@ export class GameComponent implements OnInit {
         if (!result) {
           return;
         }
-        const voteIndex = this.votes.findIndex(x => x && x.id === result!.data!.onVoteCreatedOrUpdated!.id);
+        const incoming: Vote = result!.data!.onVoteCreatedOrUpdated;
+        const voteIndex = this.votes.findIndex(x => x && x.id === incoming.id);
 
         this.getTickets(this.game?.id!);
         if (voteIndex !== -1) {
+          // Before reveal the broadcast has an empty value; keep the value we already know (our own vote).
           this.votes = this.votes.map((vote, index) =>
-            index === voteIndex ? { ...vote, value: result!.data!.onVoteCreatedOrUpdated!.value } : vote
+            index === voteIndex ? { ...vote, value: incoming.value || vote.value } : vote
           );
         } else {
-          this.votes.push(result!.data!.onVoteCreatedOrUpdated);
+          this.votes = [...this.votes, incoming];
         }
       },
       error: (err) => {
@@ -595,8 +627,11 @@ export class GameComponent implements OnInit {
       query: ON_VOTES_REVEALED,
       variables: { ticketId },
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => {
-        this.votesRevealed = true;
+      next: (result) => {
+        const reveal = result?.data?.onVotesRevealed;
+        if (reveal) {
+          this.applyRevealedVotes(reveal);
+        }
       },
       error: (err) => console.error('Subscription error (onVotesRevealed):', err)
     });
@@ -617,6 +652,7 @@ export class GameComponent implements OnInit {
           if (!this.ticket && this.tickets.length > 0) {
             const firstTicket = this.tickets[0];
             this.ticket = firstTicket;
+            this.votesRevealed = !!firstTicket?.votesRevealed;
             if (firstTicket?.id && firstTicket.id !== this.currentSubscribedTicketId) {
               this.currentSubscribedTicketId = firstTicket.id;
               this.getVotes(firstTicket.id);

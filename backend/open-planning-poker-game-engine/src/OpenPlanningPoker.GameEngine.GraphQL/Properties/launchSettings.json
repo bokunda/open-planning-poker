@@ -5,7 +5,8 @@
       "launchBrowser": true,
       "launchUrl": "http://localhost:5095/graphql",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Authentication__Secret": "local-development-only-jwt-secret-not-for-production"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5095"
@@ -15,7 +16,8 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/graphql",
       "environmentVariables": {
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_HTTP_PORTS": "8080",
+        "Authentication__Secret": "local-development-only-jwt-secret-not-for-production"
       },
       "publishAllPorts": true,
       "useSSL": false

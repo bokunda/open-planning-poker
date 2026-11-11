@@ -1,6 +1,6 @@
-﻿namespace OpenPlanningPoker.GameEngine.Application.Features.Tickets;
+namespace OpenPlanningPoker.GameEngine.Application.Features.Tickets;
 
-public sealed record GetTicketsItem(Guid Id, Guid GameId, string Name, string Description);
+public sealed record GetTicketsItem(Guid Id, Guid GameId, string Name, string Description, bool VotesRevealed);
 public sealed record GetTicketsQuery(Guid GameId) : IRequest<Result<ApiCollection<GetTicketsItem>, ApplicationError>>;
 
 public static class GetTickets

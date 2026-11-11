@@ -5,6 +5,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://162.55.213.9:3100
+      - Authentication__Secret=${OPP_JWT_SECRET:-local-development-only-jwt-secret-not-for-production}
     ports:
       - "9090:8080"
 
@@ -13,6 +14,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://162.55.213.9:3100
+      - Authentication__Secret=${OPP_JWT_SECRET:-local-development-only-jwt-secret-not-for-production}
     ports:
       - "9091:8080"
 

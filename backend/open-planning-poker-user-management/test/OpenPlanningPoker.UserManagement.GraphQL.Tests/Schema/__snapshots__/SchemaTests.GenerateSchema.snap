@@ -5,7 +5,7 @@
 
 type Mutation {
   ping: String!
-  changeUsername(username: String!): Boolean!
+  changeUsername(username: String!): Boolean! @authorize
   registerUser(username: String): RegisterUserResponse!
 }
 

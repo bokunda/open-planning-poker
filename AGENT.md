@@ -87,7 +87,6 @@ Open Planning Poker is a free, open-source agile estimation tool for Scrum teams
 - `gateway.fgp` must be regenerated for local dev (use `regenerate-gateway.sh`)
 - Fusion Gateway HTTPS port removed in local override (no dev cert in Docker)
 - `AllowQueryPlan = true` in Fusion Gateway (info disclosure)
-- JWT: no issuer/audience validation
 - CORS only localhost in appsettings (CI/CD overwrites)
 - `ASPNETCORE_ENVIRONMENT=Development` in CI/CD workflows
 - Node 22-alpine for both Docker stages
@@ -173,10 +172,25 @@ npm start  # http://localhost:4200
 - Material dark theme colors via `.dark-theme` class
 - CSS custom properties for non-Material elements in `styles.scss`
 
-### Host/Admin Role
-- `isHost` getter in `game.component.ts` checks `localStorage.getItem('host_' + game.id)`
-- Host stored on `createGame()`: `localStorage.setItem('host_' + gameId, userId)`
-- Host-only: Reveal Votes, Vote Again, New Ticket buttons, Timer controls
+### Host/Admin Role (enforced server-side)
+- Host = game creator, stored as `Game.CreatedBy` and exposed as `Game.hostId`; `createGame` requires a valid token
+- `IGameAccessService` (`GameEngine.Application/Abstractions/Authorization`) checks host / membership in every mutation
+- Host-only: create/update/delete ticket, settings, `revealVotes`, `reVoteTicket`
+- Members only (joined the game): vote, chat, PDF report
+- Frontend `isHost` getter just compares `game.hostId` with the current user id (no localStorage)
+
+### Hidden Votes (enforced server-side)
+- `Ticket.VotesRevealed` column (migration `AddTicketVotesRevealed`; existing tickets marked revealed)
+- Before reveal `getVotes`, `Ticket.votes`, `onVoteCreatedOrUpdated` and the PDF report never expose other players' values (value `""`, average `0`)
+- `revealVotes` sets the flag and its payload/subscription carries all votes; `reVoteTicket` hides them again
+
+### Secrets
+- JWT secret comes only from env `Authentication__Secret` (min. 32 chars); services refuse to start without it. The old committed secret is rejected.
+- Tokens are issued/validated with issuer + audience (`open-planning-poker`), registered locally in each service (`JwtAuthenticationExtensions`), not via the Shared NuGet
+- CI passes the DB password and the JWT secret as container env vars at `docker run`; they are no longer baked into images
+- Required GitHub secrets: `OPP_JWT_SECRET`, `POSTGRES_PASSWORD`
+- Redis has no password yet; it is reachable only via the private network (firewall). Adding `--requirepass` is planned
+- Local dev: `launchSettings.json` and `docker-compose.override.yml` provide a local-only secret
 
 ### Multiple Voting Decks
 - Presets in `src/app/shared/deck-presets.ts`: Fibonacci, Modified Fibonacci, T-Shirt Sizes, Powers of 2

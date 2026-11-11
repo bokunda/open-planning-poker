@@ -6,6 +6,8 @@ on:
     secrets:
       SSH_PASSWORD: 
         required: true
+      OPP_JWT_SECRET:
+        required: true
 jobs:
   deploy-opp-user-management:
     runs-on: ubuntu-latest
@@ -16,17 +18,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
 
+      - name: Verify required secrets
+        env:
+          OPP_JWT_SECRET: ${{ secrets.OPP_JWT_SECRET }}
+        run: |
+          missing=0
+          for name in OPP_JWT_SECRET; do
+            if [ -z "${!name}" ]; then echo "::error::Secret $name is not set"; missing=1; fi
+          done
+          if [ ${#OPP_JWT_SECRET} -lt 32 ]; then echo "::error::OPP_JWT_SECRET must be at least 32 characters"; missing=1; fi
+          exit $missing
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4.3.0
         with:
           dotnet-version: 9.0.x
 
-      - name: Set connection string in appsettings.json
+      - name: Set non-secret settings in appsettings.json
         working-directory: backend/open-planning-poker-user-management
         run: |
-          # Replace placeholders in appsettings.json with GitHub secrets
-          jq '.ConnectionStrings.Cache = "${{ vars.REDIS_HOST }}" |
-              .Cors.AllowedOrigins = ${{ vars.OPP_DEFAULT_CORS }} |
+          # Only non-secret values are baked into the image. Secrets (JWT secret)
+          # are passed as environment variables when the container starts.
+          jq '.Cors.AllowedOrigins = ${{ vars.OPP_DEFAULT_CORS }} |
               .Otel.Endpoint = "${{ vars.OTEL_ENDPOINT }}" |
               .Serilog.WriteTo[0].Args.uri = "${{ vars.LOKI_URL }}"
               ' ./src/OpenPlanningPoker.UserManagement.GraphQL/appsettings.json > temp.json && mv temp.json ./src/OpenPlanningPoker.UserManagement.GraphQL/appsettings.json
@@ -60,6 +73,8 @@ jobs:
               -e ASPNETCORE_ENVIRONMENT=Development \
               -e ASPNETCORE_HTTP_PORTS=8080 \
               -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
+              -e 'ConnectionStrings__Cache=${{ vars.REDIS_HOST }}' \
+              -e 'Authentication__Secret=${{ secrets.OPP_JWT_SECRET }}' \
               -p 9090:8080 \
               ghcr.io/${{ github.repository_owner }}/openplanningpokerusermanagementgraphql:${{ github.run_number }}
 

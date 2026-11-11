@@ -1,4 +1,4 @@
-﻿
+
 
 namespace OpenPlanningPoker.UserManagement.GraphQL.Features.Users;
 
@@ -21,7 +21,7 @@ public class RegisterUserMutation
     public async Task<FieldResult<RegisterUserResponse, ApplicationError>> RegisterUserAsync(
         [Service] IUsernameGeneratorService usernameGeneratorService,
         [Service] IUserService userService,
-        [Service] IConfiguration configuration,
+        [Service] JwtSettings jwtSettings,
         [Service] ILogger<RegisterUserMutation> logger,
         string? username,
         CancellationToken cancellationToken = default)
@@ -42,7 +42,7 @@ public class RegisterUserMutation
 
         var registeredUser = new RegisterUserResponse(user.Id, user.UserName);
 
-        var token = GenerateToken(registeredUser.Id.ToString(), configuration["Authentication:Secret"]!);
+        var token = GenerateToken(registeredUser.Id.ToString(), jwtSettings);
         registeredUser.SetToken(token);
 
         logger.LogInformation("User registered with id: {userId} and username: {newUsername}", user.Id, username);
@@ -50,15 +50,16 @@ public class RegisterUserMutation
         return registeredUser;
     }
 
-    private static string GenerateToken(string id, string secretKey)
+    private static string GenerateToken(string id, JwtSettings jwtSettings)
     {
-        var key = Encoding.ASCII.GetBytes(secretKey);
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity([new Claim(nameof(id), id)]),
-            Expires = DateTime.UtcNow.AddDays(1),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            Issuer = jwtSettings.Issuer,
+            Audience = jwtSettings.Audience,
+            Expires = DateTime.UtcNow.Add(jwtSettings.Lifetime),
+            SigningCredentials = new SigningCredentials(jwtSettings.SigningKey, SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token) ?? throw new Exception("Cannot create a token!");

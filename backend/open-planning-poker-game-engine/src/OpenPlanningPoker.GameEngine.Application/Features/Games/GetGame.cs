@@ -1,6 +1,6 @@
-﻿namespace OpenPlanningPoker.GameEngine.Application.Features.Games;
+namespace OpenPlanningPoker.GameEngine.Application.Features.Games;
 
-public sealed record GetGameResponse(Guid Id, string Name, string Description);
+public sealed record GetGameResponse(Guid Id, string Name, string Description, Guid CreatedBy);
 public sealed record GetGameQuery(Guid GameId) : IRequest<Result<GetGameResponse, ApplicationError>>;
 
 public static class GetGame

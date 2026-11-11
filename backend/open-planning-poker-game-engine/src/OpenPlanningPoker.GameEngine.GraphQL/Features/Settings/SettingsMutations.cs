@@ -4,15 +4,21 @@
 public class SettingsMutations
 {
     /// <summary>
-    /// Creates Game Settings.
+    /// Creates Game Settings. Host only.
     /// </summary>
     public async Task<FieldResult<Settings, ApplicationError>> CreateSettingsAsync(
         [Service] ISender sender,
         [Service] IMapper mapper,
+        [Service] IGameAccessService gameAccess,
         [Required] Guid gameId,
         string? deckSetup,
         CancellationToken cancellationToken = default)
     {
+        if (await gameAccess.EnsureHostAsync(gameId, cancellationToken) is { } accessError)
+        {
+            return accessError;
+        }
+
         deckSetup = string.IsNullOrEmpty(deckSetup) ? GameSettingsConstants.FibonacciDeckSetup : deckSetup;
         var result = await sender.Send(new CreateGameSettingsCommand(gameId, deckSetup), cancellationToken);
         return result.IsSuccess
@@ -21,16 +27,22 @@ public class SettingsMutations
     }
 
     /// <summary>
-    /// Updates Game Settings.
+    /// Updates Game Settings. Host only.
     /// </summary>
     public async Task<FieldResult<Settings, ApplicationError>> UpdateSettingsAsync(
         [Service] ISender sender,
         [Service] IMapper mapper,
+        [Service] IGameAccessService gameAccess,
         [Required] Guid id,
         [Required] Guid gameId,
         string? deckSetup,
         CancellationToken cancellationToken = default)
     {
+        if (await gameAccess.EnsureHostAsync(gameId, cancellationToken) is { } accessError)
+        {
+            return accessError;
+        }
+
         deckSetup = string.IsNullOrEmpty(deckSetup) ? GameSettingsConstants.FibonacciDeckSetup : deckSetup;
         var result = await sender.Send(new UpdateGameSettingsCommand(id, gameId, deckSetup), cancellationToken);
         return result.IsSuccess

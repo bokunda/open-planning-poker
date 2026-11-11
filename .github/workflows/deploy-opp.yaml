@@ -11,12 +11,14 @@ jobs:
     uses: ./.github/workflows/deploy-opp-user-management.yaml
     secrets: 
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      OPP_JWT_SECRET: ${{ secrets.OPP_JWT_SECRET }}
   opp-ge:
     name: Deploy OPP Game Engine
     uses: ./.github/workflows/deploy-opp-game-engine.yaml
     secrets: 
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD  }}
       SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      OPP_JWT_SECRET: ${{ secrets.OPP_JWT_SECRET }}
   opp-graphql-gtw:
     name: Deploy OPP GraphQL Gateway
     needs: [opp-um, opp-ge]

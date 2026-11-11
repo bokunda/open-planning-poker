@@ -8,6 +8,7 @@ mutation($input: CreateTicketInput!) {
       gameId
       name
       description
+      votesRevealed
       __typename
     }
   }

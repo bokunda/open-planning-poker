@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.Application.Features.GameSettings;
+namespace OpenPlanningPoker.GameEngine.Application.Features.GameSettings;
 
 public sealed record UpdateGameSettingsResponse(Guid Id, Guid GameId, string DeckSetup);
 
@@ -42,7 +42,12 @@ public static class UpdateGameSettings
         {
             // Create a game
             var gameSettings = await gameSettingsRepository.GetByIdAsync(request.Id, cancellationToken);
-            gameSettings!.Update(request.GameId, request.DeckSetup);
+            if (gameSettings is null || gameSettings.GameId != request.GameId)
+            {
+                return new ApplicationError("GameSettingsNotFound", "Game settings not found for this game.");
+            }
+
+            gameSettings.Update(request.GameId, request.DeckSetup);
             gameSettingsRepository.Update(gameSettings);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 

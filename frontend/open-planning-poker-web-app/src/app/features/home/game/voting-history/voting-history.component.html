@@ -10,7 +10,7 @@
           </mat-panel-title>
           <mat-panel-description class="history-avg">
             AVG:
-            <ng-container *ngIf="ticket.id !== currentTicketId || votesRevealed; else hiddenAvg">
+            <ng-container *ngIf="ticket.votesRevealed || (ticket.id === currentTicketId && votesRevealed); else hiddenAvg">
               {{ticket.averageVotingValue}}
             </ng-container>
             <ng-template #hiddenAvg>?</ng-template>
@@ -21,7 +21,7 @@
           <p>Voting result history.</p>
           <span *ngFor="let vote of ticket?.votes?.items; trackBy: trackByVoteId">
             <p><strong>{{vote.playerName}}:</strong>
-              <ng-container *ngIf="ticket.id !== currentTicketId || votesRevealed; else hiddenVote">
+              <ng-container *ngIf="ticket.votesRevealed || (ticket.id === currentTicketId && votesRevealed); else hiddenVote">
                 {{vote.value}}
               </ng-container>
               <ng-template #hiddenVote>?</ng-template>

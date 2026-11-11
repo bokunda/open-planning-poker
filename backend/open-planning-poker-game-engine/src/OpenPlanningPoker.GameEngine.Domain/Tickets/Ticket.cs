@@ -1,10 +1,15 @@
-﻿namespace OpenPlanningPoker.GameEngine.Domain.Tickets;
+namespace OpenPlanningPoker.GameEngine.Domain.Tickets;
 
 public sealed class Ticket : Entity<Guid>
 {
     public Guid GameId { get; private set; }
     public string Name { get; private set; }
     public string Description { get; private set; }
+
+    /// <summary>
+    /// While false, vote values on this ticket are visible only to the player who cast them.
+    /// </summary>
+    public bool VotesRevealed { get; private set; }
 
     public ICollection<Vote>? Votes;
 
@@ -30,4 +35,8 @@ public sealed class Ticket : Entity<Guid>
         Description = description;
         RaiseDomainEvent(new UpdateTicketDomainEvent(Id));
     }
+
+    public void RevealVotes() => VotesRevealed = true;
+
+    public void HideVotes() => VotesRevealed = false;
 }
