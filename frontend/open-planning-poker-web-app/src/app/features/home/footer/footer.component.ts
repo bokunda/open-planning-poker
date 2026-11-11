@@ -4,7 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { OPP_APP_VERSION, OPP_GITHUB_REPO_URL, OPP_WEBSITE_URL } from '../../../shared/constants';
-import { InfoDialogComponent } from '../../../shared/dialogs/info/info.component';
 import { ThemeService } from '../../../shared/theme.service';
 
 @Component({
@@ -31,7 +30,8 @@ export class FooterComponent {
     this.themeService.toggle();
   }
 
-  openInfoDialog(): void {
+  async openInfoDialog(): Promise<void> {
+    const { InfoDialogComponent } = await import('../../../shared/dialogs/info/info.component');
     this.dialog.open(InfoDialogComponent, {
       maxWidth: '900px',
       enterAnimationDuration: '150ms',

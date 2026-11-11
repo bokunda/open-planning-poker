@@ -8,7 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '../../../../shared/constants';
-import { QrShareDialogComponent } from '../../../../shared/dialogs/qr-share/qr-share-dialog.component';
 
 @Component({
   selector: 'app-game-details',
@@ -29,7 +28,9 @@ export class GameDetailsComponent {
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
 
-  openQrShare(): void {
+  async openQrShare(): Promise<void> {
+    // Loaded on first open, with the QR code library.
+    const { QrShareDialogComponent } = await import('../../../../shared/dialogs/qr-share/qr-share-dialog.component');
     this.dialog.open(QrShareDialogComponent, {
       width: '360px',
       maxWidth: '95vw',

@@ -11,14 +11,13 @@ import { HeaderComponent } from './header/header.component';
 import { BreadcrumbComponent } from './game/breadcrumb/breadcrumb.component';
 import { GameComponent } from './game/game.component';
 import { FooterComponent } from './footer/footer.component';
-import { LoadingComponent } from '../../shared/loading/loading.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, BreadcrumbComponent, GameComponent, FooterComponent, LoadingComponent]
+  imports: [CommonModule, HeaderComponent, BreadcrumbComponent, GameComponent, FooterComponent]
 })
 export class HomeComponent implements OnInit {
 

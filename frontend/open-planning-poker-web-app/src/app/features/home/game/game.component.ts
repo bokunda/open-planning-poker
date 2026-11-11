@@ -9,15 +9,12 @@ import { ApiCollectionOfGamePlayer, ApiCollectionOfTicket, ApiCollectionOfVote, 
 import { GET_GAME } from './gql/getGame.graphql';
 import { CREATE_GAME } from './gql/createGame.graphql';
 import { MatDialog } from '@angular/material/dialog';
-import { CreateGameDialogComponent } from './create/dialog/create-game-dialog.component';
-import { JoinGameDialogComponent } from './join/dialog/join-game-dialog.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { JOIN_GAME } from './gql/joinGame.graphql';
 import { GET_GAME_PLAYERS } from './gql/getPlayers.graphql';
 import { ON_PLAYER_JOINED } from './gql/onPlayerJoined.graphql';
-import { CreateTicketDialogComponent } from './ticket/create-ticket/dialog/create-ticket-dialog.component';
-import { ImportTicketsDialogComponent, ImportedTicket } from './import/import-tickets-dialog.component';
+import type { ImportedTicket } from './import/import-tickets-dialog.component';
 import { CREATE_TICKET } from './gql/createTicket.graphql';
 import { GET_TICKET } from './gql/getTicket.graphql';
 import { ON_TICKET_CREATED } from './gql/onTicketCreated.graphql';
@@ -32,10 +29,10 @@ import { GET_TICKETS } from './gql/getTickets.graphql';
 import { GENERATE_GAME_REPORT } from './gql/generateGameReport.graphql';
 import { UPDATE_SETTINGS } from './gql/updateSettings.graphql';
 import { MutationReVoteTicketArgs, MutationRevealVotesArgs, MutationUpdateSettingsArgs, ReVoteTicketPayload, RevealVotesPayload, UpdateSettingsPayload, VotesRevealed } from '../../../graphql/graphql-gateway.service';
-import { CreateGameResult } from './create/create-game.component';
+import type { CreateGameResult } from './create/create-game.component';
 import { RoomSkeletonComponent } from '../../../shared/room-skeleton/room-skeleton.component';
 import { DemoTableComponent } from './landing/demo-table.component';
-import { extractGameId } from './join/join-game.component';
+import { extractGameId } from './join/extract-game-id';
 import { FormsModule } from '@angular/forms';
 import { GameDetailsComponent } from './details/game-details.component';
 import { VotingComponent } from './voting/voting.component';
@@ -381,7 +378,9 @@ export class GameComponent implements OnInit {
     });
   }
 
-  private openCreateGameDialog() {
+  private async openCreateGameDialog(): Promise<void> {
+    // Loaded on first open, so the dialog is not in the initial bundle.
+    const { CreateGameDialogComponent } = await import('./create/dialog/create-game-dialog.component');
     const dialogRef = this.dialog.open(CreateGameDialogComponent, {
       width: '540px',
       maxWidth: '95vw',
@@ -395,7 +394,9 @@ export class GameComponent implements OnInit {
     });
   }
 
-  private openJoinGameDialog() {
+  private async openJoinGameDialog(): Promise<void> {
+    // Loaded on first open, so the dialog is not in the initial bundle.
+    const { JoinGameDialogComponent } = await import('./join/dialog/join-game-dialog.component');
     const dialogRef = this.dialog.open(JoinGameDialogComponent, {
       width: '400px',
       maxWidth: '400px',
@@ -491,7 +492,9 @@ export class GameComponent implements OnInit {
     });
   }
 
-  private openCreateTicketDialog(): void {
+  private async openCreateTicketDialog(): Promise<void> {
+    // Loaded on first open, so the dialog is not in the initial bundle.
+    const { CreateTicketDialogComponent } = await import('./ticket/create-ticket/dialog/create-ticket-dialog.component');
     const dialogRef = this.dialog.open(CreateTicketDialogComponent, {
       width: '400px',
       maxWidth: '700px',
@@ -505,7 +508,9 @@ export class GameComponent implements OnInit {
     });
   }
 
-  private openImportTicketsDialog(): void {
+  private async openImportTicketsDialog(): Promise<void> {
+    // Loaded on first open, so the dialog is not in the initial bundle.
+    const { ImportTicketsDialogComponent } = await import('./import/import-tickets-dialog.component');
     const dialogRef = this.dialog.open(ImportTicketsDialogComponent, {
       width: '560px',
       maxWidth: '95vw',

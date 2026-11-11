@@ -80,8 +80,46 @@ $opp-dark-theme: mat.m2-define-dark-theme((
   density: 0,
 ));
 
-@include mat.all-component-themes($opp-theme);
+// Only the components the app uses (all-component-themes added ~16 KB of unused CSS).
+// Add a component here when you start using it.
+@mixin opp-component-themes($theme) {
+  @include mat.core-theme($theme);
+  @include mat.button-theme($theme);
+  @include mat.icon-button-theme($theme);
+  @include mat.icon-theme($theme);
+  @include mat.dialog-theme($theme);
+  @include mat.divider-theme($theme);
+  @include mat.form-field-theme($theme);
+  @include mat.input-theme($theme);
+  @include mat.menu-theme($theme);
+  @include mat.progress-spinner-theme($theme);
+  @include mat.select-theme($theme);
+  @include mat.snack-bar-theme($theme);
+  @include mat.tabs-theme($theme);
+  @include mat.toolbar-theme($theme);
+  @include mat.tooltip-theme($theme);
+}
+
+@mixin opp-component-colors($theme) {
+  @include mat.core-color($theme);
+  @include mat.button-color($theme);
+  @include mat.icon-button-color($theme);
+  @include mat.icon-color($theme);
+  @include mat.dialog-color($theme);
+  @include mat.divider-color($theme);
+  @include mat.form-field-color($theme);
+  @include mat.input-color($theme);
+  @include mat.menu-color($theme);
+  @include mat.progress-spinner-color($theme);
+  @include mat.select-color($theme);
+  @include mat.snack-bar-color($theme);
+  @include mat.tabs-color($theme);
+  @include mat.toolbar-color($theme);
+  @include mat.tooltip-color($theme);
+}
+
+@include opp-component-themes($opp-theme);
 
 .dark-theme {
-  @include mat.all-component-colors($opp-dark-theme);
+  @include opp-component-colors($opp-dark-theme);
 }
