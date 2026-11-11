@@ -174,60 +174,8 @@
   50% { opacity: 1; }
 }
 
-/* Timer row: display + duration selector */
-.timer-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-
-.timer-duration {
-  width: 100px;
-}
-
-
-
-/* ── Timer ── */
-.timer-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--opp-space-2);
-  padding: var(--opp-space-2) 0 var(--opp-space-4) 0;
-
-  &--disabled {
-    opacity: 0.4;
-    pointer-events: none;
-  }
-}
-
-.timer-display {
-  font-size: var(--opp-font-size-2xl);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 1px;
-  color: var(--opp-primary);
-
-  &.timer-warning {
-    color: var(--opp-danger);
-    animation: pulse 1s ease-in-out infinite;
-  }
-
-  &--dim {
-    color: var(--opp-text-muted);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.05); }
-}
-
-.timer-controls {
-  display: flex;
-  gap: var(--opp-space-1);
-}
+/* Shared timer (app-game-timer) above the table */
+.voting-timer { padding: var(--opp-space-1) 0 var(--opp-space-3); }
 
 /* ── Action bar (below vote cards) ── */
 .voting-actions {

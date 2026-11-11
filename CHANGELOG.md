@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Shared voting timer**: the host's timer now runs on the server, so every player sees the same countdown (and the ring on the table), including players who join while it runs. New `startTimer` / `stopTimer` mutations (host only), `gameTimer` query and `onTimerChanged` subscription; the state is kept in Redis. When it reaches zero the cards are revealed, as before
+
+### Changed
+- **Timer control**: one pill with the time, duration chips (30s, 1m, 2m, 3m, 5m) and Start/Stop, instead of a dropdown and three icon buttons
+- Sentence case for the remaining labels: "Reveal cards", "Vote again", "New ticket", "Chat", "Paste a list", "Upload a file", "T-shirt sizes"
+
 ### Performance
 - **Smaller first load**: initial JavaScript 1148 → 857 KB (raw). The game room is a separate chunk loaded once a game is open (`@defer`); dialogs (new game, join, ticket, import, invite, username, about) load on first open; the animation engine loads after start-up (`provideAnimationsAsync`)
 - **Demo table hydrates on idle**: still rendered on the server, its JS loads when the browser is idle (incremental hydration)
