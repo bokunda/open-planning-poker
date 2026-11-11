@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Redesign — phase 3 (other screens)
+- **Landing page**: a live demo table plays rounds on its own next to the pitch; "Join" accepts a pasted game link or code inline (no dialog) with a clear error for anything else
+- **Room header**: game name and description as text, a labeled **Invite** button (link and QR code together) and a menu for copy link, PDF export and leave
+- **Tickets list** replaces the history accordion: each ticket shows its revealed votes, the estimate and (for the host) a "vote again" button
+- **Timer ring**: while the host's timer runs, a ring drains around the vote counter on the table and turns orange in the last 10 seconds
+- **Phone**: your cards stick to the bottom of the screen and scroll sideways; the players panel is hidden (the table shows everyone) and chat starts collapsed
+
+### Fixed
+- Reloading a game with several tickets opened the first ticket and dropped the ticket from the URL; it now stays on the ticket in the URL
+
 ### Redesign — phase 2 (the table and the reveal)
 - **Poker table**: every player has a seat on the edge of a felt table with their card; the current user sits at the bottom. The center shows a progress ring ("3/5 voted") and, after the reveal, the average
 - **Card flight**: the chosen card flies from your hand to your seat (FLIP with the Web Animations API); other players' cards drop onto their seats

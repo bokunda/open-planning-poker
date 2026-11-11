@@ -314,7 +314,24 @@
 
 /* ── Responsive ── */
 @media (max-width: 600px) {
+  /* The hand sticks to the bottom of the screen and scrolls sideways, like cards held in hand. */
   .voting-cards {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
     gap: var(--opp-space-2);
+    overflow-x: auto;
+    margin-inline: calc(var(--opp-space-2) * -1);
+    padding: var(--opp-space-5) var(--opp-space-3) calc(var(--opp-space-3) + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--opp-bg) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--opp-border);
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar { display: none; }
   }
+
+  .vote-card { flex: 0 0 auto; }
 }

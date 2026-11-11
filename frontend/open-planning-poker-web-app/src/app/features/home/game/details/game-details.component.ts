@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '../../../../shared/constants';
 import { QrShareDialogComponent } from '../../../../shared/dialogs/qr-share/qr-share-dialog.component';
 
@@ -14,7 +15,7 @@ import { QrShareDialogComponent } from '../../../../shared/dialogs/qr-share/qr-s
   templateUrl: './game-details.component.html',
   styleUrl: './game-details.component.scss',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, MatMenuModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameDetailsComponent {
@@ -40,7 +41,7 @@ export class GameDetailsComponent {
     navigator.clipboard
       .writeText(window.location.href)
       .then(() => {
-        this.snackBar.open('Game Id copied to clipboard successfully!', OPP_SNACKBAR_MODAL_LABEL_CLOSE, {
+        this.snackBar.open('Game link copied. Share it with your team.', OPP_SNACKBAR_MODAL_LABEL_CLOSE, {
           duration: OPP_SNACKBAR_DURATION_DEFAULT,
         });
       })

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Ticket } from '../../../../graphql/graphql-gateway.service';
@@ -10,7 +10,7 @@ import { Ticket } from '../../../../graphql/graphql-gateway.service';
   templateUrl: './voting-history.component.html',
   styleUrl: './voting-history.component.scss',
   standalone: true,
-  imports: [CommonModule, MatExpansionModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, MatTooltipModule, MatButtonModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VotingHistoryComponent {
@@ -21,6 +21,10 @@ export class VotingHistoryComponent {
   @Input() isHost = false;
 
   @Output() onReVoteTicket = new EventEmitter<string>();
+
+  isRevealed(ticket: Ticket): boolean {
+    return !!ticket.votesRevealed || (ticket.id === this.currentTicketId && this.votesRevealed);
+  }
 
   trackByTicketId(index: number, ticket: { id: string }): string {
     return ticket.id;

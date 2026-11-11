@@ -102,7 +102,9 @@
       [votesRevealed]="votesRevealed"
       [currentUserId]="currentUserId"
       [deck]="voteOptions"
-      [hideMyCard]="cardInFlight">
+      [hideMyCard]="cardInFlight"
+      [timerRemaining]="isHost && timerRunning ? remainingSeconds : null"
+      [timerTotal]="timerDurationMinutes * 60">
     </app-poker-table>
 
     <div class="voting-cards" role="group" aria-label="Your cards" [class.voting-cards--locked]="votesRevealed">

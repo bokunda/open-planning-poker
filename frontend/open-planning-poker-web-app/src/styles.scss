@@ -61,6 +61,12 @@ body {
   initial-value: 0;
 }
 
+@property --t {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
 /* ── Redesign phase 1: typography ── */
 body {
   font-family: var(--opp-font-body);

@@ -1,53 +1,28 @@
 <section class="game-details-wrapper" *ngIf="game" aria-label="Game details">
   <div class="game-details">
-      <h2>
-        {{ game.name }}
-        <button
-          mat-icon-button
-          (click)="copyToClipboard()"
-          aria-label="Copy Game URL to clipboard!"
-          matTooltip="Copy Game URL to clipboard!">
-          <mat-icon>content_copy</mat-icon>
+    <div class="game-title-block">
+      <h2 class="game-title">{{ game.name }}</h2>
+      <p class="game-desc" *ngIf="game.description">{{ game.description }}</p>
+    </div>
+
+    <div class="game-actions">
+      <button mat-flat-button color="primary" class="invite-btn" (click)="openQrShare()">
+        <mat-icon>person_add</mat-icon> Invite
+      </button>
+      <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More game actions" matTooltip="More">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #moreMenu="matMenu" xPosition="before">
+        <button mat-menu-item (click)="copyToClipboard()">
+          <mat-icon>link</mat-icon><span>Copy game link</span>
         </button>
-        <button
-          mat-icon-button
-          (click)="openQrShare()"
-          aria-label="Share game via QR code"
-          matTooltip="Share game via QR code">
-          <mat-icon>qr_code</mat-icon>
+        <button mat-menu-item (click)="onGameReportClick.emit()">
+          <mat-icon>download</mat-icon><span>Export results (PDF)</span>
         </button>
-        <!-- TODO: For some future realese -->
-        <!-- <button
-          mat-icon-button
-          color="primary"
-          matTooltip="Edit Game"
-          disabled>
-          <mat-icon>edit</mat-icon>
-        </button> -->
-        <button
-          mat-icon-button
-          matTooltip="{{ game.description }}"
-          *ngIf="game?.description">
-          <mat-icon>info</mat-icon>
+        <button mat-menu-item (click)="onLeaveGameClick.emit()">
+          <mat-icon>logout</mat-icon><span>Leave game</span>
         </button>
-        <!-- TODO: For some future realese -->
-        <!-- <button
-          mat-icon-button href="#"
-          disabled>
-          <mat-icon>get_app</mat-icon>
-        </button> -->
-        <button
-          mat-icon-button
-          matTooltip="Download game report!"
-          (click)="onGameReportClick.emit()">
-          <mat-icon>download</mat-icon>
-        </button>
-        <button
-          mat-icon-button
-          matTooltip="Leave Game"
-          (click)="onLeaveGameClick.emit()">
-          <mat-icon>exit_to_app</mat-icon>
-        </button>
-      </h2>
+      </mat-menu>
+    </div>
   </div>
 </section>

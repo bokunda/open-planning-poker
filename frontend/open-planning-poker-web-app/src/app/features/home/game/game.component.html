@@ -2,24 +2,37 @@
   <!-- Landing (no game) -->
   <ng-container *ngIf="!game && !isLoading">
     <div class="game-landing" @fadeSlide>
-      <div class="hero-cta">
-        <div class="hero-illustration">🎯</div>
-        <ng-container *ngIf="gameNotFound; else readyToPlan">
-          <h2 class="hero-title">This game no longer exists</h2>
-          <p class="hero-desc">The link may be wrong, or the host deleted the game. Create a new game or join another one.</p>
-        </ng-container>
-        <ng-template #readyToPlan>
-          <h2 class="hero-title">Ready to plan?</h2>
-          <p class="hero-desc">Create a game room and invite your team to start estimating.</p>
-        </ng-template>
-        <div class="hero-actions">
-          <button mat-raised-button color="primary" class="hero-btn hero-btn--primary" (click)="handleCreateGame()">
-            <mat-icon>add</mat-icon> Create Game
-          </button>
-          <button mat-stroked-button color="primary" class="hero-btn" (click)="handleJoinGame()">
-            <mat-icon>login</mat-icon> Join Game
-          </button>
+      <div class="landing-grid">
+        <div class="landing-copy">
+          <ng-container *ngIf="gameNotFound; else readyToPlan">
+            <span class="landing-eyebrow landing-eyebrow--warn">Game not found</span>
+            <h2 class="landing-title">This game no longer exists</h2>
+            <p class="landing-desc">The link may be wrong, or the host deleted the game. Create a new game or join another one.</p>
+          </ng-container>
+          <ng-template #readyToPlan>
+            <span class="landing-eyebrow">Free planning poker for agile teams</span>
+            <h2 class="landing-title">Estimate together, around one table.</h2>
+            <p class="landing-desc">Create a room, share the link and vote in secret. Everyone's cards turn over at the same moment, so nobody anchors the team.</p>
+          </ng-template>
+
+          <div class="landing-actions">
+            <button mat-flat-button color="primary" class="hero-btn hero-btn--primary" (click)="handleCreateGame()">
+              <mat-icon>add</mat-icon> Create game
+            </button>
+          </div>
+
+          <form class="join-inline" (ngSubmit)="joinFromInput()">
+            <label class="join-label" for="join-input">Have a link from your team?</label>
+            <div class="join-row">
+              <input id="join-input" name="joinInput" class="join-input" type="text"
+                [(ngModel)]="joinInput" placeholder="Paste the game link or code" autocomplete="off">
+              <button mat-stroked-button color="primary" type="submit" [disabled]="!joinInput.trim()">Join</button>
+            </div>
+            <p class="join-error" *ngIf="joinError" role="alert">{{ joinError }}</p>
+          </form>
         </div>
+
+        <app-demo-table class="landing-demo"></app-demo-table>
       </div>
     </div>
   </ng-container>

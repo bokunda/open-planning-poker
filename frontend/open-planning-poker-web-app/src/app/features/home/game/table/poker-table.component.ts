@@ -36,6 +36,9 @@ export class PokerTableComponent implements DoCheck {
   @Input() deck: string[] = [];
   /** Hides the current user's card while it is flying from the hand to the seat. */
   @Input() hideMyCard = false;
+  /** Seconds left on the host's timer, or null when no timer runs. */
+  @Input() timerRemaining: number | null = null;
+  @Input() timerTotal = 60;
 
   seats: Seat[] = [];
   votedCount = 0;
@@ -44,6 +47,12 @@ export class PokerTableComponent implements DoCheck {
   get total(): number { return this.seats.length; }
   get progress(): number { return this.total ? this.votedCount / this.total : 0; }
   get crowded(): boolean { return this.seats.length > 8; }
+  get timerActive(): boolean { return this.timerRemaining !== null; }
+  get timerFraction(): number { return this.timerActive && this.timerTotal ? Math.max(0, this.timerRemaining! / this.timerTotal) : 0; }
+  get timerLabel(): string {
+    const s = Math.max(0, this.timerRemaining ?? 0);
+    return `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
+  }
 
   private signature = '';
 
