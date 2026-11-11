@@ -90,6 +90,15 @@ All deployment is automated via GitHub Actions workflows in `.github/workflows/`
 | `deploy-redis.yaml` | Manual | Redis on private server |
 | `deploy-monitoring-services.yaml` | Manual | Monitoring stack |
 | `deploy-opp-shared-nuget.yaml` | Manual | Shared NuGet package to NuGet.org |
+| `release.yaml` | Push to `main` (version or changelog changed) | Tag `vX.Y.Z` + GitHub Release from `CHANGELOG.md` |
+| `uptime.yaml` | Every 15 minutes | Nothing: checks the public endpoints, opens/closes an `uptime` issue |
+
+### Releasing a version
+
+1. In the PR, bump `"version"` in `frontend/open-planning-poker-web-app/package.json` (the app footer shows it).
+2. Move the `## [Unreleased]` items to `## [X.Y.Z] — YYYY-MM-DD` in `CHANGELOG.md`.
+3. After merge, `release.yaml` tags the commit and publishes the GitHub Release; `deploy-opp.yaml` deploys
+   the services, the app and the website (whose "What's new" and changelog come from `CHANGELOG.md`).
 
 ### Deployment Flow
 

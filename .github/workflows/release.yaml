@@ -1,0 +1,63 @@
+name: Release
+run-name: "Release check"
+
+# On every push to main: if the app version in package.json has no tag yet, tag the commit
+# (vX.Y.Z) and publish a GitHub Release whose notes are that version's section of CHANGELOG.md.
+# To release: bump "version" in frontend/open-planning-poker-web-app/package.json and add
+# "## [X.Y.Z] — YYYY-MM-DD" to CHANGELOG.md in the same PR.
+on:
+  push:
+    branches: [main]
+    paths:
+      - frontend/open-planning-poker-web-app/package.json
+      - CHANGELOG.md
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Read version
+        id: version
+        run: |
+          version=$(node -p "require('./frontend/open-planning-poker-web-app/package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if git rev-parse -q --verify "refs/tags/v$version" >/dev/null; then
+            echo "Tag v$version already exists, nothing to release."
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Extract release notes from CHANGELOG.md
+        if: steps.version.outputs.exists == 'false'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          # Everything between "## [VERSION]" and the next "## [" heading.
+          awk -v v="$VERSION" '
+            index($0, "## [" v "]") == 1 { found = 1; next }
+            found && /^## \[/ { exit }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then
+            echo "::error::CHANGELOG.md has no section for $VERSION. Add '## [$VERSION] — date' before bumping the version."
+            exit 1
+          fi
+          echo "Full changelog: https://openplanningpoker.com/changelog/" >> notes.md
+          cat notes.md
+
+      - name: Tag and publish the release
+        if: steps.version.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          gh release create "v$VERSION" --target "$GITHUB_SHA" --title "v$VERSION" --notes-file notes.md --latest

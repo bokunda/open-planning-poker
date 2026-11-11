@@ -1,3 +1,4 @@
 node_modules/
+dist/
 latest-release.html
 release.json
