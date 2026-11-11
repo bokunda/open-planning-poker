@@ -193,6 +193,11 @@ npm start  # http://localhost:4200
 - Production runs with `ASPNETCORE_ENVIRONMENT=Production`; logs go to the console (`docker logs`). Loki is not wired in (it never was in production).
 - Mapping is explicit code (`Application/Mappings.cs`, `GraphQL/Features/GraphQLMappings.cs`); AutoMapper was removed.
 
+### Monitoring
+- Stack in `backend/open-planning-poker-monitoring-services` (compose project `opp-metrics`, `/home/root/opp-metrics` on the app server). All ports bind to 127.0.0.1; Grafana is reached via nginx (`grafana.openplanningpoker.com` → 127.0.0.1:3000).
+- Grafana data lives in the `opp-metrics_grafana-data` volume (it used to live only inside the container).
+- Apps send OTLP to `http://otel-collector:4317` over `oppnetwork` (`vars.OTEL_ENDPOINT`); the collector joins that network.
+
 ### Secrets
 - JWT secret comes only from env `Authentication__Secret` (min. 32 chars); services refuse to start without it. The old committed secret is rejected.
 - Tokens are issued/validated with issuer + audience (`open-planning-poker`), registered locally in each service (`JwtAuthenticationExtensions`), not via the Shared NuGet

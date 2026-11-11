@@ -87,7 +87,7 @@ jobs:
               --network oppnetwork \
               -e ASPNETCORE_ENVIRONMENT=Production \
               -e ASPNETCORE_HTTP_PORTS=8080 \
-              -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.LOKI_URL }} \
+              -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.OTEL_ENDPOINT }} \
               -p 127.0.0.1:10010:8080 \
               -p 127.0.0.1:10011:8081 \
               ghcr.io/${{ github.repository_owner }}/openplanningpokergatewaygraphql:${{ github.run_number }}

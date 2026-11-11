@@ -1,14 +1,20 @@
-# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
-
-version: '3.8'
+# Monitoring stack (OpenTelemetry collector, Prometheus, Loki, Promtail, Grafana).
+# All ports are published on 127.0.0.1 only: Grafana is reached through nginx
+# (grafana.openplanningpoker.com), and the app containers send OTLP to
+# http://otel-collector:4317 over the shared `oppnetwork` Docker network.
 
 networks:
   monitoring:
     driver: bridge
+  # Network of the application containers (created by the app deploy workflows).
+  oppnetwork:
+    external: true
 
 volumes:
   prometheus-data:
     driver: local
+  # Grafana users, dashboards and settings. Without this volume they lived only
+  # inside the container and were lost whenever it was recreated.
   grafana-data:
     driver: local
 
@@ -19,18 +25,19 @@ services:
     volumes:
       - ./config/otel-collector-config.yaml:/etc/otel-collector-config.yaml
     ports:
-      - "8888:8888" 
-      - "8889:8889" 
-      - "13133:13133"
-      - "4317:4317"
+      - "127.0.0.1:8888:8888"
+      - "127.0.0.1:8889:8889"
+      - "127.0.0.1:13133:13133"
+      - "127.0.0.1:4317:4317"
     restart: unless-stopped
     networks:
       - monitoring
+      - oppnetwork
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
     ports:
-      - 9050:9090
+      - "127.0.0.1:9050:9090"
     command:
       - '--config.file=/etc/prometheus/prometheus.yaml'
     volumes:
@@ -42,7 +49,7 @@ services:
   loki:
     image: grafana/loki:2.9.4
     ports:
-      - "3100:3100"
+      - "127.0.0.1:3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
     restart: unless-stopped
     networks:
@@ -83,7 +90,9 @@ services:
         /run.sh
     image: grafana/grafana:latest
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
     restart: unless-stopped
     networks:
       - monitoring

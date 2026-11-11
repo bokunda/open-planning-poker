@@ -16,20 +16,24 @@ jobs:
       - name: Copy code to the server
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           source: "backend/open-planning-poker-monitoring-services"
-          target: "/home/${{ secrets.SSH_USER }}/opp-metrics"
+          target: "/home/${{ vars.SSH_USER }}/opp-metrics"
+          # Place the compose file and config/ directly in opp-metrics (as on the server).
+          strip_components: 2
       
       - name: Deploy using SSH
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd /home/${{ secrets.SSH_USER }}/opp-metrics
+            cd /home/${{ vars.SSH_USER }}/opp-metrics
+            # The OTel collector joins the app network so containers reach it as otel-collector:4317.
+            docker network inspect oppnetwork >/dev/null 2>&1 || docker network create oppnetwork
             docker compose pull
             docker compose up -d --remove-orphans
             docker system prune -f
