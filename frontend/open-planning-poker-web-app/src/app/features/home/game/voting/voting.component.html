@@ -1,4 +1,5 @@
 <section class="voting-wrapper" aria-label="Voting area">
+  <div class="sr-only" aria-live="polite" aria-atomic="true">{{ announcement }}</div>
   <!-- No ticket: big CTA for host -->
   <div class="no-ticket-cta" *ngIf="!ticket?.id && isHost">
     <div class="no-ticket-illustration">🎯</div>
@@ -69,7 +70,7 @@
     </div>
 
     <!-- Timer (host only) -->
-    <div class="timer-wrapper" *ngIf="isHost" [class.timer-wrapper--disabled]="votesRevealed">
+    <div class="timer-wrapper" *ngIf="isHost && !votesRevealed">
       <div class="timer-row">
         <span class="timer-display" [class.timer-warning]="timerWarning" [class.timer-display--dim]="votesRevealed">
           ⏱ {{ votesRevealed ? '--:--' : timerDisplay }}
@@ -107,9 +108,12 @@
       [timerTotal]="timerDurationMinutes * 60">
     </app-poker-table>
 
-    <div class="voting-cards" role="group" aria-label="Your cards" [class.voting-cards--locked]="votesRevealed">
-      <button *ngFor="let voteOption of voteOptions; trackBy: trackByOption"
+    <div class="voting-cards" role="group" aria-label="Your cards. Use the arrow keys to move and Enter to vote."
+      [class.voting-cards--locked]="votesRevealed" (keydown)="onHandKeydown($event)">
+      <button *ngFor="let voteOption of voteOptions; let i = index; trackBy: trackByOption"
+        #voteButton
         type="button"
+        [attr.tabindex]="i === tabStopIndex ? 0 : -1"
         class="vote-card"
         [class.vote-card--selected]="selectedOption === voteOption"
         [class.vote-card--disabled]="ticket?.id == null"
@@ -120,6 +124,7 @@
         <app-poker-card [value]="voteOption" size="lg" [selected]="selectedOption === voteOption"></app-poker-card>
       </button>
     </div>
+    <p class="hand-hint" *ngIf="!votesRevealed">Tip: type a card's value to vote, or use ← → and Enter.</p>
 
     <!-- Host action bar (below vote cards) -->
     <div class="voting-actions" *ngIf="isHost">

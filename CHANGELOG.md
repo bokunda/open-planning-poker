@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Redesign — phase 4 (accessibility & polish)
+- **Keyboard**: the hand is one Tab stop; arrow keys, Home and End move between cards and Enter/Space votes. Typing a card's value votes for it ("5", "13", "0.5", "?") when you are not typing in a field
+- **Screen readers**: a live region announces who voted ("Ana voted. 3 of 5 voted."), a new round and the next ticket; the results panel announces the outcome
+- **Contrast (WCAG AA)**: darker muted text, consensus/spread/danger colors in light mode; dark text on the light violet in dark mode (panel headers, chips); lighter violet for text buttons in dark mode
+- **Structure**: a single `main` landmark with the page heading inside it; the username control in the header is one button (no button inside a button); panel headers no longer nest a button in a button and expose `aria-expanded`
+- The timer controls are hidden after the reveal instead of shown greyed out
+- axe-core (WCAG 2 A/AA + best practices): 0 violations on the landing page and the game room, light and dark, before and after the reveal
+
 ### Redesign — phase 3 (other screens)
 - **Landing page**: a live demo table plays rounds on its own next to the pitch; "Join" accepts a pasted game link or code inline (no dialog) with a clear error for anything else
 - **Room header**: game name and description as text, a labeled **Invite** button (link and QR code together) and a menu for copy link, PDF export and leave

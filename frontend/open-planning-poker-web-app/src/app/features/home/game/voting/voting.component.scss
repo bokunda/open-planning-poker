@@ -127,12 +127,12 @@
   font-weight: 700 !important;
   border-radius: var(--opp-radius-full) !important;
   letter-spacing: 0.5px;
-  box-shadow: 0 4px 18px rgba(126, 58, 242, 0.35) !important;
+  box-shadow: var(--opp-shadow-card-selected) !important;
   transition: transform var(--opp-transition-fast), box-shadow var(--opp-transition-fast) !important;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 24px rgba(126, 58, 242, 0.5) !important;
+    box-shadow: var(--opp-shadow-card-lifted) !important;
   }
 
   mat-icon {
@@ -310,6 +310,16 @@
   &:not(.vote-card--selected) {
     opacity: 0.45;
   }
+}
+
+.hand-hint {
+  margin: 0;
+  text-align: center;
+  color: var(--opp-text-muted);
+  font-size: var(--opp-font-size-xs);
+
+  /* Touch screens have no keyboard shortcuts. */
+  @media (pointer: coarse) { display: none; }
 }
 
 /* ── Responsive ── */

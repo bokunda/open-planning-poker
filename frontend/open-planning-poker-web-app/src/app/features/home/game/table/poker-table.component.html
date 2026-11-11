@@ -1,6 +1,6 @@
 <div class="table" [class.table--crowded]="crowded" role="group" aria-label="Table">
   <div class="felt">
-    <div class="felt-center" aria-live="polite">
+    <div class="felt-center">
       <ng-container *ngIf="!votesRevealed; else revealedCenter">
         <div class="timer-ring"
           [class.timer-ring--active]="timerActive"
