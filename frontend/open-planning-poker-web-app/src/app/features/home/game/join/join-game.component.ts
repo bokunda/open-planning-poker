@@ -8,7 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { JoinGameDialogComponent } from './dialog/join-game-dialog.component';
 
-function extractGameId(input: string): string {
+/** Game id from a pasted link (`.../game/<id>...`) or a plain id; other input is returned trimmed. */
+export function extractGameId(input: string): string {
   const trimmed = input.trim();
   // Full URL with UUID (with dashes): https://app.openplanningpoker.com/game/019f6820-52fd-7ef0-9c6c-6bfae207ae02/
   const urlMatch = trimmed.match(/\/game\/([a-f0-9-]{36})/i);

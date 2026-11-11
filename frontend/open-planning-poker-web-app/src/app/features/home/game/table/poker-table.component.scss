@@ -33,6 +33,28 @@
   text-align: center;
 }
 
+/* Host timer: an outer ring that drains around the vote counter. */
+.timer-ring {
+  --t: 0;
+  padding: 6px;
+  border-radius: 50%;
+  background: transparent;
+  transition: --t 1s linear;
+
+  &--active {
+    background: conic-gradient(var(--opp-primary-300) calc(var(--t) * 1turn), rgba(255, 255, 255, 0.08) 0);
+  }
+
+  &--warn {
+    background: conic-gradient(var(--opp-spread) calc(var(--t) * 1turn), rgba(255, 255, 255, 0.08) 0);
+    animation: timer-pulse 1s var(--opp-ease-out) infinite;
+  }
+}
+
+@keyframes timer-pulse {
+  50% { scale: 1.04; }
+}
+
 .ring {
   --p: 0;
   width: 76px;

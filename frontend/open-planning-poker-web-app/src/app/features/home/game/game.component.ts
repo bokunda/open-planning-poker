@@ -1,5 +1,5 @@
-import { Component, inject, Input, OnInit, DestroyRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, Input, OnInit, DestroyRef, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Apollo } from 'apollo-angular';
@@ -34,6 +34,9 @@ import { UPDATE_SETTINGS } from './gql/updateSettings.graphql';
 import { MutationReVoteTicketArgs, MutationRevealVotesArgs, MutationUpdateSettingsArgs, ReVoteTicketPayload, RevealVotesPayload, UpdateSettingsPayload, VotesRevealed } from '../../../graphql/graphql-gateway.service';
 import { CreateGameResult } from './create/create-game.component';
 import { RoomSkeletonComponent } from '../../../shared/room-skeleton/room-skeleton.component';
+import { DemoTableComponent } from './landing/demo-table.component';
+import { extractGameId } from './join/join-game.component';
+import { FormsModule } from '@angular/forms';
 import { GameDetailsComponent } from './details/game-details.component';
 import { VotingComponent } from './voting/voting.component';
 import { VotingHistoryComponent } from './voting-history/voting-history.component';
@@ -46,7 +49,7 @@ import { map } from 'rxjs';
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, RoomSkeletonComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent],
   animations: [
     trigger('fadeSlide', [
       transition(':enter', [
@@ -114,6 +117,10 @@ export class GameComponent implements OnInit {
   /** Set when the game in the URL does not exist (or was deleted). */
   gameNotFound = false;
 
+  /** Landing page: link or code pasted into the inline join field. */
+  joinInput = '';
+  joinError = '';
+
   get isLoading(): boolean {
     // Only show loading when navigating to a specific game route (has gameId in URL)
     // and game data hasn't loaded yet. On the landing page (!gameId), don't show loader.
@@ -131,10 +138,15 @@ export class GameComponent implements OnInit {
   readonly route = inject(ActivatedRoute);
   readonly location = inject(Location);
   readonly destroyRef = inject(DestroyRef);
+  private readonly platformId = inject(PLATFORM_ID);
 
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
+    // On a phone the chat starts collapsed so the table and the cards come first.
+    if (isPlatformBrowser(this.platformId) && window.matchMedia('(max-width: 767px)').matches) {
+      this.chatCollapsed = true;
+    }
     this.route.paramMap.subscribe(params => {
       const gameId = params.get('id');
       const ticketId = params.get('ticketId');
@@ -168,6 +180,17 @@ export class GameComponent implements OnInit {
 
   handleJoinGame() {
     this.openJoinGameDialog();
+  }
+
+  joinFromInput() {
+    const id = extractGameId(this.joinInput);
+    if (!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(id)) {
+      this.joinError = 'That does not look like a game link or code. Copy the link from the host and paste it here.';
+      return;
+    }
+    this.joinError = '';
+    this.gameNotFound = false;
+    this.getGame(id);
   }
 
   handleLeaveGame() {
@@ -270,7 +293,11 @@ export class GameComponent implements OnInit {
             this.joinGame(this.game.id);
           }
           this.getTickets(this.game.id);
-          this.router.navigate([`/game/${this.game.id}`], { replaceUrl: true });
+          // Only move to the game's URL when it is not already open there (joined from the
+          // landing page); otherwise the ticket in the URL would be dropped on reload.
+          if (this.route.snapshot.paramMap.get('id') !== this.game.id) {
+            this.router.navigate([`/game/${this.game.id}`], { replaceUrl: true });
+          }
         }
       }
     });
@@ -674,9 +701,11 @@ export class GameComponent implements OnInit {
         if (data) {
           this.tickets = data?.tickets?.items ?? [];
 
-          // Auto-select first ticket for players who join with no ticket selected
+          // Auto-select a ticket for players who join with no ticket selected: the one in the
+          // URL if there is one (its own query may still be loading), otherwise the first.
           if (!this.ticket && this.tickets.length > 0) {
-            const firstTicket = this.tickets[0];
+            const urlTicketId = this.route.snapshot.paramMap.get('ticketId');
+            const firstTicket = this.tickets.find(t => t.id === urlTicketId) ?? this.tickets[0];
             this.ticket = firstTicket;
             this.votesRevealed = this.isRevealed(firstTicket);
             if (firstTicket?.id && firstTicket.id !== this.currentSubscribedTicketId) {
