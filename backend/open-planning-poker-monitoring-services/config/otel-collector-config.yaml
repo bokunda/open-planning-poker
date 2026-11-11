@@ -1,19 +1,21 @@
+# Listen on all container interfaces: the collector is on two Docker networks
+# (monitoring + oppnetwork). Host ports are published on 127.0.0.1 only.
 receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: otel-collector:4317
+        endpoint: 0.0.0.0:4317
 
 exporters:
   prometheus:
-    endpoint: otel-collector:8889
+    endpoint: 0.0.0.0:8889
 
 processors:
   batch:
 
 extensions:
   health_check:
-    endpoint: otel-collector:13133
+    endpoint: 0.0.0.0:13133
 
 service:
   extensions: [health_check]
