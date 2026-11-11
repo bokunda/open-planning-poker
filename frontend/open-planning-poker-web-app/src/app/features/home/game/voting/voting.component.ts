@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, SimpleChanges, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, QueryList, SimpleChanges, ViewChildren, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,6 +32,16 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
 
   /** True while the chosen card flies from the hand to the user's seat. */
   cardInFlight = false;
+
+  @ViewChildren('voteButton') private voteButtons!: QueryList<ElementRef<HTMLButtonElement>>;
+  private typedKeys = '';
+  private typedKeysTimer: ReturnType<typeof setTimeout> | undefined;
+
+  /** The one card in the hand that is reachable with Tab (roving tabindex). */
+  get tabStopIndex(): number {
+    const selected = this.selectedOption ? this.voteOptions.indexOf(this.selectedOption) : -1;
+    return selected >= 0 ? selected : 0;
+  }
   private readonly host = inject(ElementRef<HTMLElement>);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
@@ -64,24 +74,121 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['ticket'] && changes['ticket'].currentValue?.id !== changes['ticket'].previousValue?.id) {
+    const ticketChanged = changes['ticket'] && changes['ticket'].currentValue?.id !== changes['ticket'].previousValue?.id;
+    if (ticketChanged) {
       this.resetTimer();
       this.selectedOption = null;
       this.descriptionExpanded = false;
+      if (!changes['ticket'].firstChange && this.ticket?.name) {
+        this.announce(`Now voting on ${this.ticket.name}. Pick a card.`);
+      }
     }
     // A new voting round (re-vote) clears the card the user had chosen.
-    if (changes['votesRevealed'] && changes['votesRevealed'].previousValue && !changes['votesRevealed'].currentValue) {
+    const newRound = changes['votesRevealed'] && changes['votesRevealed'].previousValue && !changes['votesRevealed'].currentValue;
+    if (newRound) {
       this.selectedOption = null;
+      if (!ticketChanged) this.announce('New round. Pick a card.');
+    }
+    // Someone voted (only before the reveal; values stay hidden).
+    const votesChange = changes['votes'];
+    if (votesChange && !votesChange.firstChange && !this.votesRevealed && !ticketChanged && !newRound) {
+      const before = new Set((votesChange.previousValue as Vote[] | undefined ?? []).map(v => v.playerId));
+      const arrived = (votesChange.currentValue as Vote[]).filter(v => !before.has(v.playerId));
+      if (arrived.length) {
+        const total = this.players?.items?.length ?? 0;
+        const who = arrived.map(v => this.playerName(v.playerId)).join(', ');
+        this.announce(`${who} voted. ${this.votes.length} of ${total} voted.`);
+      }
     }
   }
 
   ngOnDestroy(): void {
     this.clearTimer();
+    clearTimeout(this.typedKeysTimer);
+    clearTimeout(this.announceTimer);
   }
 
-  selectOption(option: string, event?: Event): void {
+  /** Text for the screen-reader live region (votes arriving, new rounds, ticket changes). */
+  announcement = '';
+  private announceTimer: ReturnType<typeof setTimeout> | undefined;
+
+  private announce(message: string): void {
+    // Clear first so the same sentence is read again when it repeats.
+    this.announcement = '';
+    clearTimeout(this.announceTimer);
+    this.announceTimer = setTimeout(() => {
+      this.announcement = message;
+      this.cdr.detectChanges();
+    }, 50);
+  }
+
+  private playerName(playerId: string): string {
+    if (playerId === this.currentUserId) return 'You';
+    return this.players?.items?.find(p => p.id === playerId)?.name ?? 'A player';
+  }
+
+  /** Arrow keys, Home and End move focus inside the hand; Enter/Space vote (native buttons). */
+  onHandKeydown(event: KeyboardEvent): void {
+    const buttons = this.voteButtons?.toArray().map(b => b.nativeElement) ?? [];
+    const current = buttons.indexOf(document.activeElement as HTMLButtonElement);
+    if (current < 0) return;
+    let next = current;
+    switch (event.key) {
+      case 'ArrowRight': case 'ArrowDown': next = (current + 1) % buttons.length; break;
+      case 'ArrowLeft': case 'ArrowUp': next = (current - 1 + buttons.length) % buttons.length; break;
+      case 'Home': next = 0; break;
+      case 'End': next = buttons.length - 1; break;
+      default: return;
+    }
+    event.preventDefault();
+    buttons[next].focus();
+  }
+
+  /**
+   * Typing a card's value votes for it ("5", "13", "0.5", "?"), unless the user is typing in a
+   * field or a dialog is open. Multi-character values are collected for a short moment.
+   */
+  @HostListener('document:keydown', ['$event'])
+  onShortcut(event: KeyboardEvent): void {
+    if (!this.ticket?.id || this.votesRevealed || event.ctrlKey || event.metaKey || event.altKey) return;
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('input, textarea, select, [contenteditable="true"], .cdk-overlay-container')) return;
+    if (event.key.length !== 1 || !/[0-9.?½]/.test(event.key)) return;
+
+    clearTimeout(this.typedKeysTimer);
+    this.typedKeys += event.key;
+    const exact = this.cardForKeys(this.typedKeys);
+    const longer = this.voteOptions.some(v => v.startsWith(this.typedKeys) && v !== this.typedKeys);
+    if (exact && !longer) {
+      this.voteWithKeyboard(exact);
+      this.typedKeys = '';
+      return;
+    }
+    // Wait briefly for a second key ("1" could become "13"), then take the exact match if any.
+    this.typedKeysTimer = setTimeout(() => {
+      const card = this.cardForKeys(this.typedKeys);
+      if (card) this.voteWithKeyboard(card);
+      this.typedKeys = '';
+      this.cdr.detectChanges();
+    }, 600);
+  }
+
+  private cardForKeys(keys: string): string | undefined {
+    if (keys === '?') return this.voteOptions.find(v => v.includes('?') || v.includes('❓'));
+    return this.voteOptions.find(v => v === keys || (keys === '.5' && v === '0.5'));
+  }
+
+  private voteWithKeyboard(option: string): void {
+    const index = this.voteOptions.indexOf(option);
+    const button = this.voteButtons?.get(index)?.nativeElement;
+    this.selectOption(option, button);
+    button?.focus({ preventScroll: true });
+  }
+
+  selectOption(option: string, source?: Event | HTMLElement): void {
     if (this.votesRevealed) return;
-    const from = (event?.currentTarget as HTMLElement | null)?.querySelector('app-poker-card') as HTMLElement | null;
+    const origin = source instanceof HTMLElement ? source : (source?.currentTarget as HTMLElement | null);
+    const from = origin?.querySelector('app-poker-card') as HTMLElement | null;
     this.selectedOption = option;
     this.OnVote.emit(option);
     if (from) this.flyCardToSeat(from, option);

@@ -17,7 +17,7 @@
 }
 
 .breadcrumb-item a {
-  color: #7e3af2;
+  color: var(--opp-primary);
   text-decoration: none;
 }
 
@@ -31,6 +31,6 @@
 }
 
 .breadcrumb-current {
-  color: #6b7280;
+  color: var(--opp-text-secondary);
   font-weight: 500;
 }

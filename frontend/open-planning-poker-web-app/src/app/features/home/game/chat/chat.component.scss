@@ -99,7 +99,7 @@
     border-color: var(--opp-primary);
 
     .chat-msg-author {
-      color: var(--opp-primary-200);
+      color: color-mix(in srgb, var(--opp-text-on-primary) 80%, transparent);
     }
 
     .chat-msg-text {
@@ -107,7 +107,7 @@
     }
 
     .chat-msg-time {
-      color: var(--opp-primary-200);
+      color: color-mix(in srgb, var(--opp-text-on-primary) 80%, transparent);
     }
   }
 }

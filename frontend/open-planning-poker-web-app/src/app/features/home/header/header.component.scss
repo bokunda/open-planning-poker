@@ -16,7 +16,12 @@ mat-toolbar {
 .header-welcome {
   display: flex;
   align-items: center;
-  gap: 0;
+  gap: var(--opp-space-1);
+  padding: var(--opp-space-1) var(--opp-space-2);
+  border: 0;
+  border-radius: var(--opp-radius-full);
+  background: none;
+  font-family: inherit;
   font-size: 0.82rem;
   font-weight: 500;
   color: var(--opp-text-secondary);
@@ -33,3 +38,7 @@ mat-toolbar {
     }
   }
 }
+
+.header-welcome:hover { background: var(--opp-surface-hover); }
+.header-welcome:focus-visible { outline: 3px solid var(--opp-primary-300); outline-offset: 2px; }
+.header-edit-icon { font-size: 18px; width: 18px; height: 18px; }

@@ -102,6 +102,23 @@ h1, h2, h3, h4,
   }
 }
 
+/* ── Dark theme: violet text on dark surfaces must use the lighter token (Material's palette
+   violet is too dark there, ~3:1). Element-level selectors beat Material's own color classes. ── */
+.dark-theme {
+  .mat-mdc-outlined-button.mat-primary,
+  .mat-mdc-button.mat-primary {
+    --mdc-outlined-button-label-text-color: var(--opp-primary);
+    --mdc-text-button-label-text-color: var(--opp-primary);
+    --mat-outlined-button-state-layer-color: var(--opp-primary);
+    --mat-text-button-state-layer-color: var(--opp-primary);
+  }
+
+  .mat-mdc-icon-button.mat-primary {
+    --mdc-icon-button-icon-color: var(--opp-primary);
+    --mat-icon-button-state-layer-color: var(--opp-primary);
+  }
+}
+
 /* ── Motion: respect the OS "reduce motion" setting everywhere ── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

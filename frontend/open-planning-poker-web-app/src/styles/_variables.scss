@@ -29,7 +29,7 @@
   /* ── Text ── */
   --opp-text: #18152b;
   --opp-text-secondary: #5d587a;
-  --opp-text-muted: #7f7a99;
+  --opp-text-muted: #6b6687;          /* 4.9:1 on --opp-bg */
   --opp-text-on-primary: #ffffff;
 
   /* ── Borders & dividers ── */
@@ -46,12 +46,12 @@
   --opp-card-border: #e2dfee;
 
   /* ── Semantic ── */
-  --opp-success: #17855a;
-  --opp-warning: #b8681c;
-  --opp-danger: #d23c3c;
+  --opp-success: #0f6b46;
+  --opp-warning: #8a4a0c;
+  --opp-danger: #bf2f2f;
   --opp-info: #2f6fdc;
-  --opp-consensus: #17855a;       /* votes agree */
-  --opp-spread: #b8681c;          /* outliers worth discussing */
+  --opp-consensus: #0f6b46;       /* votes agree (≥4.5:1 on its own tint) */
+  --opp-spread: #8a4a0c;          /* outliers worth discussing */
 
   /* ── Shadows ── */
   --opp-shadow-sm: 0 1px 2px rgba(24, 21, 43, 0.06), 0 1px 3px rgba(24, 21, 43, 0.06);
@@ -128,6 +128,7 @@
   --opp-primary-100: #2a2250;
   --opp-primary-200: #3a2f6b;
   --opp-primary-300: #7f63e6;
+  --opp-primary-600: #b39cff;        /* hover on light violet surfaces */
 
   --opp-bg: #0e0c19;
   --opp-bg-page: #0a0913;
@@ -138,7 +139,7 @@
   --opp-text: #ece9f8;
   --opp-text-secondary: #b3aecd;
   --opp-text-muted: #8a84a6;
-  --opp-text-on-primary: #ffffff;
+  --opp-text-on-primary: #17142a;   /* the dark-theme violet is light: use dark text (6:1) */
 
   --opp-border: #2a2542;
   --opp-border-light: #221e36;

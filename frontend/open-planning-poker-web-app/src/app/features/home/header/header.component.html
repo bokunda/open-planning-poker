@@ -10,16 +10,12 @@
       <span class="header-spacer"></span>
 
       <!-- Username -->
-      <span class="header-welcome" *ngIf="username" (click)="handleUpdateUser()" role="button" tabindex="0" matTooltip="Edit username">
-        {{ username }}
-        <button
-          mat-icon-button
-          class="header-edit-btn"
-          (click)="$event.stopPropagation(); handleUpdateUser()"
-          aria-label="Edit username">
-          <mat-icon>edit</mat-icon>
-        </button>
-      </span>
+      <!-- One button: the name and the pencil (a button inside a button is not accessible). -->
+      <button type="button" class="header-welcome" *ngIf="username" (click)="handleUpdateUser()"
+        matTooltip="Edit username" [attr.aria-label]="'Edit username, currently ' + username">
+        <span class="header-username">{{ username }}</span>
+        <mat-icon class="header-edit-icon" aria-hidden="true">edit</mat-icon>
+      </button>
 
       <mat-menu #moreMenu="matMenu">
         <button mat-menu-item (click)="toggleTheme()">
