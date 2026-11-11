@@ -42,7 +42,7 @@
 Open Planning Poker follows a **microservices architecture with GraphQL Federation**:
 
 ```
-Browser → Nginx (SSL) → API Gateway (YARP) → Fusion Gateway → GraphQL Subgraphs
+Browser → Nginx (SSL) → Fusion Gateway → GraphQL Subgraphs
                                                                     ├── Game Engine (PostgreSQL)
                                                                     └── User Management (Redis)
 ```
@@ -60,10 +60,9 @@ cd open-planning-poker
 docker compose up -d opp-db OpenPlanningPoker.Cache
 
 # Start backend services
-cd backend/open-planning-poker-api-gateway && dotnet run           # Terminal 1 — API Gateway :11000
-cd backend/open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL && dotnet run  # Terminal 2 — Game Engine :9091
-cd backend/open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL && dotnet run  # Terminal 3 — User Mgmt :9090
-cd backend/open-planning-poker-graphql-gateway && dotnet run      # Terminal 4 — Fusion Gateway :10010
+cd backend/open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL && dotnet run  # Terminal 1 — Game Engine :9091
+cd backend/open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL && dotnet run  # Terminal 2 — User Mgmt :9090
+cd backend/open-planning-poker-graphql-gateway && dotnet run      # Terminal 3 — Fusion Gateway :10010
 
 # Start frontend
 cd frontend/open-planning-poker-web-app && npm install && npm start   # Angular dev server :4200
@@ -87,7 +86,7 @@ Full setup guide: [docs/setup-and-development.md](docs/setup-and-development.md)
 |-------|-----------|
 | **Frontend** | Angular 19, TypeScript, Angular Material, Apollo Client, SCSS |
 | **Backend** | .NET 9, HotChocolate GraphQL, MediatR, Entity Framework Core |
-| **Gateway** | YARP Reverse Proxy, HotChocolate Fusion |
+| **Gateway** | HotChocolate Fusion |
 | **Database** | PostgreSQL 15.5 |
 | **Cache** | Redis 7 |
 | **Monitoring** | OpenTelemetry, Prometheus, Loki, Grafana |

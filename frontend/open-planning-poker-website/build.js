@@ -32,7 +32,14 @@ const changelogFinal = changelogTemplate.replace('<!-- CHANGELOG_CONTENT -->', c
 // Home page: "What's new" card and version from the newest release in CHANGELOG.md
 const release = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'release.json'), 'utf-8'));
 const latestRelease = fs.readFileSync(path.resolve(__dirname, 'latest-release.html'), 'utf-8');
+// Fingerprint the stylesheet: it is cached for a year, so a new build must use a new file name.
+const cssHash = require('crypto').createHash('sha256').update(fs.readFileSync(path.join(dist, 'output.css'))).digest('hex').slice(0, 10);
+const cssFile = `output.${cssHash}.css`;
+fs.renameSync(path.join(dist, 'output.css'), path.join(dist, cssFile));
+console.log(`  ✓ ${cssFile}`);
+
 const fillRelease = html => html
+  .replace(/(href=")\.?\/output\.css"/g, `$1/${cssFile}"`)
   .replace('<!-- LATEST_RELEASE -->', latestRelease)
   .replace(/<!-- APP_VERSION -->/g, `v${release.version}`)
   .replace(/__APP_VERSION__/g, release.version);
@@ -47,11 +54,12 @@ fs.writeFileSync(path.join(dist, 'sitemap.xml'), sitemap);
 console.log('  ✓ sitemap.xml');
 
 // Copy remaining files (skip changelog.html since it's now a directory)
+fs.writeFileSync(path.join(dist, '404.html'), fillRelease(fs.readFileSync(path.resolve(__dirname, '404.html'), 'utf-8')));
+
 const files = [
   'robots.txt',
   'site.webmanifest',
-  'browserconfig.xml',
-  '404.html'
+  'browserconfig.xml'
 ];
 
 console.log('📁 Copying files...');
@@ -71,6 +79,10 @@ if (fs.existsSync(wellKnownSrc)) {
   fs.cpSync(wellKnownSrc, path.join(dist, '.well-known'), { recursive: true });
   console.log('  ✓ .well-known/');
 }
+
+// Self-hosted fonts
+fs.cpSync(path.resolve(__dirname, 'fonts'), path.join(dist, 'fonts'), { recursive: true });
+console.log('  ✓ fonts/');
 
 // Copy images directory
 const imagesSrc = path.resolve(__dirname, 'images');

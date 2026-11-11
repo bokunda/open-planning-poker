@@ -1,4 +1,13 @@
-<div class="changelog-content"><h2>[2.0.0] — 2026-11-11</h2>
+<div class="changelog-content"><h2>[Unreleased]</h2>
+<h3>Performance</h3>
+<ul>
+<li><strong>Smaller first load</strong>: initial JavaScript 1148 → 857 KB (raw). The game room is a separate chunk loaded once a game is open (<code>@defer</code>); dialogs (new game, join, ticket, import, invite, username, about) load on first open; the animation engine loads after start-up (<code>provideAnimationsAsync</code>)</li>
+<li><strong>Demo table hydrates on idle</strong>: still rendered on the server, its JS loads when the browser is idle (incremental hydration)</li>
+<li><strong>Icons</strong>: only the 25 Material Symbols the app uses are downloaded instead of the full Material Icons font</li>
+<li><strong>Global CSS</strong> 168 → 74 KB: Material themes only for the components the app uses</li>
+<li><strong>Analytics</strong> (GA4, Clarity) load after the page has loaded and the browser is idle; almost all forced layout reads on the landing page came from Clarity</li>
+</ul>
+<h2>[2.0.0] — 2026-11-11</h2>
 <p>A new look for the whole app, built around a real poker table, plus a security and reliability pass on the backend.</p>
 <h3>Highlights</h3>
 <ul>
