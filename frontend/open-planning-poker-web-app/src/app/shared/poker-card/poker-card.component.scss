@@ -86,11 +86,18 @@
   box-shadow: var(--opp-shadow-card-selected);
 }
 
+.is-outlier .card-front {
+  border: 2px solid var(--opp-spread);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--opp-spread) 30%, transparent), var(--opp-shadow-card);
+}
+
 .is-empty {
   border: 2px dashed var(--opp-border);
 }
 
-.is-dropping .card-inner {
+/* Animate the outer element: opacity on the preserve-3d inner element would flatten it
+   and briefly show the card face through the back. */
+.card.is-dropping {
   animation: card-drop var(--opp-duration-slow) var(--opp-ease-spring);
 }
 

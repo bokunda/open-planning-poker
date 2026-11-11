@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Redesign — phase 2 (the table and the reveal)
+- **Poker table**: every player has a seat on the edge of a felt table with their card; the current user sits at the bottom. The center shows a progress ring ("3/5 voted") and, after the reveal, the average
+- **Card flight**: the chosen card flies from your hand to your seat (FLIP with the Web Animations API); other players' cards drop onto their seats
+- **Staggered reveal**: cards flip one after another around the table; the lowest and highest card of a wide spread get an orange ring
+- **Results panel**: distribution bars, average, median, vote count and a next step ("Consensus", "Close to consensus", or "Ask X and Y to explain, then vote again")
+- After the reveal the hand is locked; "Vote Again" clears your chosen card
+- "Reveal Votes" uses the brand violet instead of the grey/orange style; the "(Avg: ?)" next to the ticket title is gone (the table shows it)
+
+### Fixed
+- Card faces briefly showed through the back while a card dropped in (opacity on a 3D element flattened it)
+
 ### Redesign — phase 1 (foundation)
 - **New visual foundation**: violet-tinted neutrals for both themes, a refined brand violet, and new roles for the coming table layout (felt, card face/back, consensus, spread) in `styles/_variables.scss`
 - **Typography**: Bricolage Grotesque for headings and card numbers, Figtree for text, JetBrains Mono for keys and the timer (Roboto removed)

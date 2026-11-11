@@ -54,6 +54,13 @@ body {
   color: var(--opp-primary-600) !important;
 }
 
+/* Animatable number used by progress rings (conic-gradient). */
+@property --p {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
 /* ── Redesign phase 1: typography ── */
 body {
   font-family: var(--opp-font-body);

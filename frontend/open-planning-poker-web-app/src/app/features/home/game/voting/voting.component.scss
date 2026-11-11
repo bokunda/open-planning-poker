@@ -250,11 +250,7 @@
   }
 
   &--reveal {
-    box-shadow: 0 4px 16px rgba(255, 107, 53, 0.3) !important;
-
-    &:hover {
-      box-shadow: 0 6px 22px rgba(255, 107, 53, 0.45) !important;
-    }
+    box-shadow: var(--opp-shadow-card-selected) !important;
   }
 
   &--import {
@@ -304,6 +300,15 @@
   &--disabled {
     opacity: 0.4;
     cursor: not-allowed;
+  }
+}
+
+/* After the reveal the hand is locked; the chosen card stays visible. */
+.voting-cards--locked .vote-card {
+  cursor: default;
+
+  &:not(.vote-card--selected) {
+    opacity: 0.45;
   }
 }
 
