@@ -37,7 +37,6 @@ Open Planning Poker follows these architectural principles:
 
 | Service | Port | Framework | Responsibility |
 |---------|------|-----------|---------------|
-| **API Gateway** | 11000 | .NET 9 + YARP 2.3 | Reverse proxy, OpenAPI docs (not used by the app) |
 | **Fusion Gateway** | 10010 | .NET 9 + HotChocolate 15 | GraphQL schema stitching, header propagation, CORS |
 | **Game Engine** | 9091 | .NET 9 + EF Core + MediatR | Game rooms, tickets, voting, PDF reports, WebSocket subscriptions |
 | **User Management** | 9090 | .NET 9 + HotChocolate + FluentValidation | Registration, anonymous usernames, JWT auth (Redis-backed) |
@@ -51,7 +50,7 @@ Open Planning Poker follows these architectural principles:
 
 ### HTTP Request Flow
 ```
-Browser → Nginx (SSL) → API Gateway (YARP) → Fusion Gateway → Subgraphs (GameEngine / UserMgmt)
+Browser → Nginx (SSL) → Fusion Gateway → Subgraphs (GameEngine / UserMgmt)
 ```
 
 ### WebSocket Flow (GraphQL Subscriptions)

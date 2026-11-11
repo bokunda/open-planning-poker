@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Icons**: only the 25 Material Symbols the app uses are downloaded instead of the full Material Icons font
 - **Global CSS** 168 → 74 KB: Material themes only for the components the app uses
 - **Analytics** (GA4, Clarity) load after the page has loaded and the browser is idle; almost all forced layout reads on the landing page came from Clarity
+- **Fonts served from our own domain** (app and website): no requests to Google Fonts, latin + latin-ext subsets, Bricolage Grotesque fixed at optical size 48 (42 KB instead of 77 KB), preloaded
+- **The app calls the Fusion gateway directly**; the YARP API gateway is removed (one less network hop on every request)
+- **Website caching**: the stylesheet has a content hash in its name, so a new release is never hidden behind a year-long cache; images are cached for a week
 
 ## [2.0.0] — 2026-11-11
 

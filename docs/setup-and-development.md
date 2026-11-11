@@ -30,25 +30,20 @@ This starts PostgreSQL (port 5432) and Redis (port 6379).
 
 ### 3. Start Backend Services
 
-Open four terminals and run:
+Open three terminals and run:
 
 ```bash
-# Terminal 1 — API Gateway (YARP reverse proxy)
-cd backend/open-planning-poker-api-gateway
-dotnet run
-# → http://localhost:11000
-
-# Terminal 2 — Game Engine (GraphQL subgraph)
+# Terminal 1 — Game Engine (GraphQL subgraph)
 cd backend/open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL
 dotnet run
 # → http://localhost:9091/graphql
 
-# Terminal 3 — User Management (GraphQL subgraph)
+# Terminal 2 — User Management (GraphQL subgraph)
 cd backend/open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL
 dotnet run
 # → http://localhost:9090/graphql
 
-# Terminal 4 — Fusion Gateway (GraphQL schema stitching)
+# Terminal 3 — Fusion Gateway (GraphQL schema stitching)
 cd backend/open-planning-poker-graphql-gateway
 dotnet run
 # → http://localhost:10010/graphql
@@ -77,7 +72,6 @@ This uses `graphql-codegen` to generate TypeScript types from the Fusion Gateway
 ```
 open-planning-poker/
 ├── backend/
-│   ├── open-planning-poker-api-gateway/          # YARP reverse proxy
 │   ├── open-planning-poker-graphql-gateway/      # HotChocolate Fusion Gateway
 │   ├── open-planning-poker-game-engine/          # Core game logic
 │   │   └── src/

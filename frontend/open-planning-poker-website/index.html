@@ -16,11 +16,10 @@
     <meta name="theme-color" content="#6a3ae8">
     <meta name="color-scheme" content="light dark">
 
-    <!-- Fonts: same as the app. display=swap keeps text visible while they load. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
-    <link href="./output.css" rel="stylesheet">
+    <!-- Fonts are served from this site (input.css). Preload the ones the first screen needs. -->
+    <link rel="preload" href="/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link href="/output.css" rel="stylesheet">
 
     <!-- The hero screenshot is the largest element: fetch the one for the current theme early. -->
     <link rel="preload" as="image" href="./images/app-room-light.webp" type="image/webp" media="(prefers-color-scheme: light)" fetchpriority="high">
