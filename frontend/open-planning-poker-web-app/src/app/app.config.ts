@@ -1,4 +1,5 @@
-import { ApplicationConfig, inject, provideZoneChangeDetection, APP_INITIALIZER } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ApplicationConfig, PLATFORM_ID, inject, provideZoneChangeDetection, APP_INITIALIZER } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -142,8 +143,9 @@ export const appConfig: ApplicationConfig = {
         }
       });
 
-      // WebSocket client only in browser (SSR has no WebSocket)
-      const wsLink = typeof WebSocket !== 'undefined'
+      // WebSocket client only in the browser. Node 22+ has a global WebSocket too, so checking for it
+      // opened subscriptions during server rendering that outlived the render and crashed the server.
+      const wsLink = isPlatformBrowser(inject(PLATFORM_ID))
         ? new GraphQLWsLink(createClient({
             url: gqlGatewayWss,
             connectionParams: () => {
