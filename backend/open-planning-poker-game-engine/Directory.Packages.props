@@ -5,7 +5,7 @@
   <ItemGroup>
     <PackageVersion Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
-    <PackageVersion Include="Duende.AccessTokenManagement" Version="3.2.0" />
+    <PackageVersion Include="Duende.AccessTokenManagement" Version="4.3.0" />
     <PackageVersion Include="EFCore.NamingConventions" Version="9.0.0" />
     <PackageVersion Include="EntityFramework" Version="6.5.1" />
     <PackageVersion Include="FluentValidation" Version="11.11.0" />
