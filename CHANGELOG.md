@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Run the room together, estimate before the meeting, and keep a team's history in one place.
+
+### Added
+- **Observers**: join a game only to watch. Observers have no cards, are not counted in "x/y voted" and cannot vote on the server either. Switch with the menu next to your name
+- **Co-hosts and handing the game over**: the host can make players co-hosts (they add tickets, reveal, run the timer and the room options) or make someone else the host. Hosts and co-hosts can remove a player; their votes stay on the tickets
+- **Final estimate**: after the reveal the host picks the card the team agreed on (the most common card is marked). It is shown in the ticket list and used in the PDF report, the CSV export and the team velocity
+- **Auto-reveal**: a room option that turns the cards over as soon as every player (not observers) has voted
+- **Edit, delete and reorder tickets**: from the ticket list menu, or drag tickets into order. Ticket descriptions support a small Markdown subset (bold, italic, code, lists, links)
+- **CSV export** of the results, next to the PDF report
+- **Async voting**: the host opens a voting window (24 hours, 3 days or a week). Everyone votes on all tickets on their own; votes stay hidden until the host reveals each ticket in the meeting
+- **Team rooms** (`/team`): a persistent room per team with an invite link, members, sprint planning sessions, the sprint history and a velocity chart (points per sprint, average of the last three sprints, with a table view)
+- **Support the project**: GitHub Sponsors and Ko-fi links in the app menu, footer and About, on the website and in the README (`.github/FUNDING.yml`). The About dialog and the website introduce the creator
+
+### Changed
+- Players in a room get live updates when someone changes role, becomes co-host, leaves or is removed, and when tickets or room options change (`onGameChanged`)
+- Deleting a game is limited to the host (not co-hosts)
+- Database: new columns for the host, roles, ticket order, final estimate and room options, and tables for team rooms. Existing games keep their creator as host and their tickets keep their order
+
 ## [2.1.1] — 2026-11-13
 
 A redesigned PDF report, plus clean CI runs and builds.

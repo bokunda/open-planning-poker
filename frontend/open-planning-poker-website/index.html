@@ -134,6 +134,11 @@
         },
         {
           "@type": "Question",
+          "name": "How can I support the project?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Star it on GitHub, report bugs, or chip in for the servers through GitHub Sponsors or Ko-fi. The app stays free either way." }
+        },
+        {
+          "@type": "Question",
           "name": "What data is collected?",
           "acceptedAnswer": { "@type": "Answer", "text": "Ticket names and vote results are kept; usernames are deleted after 24 hours. No personal data is required to use the application." }
         }
@@ -264,7 +269,10 @@
                 <li class="mini-feature"><h3>Light and dark</h3><p>Follows your system, or switch in the menu.</p></li>
                 <li class="mini-feature"><h3>Invite by QR code</h3><p>People in the room join from their phone in seconds.</p></li>
                 <li class="mini-feature"><h3>No accounts</h3><p>Random usernames, deleted after 24 hours.</p></li>
-                <li class="mini-feature"><h3>Host controls</h3><p>Only the host adds tickets, reveals and starts a new round.</p></li>
+                <li class="mini-feature"><h3>Co-hosts and observers</h3><p>Share the host role, hand it over, or join only to watch.</p></li>
+                <li class="mini-feature"><h3>Final estimate</h3><p>Pick the agreed card after the reveal; it goes into the list, CSV and PDF.</p></li>
+                <li class="mini-feature"><h3>Async voting</h3><p>Everyone votes on the tickets before the meeting; cards stay hidden until the reveal.</p></li>
+                <li class="mini-feature"><h3>Team rooms and velocity</h3><p>Keep every sprint planning of a team, with a points-per-sprint chart.</p></li>
                 <li class="mini-feature"><h3>Self-host</h3><p>GPL-3.0, Docker images and a setup guide on GitHub.</p></li>
             </ul>
         </div>
@@ -331,9 +339,40 @@
                     <p><a href="https://angular.dev/" class="link">Angular</a> with server-side rendering, <a href="https://dotnet.microsoft.com/" class="link">.NET 9</a>, <a href="https://chillicream.com/" class="link">GraphQL with a Fusion gateway</a>, <a href="https://redis.io/" class="link">Redis</a> and <a href="https://www.postgresql.org/" class="link">PostgreSQL</a>.</p>
                 </details>
                 <details class="faq">
+                    <summary>How can I support the project?</summary>
+                    <p>Star it on GitHub, report bugs, or chip in for the servers through <a href="https://github.com/sponsors/bokunda" class="link">GitHub Sponsors</a> or <a href="https://ko-fi.com/bokunda" class="link">Ko-fi</a>. The app stays free either way.</p>
+                </details>
+                <details class="faq">
                     <summary>What data is collected?</summary>
                     <p>Ticket names and vote results are kept; usernames are deleted after 24 hours. No personal data is required to use the application.</p>
                 </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support the project -->
+    <section id="support" class="scroll-mt-20 bg-gray-50 dark:bg-gray-950/40">
+        <div class="grid max-w-screen-xl gap-10 px-4 py-16 mx-auto lg:grid-cols-2 lg:gap-16 lg:py-24">
+            <div>
+                <p class="eyebrow">Support the project</p>
+                <h2 class="section-title">Free, no ads, kept running by its users.</h2>
+                <p class="mt-4 text-lg leading-relaxed">Open Planning Poker has no paid plan and no ads. If it saves your team time, you can help pay for the servers and new features.</p>
+                <div class="flex flex-wrap gap-3 mt-8">
+                    <a href="https://github.com/sponsors/bokunda" class="btn-primary px-6 py-3.5 text-base" rel="noopener">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        Sponsor on GitHub
+                    </a>
+                    <a href="https://ko-fi.com/bokunda" class="btn-secondary px-6 py-3.5 text-base" rel="noopener">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.9 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/></svg>
+                        Buy me a coffee
+                    </a>
+                </div>
+                <p class="mt-4 text-sm">GitHub Sponsors takes no fee. Ko-fi works without an account, for a one-off coffee.</p>
+            </div>
+            <div class="p-6 bg-white border border-gray-200 rounded-2xl dark:bg-gray-900 dark:border-gray-800 lg:p-8">
+                <h3 class="font-display text-xl font-extrabold text-gray-900 dark:text-white">About the creator</h3>
+                <p class="mt-3 leading-relaxed">Open Planning Poker is built by <strong class="text-gray-900 dark:text-white">Bojan Piskulic</strong>, founder of <strong class="text-gray-900 dark:text-white">Bitcrafta</strong>, a software agency that designs and builds web applications for its clients.</p>
+                <p class="mt-3 leading-relaxed">Bojan created Open Planning Poker as the estimation tool he wanted for his own teams: free, without sign-up or ads, and open source, so anyone can read the code or run it on their own server.</p>
             </div>
         </div>
     </section>

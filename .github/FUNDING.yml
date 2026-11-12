@@ -1,0 +1,4 @@
+# Donation buttons on the GitHub repository (Sponsor). Keep in sync with OPP_SUPPORT in
+# frontend/open-planning-poker-web-app/src/app/shared/constants.ts and the website.
+github: [bokunda]
+ko_fi: bokunda
