@@ -140,19 +140,43 @@ dotnet test
 dotnet test test/OpenPlanningPoker.GameEngine.Domain.UnitTests
 dotnet test test/OpenPlanningPoker.GameEngine.GraphQL.Tests
 dotnet test test/OpenPlanningPoker.GameEngine.Architecture.Tests
+dotnet test test/OpenPlanningPoker.GameEngine.IntegrationTests   # needs Docker
 ```
 
 Test types:
-- **Domain Unit Tests** — Pure business logic
-- **GraphQL Tests** — API integration with Testcontainers
+- **Domain and Application Unit Tests** — Pure business logic, validation, server texts
+- **GraphQL Tests** — Schema snapshot, chat access, WebSocket tokens
+- **Integration Tests** — The GraphQL API against real PostgreSQL and Redis started by Testcontainers (Docker must be running)
 - **Architecture Tests** — NetArchTest rules enforcing Clean Architecture boundaries
 
-### Frontend Tests
+### Frontend checks
 
 ```bash
 cd frontend/open-planning-poker-web-app
+node scripts/check-i18n.mjs   # en, sr and de have the same keys; templates use only existing keys
 npm test
 ```
+
+Texts live in `src/app/i18n/en.ts`, `sr.ts` and `de.ts`. Add a key to all three; templates use
+`{{ 'section.key' | transloco }}` and code uses `TranslocoService.translate('section.key')`.
+The website home page is translated in `frontend/open-planning-poker-website/i18n/<lang>.json`
+(English text → translation); the build fails if a text in those files is no longer on the page.
+
+### End-to-end tests and Lighthouse
+
+```bash
+# Backend: PostgreSQL, Redis, both subgraphs and the gateway
+docker compose -f docker-compose.e2e.yml up -d --build --wait
+
+# App built against the local backend
+cd frontend/open-planning-poker-web-app && npx ng build --configuration e2e && cd -
+
+# Playwright starts the SSR app on :4000
+cd e2e && npm ci && npx playwright install chromium && npx playwright test
+```
+
+CI (`.github/workflows/ci.yaml`) runs all of this on every pull request, plus Lighthouse budgets
+(`e2e/lighthouserc.cjs`: performance ≥ 90, accessibility 100, best practices ≥ 95, SEO ≥ 95).
 
 ## Schema Generation & Fusion Compose
 
