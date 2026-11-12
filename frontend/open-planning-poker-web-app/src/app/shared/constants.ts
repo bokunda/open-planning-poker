@@ -13,5 +13,5 @@ export const OPP_SNACKBAR_MODAL_LABEL_CLOSE = 'Close';
  */
 export const OPP_SUPPORT = {
   githubSponsors: 'https://github.com/sponsors/bokunda',
-  koFi: 'https://ko-fi.com/bokunda',
+  koFi: 'https://ko-fi.com/bpiskulic',
 } as const;

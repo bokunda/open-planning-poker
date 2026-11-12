@@ -115,7 +115,7 @@ Full setup guide: [docs/setup-and-development.md](docs/setup-and-development.md)
 Open Planning Poker is free, with no ads and no paid plan. If it saves your team time, you can help pay for the servers and new features:
 
 - [Sponsor on GitHub](https://github.com/sponsors/bokunda) (no fee)
-- [Buy me a coffee on Ko-fi](https://ko-fi.com/bokunda) (one-off, no account needed)
+- [Buy me a coffee on Ko-fi](https://ko-fi.com/bpiskulic) (one-off, no account needed)
 
 Stars, bug reports and pull requests help just as much.
 
