@@ -124,8 +124,8 @@ export class VelocityChartComponent implements OnChanges {
   private max = 1;
 
   ngOnChanges(): void {
-    // Last eight sprints that estimated something, oldest first.
-    const shown = this.sprints.filter(s => s.estimatedCount > 0).slice(0, 8).reverse();
+    // Last ten sprints that estimated something, oldest first.
+    const shown = this.sprints.filter(s => s.estimatedCount > 0).slice(0, 10).reverse();
     this.max = niceMax(Math.max(1, ...shown.map(s => s.points), this.average ?? 0));
     this.ticks = [0, this.max / 2, this.max].map(v => Math.round(v * 10) / 10);
     const slot = this.width / Math.max(shown.length, 4);
