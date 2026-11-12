@@ -60,7 +60,15 @@ const fillRelease = html => html
   .replace(/__APP_VERSION__/g, release.version)
   .replace('<!-- GITHUB_STARS -->', starsHtml)
   .replace(/<link href="\.?\/output\.css" rel="stylesheet">/g, () => `<style>${css}</style>`);
-fs.writeFileSync(path.join(dist, 'index.html'), fillRelease(fs.readFileSync(path.resolve(__dirname, 'index.html'), 'utf-8')));
+// Home page in English, Serbian and German (localize.js), linked with hreflang.
+const { localize, withAlternates } = require('./localize');
+const home = withAlternates(fillRelease(fs.readFileSync(path.resolve(__dirname, 'index.html'), 'utf-8')));
+fs.writeFileSync(path.join(dist, 'index.html'), home);
+for (const lang of ['sr', 'de']) {
+  fs.mkdirSync(path.join(dist, lang), { recursive: true });
+  fs.writeFileSync(path.join(dist, lang, 'index.html'), localize(home, lang));
+  console.log(`  ✓ ${lang}/index.html`);
+}
 fs.writeFileSync(path.join(changelogDir, 'index.html'), fillRelease(changelogFinal));
 console.log(`  ✓ index.html, changelog/index.html (v${release.version})`);
 

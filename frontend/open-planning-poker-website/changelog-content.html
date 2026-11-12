@@ -1,4 +1,18 @@
-<div class="changelog-content"><h2>[2.2.0] — 2026-11-13</h2>
+<div class="changelog-content"><h2>[2.2.1] — Unreleased</h2>
+<h3>Security</h3>
+<ul>
+<li>Security hardening of the chat and the WebSocket connection; the chat loads after joining the game</li>
+<li>Dependency security updates: HotChocolate 15.1 in all services, OpenTelemetry 1.19 in the shared package</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Server rendering of game pages no longer opens WebSocket subscriptions (Node 22 has a global <code>WebSocket</code>), which could crash the app server</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li>Shared package <code>OpenPlanningPoker.Shared</code> 1.1.0 no longer depends on prerelease packages; the unused Console, Prometheus and Zipkin exporters, the HTTP instrumentation and the process metrics were removed</li>
+</ul>
+<h2>[2.2.0] — 2026-11-13</h2>
 <p>Run the room together, estimate before the meeting, and keep a team&#39;s history in one place.</p>
 <h3>Added</h3>
 <ul>
