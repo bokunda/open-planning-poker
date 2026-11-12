@@ -21,10 +21,10 @@
         <mat-icon>person_add</mat-icon> {{ 'room.invite' | transloco }}
       </button>
       <!-- Always visible; on narrow screens only the icons show (the names stay as aria-labels). -->
-      <button mat-stroked-button class="room-action" (click)="copyToClipboard()" [attr.aria-label]="'room.copyLink' | transloco" [matTooltip]="'room.copyLink' | transloco">
+      <button mat-stroked-button class="room-action" (click)="copyToClipboard()" [attr.aria-label]="'room.copyLinkShort' | transloco" [matTooltip]="'room.copyLink' | transloco">
         <mat-icon>link</mat-icon><span class="room-action-label">{{ 'room.copyLinkShort' | transloco }}</span>
       </button>
-      <button mat-stroked-button class="room-action" (click)="onGameReportClick.emit()" [attr.aria-label]="'room.exportPdfAria' | transloco" [matTooltip]="'room.exportPdfTooltip' | transloco">
+      <button mat-stroked-button class="room-action" (click)="onGameReportClick.emit()" [attr.aria-label]="'room.exportPdf' | transloco" [matTooltip]="'room.exportPdfTooltip' | transloco">
         <mat-icon>download</mat-icon><span class="room-action-label">{{ 'room.exportPdf' | transloco }}</span>
       </button>
       <button mat-stroked-button class="room-action" [matMenuTriggerFor]="roomMenu" [attr.aria-label]="'room.options' | transloco" [matTooltip]="'room.options' | transloco">

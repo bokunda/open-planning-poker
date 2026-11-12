@@ -111,7 +111,7 @@ const translation = {
     tagline: "Free & Open Source — Built for agile teams",
   },
   header: {
-    editUsername: "Edit username, currently {{name}}",
+    editName: "Edit your name",
     home: "Open Planning Poker, home",
     language: "Language",
     menu: "Menu",
@@ -247,7 +247,6 @@ const translation = {
     details: "Game details",
     exportCsv: "Export results (CSV)",
     exportPdf: "Export PDF",
-    exportPdfAria: "Export results as PDF",
     exportPdfTooltip: "Export results (PDF)",
     gameFallbackName: "Game",
     invite: "Invite",

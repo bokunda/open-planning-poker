@@ -71,7 +71,7 @@ test.describe('A planning session', () => {
     await expect(page.locator('app-vote-results')).toBeVisible();
 
     const download = page.waitForEvent('download');
-    await page.getByRole('button', { name: 'Export results as PDF' }).click();
+    await page.getByRole('button', { name: 'Export PDF' }).click();
     const file = await download;
     expect(file.suggestedFilename()).toMatch(/\.pdf$/);
   });

@@ -20,9 +20,10 @@
 
       <!-- Username -->
       <!-- One button: the name and the pencil (a button inside a button is not accessible). -->
-      <button type="button" class="header-welcome" *ngIf="username" (click)="handleUpdateUser()" [attr.aria-label]="'header.editUsername' | transloco: { name: username }">
+      <button type="button" class="header-welcome" *ngIf="username" (click)="handleUpdateUser()">
         <span class="header-avatar" aria-hidden="true">{{ username.charAt(0).toUpperCase() }}</span>
         <span class="header-username">{{ username }}</span>
+        <span class="sr-only">{{ 'header.editName' | transloco }}</span>
         <mat-icon class="header-edit-icon" aria-hidden="true">edit</mat-icon>
       </button>
 

@@ -111,7 +111,7 @@ const translation = {
     tagline: "Besplatno i otvorenog koda — za agilne timove",
   },
   header: {
-    editUsername: "Promeni ime, sada {{name}}",
+    editName: "Promeni ime",
     home: "Open Planning Poker, početna",
     language: "Jezik",
     menu: "Meni",
@@ -247,7 +247,6 @@ const translation = {
     details: "Detalji igre",
     exportCsv: "Izvezi rezultate (CSV)",
     exportPdf: "Izvezi PDF",
-    exportPdfAria: "Izvezi rezultate kao PDF",
     exportPdfTooltip: "Izvezi rezultate (PDF)",
     gameFallbackName: "Igra",
     invite: "Pozovi",
