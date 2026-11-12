@@ -1,0 +1,125 @@
+<main class="team-page" id="main-content">
+  <p class="team-loading" *ngIf="loading" role="status">Loading…</p>
+
+  <!-- /team: your teams and a new one -->
+  <ng-container *ngIf="!loading && !teamId">
+    <header class="team-hero">
+      <h1 class="team-title"><mat-icon svgIcon="opp-team" aria-hidden="true"></mat-icon> Team rooms</h1>
+      <p class="team-lead">A team room keeps every sprint planning of your team in one place: the history of estimates, and a velocity chart to plan the next sprint.</p>
+    </header>
+
+    <section class="team-card" aria-labelledby="my-teams" *ngIf="teams.length">
+      <h2 class="team-section-title" id="my-teams">Your teams</h2>
+      <ul class="team-list">
+        <li *ngFor="let t of teams">
+          <a class="team-link" [routerLink]="['/team', t.id]">
+            <span class="team-link-name">{{ t.name }}</span>
+            <span class="team-link-desc" *ngIf="t.description">{{ t.description }}</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="team-card" aria-labelledby="new-team">
+      <h2 class="team-section-title" id="new-team">Create a team room</h2>
+      <form class="team-form" (ngSubmit)="createTeam()">
+        <label class="team-label" for="team-name">Team name</label>
+        <input id="team-name" name="teamName" class="team-input" [(ngModel)]="newTeamName" maxlength="255" required placeholder="Payments squad" autocomplete="off">
+        <label class="team-label" for="team-desc">Description <span class="team-optional">(optional)</span></label>
+        <input id="team-desc" name="teamDesc" class="team-input" [(ngModel)]="newTeamDescription" maxlength="500" placeholder="Checkout and billing" autocomplete="off">
+        <button mat-flat-button color="primary" type="submit" [disabled]="!newTeamName.trim() || busy">
+          <mat-icon>add</mat-icon> Create team room
+        </button>
+      </form>
+    </section>
+  </ng-container>
+
+  <!-- /team/:id -->
+  <ng-container *ngIf="!loading && teamId">
+    <section class="team-card team-missing" *ngIf="notFound">
+      <h1 class="team-title">This team room does not exist</h1>
+      <p class="team-lead">The link may be wrong. <a routerLink="/team">See your team rooms</a>.</p>
+    </section>
+
+    <ng-container *ngIf="team as t">
+      <header class="team-hero">
+        <h1 class="team-title"><mat-icon svgIcon="opp-team" aria-hidden="true"></mat-icon> {{ t.name }}</h1>
+        <p class="team-lead" *ngIf="t.description">{{ t.description }}</p>
+      </header>
+
+      <!-- Not a member yet: join first -->
+      <section class="team-card" *ngIf="!t.isMember">
+        <p class="team-lead">You were invited to this team room. Join to see its sprints and start planning sessions.</p>
+        <button mat-flat-button color="primary" (click)="joinTeam()" [disabled]="busy">
+          <mat-icon>login</mat-icon> Join {{ t.name }}
+        </button>
+      </section>
+
+      <div class="team-grid" *ngIf="t.isMember">
+        <div class="team-main">
+          <section class="team-card team-start" aria-labelledby="start-title">
+            <h2 class="team-section-title" id="start-title">Start a sprint planning</h2>
+            <form class="team-inline" (ngSubmit)="startSprint()">
+              <label class="sr-only" for="sprint-name">Session name</label>
+              <input id="sprint-name" name="sprintName" class="team-input" [(ngModel)]="sprintName" maxlength="255" autocomplete="off">
+              <button mat-flat-button color="primary" type="submit" [disabled]="busy">
+                <mat-icon>play_arrow</mat-icon> Start
+              </button>
+            </form>
+            <p class="team-hint">You become the host. Share the game link with the team, or open async voting from the room menu so everyone votes before the meeting.</p>
+          </section>
+
+          <section class="team-card" aria-labelledby="velocity-title">
+            <div class="team-section-head">
+              <h2 class="team-section-title" id="velocity-title">
+                <mat-icon svgIcon="opp-chart" aria-hidden="true"></mat-icon> Velocity (points per sprint)
+              </h2>
+              <span class="team-stat" *ngIf="t.averageVelocity !== null">
+                <b class="opp-tabular">{{ t.averageVelocity }}</b> average
+              </span>
+            </div>
+            <app-velocity-chart [sprints]="t.sprints" [average]="t.averageVelocity"></app-velocity-chart>
+            <p class="team-hint">Points add up the final estimate of each revealed ticket, or its most common card. Use them to plan, not as a target.</p>
+          </section>
+
+          <section class="team-card" aria-labelledby="history-title">
+            <h2 class="team-section-title" id="history-title">Sprint history</h2>
+            <p class="team-hint" *ngIf="!t.sprints.length">No planning sessions yet. Start the first one above.</p>
+            <ol class="sprint-list" *ngIf="t.sprints.length">
+              <li class="sprint-row" *ngFor="let s of t.sprints">
+                <a class="sprint-link" [routerLink]="['/game', s.gameId]">
+                  <span class="sprint-name">{{ s.name }}</span>
+                  <span class="sprint-meta">{{ s.createdOn | date:'EEE d MMM y' }} · {{ s.estimatedCount }} of {{ s.ticketCount }} tickets estimated</span>
+                </a>
+                <span class="sprint-points opp-tabular" [attr.aria-label]="s.points + ' points'">{{ s.points }}<small>pts</small></span>
+              </li>
+            </ol>
+          </section>
+        </div>
+
+        <aside class="team-side">
+          <section class="team-card" aria-labelledby="invite-title">
+            <h2 class="team-section-title" id="invite-title">Invite</h2>
+            <p class="team-hint">Anyone with this link can join the team.</p>
+            <button mat-stroked-button color="primary" (click)="copyInvite()"><mat-icon>link</mat-icon> Copy team link</button>
+          </section>
+
+          <section class="team-card" aria-labelledby="members-title">
+            <h2 class="team-section-title" id="members-title">Members <span class="team-count opp-tabular">{{ t.members.length }}</span></h2>
+            <ul class="member-list">
+              <li class="member" *ngFor="let m of t.members">
+                <span class="member-avatar" aria-hidden="true">{{ (m.name || '?').charAt(0).toUpperCase() }}</span>
+                <span class="member-name">{{ m.name || 'Former player' }}</span>
+                <span class="member-badge" *ngIf="m.id === t.ownerId">Owner</span>
+                <span class="member-badge member-badge--you" *ngIf="m.id === currentUserId">You</span>
+              </li>
+            </ul>
+            <button mat-button class="team-leave" *ngIf="!isOwner" (click)="leaveTeam()" [disabled]="busy">
+              <mat-icon>logout</mat-icon> Leave team
+            </button>
+          </section>
+        </aside>
+      </div>
+    </ng-container>
+  </ng-container>
+</main>

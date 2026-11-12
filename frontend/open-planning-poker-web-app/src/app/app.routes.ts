@@ -27,6 +27,20 @@ export const routes: Routes = [
     title: 'Planning Poker — Voting Session | Open Planning Poker'
   },
   {
+    path: 'team',
+    component: HomeComponent,
+    pathMatch: 'full',
+    data: { view: 'team' },
+    title: 'Team Rooms — Open Planning Poker'
+  },
+  {
+    path: 'team/:teamId',
+    component: HomeComponent,
+    pathMatch: 'full',
+    data: { view: 'team' },
+    title: 'Team Room — Open Planning Poker'
+  },
+  {
     path: '**',
     loadComponent: () => import('./features/errors/errors.component').then(m => m.ErrorsComponent),
     title: '404 — Page Not Found | Open Planning Poker'

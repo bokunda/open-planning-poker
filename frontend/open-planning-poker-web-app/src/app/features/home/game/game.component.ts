@@ -9,7 +9,7 @@ import { ApiCollectionOfGamePlayer, ApiCollectionOfTicket, ApiCollectionOfVote, 
 import { GET_GAME } from './gql/getGame.graphql';
 import { CREATE_GAME } from './gql/createGame.graphql';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Location } from '@angular/common';
 import { JOIN_GAME } from './gql/joinGame.graphql';
 import { GET_GAME_PLAYERS } from './gql/getPlayers.graphql';
@@ -39,14 +39,27 @@ import { VotingComponent } from './voting/voting.component';
 import { VotingHistoryComponent } from './voting-history/voting-history.component';
 import { PlayersComponent } from './players/players.component';
 import { ChatComponent } from './chat/chat.component';
+import { AsyncVotingComponent } from './async-voting/async-voting.component';
 import { map } from 'rxjs';
+import type { DocumentNode } from 'graphql';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '../../../shared/constants';
+import {
+  DELETE_TICKET, ON_GAME_CHANGED, REMOVE_PLAYER, REORDER_TICKETS, SET_CO_HOST, SET_FINAL_ESTIMATE,
+  SET_PLAYER_ROLE, TRANSFER_HOST, UPDATE_GAME_OPTIONS, UPDATE_TICKET
+} from './gql/room.graphql';
+import { GameChanged, isAsyncVotingOpen, PlayerAction, RoomPlayer, RoomSettings, RoomTicket } from './room-types';
+import { ticketsToCsv } from './export/tickets-csv';
+import type { ConfirmDialogData } from '../../../shared/dialogs/confirm/confirm-dialog.component';
+import type { EditTicketResult } from './ticket/edit-ticket/edit-ticket-dialog.component';
+import type { RoomOptions } from './details/game-details.component';
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent],
+  imports: [CommonModule, FormsModule, RouterLink, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent, AsyncVotingComponent],
   animations: [
     trigger('fadeSlide', [
       transition(':enter', [
@@ -125,9 +138,45 @@ export class GameComponent implements OnInit {
     return hasGameId && !this.game && !this.gameNotFound;
   }
 
-  /** The host is decided by the server (game creator); the UI only mirrors it. */
-  get isHost(): boolean {
+  /** The host is decided by the server (the creator until it is handed over); the UI only mirrors it. */
+  get isOwner(): boolean {
     return !!this.game?.hostId && !!this.currentUserId && this.game.hostId === this.currentUserId;
+  }
+
+  /** Host or co-host: runs the game (tickets, reveal, timer, options). */
+  get isHost(): boolean {
+    return this.isOwner || !!this.me?.isCoHost;
+  }
+
+  get me(): RoomPlayer | undefined {
+    return (this.players?.items as RoomPlayer[] | undefined)?.find(p => p.id === this.currentUserId);
+  }
+
+  /** Observers see the table but have no cards. */
+  get isObserver(): boolean {
+    return this.me?.role === 'OBSERVER';
+  }
+
+  get settings(): RoomSettings | undefined {
+    return this.game?.settingsDetails as unknown as RoomSettings | undefined;
+  }
+
+  private deckSource = '';
+  private deckCache: string[] = [];
+
+  /** The game's cards (same array until the deck changes, so inputs do not change on every check). */
+  get deckCards(): string[] {
+    const source = this.settings?.deckSetup ?? '';
+    if (source !== this.deckSource) {
+      this.deckSource = source;
+      this.deckCache = source ? source.split(',') : [];
+    }
+    return this.deckCache;
+  }
+
+  /** Players vote on all tickets on their own until the window ends (async estimation). */
+  get asyncVotingOpen(): boolean {
+    return isAsyncVotingOpen(this.settings);
   }
 
   readonly dialog = inject(MatDialog);
@@ -136,6 +185,7 @@ export class GameComponent implements OnInit {
   readonly location = inject(Location);
   readonly destroyRef = inject(DestroyRef);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly snackBar = inject(MatSnackBar);
 
   constructor(private apollo: Apollo) {}
 
@@ -154,6 +204,7 @@ export class GameComponent implements OnInit {
           this.subscribeToPlayerJoined(gameId);
           this.subscribeToTicketCreated(gameId);
           this.subscribeToTicketReVoted(gameId);
+          this.subscribeToGameChanged(gameId);
           this.gameSubsInitialized = true;
         }
 
@@ -207,7 +258,7 @@ export class GameComponent implements OnInit {
   }
 
   handleVoteAction(value: string) {
-    if (!this.ticket?.id) { return; }
+    if (!this.ticket?.id || this.isObserver) { return; }
     this.createOrUpdateVote(this.ticket!.id, value);
   }
 
@@ -696,15 +747,32 @@ export class GameComponent implements OnInit {
   }
 
   private getTickets(gameId: string): void {
-    this.apollo.watchQuery<{ tickets: ApiCollectionOfTicket }>({
+    if (!gameId) return;
+    this.apollo.query<{ tickets: ApiCollectionOfTicket }>({
       query: GET_TICKETS,
       variables: { gameId }
     })
-    .valueChanges
     .subscribe({
       next: ({ data }) => {
         if (data) {
           this.tickets = data?.tickets?.items ?? [];
+
+          // Keep the active ticket in sync: edited (name, final estimate) or deleted by the host.
+          if (this.ticket) {
+            const current = this.tickets.find(t => t.id === this.ticket!.id);
+            if (current) {
+              const { averageVotingValue, votes, ...details } = current as RoomTicket;
+              this.ticket = { ...this.ticket, ...details };
+            } else if (this.tickets.length || this.ticket.id) {
+              this.ticket = undefined;
+              this.votes = [];
+              this.votesRevealed = false;
+              this.currentSubscribedTicketId = undefined;
+              if (!this.tickets.length) {
+                this.location.replaceState(`/game/${gameId}`);
+              }
+            }
+          }
 
           // Auto-select a ticket for players who join with no ticket selected: the one in the
           // URL if there is one (its own query may still be loading), otherwise the first.
@@ -729,6 +797,196 @@ export class GameComponent implements OnInit {
         }
       }
     });
+  }
+
+  // --- Room management (2.2): players, tickets, options ---
+
+  /** One event for "something changed": reload the part it names with our own (checked) queries. */
+  private subscribeToGameChanged(gameId: string): void {
+    this.apollo.subscribe<{ onGameChanged: GameChanged }>({
+      query: ON_GAME_CHANGED,
+      variables: { gameId },
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (result) => {
+        const change = result?.data?.onGameChanged;
+        if (!change) return;
+        switch (change.kind) {
+          case 'GAME':
+            this.refreshGame(gameId);
+            break;
+          case 'PLAYERS':
+            this.refreshPlayers(gameId);
+            break;
+          case 'TICKETS':
+            this.getTickets(gameId);
+            break;
+          case 'PLAYER_REMOVED':
+            if (change.playerId === this.currentUserId) {
+              this.notify('The host removed you from this game. You can join again with the link.');
+              this.handleLeaveGame();
+            }
+            break;
+        }
+      },
+      error: (err) => console.error('Subscription error (onGameChanged):', err)
+    });
+  }
+
+  private refreshGame(gameId: string): void {
+    this.apollo.query<{ game: Game }>({ query: GET_GAME, variables: { id: gameId } }).subscribe({
+      next: ({ data }) => {
+        if (data?.game?.id && data.game.id === this.game?.id) {
+          this.game = data.game;
+        }
+      }
+    });
+  }
+
+  /** Replaces the list (roles, co-hosts, removed players), unlike the merge used while joining. */
+  private refreshPlayers(gameId: string): void {
+    this.apollo.query<{ gamePlayers: ApiCollectionOfGamePlayer }>({ query: GET_GAME_PLAYERS, variables: { gameId } }).subscribe({
+      next: ({ data }) => {
+        if (data?.gamePlayers?.items) {
+          this.players = { ...data.gamePlayers };
+        }
+      }
+    });
+  }
+
+  handlePlayerAction(action: PlayerAction): void {
+    const gameId = this.game?.id;
+    if (!gameId) return;
+    const name = (this.players?.items ?? []).find(p => p.id === action.playerId)?.name ?? 'this player';
+
+    switch (action.kind) {
+      case 'role':
+        this.runMutation(SET_PLAYER_ROLE, 'setPlayerRole', {
+          gameId, role: action.role, playerId: action.playerId === this.currentUserId ? null : action.playerId
+        }, () => this.refreshPlayers(gameId));
+        break;
+      case 'coHost':
+        this.runMutation(SET_CO_HOST, 'setCoHost', { gameId, playerId: action.playerId, isCoHost: action.isCoHost },
+          () => this.refreshPlayers(gameId));
+        break;
+      case 'transferHost':
+        this.confirm({
+          title: `Make ${name} the host?`,
+          message: `${name} will run the game. You stay in the game as a player.`,
+          confirmLabel: 'Make host',
+        }, () => this.runMutation(TRANSFER_HOST, 'transferHost', { gameId, playerId: action.playerId }, () => {
+          this.refreshGame(gameId);
+          this.refreshPlayers(gameId);
+        }));
+        break;
+      case 'remove':
+        this.confirm({
+          title: `Remove ${name}?`,
+          message: `${name} leaves the table. Their votes stay on the tickets, and they can join again with the link.`,
+          confirmLabel: 'Remove',
+          destructive: true,
+        }, () => this.runMutation(REMOVE_PLAYER, 'removePlayer', { gameId, playerId: action.playerId },
+          () => this.refreshPlayers(gameId)));
+        break;
+    }
+  }
+
+  async handleEditTicket(ticket: RoomTicket): Promise<void> {
+    const { EditTicketDialogComponent } = await import('./ticket/edit-ticket/edit-ticket-dialog.component');
+    this.dialog.open(EditTicketDialogComponent, {
+      width: '560px',
+      maxWidth: '95vw',
+      data: { name: ticket.name, description: ticket.description },
+      enterAnimationDuration: '150ms',
+      exitAnimationDuration: '150ms'
+    }).afterClosed().subscribe((result: EditTicketResult | undefined) => {
+      if (!result) return;
+      this.runMutation(UPDATE_TICKET, 'updateTicket', { id: ticket.id, name: result.name, description: result.description },
+        () => this.getTickets(ticket.gameId));
+    });
+  }
+
+  handleDeleteTicket(ticket: RoomTicket): void {
+    this.confirm({
+      title: 'Delete this ticket?',
+      message: `"${ticket.name}" and its votes are deleted for everyone. This cannot be undone.`,
+      confirmLabel: 'Delete',
+      destructive: true,
+    }, () => this.runMutation(DELETE_TICKET, 'deleteTicket', { id: ticket.id }, () => this.getTickets(ticket.gameId)));
+  }
+
+  handleReorderTickets(ticketIds: string[]): void {
+    const gameId = this.game?.id;
+    if (!gameId) return;
+    // Show the new order at once; the server's order comes back with the change event.
+    const byId = new Map(this.tickets.map(t => [t.id, t]));
+    this.tickets = ticketIds.map(id => byId.get(id)).filter((t): t is Ticket => !!t);
+    this.runMutation(REORDER_TICKETS, 'reorderTickets', { gameId, ticketIds }, undefined, () => this.getTickets(gameId));
+  }
+
+  handleSetFinalEstimate(value: string | null): void {
+    const ticket = this.ticket;
+    if (!ticket?.id) return;
+    this.runMutation(SET_FINAL_ESTIMATE, 'setFinalEstimate', { ticketId: ticket.id, value }, () => {
+      this.ticket = { ...ticket, finalEstimate: value } as RoomTicket;
+      this.getTickets(ticket.gameId);
+    });
+  }
+
+  handleUpdateOptions(options: RoomOptions): void {
+    const gameId = this.game?.id;
+    if (!gameId) return;
+    this.runMutation(UPDATE_GAME_OPTIONS, 'updateGameOptions', {
+      gameId, autoReveal: options.autoReveal, asyncVotingEndsAt: options.asyncVotingEndsAt
+    }, () => this.refreshGame(gameId));
+  }
+
+  /** Async mode: a vote on any ticket, then the list reloads with our own values. */
+  handleAsyncVote(vote: { ticketId: string; value: string }): void {
+    this.runMutation(CREATE_OR_UPDATE_VOTE, 'createOrUpdateVote', { ticketId: vote.ticketId, value: vote.value },
+      () => { if (this.game?.id) this.getTickets(this.game.id); });
+  }
+
+  handleExportCsv(): void {
+    if (!this.game) return;
+    const csv = ticketsToCsv(this.tickets as RoomTicket[]);
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `opp_${this.game.name.replace(/[^\p{L}\p{N}]+/gu, '_')}_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  /** Runs a room mutation; shows the server's error message (e.g. not allowed) as a snackbar. */
+  private runMutation(mutation: DocumentNode, field: string, input: Record<string, unknown>, onSuccess?: () => void, onError?: () => void): void {
+    this.apollo.mutate<Record<string, { errors?: { code: string; message: string }[] } | undefined>>({
+      mutation,
+      variables: { input }
+    }).subscribe({
+      next: ({ data }) => {
+        const errors = data?.[field]?.errors;
+        if (errors?.length) {
+          this.notify(errors[0].message);
+          onError?.();
+          return;
+        }
+        onSuccess?.();
+      },
+      error: () => {
+        this.notify('That did not work. Check your connection and try again.');
+        onError?.();
+      }
+    });
+  }
+
+  private async confirm(data: ConfirmDialogData, onConfirm: () => void): Promise<void> {
+    const { ConfirmDialogComponent } = await import('../../../shared/dialogs/confirm/confirm-dialog.component');
+    this.dialog.open(ConfirmDialogComponent, { width: '420px', maxWidth: '95vw', data })
+      .afterClosed().subscribe(confirmed => { if (confirmed) onConfirm(); });
+  }
+
+  private notify(message: string): void {
+    this.snackBar.open(message, OPP_SNACKBAR_MODAL_LABEL_CLOSE, { duration: OPP_SNACKBAR_DURATION_DEFAULT * 2 });
   }
 
   generateAndDownloadReport(gameId: string): void {

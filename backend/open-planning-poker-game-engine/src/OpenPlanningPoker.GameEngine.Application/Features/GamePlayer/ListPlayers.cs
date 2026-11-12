@@ -1,6 +1,6 @@
-﻿namespace OpenPlanningPoker.GameEngine.Application.Features.GamePlayer;
+namespace OpenPlanningPoker.GameEngine.Application.Features.GamePlayer;
 
-public sealed record ListPlayersItem(Guid Id, string Name);
+public sealed record ListPlayersItem(Guid Id, string Name, PlayerRole Role = PlayerRole.Player, bool IsCoHost = false);
 
 public sealed record ListPlayersQuery(Guid GameId) : IRequest<Result<ApiCollection<ListPlayersItem>, ApplicationError>>;
 
@@ -24,7 +24,7 @@ public static class ListPlayers
 
             var distinctPlayers = gamePlayers
                 .DistinctBy(x => x.PlayerId)
-                .Select(x => new ListPlayersItem(x.PlayerId, "TODO"))
+                .Select(x => new ListPlayersItem(x.PlayerId, string.Empty, x.Role, x.IsCoHost))
                 .ToList();
 
             return new ApiCollection<ListPlayersItem>(

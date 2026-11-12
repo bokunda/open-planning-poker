@@ -4,7 +4,8 @@ namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Votes;
 public class VoteMutations
 {
     /// <summary>
-    /// Creates or updates a vote. Only players who joined the game can vote.
+    /// Creates or updates a vote. Only players who joined the game can vote (observers cannot).
+    /// With auto-reveal on, the last missing vote reveals the cards for everyone.
     /// </summary>
     public async Task<FieldResult<Vote, ApplicationError>> CreateOrUpdateVoteAsync(
         [Service] ActionRateLimiter rateLimiter,
@@ -15,7 +16,7 @@ public class VoteMutations
         [Required] string value,
         CancellationToken cancellationToken = default)
     {
-        if ((await gameAccess.EnsureMemberOfTicketAsync(ticketId, cancellationToken)).Error is { } accessError)
+        if ((await gameAccess.EnsureVoterOfTicketAsync(ticketId, cancellationToken)).Error is { } accessError)
         {
             return accessError;
         }
@@ -44,11 +45,16 @@ public class VoteMutations
             broadcastVote,
             cancellationToken);
 
+        if (await sender.Send(new ShouldAutoRevealQuery(ticketId), cancellationToken))
+        {
+            await RevealAsync(sender, eventSender, ticketId, "Auto-reveal", cancellationToken);
+        }
+
         return vote;
     }
 
     /// <summary>
-    /// Reveals all votes for a ticket and broadcasts them to all players. Host only.
+    /// Reveals all votes for a ticket and broadcasts them to all players. Host and co-hosts.
     /// </summary>
     public async Task<FieldResult<VotesRevealed, ApplicationError>> RevealVotesAsync(
         [Service] ISender sender,
@@ -63,6 +69,13 @@ public class VoteMutations
             return accessError;
         }
 
+        var user = await currentUserProvider.GetAsync(cancellationToken);
+        return await RevealAsync(sender, eventSender, ticketId, user.Value?.UserName ?? "Host", cancellationToken);
+    }
+
+    private static async Task<FieldResult<VotesRevealed, ApplicationError>> RevealAsync(
+        ISender sender, ITopicEventSender eventSender, Guid ticketId, string revealedBy, CancellationToken cancellationToken)
+    {
         var revealResult = await sender.Send(new SetTicketVotesRevealedCommand(ticketId, true), cancellationToken);
         if (!revealResult.IsSuccess)
         {
@@ -70,12 +83,10 @@ public class VoteMutations
         }
 
         var votes = await sender.Send(new GetVotesQuery(ticketId), cancellationToken);
-        var user = await currentUserProvider.GetAsync(cancellationToken);
-
         var reveal = new VotesRevealed
         {
             TicketId = ticketId,
-            RevealedBy = user.Value?.UserName ?? "Host",
+            RevealedBy = revealedBy,
             Votes = votes.IsSuccess ? [.. votes.Value!.Items.Select(item => item.ToGraphQL())] : []
         };
 

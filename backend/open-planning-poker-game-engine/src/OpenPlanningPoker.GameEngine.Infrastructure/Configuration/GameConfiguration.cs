@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.Infrastructure.Configuration;
+namespace OpenPlanningPoker.GameEngine.Infrastructure.Configuration;
 
 internal sealed class GameConfiguration : IEntityTypeConfiguration<Game>
 {
@@ -14,6 +14,8 @@ internal sealed class GameConfiguration : IEntityTypeConfiguration<Game>
 
         builder.Property(game => game.Description)
             .HasMaxLength(4080);
+
+        builder.HasIndex(game => game.TeamId);
 
         builder.HasOne(game => game.GameSettings)
             .WithOne(gameSettings => gameSettings.Game);

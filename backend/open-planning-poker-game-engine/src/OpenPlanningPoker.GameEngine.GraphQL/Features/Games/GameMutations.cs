@@ -13,12 +13,19 @@ public class GameMutations
         [Required] string name,
         [Required] string description,
         string? deckSetup,
+        Guid? teamId,
         CancellationToken cancellationToken)
     {
-        // The host is stored as the game's CreatedBy, so an anonymous game would have no host.
+        // The creator becomes the host, so an anonymous game would have no host.
         if (gameAccess.EnsureAuthenticated() is { } accessError)
         {
             return accessError;
+        }
+
+        // A game in a team room is one sprint of that team; only its members start one.
+        if (teamId is { } team && await gameAccess.EnsureTeamMemberAsync(team, cancellationToken) is { } teamError)
+        {
+            return teamError;
         }
 
         if (rateLimiter.TryAcquire(ActionRateLimiter.CreateGame, gameAccess.CurrentUserId) is { } rateLimitError)
@@ -26,7 +33,7 @@ public class GameMutations
             return rateLimitError;
         }
 
-        var result = await sender.Send(new CreateGameCommand(name, description), cancellationToken);
+        var result = await sender.Send(new CreateGameCommand(name, description, gameAccess.CurrentUserId, teamId), cancellationToken);
 
         if (result.IsSuccess)
         {
@@ -45,7 +52,7 @@ public class GameMutations
     }
 
     /// <summary>
-    /// Deletes a game with its tickets, votes and players. Host only.
+    /// Deletes a game with its tickets, votes and players. Host only (not co-hosts).
     /// </summary>
     public async Task<FieldResult<bool, ApplicationError>> DeleteGameAsync(
         [Service] ISender sender,
@@ -53,7 +60,7 @@ public class GameMutations
         [Required] Guid gameId,
         CancellationToken cancellationToken)
     {
-        if (await gameAccess.EnsureHostAsync(gameId, cancellationToken) is { } accessError)
+        if (await gameAccess.EnsureOwnerAsync(gameId, cancellationToken) is { } accessError)
         {
             return accessError;
         }

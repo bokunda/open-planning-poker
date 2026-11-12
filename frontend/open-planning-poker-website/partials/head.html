@@ -26,4 +26,9 @@
     window.addEventListener('load', function () {
       ('requestIdleCallback' in window) ? requestIdleCallback(loadAnalytics, { timeout: 4000 }) : setTimeout(loadAnalytics, 2000);
     });
+    // Donation links carry data-donate="ko_fi|github_sponsors" and data-placement; one listener counts them.
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[data-donate]');
+      if (a) gtag('event', 'donate_click', { platform: a.dataset.donate, placement: a.dataset.placement || 'website', transport_type: 'beacon' });
+    });
     </script>

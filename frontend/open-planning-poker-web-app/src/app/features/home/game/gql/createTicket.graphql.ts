@@ -9,6 +9,8 @@ mutation($input: CreateTicketInput!) {
       name
       description
       votesRevealed
+      finalEstimate
+      position
       __typename
     }
   }

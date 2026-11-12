@@ -35,7 +35,7 @@ export function app(): express.Express {
   // Paths the app has (see app.routes.ts). Anything else renders the not-found page with a real 404,
   // so search engines do not index it as a duplicate of the home page.
   const uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
-  const knownRoute = new RegExp(`^/(game(/${uuid}(/ticket/${uuid})?)?/?)?$`, 'i');
+  const knownRoute = new RegExp(`^/((game(/${uuid}(/ticket/${uuid})?)?)|(team(/${uuid})?))?/?$`, 'i');
 
   // All regular routes use the Angular engine
   server.get('*', (req, res, next) => {

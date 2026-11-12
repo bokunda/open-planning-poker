@@ -16,7 +16,12 @@
 - **Classic Planning Poker Voting** — Estimate user stories using Fibonacci, T-shirt sizes, or custom decks
 - **Hidden Votes** — Votes are concealed until the team is ready to reveal them
 - **Real-Time Updates** — GraphQL WebSocket subscriptions for instant vote and player updates
-- **Export Results** — Download game reports as PDF
+- **Run the Room Together** — Co-hosts, handing the host role over, observers who watch without voting, and removing a player
+- **Auto-Reveal and Final Estimate** — Cards turn over when everyone has voted; the host records the agreed card
+- **Ticket List** — Edit, delete and drag tickets into order; descriptions support a small Markdown subset
+- **Async Voting** — Everyone votes on the tickets before the meeting; votes stay hidden until the reveal
+- **Team Rooms** — Keep every sprint planning of a team, with the sprint history and a velocity chart
+- **Export Results** — Download game reports as PDF or CSV
 - **No Registration Required** — Anonymous usernames, no passwords, no personal data
 - **PWA Support** — Installable on mobile and desktop, works offline
 - **SEO Optimized** — Server-side rendering, structured data, meta tags for search engines
@@ -95,13 +100,28 @@ Full setup guide: [docs/setup-and-development.md](docs/setup-and-development.md)
 
 ## Roadmap
 
-- [ ] Import user stories from CSV / Jira
-- [ ] Multiple deck types (Fibonacci, T-shirt sizes, custom)
-- [ ] Advanced game settings (voting time limits, break rounds)
-- [ ] User accounts with history
-- [ ] Dark mode theme
-- [ ] WebP image optimization
+- [x] Import tickets from CSV / JSON
+- [x] Multiple deck types (Fibonacci, T-shirt sizes, custom)
+- [x] Shared voting timer, auto-reveal
+- [x] Dark mode theme
+- [x] Co-hosts, host hand-over, observers, final estimate, CSV export
+- [x] Team rooms with sprint history and velocity, async voting
+- [ ] Jira integration (import issues, save estimates back)
+- [ ] Slack and Microsoft Teams apps
 - [ ] Multi-language support (i18n)
+
+## Support the project
+
+Open Planning Poker is free, with no ads and no paid plan. If it saves your team time, you can help pay for the servers and new features:
+
+- [Sponsor on GitHub](https://github.com/sponsors/bokunda) (no fee)
+- [Buy me a coffee on Ko-fi](https://ko-fi.com/bpiskulic) (one-off, no account needed)
+
+Stars, bug reports and pull requests help just as much.
+
+## About the creator
+
+Open Planning Poker is built by **Bojan Piskulic**, founder of **Bitcrafta**, a software agency that designs and builds web applications for its clients. Bojan created Open Planning Poker as the estimation tool he wanted for his own teams: free, without sign-up or ads, and open source, so anyone can read the code or run it on their own server.
 
 ## License
 

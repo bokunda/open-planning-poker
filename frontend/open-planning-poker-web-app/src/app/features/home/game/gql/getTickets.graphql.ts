@@ -10,6 +10,8 @@ query Tickets($gameId: UUID!) {
         name
         description
         votesRevealed
+        finalEstimate
+        position
         votes {
             items {
                 id

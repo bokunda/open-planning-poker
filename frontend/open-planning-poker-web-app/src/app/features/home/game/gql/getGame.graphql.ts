@@ -8,11 +8,14 @@ const GET_GAME = gql `
         name
         description
         hostId
+        teamId
         settingsDetails {
           ... on Settings {
             id
             gameId
             deckSetup
+            autoReveal
+            asyncVotingEndsAt
           }
           ... on ApplicationError {
             code

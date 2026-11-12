@@ -7,6 +7,8 @@ const GET_GAME_PLAYERS = gql `
         items {
           id
           name
+          role
+          isCoHost
         }
         totalCount
       }

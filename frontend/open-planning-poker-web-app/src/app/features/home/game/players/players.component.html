@@ -18,17 +18,59 @@
         <div class="player-avatar" [class.player-avatar--voted]="getVoteData(player.id)">
           {{ player.name?.charAt(0) || '?' }}
         </div>
-        <span class="player-name">{{ player.name }}</span>
-        <app-poker-card
-          class="player-vote"
-          size="sm"
-          [value]="getVoteData(player.id)?.value"
-          [empty]="!getVoteData(player.id)"
-          [faceDown]="!votesRevealed"
-          [flipDelay]="i * 70">
-        </app-poker-card>
+        <span class="player-name">
+          {{ player.name }}
+          <span class="player-badge player-badge--host" *ngIf="roleLabel(asRoomPlayer(player)) as role">{{ role }}</span>
+        </span>
+        <mat-icon class="player-observer" *ngIf="isObserver(asRoomPlayer(player)); else voteCard"
+          svgIcon="opp-observe" matTooltip="Watching, does not vote" aria-label="Observer"></mat-icon>
+        <ng-template #voteCard>
+          <app-poker-card
+            class="player-vote"
+            size="sm"
+            [value]="getVoteData(player.id)?.value"
+            [empty]="!getVoteData(player.id)"
+            [faceDown]="!votesRevealed"
+            [flipDelay]="i * 70">
+          </app-poker-card>
+        </ng-template>
+        <button mat-icon-button class="player-menu-btn" *ngIf="canManage(asRoomPlayer(player))"
+          [matMenuTriggerFor]="playerMenu" [matMenuTriggerData]="{ player: player }"
+          [attr.aria-label]="'Options for ' + (player.id === currentUserId ? 'you' : player.name)">
+          <mat-icon>more_vert</mat-icon>
+        </button>
       </div>
     </div>
+
+    <mat-menu #playerMenu="matMenu" xPosition="before">
+      <ng-template matMenuContent let-player="player">
+        <ng-container *ngIf="asRoomPlayer(player) as p">
+          <button mat-menu-item *ngIf="!isObserver(p)" (click)="onPlayerAction.emit({ kind: 'role', playerId: p.id, role: 'OBSERVER' })">
+            <mat-icon svgIcon="opp-observe"></mat-icon>
+            <span>{{ p.id === currentUserId ? 'Watch only (do not vote)' : 'Make observer' }}</span>
+          </button>
+          <button mat-menu-item *ngIf="isObserver(p)" (click)="onPlayerAction.emit({ kind: 'role', playerId: p.id, role: 'PLAYER' })">
+            <mat-icon svgIcon="opp-check"></mat-icon>
+            <span>{{ p.id === currentUserId ? 'Vote again' : 'Make player' }}</span>
+          </button>
+          <ng-container *ngIf="isOwner && p.id !== currentUserId">
+            <button mat-menu-item (click)="onPlayerAction.emit({ kind: 'coHost', playerId: p.id, isCoHost: !p.isCoHost })">
+              <mat-icon svgIcon="opp-team"></mat-icon>
+              <span>{{ p.isCoHost ? 'Remove co-host' : 'Make co-host' }}</span>
+            </button>
+            <button mat-menu-item (click)="onPlayerAction.emit({ kind: 'transferHost', playerId: p.id })">
+              <mat-icon svgIcon="opp-star"></mat-icon>
+              <span>Make host</span>
+            </button>
+          </ng-container>
+          <button mat-menu-item class="player-menu-danger" *ngIf="isHost && p.id !== currentUserId && p.id !== hostId"
+            (click)="onPlayerAction.emit({ kind: 'remove', playerId: p.id })">
+            <mat-icon svgIcon="opp-person-remove"></mat-icon>
+            <span>Remove from game</span>
+          </button>
+        </ng-container>
+      </ng-template>
+    </mat-menu>
 
     <div class="players-empty" *ngIf="!players?.items?.length">
       Waiting for players to join...

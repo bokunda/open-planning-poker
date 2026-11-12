@@ -57,3 +57,40 @@
 .invite-btn mat-icon {
   margin-right: var(--opp-space-1);
 }
+
+.game-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--opp-space-2);
+  margin: var(--opp-space-1) 0 0;
+}
+
+.game-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px 2px 6px;
+  border-radius: var(--opp-radius-full);
+  background: color-mix(in srgb, var(--opp-primary) 14%, transparent);
+  color: var(--opp-text);
+  font-size: var(--opp-font-size-xs);
+  font-weight: 600;
+  text-decoration: none;
+
+  mat-icon { width: 16px; height: 16px; font-size: 16px; }
+}
+
+.game-badge--link:hover { text-decoration: underline; }
+.game-badge--async { background: color-mix(in srgb, var(--opp-spread) 16%, transparent); color: var(--opp-spread); }
+
+.menu-caption {
+  display: block;
+  padding: var(--opp-space-2) var(--opp-space-4) 0;
+  font-size: var(--opp-font-size-xs);
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--opp-text-muted);
+}
+
+.menu-check--off { opacity: 0; }

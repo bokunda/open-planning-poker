@@ -1,0 +1,54 @@
+<section class="async" aria-labelledby="async-title">
+  <header class="async-head">
+    <div>
+      <h2 class="async-title" id="async-title">
+        <mat-icon svgIcon="opp-clock" aria-hidden="true"></mat-icon> Async voting
+      </h2>
+      <p class="async-lead">
+        Vote on each ticket on your own, any time until
+        <strong>{{ endsAt | date:'EEEE d MMMM, HH:mm' }}</strong>.
+        Votes stay hidden until the host reveals them in the meeting.
+      </p>
+    </div>
+    <div class="async-progress" *ngIf="!isObserver && openTickets.length" aria-live="polite">
+      <span class="async-progress-count opp-tabular">{{ votedCount }}/{{ openTickets.length }}</span>
+      <span class="async-progress-label">voted</span>
+    </div>
+  </header>
+
+  <div class="async-host" *ngIf="isHost">
+    <button mat-flat-button color="primary" (click)="startMeeting.emit()">
+      <mat-icon svgIcon="opp-table"></mat-icon> End async voting and start the meeting
+    </button>
+    <button mat-stroked-button color="primary" (click)="createTicket.emit()"><mat-icon>add</mat-icon> New ticket</button>
+    <button mat-stroked-button (click)="importTickets.emit()"><mat-icon>file_upload</mat-icon> Import</button>
+  </div>
+
+  <p class="async-empty" *ngIf="!tickets.length">
+    {{ isHost ? 'Add the tickets for the meeting, then share the link with your team.' : 'The host has not added tickets yet.' }}
+  </p>
+
+  <p class="async-observer" *ngIf="isObserver">You are watching this game, so you do not vote.</p>
+
+  <ol class="async-list">
+    <li class="async-ticket" *ngFor="let ticket of tickets; let i = index; trackBy: trackById"
+      [class.async-ticket--done]="myVote(ticket) !== null">
+      <div class="async-ticket-head">
+        <span class="async-index opp-tabular">{{ i + 1 }}</span>
+        <h3 class="async-name">{{ ticket.name }}</h3>
+        <span class="async-count opp-tabular" [attr.aria-label]="voteCount(ticket) + ' votes so far'">
+          {{ voteCount(ticket) }} {{ voteCount(ticket) === 1 ? 'vote' : 'votes' }}
+        </span>
+      </div>
+      <div class="opp-markdown async-desc" *ngIf="ticket.description" [innerHTML]="ticket.description | oppMarkdown"></div>
+
+      <p class="async-revealed" *ngIf="ticket.votesRevealed">Already revealed in the meeting.</p>
+      <div class="async-cards" *ngIf="!isObserver && !ticket.votesRevealed" role="radiogroup" [attr.aria-label]="'Your vote for ' + ticket.name">
+        <button type="button" class="async-card opp-tabular" *ngFor="let card of deck"
+          role="radio" [attr.aria-checked]="myVote(ticket) === card"
+          [class.async-card--selected]="myVote(ticket) === card"
+          (click)="pick(ticket, card)">{{ card }}</button>
+      </div>
+    </li>
+  </ol>
+</section>

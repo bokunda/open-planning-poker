@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.Infrastructure;
+namespace OpenPlanningPoker.GameEngine.Infrastructure;
 
 public static class DependencyInjection
 {
@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddScoped<IGameSettingsRepository, GameSettingsRepository>();
         services.AddScoped<ITicketRepository, TicketRepository>();
         services.AddScoped<IVoteRepository, VoteRepository>();
+        services.AddScoped<ITeamRepository, TeamRepository>();
 
 
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<OpenPlanningPokerGameEngineDbContext>());

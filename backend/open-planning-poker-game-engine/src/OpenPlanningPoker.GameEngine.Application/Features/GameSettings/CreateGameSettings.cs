@@ -1,6 +1,6 @@
 namespace OpenPlanningPoker.GameEngine.Application.Features.GameSettings;
 
-public sealed record CreateGameSettingsResponse(Guid Id, Guid GameId, string DeckSetup);
+public sealed record CreateGameSettingsResponse(Guid Id, Guid GameId, string DeckSetup, bool AutoReveal = false, DateTimeOffset? AsyncVotingEndsAt = null);
 
 public sealed record CreateGameSettingsCommand(Guid GameId, string DeckSetup) : IRequest<Result<CreateGameSettingsResponse, ApplicationError>>;
 
