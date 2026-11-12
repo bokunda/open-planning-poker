@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] — Unreleased
+
+Open Planning Poker in your language, installable on your phone, and every pull request tested end to end.
+
+### Added
+- **Serbian and German**: the app is available in English, Serbian (Latin script) and German. It follows the browser language, and you can change it in the menu; the choice is remembered. Dates, the CSV export, error messages from the server and the PDF report are translated too
+- **Website in Serbian and German**: the home page at `/sr/` and `/de/`, linked with `hreflang` and listed in the sitemap, with a language switch in the footer
+- **Installable app**: install Open Planning Poker on your phone or desktop. The app opens offline and shows a "You are offline" notice until the connection is back. The install offer appears at most once a week, and "Install app" is in the menu
+- **Reload offer** when a new version of the app is ready
+
+### Changed
+- Pages are rendered on the server for each visitor's language instead of being prerendered
+- The website menu shows from wider screens on, so longer labels fit
+
+### Developers
+- Game Engine integration tests against real PostgreSQL and Redis (Testcontainers): host-only actions, hidden votes, vote again, the timer, chat access, translated errors and the PDF report
+- Playwright end-to-end tests on the full stack (`docker-compose.e2e.yml`): create a game, a second player joins, add and import tickets, vote, reveal, vote again, the shared timer and the PDF export, with axe accessibility checks on desktop and phone
+- A CI workflow for every pull request: backend unit and integration tests, a vulnerable-package check, app and website builds, the translation check, end-to-end tests and Lighthouse budgets (performance ≥ 90, accessibility 100, best practices ≥ 95, SEO ≥ 95)
+
 ## [2.2.1] — Unreleased
 
 ### Security
