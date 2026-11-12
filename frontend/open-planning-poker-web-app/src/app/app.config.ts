@@ -1,4 +1,5 @@
-import { ApplicationConfig, inject, provideZoneChangeDetection, APP_INITIALIZER } from '@angular/core';
+import { ApplicationConfig, inject, isDevMode, provideZoneChangeDetection, APP_INITIALIZER } from '@angular/core';
+import { provideServiceWorker } from '@angular/service-worker';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -83,6 +84,9 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay(), withIncrementalHydration()),
     // The animation engine is loaded in a separate chunk after bootstrap.
     provideAnimationsAsync(),
+    // Installable app: caches the app shell so it opens offline (OPP-25). Registered once the app is
+    // stable (or after 30 s), so it never competes with the first page load.
+    provideServiceWorker('ngsw-worker.js', { enabled: !isDevMode(), registrationStrategy: 'registerWhenStable:30000' }),
     // Register custom SVG icons (replaces Font Awesome brand icons)
     {
       provide: APP_INITIALIZER,

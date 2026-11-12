@@ -35,6 +35,12 @@
           <mat-icon svgIcon="opp-team"></mat-icon>
           <span>Team rooms</span>
         </a>
+        @if (pwa.canInstall()) {
+        <button mat-menu-item (click)="pwa.install()">
+          <mat-icon>download</mat-icon>
+          <span>Install app</span>
+        </button>
+        }
         <mat-divider></mat-divider>
         <a mat-menu-item [href]="support.koFi" target="_blank" rel="noopener noreferrer" oppDonate="ko_fi" oppDonatePlacement="header_menu">
           <mat-icon svgIcon="opp-coffee"></mat-icon>

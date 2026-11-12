@@ -1,23 +1,19 @@
 {
+  "id": "/",
   "name": "Open Planning Poker",
   "short_name": "Planning Poker",
-  "description": "Free online Planning Poker tool for agile Scrum teams",
-  "start_url": "/",
+  "description": "Free online planning poker for agile teams: create a room, share the link and vote in secret.",
+  "start_url": "/game?source=pwa",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#ffffff",
-  "theme_color": "#7e3af2",
+  "theme_color": "#6a3ae8",
+  "categories": ["productivity", "business"],
   "icons": [
-    {
-      "src": "/assets/open-planning-poker-game-logo-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/assets/open-planning-poker-game-logo-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    { "src": "/assets/open-planning-poker-game-logo-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/open-planning-poker-game-logo-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/open-planning-poker-maskable-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/assets/open-planning-poker-maskable-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

@@ -15,6 +15,7 @@ import { CHANGE_USERNAME } from '../user/gql/changeUsername.graphql';
 import { GET_USER } from '../user/gql/getUser.graphql';
 import { ChangeUsernameInput, Mutation } from '../../../graphql/graphql-gateway.service';
 
+import { PwaService } from '../../../shared/pwa/pwa.service';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -27,6 +28,7 @@ export class HeaderComponent {
 
   readonly dialog = inject(MatDialog);
   readonly themeService = inject(ThemeService);
+  readonly pwa = inject(PwaService);
 
   constructor(private apollo: Apollo) {}
 
