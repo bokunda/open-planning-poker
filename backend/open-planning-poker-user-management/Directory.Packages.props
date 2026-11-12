@@ -6,7 +6,7 @@
     <PackageVersion Include="FluentValidation" Version="11.11.0" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
-    <PackageVersion Include="HotChocolate.AspNetCore" Version="15.0.3" />
+    <PackageVersion Include="HotChocolate.AspNetCore" Version="16.7.5" />
     <PackageVersion Include="HotChocolate.AspNetCore.Authorization" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.AspNetCore.CommandLine" Version="15.0.3" />
     <PackageVersion Include="HotChocolate.Diagnostics" Version="15.0.3" />
