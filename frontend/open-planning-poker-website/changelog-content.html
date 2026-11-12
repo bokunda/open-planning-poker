@@ -1,4 +1,49 @@
-<div class="changelog-content"><h2>[Unreleased]</h2>
+<div class="changelog-content"><h2>[2.1.1] — 2026-11-13</h2>
+<p>A redesigned PDF report, plus clean CI runs and builds.</p>
+<h3>Changed</h3>
+<ul>
+<li><strong>PDF report redesigned</strong> to match the app and the website: the logo and brand violet, Figtree and Bricolage Grotesque (full character set, so names like &quot;Đorđe Čolić&quot; print correctly), summary tiles (tickets, revealed, players, average estimate) and one card per ticket with the estimate, average, median, a consensus / close / wide spread label, a vote distribution and who voted what. Page numbers and a link back to openplanningpoker.com in the footer</li>
+<li>The estimate on each ticket is the most common card (ties go to the card closest to the median) instead of a raw average</li>
+<li>QuestPDF 2025.1.7 → 2025.7.4 (rounded corners)</li>
+<li><strong>GitHub Actions on Node 24</strong>: <code>actions/checkout</code> v7.0.1 and <code>actions/setup-dotnet</code> v6.1.0 (the old versions ran on the deprecated Node 20)</li>
+<li><strong>Runners pinned to <code>ubuntu-24.04</code></strong> instead of <code>ubuntu-latest</code>, so the move of <code>ubuntu-latest</code> to Ubuntu 26 does not change the build without notice</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li><strong>Ticket votes could fail with a null reference</strong> when the votes query returned an error; the mapping now returns an empty list instead</li>
+<li><strong>Build warnings</strong>: nullable warnings in the GraphQL mappings, missing XML documentation on the JWT setup, and two versions of <code>Microsoft.EntityFrameworkCore.Relational</code> in the Game Engine (now 9.0.3 everywhere). The Game Engine, User Management and the Fusion gateway build without warnings</li>
+<li><strong>Website check marks</strong>: the icons in the hero list (&quot;No sign-up&quot;, &quot;Works on phones&quot;, ...) sat 2px below the text; they are now centred on the line at any font size</li>
+</ul>
+<h2>[2.1.0] — 2026-11-12</h2>
+<p>A shared timer for the whole team, a faster first load, and guides on the website.</p>
+<h3>Highlights</h3>
+<ul>
+<li><strong>Shared timer</strong>: the host starts it, everyone sees the same countdown, and the cards are revealed when it runs out</li>
+<li><strong>Faster</strong>: about 25% less JavaScript on the first load, fonts from our own domain, the game room loads only when a game is open</li>
+<li><strong>Room actions always visible</strong>: copy link, export PDF and leave are buttons next to Invite instead of a menu</li>
+<li><strong>Guides on the website</strong>: what planning poker is, how to run a session, card scales and self-hosting</li>
+<li><strong>Search and AI agents</strong>: private rooms are no longer indexed, real 404 pages, and an ARD manifest (<code>/.well-known/ard.json</code>) for AI agents</li>
+</ul>
+<h3>Added</h3>
+<ul>
+<li><strong>Shared voting timer</strong>: the host&#39;s timer now runs on the server, so every player sees the same countdown (and the ring on the table), including players who join while it runs. New <code>startTimer</code> / <code>stopTimer</code> mutations (host only), <code>gameTimer</code> query and <code>onTimerChanged</code> subscription; the state is kept in Redis. When it reaches zero the cards are revealed, as before</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li><strong>Timer control</strong>: one pill with the time, duration chips (30s, 1m, 2m, 3m, 5m) and Start/Stop, instead of a dropdown and three icon buttons</li>
+<li>Sentence case for the remaining labels: &quot;Reveal cards&quot;, &quot;Vote again&quot;, &quot;New ticket&quot;, &quot;Chat&quot;, &quot;Paste a list&quot;, &quot;Upload a file&quot;, &quot;T-shirt sizes&quot;</li>
+<li><strong>Room header</strong>: &quot;Copy link&quot;, &quot;Export PDF&quot; and &quot;Leave&quot; are always visible next to &quot;Invite&quot; (icons only on phones); the ⋮ menu is gone</li>
+<li><strong>Ticket description</strong> is shown by default under the ticket name; the info button hides it</li>
+<li><strong>&quot;Modified Fibonacci&quot; is now &quot;Fibonacci v2&quot;</strong>, with a tooltip that explains it</li>
+<li><strong>Breadcrumb</strong> lines up with the header on wide screens</li>
+</ul>
+<h3>Project</h3>
+<ul>
+<li><strong>Releases</strong>: when the version in <code>package.json</code> has no tag yet, a workflow tags <code>vX.Y.Z</code> and publishes a GitHub Release with that version&#39;s CHANGELOG section</li>
+<li><strong>Dependabot</strong>: weekly grouped updates for npm (app, website), NuGet (all services), Docker images and GitHub Actions</li>
+<li><strong>Uptime check</strong> every 15 minutes (website, changelog, app, ai-catalog, GraphQL gateway); a failure opens a GitHub issue labeled <code>uptime</code>, recovery closes it</li>
+<li>The website&#39;s build output (<code>dist/</code>) and four unused images are no longer in the repository</li>
+</ul>
 <h3>Performance</h3>
 <ul>
 <li><strong>Smaller first load</strong>: initial JavaScript 1148 → 857 KB (raw). The game room is a separate chunk loaded once a game is open (<code>@defer</code>); dialogs (new game, join, ticket, import, invite, username, about) load on first open; the animation engine loads after start-up (<code>provideAnimationsAsync</code>)</li>
@@ -9,6 +54,16 @@
 <li><strong>Fonts served from our own domain</strong> (app and website): no requests to Google Fonts, latin + latin-ext subsets, Bricolage Grotesque fixed at optical size 48 (42 KB instead of 77 KB), preloaded</li>
 <li><strong>The app calls the Fusion gateway directly</strong>; the YARP API gateway is removed (one less network hop on every request)</li>
 <li><strong>Website caching</strong>: the stylesheet has a content hash in its name, so a new release is never hidden behind a year-long cache; images are cached for a week</li>
+</ul>
+<h3>SEO</h3>
+<ul>
+<li><strong>Website guides</strong>: four new pages — what planning poker is, how to run a session, cards and scales, self-hosting — with Article, FAQ, HowTo and breadcrumb structured data, linked from the home page, the header and the footer</li>
+<li><strong>Real 404s</strong> on the website and the app (both answered unknown URLs with 200 and the home page); the website 404 page uses the site design</li>
+<li><strong>App</strong>: game rooms and tickets are <code>noindex</code> (they are private and short-lived); <code>/game</code> points to <code>/</code> as canonical; the landing heading is the page&#39;s <code>h1</code>; new description and a 1200×630 social card</li>
+<li>Sitemap with the guides and screenshots; <code>robots.txt</code> without <code>Crawl-delay</code>; <code>llms.txt</code> for the website</li>
+<li>Shared head, header and footer partials for every website page</li>
+<li><strong>AI agents</strong>: the ARD manifest is served at <code>/.well-known/ard.json</code> (the location the current spec and Lighthouse use), announced with <code>&lt;link rel=&quot;ard&quot;&gt;</code> and an <code>Agentmap:</code> line in <code>robots.txt</code>; <code>ai-catalog.json</code> stays for older tools. Before, <code>/.well-known/ard.json</code> returned the HTML page, which Lighthouse reported as invalid JSON</li>
+<li><strong>Website speed</strong>: the stylesheet is inlined (no render-blocking request), screenshots have 480/800/1200 px sizes for smaller screens, and the GitHub star button is a plain link with the count fetched at build time instead of a third-party script</li>
 </ul>
 <h2>[2.0.0] — 2026-11-11</h2>
 <p>A new look for the whole app, built around a real poker table, plus a security and reliability pass on the backend.</p>

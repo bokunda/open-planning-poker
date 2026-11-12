@@ -21,6 +21,7 @@ A redesigned PDF report, plus clean CI runs and builds.
 ### Fixed
 - **Ticket votes could fail with a null reference** when the votes query returned an error; the mapping now returns an empty list instead
 - **Build warnings**: nullable warnings in the GraphQL mappings, missing XML documentation on the JWT setup, and two versions of `Microsoft.EntityFrameworkCore.Relational` in the Game Engine (now 9.0.3 everywhere). The Game Engine, User Management and the Fusion gateway build without warnings
+- **Website check marks**: the icons in the hero list ("No sign-up", "Works on phones", ...) sat 2px below the text; they are now centred on the line at any font size
 
 ## [2.1.0] — 2026-11-12
 
