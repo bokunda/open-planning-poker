@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.3.0] — Unreleased
+## [2.3.0] — 2026-11-13
 
 Open Planning Poker in your language, installable on your phone, and every pull request tested end to end.
 
