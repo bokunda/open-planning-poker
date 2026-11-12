@@ -129,7 +129,7 @@
       </app-players>
 
       <app-chat
-        [gameId]="game.id"
+        [gameId]="chatGameId ?? ''"
         [currentUserId]="currentUserId"
         [currentUserName]="currentUserName"
         [(collapsed)]="chatCollapsed">

@@ -23,6 +23,8 @@ public static class ApplicationBuilderExtensions
             .AddMutationConventions()
             // One shared, resilient Redis connection for subscriptions and chat history.
             .AddRedisSubscriptions(sp => sp.GetRequiredService<IConnectionMultiplexer>())
+            // Subscriptions run as the user whose token the app sends in connection_init.
+            .AddSocketSessionInterceptor<WebSocketAuthInterceptor>()
             .AddMaxExecutionDepthRule(MaxExecutionDepth)
             .ModifyRequestOptions(options =>
             {

@@ -61,7 +61,7 @@ public class ChatMutations
 
         // Publish to subscribers
         await eventSender.SendAsync(
-            $"{nameof(SendChatMessageAsync)}_{gameId}",
+            ChatTopics.Messages(gameId),
             message,
             cancellationToken);
 

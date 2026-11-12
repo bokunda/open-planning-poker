@@ -118,6 +118,8 @@ export class GameComponent implements OnInit {
 
   private pendingCreateGame: CreateGameResult | undefined;
   private joinedGameId: string | undefined;
+  /** Set once the server has the user as a player: chat is readable by players only. */
+  chatGameId: string | undefined;
 
   playersCollapsed = false;
   chatCollapsed = false;
@@ -245,6 +247,7 @@ export class GameComponent implements OnInit {
     this.game = undefined;
     this.gameNotFound = false;
     this.joinedGameId = undefined;
+    this.chatGameId = undefined;
     this.gameSubsInitialized = false;
     this.router.navigate([`/game`]);
   }
@@ -414,12 +417,14 @@ export class GameComponent implements OnInit {
       this.getGamePlayers(gameId);
       return;
     }
+    this.chatGameId = undefined;
     this.joinedGameId = gameId;
     this.apollo.mutate<Mutation, MutationJoinGameArgs>({
       mutation: JOIN_GAME,
       variables: {input: {gameId}}
     }).subscribe({
       next: () => {
+        this.chatGameId = gameId;
         this.getGamePlayers(gameId);
       },
       error: (err) => {
