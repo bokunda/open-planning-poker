@@ -1,0 +1,16 @@
+{
+  "name": "open-planning-poker-e2e",
+  "private": true,
+  "description": "End-to-end tests for Open Planning Poker (Playwright + axe).",
+  "scripts": {
+    "test": "playwright test",
+    "report": "playwright show-report",
+    "lighthouse": "lhci autorun --config=lighthouserc.cjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@lhci/cli": "0.16.1",
+    "@playwright/test": "1.65.0",
+    "@types/node": "22.15.0"
+  }
+}

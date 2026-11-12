@@ -1,0 +1,72 @@
+# Full backend for the end-to-end tests (e2e/): PostgreSQL, Redis, both subgraphs and the gateway.
+# The SSR app runs next to it (see e2e/playwright.config.ts). Used by CI; locally:
+#   docker compose -f docker-compose.e2e.yml up -d --build --wait
+# Container names match the subgraph URLs in gateway.fgp.
+name: opp-e2e
+
+x-backend-env: &backend-env
+  ASPNETCORE_ENVIRONMENT: Production
+  ASPNETCORE_HTTP_PORTS: "8080"
+  Authentication__Secret: e2e-tests-only-secret-not-for-production-0123456789
+  Cors__AllowedOrigins__0: http://localhost:4000
+  ConnectionStrings__Cache: OpenPlanningPoker.Cache:6379
+  # Every test user comes from the same address; keep the per-client limits out of the way.
+  RateLimiting__Burst: "10000"
+  RateLimiting__TokensPerTenSeconds: "10000"
+
+services:
+  opp-db:
+    image: postgres:15.5
+    container_name: OpenPlanningPoker.Db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      retries: 30
+
+  OpenPlanningPoker.Cache:
+    image: redis:7-alpine
+    container_name: OpenPlanningPoker.Cache
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      retries: 30
+
+  OpenPlanningPoker.UserManagement.GraphQL:
+    build:
+      context: ./backend/open-planning-poker-user-management
+      dockerfile: src/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile
+    container_name: OpenPlanningPoker.UserManagement.GraphQL
+    environment:
+      <<: *backend-env
+    ports: ["9090:8080"]
+    depends_on:
+      OpenPlanningPoker.Cache: { condition: service_healthy }
+
+  OpenPlanningPoker.GameEngine.GraphQL:
+    build:
+      context: ./backend/open-planning-poker-game-engine
+      dockerfile: src/OpenPlanningPoker.GameEngine.GraphQL/Dockerfile
+    container_name: OpenPlanningPoker.GameEngine.GraphQL
+    environment:
+      <<: *backend-env
+      ConnectionStrings__Database: Host=opp-db;Port=5432;Database=opp-gameengine;Username=postgres;Password=postgres;
+    ports: ["9091:8080"]
+    depends_on:
+      opp-db: { condition: service_healthy }
+      OpenPlanningPoker.Cache: { condition: service_healthy }
+
+  openplanningpoker.fusion.gateway:
+    build:
+      context: ./backend/open-planning-poker-graphql-gateway
+      dockerfile: Dockerfile
+    container_name: Openplanningpoker.Fusion.Gateway
+    environment:
+      <<: *backend-env
+    ports: ["10010:8080"]
+    depends_on:
+      - OpenPlanningPoker.GameEngine.GraphQL
+      - OpenPlanningPoker.UserManagement.GraphQL
