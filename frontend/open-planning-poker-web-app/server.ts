@@ -4,6 +4,7 @@ import express from 'express';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import bootstrap from './src/main.server';
+import { negotiateLanguage, SERVER_LANGUAGE } from './src/app/i18n/language';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
@@ -48,9 +49,17 @@ export function app(): express.Express {
         documentFilePath: indexHtml,
         url: `${protocol}://${headers.host}${originalUrl}`,
         publicPath: browserDistFolder,
-        providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
+        providers: [
+          { provide: APP_BASE_HREF, useValue: baseUrl },
+          // The page is rendered in the remembered language or the browser's (OPP-24).
+          { provide: SERVER_LANGUAGE, useValue: negotiateLanguage(headers.cookie, headers['accept-language']) },
+        ],
       })
-      .then((html) => res.send(html))
+      .then((html) => {
+        // The same URL renders in different languages.
+        res.setHeader('Vary', 'Accept-Language, Cookie');
+        res.send(html);
+      })
       .catch((err) => next(err));
   });
 

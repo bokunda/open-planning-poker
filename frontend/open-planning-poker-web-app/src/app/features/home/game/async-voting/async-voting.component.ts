@@ -4,6 +4,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Ticket } from '../../../../graphql/graphql-gateway.service';
 import { MarkdownPipe } from '../../../../shared/markdown/markdown.pipe';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { OppDatePipe } from '../../../../i18n/opp-date.pipe';
 
 /**
  * Async estimation: before the meeting every player goes through the tickets on their own.
@@ -13,7 +15,7 @@ import { MarkdownPipe } from '../../../../shared/markdown/markdown.pipe';
 @Component({
   selector: 'app-async-voting',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MarkdownPipe],
+  imports: [TranslocoPipe, OppDatePipe, CommonModule, MatButtonModule, MatIconModule, MarkdownPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './async-voting.component.html',
   styleUrl: './async-voting.component.scss',

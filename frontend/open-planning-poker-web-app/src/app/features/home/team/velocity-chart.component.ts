@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Sprint } from './team.graphql';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { OppDatePipe } from '../../../i18n/opp-date.pipe';
 
 interface Bar {
   sprint: Sprint;
@@ -17,7 +19,7 @@ interface Bar {
 @Component({
   selector: 'app-velocity-chart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [TranslocoPipe, OppDatePipe, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <figure class="velocity" *ngIf="bars.length; else empty">
@@ -42,26 +44,26 @@ interface Bar {
         </div>
         <div class="tooltip" *ngIf="active" [style.left.%]="((active.x + barWidth / 2) / width) * 100"
           [style.top.%]="(active.y / height) * 100" role="status">
-          <b class="opp-tabular">{{ active.sprint.points }} pts</b>
+          <b class="opp-tabular">{{ active.sprint.points }} {{ 'team.pts' | transloco }}</b>
           <span>{{ active.sprint.name }}</span>
-          <span class="tooltip-muted">{{ active.sprint.estimatedCount }} of {{ active.sprint.ticketCount }} tickets · {{ active.sprint.createdOn | date:'d MMM' }}</span>
+          <span class="tooltip-muted">{{ 'team.ticketsOf' | transloco: { count: active.sprint.estimatedCount, total: active.sprint.ticketCount } }} · {{ active.sprint.createdOn | oppDate:'d MMM' }}</span>
         </div>
       </div>
       <div class="axis-x" aria-hidden="true">
-        <span *ngFor="let bar of bars" [style.left.%]="((bar.x + barWidth / 2) / width) * 100">{{ bar.sprint.createdOn | date:'d MMM' }}</span>
+        <span *ngFor="let bar of bars" [style.left.%]="((bar.x + barWidth / 2) / width) * 100">{{ bar.sprint.createdOn | oppDate:'d MMM' }}</span>
       </div>
       <figcaption class="caption" *ngIf="average !== null">
-        <span class="caption-line" aria-hidden="true"></span> Average of the last three sprints: <b class="opp-tabular">{{ average }}</b> points
+        <span class="caption-line" aria-hidden="true"></span> {{ 'team.averageCaption' | transloco }} <b class="opp-tabular">{{ average }}</b> {{ 'team.points' | transloco }}
       </figcaption>
 
       <details class="table-view">
-        <summary>Show as a table</summary>
+        <summary>{{ 'team.showTable' | transloco }}</summary>
         <table>
-          <thead><tr><th scope="col">Sprint</th><th scope="col">Date</th><th scope="col" class="num">Points</th><th scope="col" class="num">Estimated tickets</th></tr></thead>
+          <thead><tr><th scope="col">{{ 'team.sprint' | transloco }}</th><th scope="col">{{ 'team.date' | transloco }}</th><th scope="col" class="num">{{ 'team.pointsTitle' | transloco }}</th><th scope="col" class="num">{{ 'team.estimatedTickets' | transloco }}</th></tr></thead>
           <tbody>
             <tr *ngFor="let bar of bars">
               <th scope="row">{{ bar.sprint.name }}</th>
-              <td>{{ bar.sprint.createdOn | date:'d MMM y' }}</td>
+              <td>{{ bar.sprint.createdOn | oppDate:'d MMM y' }}</td>
               <td class="num opp-tabular">{{ bar.sprint.points }}</td>
               <td class="num opp-tabular">{{ bar.sprint.estimatedCount }} / {{ bar.sprint.ticketCount }}</td>
             </tr>
@@ -70,7 +72,7 @@ interface Bar {
       </details>
     </figure>
     <ng-template #empty>
-      <p class="velocity-empty">The chart appears after the first sprint with revealed tickets.</p>
+      <p class="velocity-empty">{{ 'team.chartEmpty' | transloco }}</p>
     </ng-template>
   `,
   styles: [`
@@ -121,6 +123,7 @@ export class VelocityChartComponent implements OnChanges {
   ticks: number[] = [];
   active: Bar | null = null;
   ariaLabel = '';
+  private readonly i18n = inject(TranslocoService);
   private max = 1;
 
   ngOnChanges(): void {
@@ -135,7 +138,7 @@ export class VelocityChartComponent implements OnChanges {
       const y = this.yFor(sprint.points);
       return { sprint, x: offset + i * slot + (slot - this.barWidth) / 2, y, height: this.plotBottom - y };
     });
-    this.ariaLabel = `Points per sprint: ${shown.map(s => `${s.name} ${s.points}`).join(', ')}.`;
+    this.ariaLabel = this.i18n.translate('team.chartAria', { list: shown.map(s => `${s.name} ${s.points}`).join(', ') });
   }
 
   yFor(value: number): number {
@@ -152,7 +155,7 @@ export class VelocityChartComponent implements OnChanges {
   }
 
   label(sprint: Sprint): string {
-    return `${sprint.name}: ${sprint.points} points, ${sprint.estimatedCount} of ${sprint.ticketCount} tickets estimated`;
+    return this.i18n.translate('team.barLabel', { name: sprint.name, points: sprint.points, count: sprint.estimatedCount, total: sprint.ticketCount });
   }
 }
 

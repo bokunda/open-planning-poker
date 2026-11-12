@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MarkdownPipe } from '../../../../../shared/markdown/markdown.pipe';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 export interface EditTicketResult {
   name: string;
@@ -16,7 +17,7 @@ export interface EditTicketResult {
 @Component({
   selector: 'app-edit-ticket-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MarkdownPipe],
+  imports: [TranslocoPipe, CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MarkdownPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './edit-ticket-dialog.component.html',
   styles: [`

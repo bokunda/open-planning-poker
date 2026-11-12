@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { PwaService } from './pwa.service';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /** Friendly full-screen notice while the device is offline; the app reconnects on its own. */
 @Component({
   selector: 'app-offline-notice',
+  imports: [TranslocoPipe],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -14,11 +16,8 @@ import { PwaService } from './pwa.service';
             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M2 8.8a15 15 0 0 1 4.2-2.6M8.5 5.3A15 15 0 0 1 22 8.8M5 12.6a10 10 0 0 1 3.1-2M11.6 9.1A10 10 0 0 1 19 12.6M8.5 16.4a5 5 0 0 1 6.2-.6M12 20h.01M3 3l18 18"/>
           </svg>
-          <h2 class="offline-title" id="offline-title">You are offline</h2>
-          <p class="offline-desc" id="offline-desc">
-            Planning poker needs a connection to vote with your team. Open Planning Poker reconnects on its own
-            as soon as you are back online.
-          </p>
+          <h2 class="offline-title" id="offline-title">{{ 'pwa.offlineTitle' | transloco }}</h2>
+          <p class="offline-desc" id="offline-desc">{{ 'pwa.offlineText' | transloco }}</p>
         </div>
       </div>
     }

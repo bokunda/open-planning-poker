@@ -1,5 +1,7 @@
 import { ApplicationConfig, inject, isDevMode, provideZoneChangeDetection, APP_INITIALIZER } from '@angular/core';
 import { provideServiceWorker } from '@angular/service-worker';
+import { provideTransloco, TranslocoService } from '@jsverse/transloco';
+import { AppTranslationLoader, DEFAULT_LANGUAGE, LANGUAGES, LanguageService } from './i18n/language';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -84,6 +86,26 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay(), withIncrementalHydration()),
     // The animation engine is loaded in a separate chunk after bootstrap.
     provideAnimationsAsync(),
+    // English, Serbian (Latin) and German (OPP-24). The language is set before the first render.
+    provideTransloco({
+      config: {
+        availableLangs: LANGUAGES.map((language) => language.code),
+        defaultLang: DEFAULT_LANGUAGE,
+        fallbackLang: DEFAULT_LANGUAGE,
+        missingHandler: { useFallbackTranslation: true, logMissingKey: isDevMode() },
+        reRenderOnLangChange: true,
+        prodMode: !isDevMode(),
+      },
+      loader: AppTranslationLoader,
+    }),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => {
+        const language = inject(LanguageService);
+        return () => language.init();
+      },
+      multi: true,
+    },
     // Installable app: caches the app shell so it opens offline (OPP-25). Registered once the app is
     // stable (or after 30 s), so it never competes with the first page load.
     provideServiceWorker('ngsw-worker.js', { enabled: !isDevMode(), registrationStrategy: 'registerWhenStable:30000' }),
@@ -126,8 +148,10 @@ export const appConfig: ApplicationConfig = {
         }
       });
 
-      const basic = setContext((operation, context) => ({
-        headers: {},
+      // The server answers in the app's language (error messages, PDF report).
+      const transloco = inject(TranslocoService);
+      const basic = setContext(() => ({
+        headers: { 'Accept-Language': transloco.getActiveLang() },
       }));
 
       const auth = setContext((operation, context) => {

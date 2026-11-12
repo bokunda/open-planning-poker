@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { JoinGameDialogComponent } from './dialog/join-game-dialog.component';
 
 import { extractGameId } from './extract-game-id';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 export { extractGameId };
 
@@ -17,7 +18,7 @@ export { extractGameId };
   templateUrl: './join-game.component.html',
   styleUrl: './join-game.component.scss',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [TranslocoPipe, CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JoinGameComponent {

@@ -57,7 +57,7 @@
               "ssr": {
                 "entry": "server.ts"
               },
-              "prerender": true,
+              "prerender": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",

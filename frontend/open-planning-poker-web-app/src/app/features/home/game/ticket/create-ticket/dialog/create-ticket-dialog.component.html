@@ -1,8 +1,8 @@
-<h2 mat-dialog-title>New ticket</h2>
+<h2 mat-dialog-title>{{ 'ticket.newTitle' | transloco }}</h2>
 
 <div class="create-ticket-dialog-wrapper">
   <mat-dialog-content>
-    <p class="opp-dialog-lead">The team votes on it right away. Paste the ticket key and title from your tracker.</p>
+    <p class="opp-dialog-lead">{{ 'ticket.newLead' | transloco }}</p>
     <app-create-ticket></app-create-ticket>
   </mat-dialog-content>
 

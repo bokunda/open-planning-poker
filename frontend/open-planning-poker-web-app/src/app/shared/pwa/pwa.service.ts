@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter } from 'rxjs';
+import { TranslocoService } from '@jsverse/transloco';
 
 /** The browser's install event (not in the TypeScript DOM types yet). */
 interface BeforeInstallPromptEvent extends Event {
@@ -22,6 +23,7 @@ export class PwaService {
   private readonly snackBar = inject(MatSnackBar);
   private readonly swUpdate = inject(SwUpdate);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly i18n = inject(TranslocoService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   private installEvent: BeforeInstallPromptEvent | null = null;
@@ -63,7 +65,7 @@ export class PwaService {
       this.swUpdate.versionUpdates
         .pipe(filter((event): event is VersionReadyEvent => event.type === 'VERSION_READY'))
         .subscribe(() => {
-          this.snackBar.open('A new version of Open Planning Poker is ready.', 'Reload', { duration: 15000 })
+          this.snackBar.open(this.i18n.translate('pwa.updateReady'), this.i18n.translate('pwa.reload'), { duration: 15000 })
             .onAction().subscribe(() => document.location.reload());
         });
     }
@@ -82,7 +84,7 @@ export class PwaService {
   private offerInstall(): void {
     if (!this.installEvent || !this.installOfferDue()) return;
     this.rememberInstallOffer();
-    this.snackBar.open('Install Open Planning Poker on this device to open it like an app.', 'Install', { duration: 12000 })
+    this.snackBar.open(this.i18n.translate('pwa.installOffer'), this.i18n.translate('pwa.install'), { duration: 12000 })
       .onAction().subscribe(() => void this.install());
   }
 

@@ -1,9 +1,9 @@
 <div class="chat-wrapper" [class.chat-wrapper--collapsed]="collapsed">
   <!-- The whole bar is clickable with the mouse; keyboard and screen readers use the button. -->
   <div class="chat-header" (click)="collapsedChange.emit(!collapsed)">
-    <span>Chat</span>
+    <span>{{ 'chat.title' | transloco }}</span>
     <button mat-icon-button class="chat-toggle-btn" (click)="$event.stopPropagation(); collapsedChange.emit(!collapsed)"
-      [attr.aria-label]="collapsed ? 'Show chat' : 'Hide chat'" [attr.aria-expanded]="!collapsed">
+      [attr.aria-label]="(collapsed ? 'chat.show' : 'chat.hide') | transloco" [attr.aria-expanded]="!collapsed">
       <mat-icon>{{ collapsed ? 'expand_more' : 'expand_less' }}</mat-icon>
     </button>
   </div>
@@ -11,13 +11,13 @@
   <div class="chat-panel" *ngIf="!collapsed">
     <div class="chat-messages">
       <div class="chat-empty" *ngIf="messages.length === 0">
-        No messages yet. Say hello! 👋
+        {{ 'chat.empty' | transloco }} 👋
       </div>
       <div class="chat-msg" *ngFor="let msg of messages; let i = index"
         [class.chat-msg-own]="msg.playerName === currentUserName">
         <span class="chat-msg-author">{{ msg.playerName }}</span>
         <span class="chat-msg-text" [innerHTML]="linkify(msg.content)"></span>
-        <span class="chat-msg-time">{{ msg.timestamp | date:'HH:mm' }}</span>
+        <span class="chat-msg-time">{{ msg.timestamp | oppDate:'HH:mm' }}</span>
       </div>
     </div>
 
@@ -26,13 +26,13 @@
         type="text"
         [(ngModel)]="newMessage"
         (keydown)="onKeyEnter($event)"
-        placeholder="Type a message..."
+        [placeholder]="'chat.placeholder' | transloco"
         maxlength="500"
-        aria-label="Chat message input"
+        [attr.aria-label]="'chat.inputAria' | transloco"
       />
       <button mat-icon-button color="primary" (click)="sendMessage()"
         [disabled]="!newMessage.trim()"
-        aria-label="Send message">
+        [attr.aria-label]="'chat.send' | transloco">
         <mat-icon>send</mat-icon>
       </button>
     </div>

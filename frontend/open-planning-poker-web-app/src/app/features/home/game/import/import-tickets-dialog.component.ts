@@ -5,6 +5,7 @@ import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 export interface ImportedTicket {
   name: string;
@@ -16,7 +17,7 @@ export interface ImportedTicket {
   templateUrl: './import-tickets-dialog.component.html',
   styleUrl: './import-tickets-dialog.component.scss',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule, MatTabsModule, MatButtonModule, MatIconModule]
+  imports: [TranslocoPipe, CommonModule, FormsModule, MatDialogModule, MatTabsModule, MatButtonModule, MatIconModule]
 })
 export class ImportTicketsDialogComponent {
   readonly dialogRef = inject(MatDialogRef<ImportTicketsDialogComponent>);

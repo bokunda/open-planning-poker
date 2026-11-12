@@ -14,14 +14,16 @@ import { DonateClickDirective } from '../../../shared/analytics';
 import { CHANGE_USERNAME } from '../user/gql/changeUsername.graphql';
 import { GET_USER } from '../user/gql/getUser.graphql';
 import { ChangeUsernameInput, Mutation } from '../../../graphql/graphql-gateway.service';
-
 import { PwaService } from '../../../shared/pwa/pwa.service';
+import { LANGUAGES, Language, LanguageService } from '../../../i18n/language';
+import { TranslocoPipe } from '@jsverse/transloco';
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, DonateClickDirective]
+  imports: [TranslocoPipe, CommonModule, RouterLink, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, DonateClickDirective]
 })
 export class HeaderComponent {
   @Input() username: string = '';
@@ -29,8 +31,18 @@ export class HeaderComponent {
   readonly dialog = inject(MatDialog);
   readonly themeService = inject(ThemeService);
   readonly pwa = inject(PwaService);
+  private readonly language = inject(LanguageService);
+  readonly languages = LANGUAGES;
 
   constructor(private apollo: Apollo) {}
+
+  get currentLanguage(): Language {
+    return this.language.current;
+  }
+
+  setLanguage(language: Language): void {
+    void this.language.use(language);
+  }
 
   githubRepoUrl = OPP_GITHUB_REPO_URL;
   websiteUrl = OPP_WEBSITE_URL;

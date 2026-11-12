@@ -7,13 +7,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogRef } from '@angular/material/dialog';
 import { UpdateUserDialogComponent } from './dialog/update-user-dialog.component';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-update-user',
   templateUrl: './update-user.component.html',
   styleUrl: './update-user.component.scss',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [TranslocoPipe, CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UpdateUserComponent {

@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, DoCheck, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DoCheck, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiCollectionOfGamePlayer, Vote } from '../../../../graphql/graphql-gateway.service';
 import { computeVoteStats, formatNumber, suggestedEstimate, VoteStats } from './vote-stats';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 /**
  * Shown after the reveal: how the votes are distributed, average and median, and what the
@@ -10,15 +11,15 @@ import { computeVoteStats, formatNumber, suggestedEstimate, VoteStats } from './
 @Component({
   selector: 'app-vote-results',
   standalone: true,
-  imports: [CommonModule],
+  imports: [TranslocoPipe, CommonModule],
   changeDetection: ChangeDetectionStrategy.Default,
   template: `
-    <section class="results" *ngIf="stats" aria-live="polite" aria-label="Voting results">
+    <section class="results" *ngIf="stats" aria-live="polite" [attr.aria-label]="'results.title' | transloco">
       <div class="results-head">
         <span class="chip" [ngClass]="'chip--' + stats.status">{{ statusLabel }}</span>
-        <span class="stat">Average <b class="opp-tabular">{{ fmt(stats.average) }}</b></span>
-        <span class="stat">Median <b class="opp-tabular">{{ fmt(stats.median) }}</b></span>
-        <span class="stat">Votes <b class="opp-tabular">{{ totalVotes }}</b></span>
+        <span class="stat">{{ 'results.average' | transloco }} <b class="opp-tabular">{{ fmt(stats.average) }}</b></span>
+        <span class="stat">{{ 'results.median' | transloco }} <b class="opp-tabular">{{ fmt(stats.median) }}</b></span>
+        <span class="stat">{{ 'results.votes' | transloco }} <b class="opp-tabular">{{ totalVotes }}</b></span>
       </div>
       <div class="bars">
         <div class="bar-row" *ngFor="let c of stats.counts; let i = index">
@@ -30,17 +31,17 @@ import { computeVoteStats, formatNumber, suggestedEstimate, VoteStats } from './
       <p class="results-note">{{ note }}</p>
 
       <div class="final" *ngIf="isHost || finalEstimate">
-        <span class="final-label" id="final-label">Final estimate</span>
+        <span class="final-label" id="final-label">{{ 'history.finalEstimate' | transloco }}</span>
         <div class="final-cards" *ngIf="isHost; else finalReadOnly" role="radiogroup" aria-labelledby="final-label">
           <button type="button" class="final-card opp-tabular" *ngFor="let card of finalOptions"
             role="radio" [attr.aria-checked]="card === finalEstimate"
             [class.final-card--selected]="card === finalEstimate"
             [class.final-card--suggested]="card === suggested && !finalEstimate"
-            [attr.title]="card === suggested ? 'Most common card' : null"
+            [attr.title]="card === suggested ? ('results.mostCommon' | transloco) : null"
             (click)="finalEstimateChange.emit(card === finalEstimate ? null : card)">{{ card }}</button>
         </div>
         <ng-template #finalReadOnly><b class="final-value opp-tabular">{{ finalEstimate }}</b></ng-template>
-        <span class="final-hint" *ngIf="isHost && !finalEstimate">Pick the card the team agreed on. It goes into the ticket list, the CSV and the report.</span>
+        <span class="final-hint" *ngIf="isHost && !finalEstimate">{{ 'results.finalHint' | transloco }}</span>
       </div>
     </section>
   `,
@@ -112,10 +113,11 @@ export class VoteResultsComponent implements DoCheck {
   note = '';
   readonly fmt = formatNumber;
   private signature = '';
+  private readonly i18n = inject(TranslocoService);
 
   ngDoCheck(): void {
     const signature = this.votes.map(v => `${v.playerId}:${v.value}`).join('|') + '#' + this.deck.join(',')
-      + '#' + (this.players?.items ?? []).map(p => `${p.id}:${p.name}`).join('|');
+      + '#' + (this.players?.items ?? []).map(p => `${p.id}:${p.name}`).join('|') + '#' + this.i18n.getActiveLang();
     if (signature === this.signature) return;
     this.signature = signature;
 
@@ -130,26 +132,29 @@ export class VoteResultsComponent implements DoCheck {
     const s = this.stats;
     switch (s.status) {
       case 'consensus':
-        this.statusLabel = 'Consensus';
-        this.note = 'Everyone agrees. Record the estimate and move to the next ticket.';
+        this.statusLabel = this.i18n.translate('results.consensus');
+        this.note = this.i18n.translate('results.consensusNote');
         break;
       case 'close':
-        this.statusLabel = 'Close to consensus';
-        this.note = 'The votes are one card apart. Pick the higher value or discuss it briefly.';
+        this.statusLabel = this.i18n.translate('results.close');
+        this.note = this.i18n.translate('results.closeNote');
         break;
       case 'spread':
-        this.statusLabel = 'Wide spread';
-        this.note = `Ask ${this.names(s.lowPlayerIds)} (${formatNumber(s.min)}) and ${this.names(s.highPlayerIds)} (${formatNumber(s.max)}) to explain, then vote again.`;
+        this.statusLabel = this.i18n.translate('results.spread');
+        this.note = this.i18n.translate('results.spreadNote', {
+          low: this.names(s.lowPlayerIds), min: formatNumber(s.min), high: this.names(s.highPlayerIds), max: formatNumber(s.max),
+        });
         break;
       default:
-        this.statusLabel = 'No numeric votes';
-        this.note = 'Nobody picked a number yet. Discuss the ticket and vote again.';
+        this.statusLabel = this.i18n.translate('results.none');
+        this.note = this.i18n.translate('results.noneNote');
     }
   }
 
   private names(ids: string[]): string {
     const items = this.players?.items ?? [];
-    const names = ids.map(id => items.find(p => p.id === id)?.name ?? 'a player');
-    return names.length <= 2 ? names.join(' and ') : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
+    const names = ids.map(id => items.find(p => p.id === id)?.name ?? this.i18n.translate('results.aPlayer'));
+    const and = ` ${this.i18n.translate('common.and')} `;
+    return names.length <= 2 ? names.join(and) : `${names.slice(0, -1).join(', ')}${and}${names[names.length - 1]}`;
   }
 }

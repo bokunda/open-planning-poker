@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslocoService } from '@jsverse/transloco';
 
 export type PokerCardSize = 'sm' | 'md' | 'lg';
 
@@ -30,12 +31,13 @@ export class PokerCardComponent implements OnChanges, OnDestroy {
 
   dropping = false;
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly i18n = inject(TranslocoService);
   private dropTimer: ReturnType<typeof setTimeout> | undefined;
 
   get ariaLabel(): string {
-    if (this.empty) return 'No vote yet';
-    if (this.faceDown) return 'Voted, card hidden';
-    return `Card ${this.value}`;
+    if (this.empty) return this.i18n.translate('card.noVote');
+    if (this.faceDown) return this.i18n.translate('card.hidden');
+    return this.i18n.translate('card.value', { value: this.value });
   }
 
   ngOnChanges(changes: SimpleChanges): void {

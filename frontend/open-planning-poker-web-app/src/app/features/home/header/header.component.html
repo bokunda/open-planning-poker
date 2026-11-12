@@ -2,25 +2,25 @@
   <div class="header">
     <mat-toolbar>
       <!-- Hamburger menu -->
-      <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="Menu">
+      <button mat-icon-button [matMenuTriggerFor]="moreMenu" [attr.aria-label]="'header.menu' | transloco">
         <mat-icon>menu</mat-icon>
       </button>
 
-      <a class="header-brand" routerLink="/" aria-label="Open Planning Poker, home">
+      <a class="header-brand" routerLink="/" [attr.aria-label]="'header.home' | transloco">
         <img class="header-logo" src="/open-planning-poker-game-logo-64x64.png" alt="" width="28" height="28">
         <span class="header-brand-text">Open Planning <span class="header-brand-accent">Poker</span></span>
       </a>
       <span class="header-spacer"></span>
 
       <a class="opp-support-btn header-support" [href]="support.koFi" target="_blank" rel="noopener noreferrer"
-        oppDonate="ko_fi" oppDonatePlacement="header" aria-label="Buy me a coffee: support Open Planning Poker on Ko-fi">
+        oppDonate="ko_fi" oppDonatePlacement="header" [attr.aria-label]="'support.coffeeAria' | transloco">
         <mat-icon svgIcon="opp-coffee" aria-hidden="true"></mat-icon>
-        <span class="header-support-label">Buy me a coffee</span>
+        <span class="header-support-label">{{ 'support.coffee' | transloco }}</span>
       </a>
 
       <!-- Username -->
       <!-- One button: the name and the pencil (a button inside a button is not accessible). -->
-      <button type="button" class="header-welcome" *ngIf="username" (click)="handleUpdateUser()" [attr.aria-label]="'Edit username, currently ' + username">
+      <button type="button" class="header-welcome" *ngIf="username" (click)="handleUpdateUser()" [attr.aria-label]="'header.editUsername' | transloco: { name: username }">
         <span class="header-avatar" aria-hidden="true">{{ username.charAt(0).toUpperCase() }}</span>
         <span class="header-username">{{ username }}</span>
         <mat-icon class="header-edit-icon" aria-hidden="true">edit</mat-icon>
@@ -29,26 +29,35 @@
       <mat-menu #moreMenu="matMenu">
         <button mat-menu-item (click)="toggleTheme()">
           <mat-icon>{{ isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
-          <span>{{ isDark ? 'Light mode' : 'Dark mode' }}</span>
+          <span>{{ (isDark ? 'common.lightMode' : 'common.darkMode') | transloco }}</span>
         </button>
         <a mat-menu-item routerLink="/team">
           <mat-icon svgIcon="opp-team"></mat-icon>
-          <span>Team rooms</span>
+          <span>{{ 'header.teamRooms' | transloco }}</span>
         </a>
         @if (pwa.canInstall()) {
         <button mat-menu-item (click)="pwa.install()">
           <mat-icon>download</mat-icon>
-          <span>Install app</span>
+          <span>{{ 'pwa.installApp' | transloco }}</span>
+        </button>
+        }
+        <mat-divider></mat-divider>
+        <span class="menu-caption" id="language-caption">{{ 'header.language' | transloco }}</span>
+        @for (language of languages; track language.code) {
+        <button mat-menu-item role="menuitemradio" [attr.aria-checked]="language.code === currentLanguage"
+          [attr.lang]="language.htmlLang" (click)="setLanguage(language.code)">
+          <mat-icon svgIcon="opp-check" [class.menu-check--off]="language.code !== currentLanguage"></mat-icon>
+          <span>{{ language.label }}</span>
         </button>
         }
         <mat-divider></mat-divider>
         <a mat-menu-item [href]="support.koFi" target="_blank" rel="noopener noreferrer" oppDonate="ko_fi" oppDonatePlacement="header_menu">
           <mat-icon svgIcon="opp-coffee"></mat-icon>
-          <span>Buy me a coffee</span>
+          <span>{{ 'support.coffee' | transloco }}</span>
         </a>
         <a mat-menu-item [href]="support.githubSponsors" target="_blank" rel="noopener noreferrer" oppDonate="github_sponsors" oppDonatePlacement="header_menu">
           <mat-icon svgIcon="opp-heart"></mat-icon>
-          <span>Sponsor on GitHub</span>
+          <span>{{ 'support.sponsor' | transloco }}</span>
         </a>
         <mat-divider></mat-divider>
         <a mat-menu-item href="{{githubRepoUrl}}" target="_blank" rel="noopener noreferrer">
@@ -57,14 +66,13 @@
         </a>
         <a mat-menu-item href="{{websiteUrl}}" target="_blank" rel="noopener noreferrer">
           <mat-icon>language</mat-icon>
-          <span>Website</span>
+          <span>{{ 'common.website' | transloco }}</span>
         </a>
         <button mat-menu-item (click)="openInfoDialog()">
           <mat-icon>info</mat-icon>
-          <span>About</span>
+          <span>{{ 'common.about' | transloco }}</span>
         </button>
       </mat-menu>
     </mat-toolbar>
   </div>
 </header>
-

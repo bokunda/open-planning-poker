@@ -7,13 +7,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ApiCollectionOfGamePlayer, Vote } from '../../../../graphql/graphql-gateway.service';
 import { PlayerAction, RoomPlayer } from '../room-types';
 import { PokerCardComponent } from '../../../../shared/poker-card/poker-card.component';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-players',
   templateUrl: './players.component.html',
   styleUrl: './players.component.scss',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatMenuModule, MatTooltipModule, PokerCardComponent],
+  imports: [TranslocoPipe, CommonModule, MatButtonModule, MatIconModule, MatMenuModule, MatTooltipModule, PokerCardComponent],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class PlayersComponent implements OnInit {
@@ -74,8 +75,8 @@ export class PlayersComponent implements OnInit {
   }
 
   roleLabel(player: RoomPlayer): string {
-    if (player.id === this.hostId) return 'Host';
-    if (player.isCoHost) return 'Co-host';
+    if (player.id === this.hostId) return 'players.host';
+    if (player.isCoHost) return 'players.coHost';
     return '';
   }
 
@@ -101,11 +102,6 @@ export class PlayersComponent implements OnInit {
   /** Observers do not vote, so they do not count towards "x/y voted". */
   get totalPlayers(): number {
     return (this.players?.items as RoomPlayer[] | undefined)?.filter(p => p.role !== 'OBSERVER').length ?? 0;
-  }
-
-  get consensusLabel(): string {
-    if (!this.totalPlayers) return '';
-    return `${this.votedCount}/${this.totalPlayers} voted`;
   }
 
   trackByPlayerId(index: number, player: { id: string }): string {

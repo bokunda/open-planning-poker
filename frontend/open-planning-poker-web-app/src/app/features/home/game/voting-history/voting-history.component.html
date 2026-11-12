@@ -1,7 +1,7 @@
-<section class="history" *ngIf="tickets && tickets.length > 0" aria-label="Tickets">
+<section class="history" *ngIf="tickets && tickets.length > 0" [attr.aria-label]="'history.title' | transloco">
   <h3 class="history-heading">
-    Tickets <span class="history-count opp-tabular">{{ tickets.length }}</span>
-    <span class="history-hint" *ngIf="isHost && tickets.length > 1">Drag to reorder</span>
+    {{ 'history.title' | transloco }} <span class="history-count opp-tabular">{{ tickets.length }}</span>
+    <span class="history-hint" *ngIf="isHost && tickets.length > 1">{{ 'history.dragHint' | transloco }}</span>
   </h3>
   <ol class="history-list" cdkDropList [cdkDropListDisabled]="!isHost" (cdkDropListDropped)="drop($event)">
     <li class="history-row" *ngFor="let ticket of tickets; let i = index; trackBy: trackByTicketId"
@@ -15,19 +15,19 @@
         </span>
       </div>
       <div class="history-side">
-        <span class="status-chip" *ngIf="ticket.id === currentTicketId">Voting now</span>
+        <span class="status-chip" *ngIf="ticket.id === currentTicketId">{{ 'history.votingNow' | transloco }}</span>
         <ng-container *ngIf="estimate(ticket) as value; else noEstimate">
           <span class="history-estimate opp-tabular" [class.history-estimate--final]="finalEstimate(ticket)"
-            [attr.aria-label]="(finalEstimate(ticket) ? 'Final estimate ' : 'Average ') + value"
-            [matTooltip]="finalEstimate(ticket) ? 'Final estimate' : 'Average of the votes'">{{ value }}</span>
+            [attr.aria-label]="(finalEstimate(ticket) ? 'history.finalEstimateAria' : 'history.averageAria') | transloco: { value: value }"
+            [matTooltip]="(finalEstimate(ticket) ? 'history.finalEstimate' : 'history.average') | transloco">{{ value }}</span>
         </ng-container>
-        <ng-template #noEstimate><span class="history-estimate history-estimate--empty" aria-label="No estimate yet">–</span></ng-template>
+        <ng-template #noEstimate><span class="history-estimate history-estimate--empty" [attr.aria-label]="'history.noEstimate' | transloco">–</span></ng-template>
         <button mat-icon-button *ngIf="isHost && ticket.id !== currentTicketId"
-          (click)="onReVoteTicket.emit(ticket.id)" aria-label="Vote on this ticket again" matTooltip="Vote again">
+          (click)="onReVoteTicket.emit(ticket.id)" [attr.aria-label]="'history.reVoteAria' | transloco" [matTooltip]="'voting.voteAgain' | transloco">
           <mat-icon>replay</mat-icon>
         </button>
         <button mat-icon-button *ngIf="isHost" [matMenuTriggerFor]="ticketMenu" [matMenuTriggerData]="{ ticket: ticket, index: i }"
-          [attr.aria-label]="'Options for ' + ticket.name">
+          [attr.aria-label]="'history.optionsFor' | transloco: { name: ticket.name }">
           <mat-icon>more_vert</mat-icon>
         </button>
       </div>
@@ -37,16 +37,16 @@
   <mat-menu #ticketMenu="matMenu" xPosition="before">
     <ng-template matMenuContent let-ticket="ticket" let-index="index">
       <button mat-menu-item (click)="onEditTicket.emit(asRoomTicket(ticket))">
-        <mat-icon>edit</mat-icon><span>Edit</span>
+        <mat-icon>edit</mat-icon><span>{{ 'common.edit' | transloco }}</span>
       </button>
       <button mat-menu-item [disabled]="index === 0" (click)="move(index, -1)">
-        <mat-icon>expand_less</mat-icon><span>Move up</span>
+        <mat-icon>expand_less</mat-icon><span>{{ 'history.moveUp' | transloco }}</span>
       </button>
       <button mat-menu-item [disabled]="index === tickets.length - 1" (click)="move(index, 1)">
-        <mat-icon>expand_more</mat-icon><span>Move down</span>
+        <mat-icon>expand_more</mat-icon><span>{{ 'history.moveDown' | transloco }}</span>
       </button>
       <button mat-menu-item class="history-menu-danger" (click)="onDeleteTicket.emit(asRoomTicket(ticket))">
-        <mat-icon svgIcon="opp-delete"></mat-icon><span>Delete</span>
+        <mat-icon svgIcon="opp-delete"></mat-icon><span>{{ 'common.delete' | transloco }}</span>
       </button>
     </ng-template>
   </mat-menu>

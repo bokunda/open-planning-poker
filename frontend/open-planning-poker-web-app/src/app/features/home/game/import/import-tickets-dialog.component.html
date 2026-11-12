@@ -1,36 +1,36 @@
-<h2 mat-dialog-title>Import tickets</h2>
+<h2 mat-dialog-title>{{ 'import.title' | transloco }}</h2>
 
 <mat-dialog-content>
   <mat-tab-group [(selectedIndex)]="activeTab" animationDuration="200ms">
     <!-- Tab 1: Bulk Paste -->
-    <mat-tab label="Paste a list">
+    <mat-tab [label]="'import.pasteTab' | transloco">
       <div class="import-tab-content">
-        <p class="import-hint">Paste one ticket per line. Use <code>|</code> to separate description.</p>
+        <p class="import-hint">{{ 'import.pasteHintBefore' | transloco }} <code>|</code> {{ 'import.pasteHintAfter' | transloco }}</p>
         <textarea
           class="import-textarea"
           [(ngModel)]="bulkText"
           (ngModelChange)="onBulkTextChange()"
           (paste)="onPaste($event)"
-          placeholder="Implement user login&#10;Add dark mode support | Toggle between light and dark themes&#10;Fix navigation bug&#10;..."
+          [placeholder]="'import.pastePlaceholder' | transloco"
           rows="8"
-          aria-label="Paste tickets"></textarea>
+          [attr.aria-label]="'import.pasteAria' | transloco"></textarea>
       </div>
     </mat-tab>
 
     <!-- Tab 2: File Upload -->
-    <mat-tab label="Upload a file">
+    <mat-tab [label]="'import.uploadTab' | transloco">
       <div
         class="import-tab-content import-dropzone"
         (dragover)="onDragOver($event)"
         (drop)="onDrop($event)">
         <div class="dropzone-icon">+</div>
-        <p class="dropzone-text">Drag &amp; drop a CSV or JSON file here</p>
-        <p class="dropzone-or">— or —</p>
+        <p class="dropzone-text">{{ 'import.drop' | transloco }}</p>
+        <p class="dropzone-or">— {{ 'import.or' | transloco }} —</p>
         <label class="dropzone-label">
           <input type="file" accept=".csv,.json" (change)="onFileSelected($event)" hidden />
-          <span class="dropzone-btn">Choose file</span>
+          <span class="dropzone-btn">{{ 'import.chooseFile' | transloco }}</span>
         </label>
-        <p class="dropzone-formats">Supports: CSV (name, description) or JSON array</p>
+        <p class="dropzone-formats">{{ 'import.formats' | transloco }}</p>
       </div>
     </mat-tab>
   </mat-tab-group>
@@ -38,15 +38,15 @@
   <!-- Preview -->
   <div class="import-preview" *ngIf="parsedTickets.length > 0">
     <div class="preview-header">
-      <span class="preview-count">{{ parsedTickets.length }} ticket{{ parsedTickets.length !== 1 ? 's' : '' }} ready</span>
+      <span class="preview-count">{{ (parsedTickets.length === 1 ? 'import.readyOne' : 'import.readyMany') | transloco: { count: parsedTickets.length } }}</span>
     </div>
     <div class="preview-table-wrapper">
       <table class="preview-table">
         <thead>
           <tr>
             <th>#</th>
-            <th>Name</th>
-            <th>Description</th>
+            <th>{{ 'import.name' | transloco }}</th>
+            <th>{{ 'import.description' | transloco }}</th>
           </tr>
         </thead>
         <tbody>
@@ -62,10 +62,10 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button mat-dialog-close>{{ 'common.cancel' | transloco }}</button>
   <button mat-flat-button color="primary"
     [disabled]="parsedTickets.length === 0"
     (click)="import()">
-    <mat-icon>file_upload</mat-icon> Import {{ parsedTickets.length }} ticket{{ parsedTickets.length !== 1 ? 's' : '' }}
+    <mat-icon>file_upload</mat-icon> {{ (parsedTickets.length === 1 ? 'import.submitOne' : 'import.submitMany') | transloco: { count: parsedTickets.length } }}
   </button>
 </mat-dialog-actions>

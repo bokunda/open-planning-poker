@@ -75,6 +75,7 @@ jobs:
         working-directory: frontend/open-planning-poker-web-app
         run: |
           npm ci --legacy-peer-deps
+          node scripts/check-i18n.mjs
           npm run build
       - name: Website — install and build
         working-directory: frontend/open-planning-poker-website

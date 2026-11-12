@@ -7,13 +7,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CreateTicketDialogComponent } from './dialog/create-ticket-dialog.component';
 import { MatDialogRef } from '@angular/material/dialog';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-create-ticket',
   templateUrl: './create-ticket.component.html',
   styleUrl: './create-ticket.component.scss',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [TranslocoPipe, CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateTicketComponent {

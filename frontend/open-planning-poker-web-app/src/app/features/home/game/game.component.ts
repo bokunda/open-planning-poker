@@ -53,13 +53,14 @@ import { ticketsToCsv } from './export/tickets-csv';
 import type { ConfirmDialogData } from '../../../shared/dialogs/confirm/confirm-dialog.component';
 import type { EditTicketResult } from './ticket/edit-ticket/edit-ticket-dialog.component';
 import type { RoomOptions } from './details/game-details.component';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent, AsyncVotingComponent],
+  imports: [TranslocoPipe, CommonModule, FormsModule, RouterLink, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent, AsyncVotingComponent],
   animations: [
     trigger('fadeSlide', [
       transition(':enter', [
@@ -188,6 +189,7 @@ export class GameComponent implements OnInit {
   readonly destroyRef = inject(DestroyRef);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly i18n = inject(TranslocoService);
 
   constructor(private apollo: Apollo) {}
 
@@ -235,7 +237,7 @@ export class GameComponent implements OnInit {
   joinFromInput() {
     const id = extractGameId(this.joinInput);
     if (!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(id)) {
-      this.joinError = 'That does not look like a game link or code. Copy the link from the host and paste it here.';
+      this.joinError = this.i18n.translate('landing.joinError');
       return;
     }
     this.joinError = '';
@@ -827,7 +829,7 @@ export class GameComponent implements OnInit {
             break;
           case 'PLAYER_REMOVED':
             if (change.playerId === this.currentUserId) {
-              this.notify('The host removed you from this game. You can join again with the link.');
+              this.notify(this.i18n.translate('room.removedYou'));
               this.handleLeaveGame();
             }
             break;
@@ -861,7 +863,7 @@ export class GameComponent implements OnInit {
   handlePlayerAction(action: PlayerAction): void {
     const gameId = this.game?.id;
     if (!gameId) return;
-    const name = (this.players?.items ?? []).find(p => p.id === action.playerId)?.name ?? 'this player';
+    const name = (this.players?.items ?? []).find(p => p.id === action.playerId)?.name ?? this.i18n.translate('room.thisPlayer');
 
     switch (action.kind) {
       case 'role':
@@ -875,9 +877,9 @@ export class GameComponent implements OnInit {
         break;
       case 'transferHost':
         this.confirm({
-          title: `Make ${name} the host?`,
-          message: `${name} will run the game. You stay in the game as a player.`,
-          confirmLabel: 'Make host',
+          title: this.i18n.translate('room.transferTitle', { name }),
+          message: this.i18n.translate('room.transferMessage', { name }),
+          confirmLabel: this.i18n.translate('players.makeHost'),
         }, () => this.runMutation(TRANSFER_HOST, 'transferHost', { gameId, playerId: action.playerId }, () => {
           this.refreshGame(gameId);
           this.refreshPlayers(gameId);
@@ -885,9 +887,9 @@ export class GameComponent implements OnInit {
         break;
       case 'remove':
         this.confirm({
-          title: `Remove ${name}?`,
-          message: `${name} leaves the table. Their votes stay on the tickets, and they can join again with the link.`,
-          confirmLabel: 'Remove',
+          title: this.i18n.translate('room.removeTitle', { name }),
+          message: this.i18n.translate('room.removeMessage', { name }),
+          confirmLabel: this.i18n.translate('common.remove'),
           destructive: true,
         }, () => this.runMutation(REMOVE_PLAYER, 'removePlayer', { gameId, playerId: action.playerId },
           () => this.refreshPlayers(gameId)));
@@ -912,9 +914,9 @@ export class GameComponent implements OnInit {
 
   handleDeleteTicket(ticket: RoomTicket): void {
     this.confirm({
-      title: 'Delete this ticket?',
-      message: `"${ticket.name}" and its votes are deleted for everyone. This cannot be undone.`,
-      confirmLabel: 'Delete',
+      title: this.i18n.translate('ticket.deleteTitle'),
+      message: this.i18n.translate('ticket.deleteMessage', { name: ticket.name }),
+      confirmLabel: this.i18n.translate('common.delete'),
       destructive: true,
     }, () => this.runMutation(DELETE_TICKET, 'deleteTicket', { id: ticket.id }, () => this.getTickets(ticket.gameId)));
   }
@@ -953,7 +955,14 @@ export class GameComponent implements OnInit {
 
   handleExportCsv(): void {
     if (!this.game) return;
-    const csv = ticketsToCsv(this.tickets as RoomTicket[]);
+    const t = (key: string) => this.i18n.translate(key);
+    const csv = ticketsToCsv(this.tickets as RoomTicket[], {
+      header: ['#', t('ticket.name'), t('import.description'), t('csv.estimate'), t('csv.source'), t('results.average'), t('results.votes'), t('csv.revealed')],
+      final: t('csv.final'),
+      mostCommon: t('results.mostCommon'),
+      yes: t('csv.yes'),
+      no: t('csv.no'),
+    });
     const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -978,7 +987,7 @@ export class GameComponent implements OnInit {
         onSuccess?.();
       },
       error: () => {
-        this.notify('That did not work. Check your connection and try again.');
+        this.notify(this.i18n.translate('common.tryAgainNetwork'));
         onError?.();
       }
     });
@@ -991,7 +1000,7 @@ export class GameComponent implements OnInit {
   }
 
   private notify(message: string): void {
-    this.snackBar.open(message, OPP_SNACKBAR_MODAL_LABEL_CLOSE, { duration: OPP_SNACKBAR_DURATION_DEFAULT * 2 });
+    this.snackBar.open(message, this.i18n.translate('common.close'), { duration: OPP_SNACKBAR_DURATION_DEFAULT * 2 });
   }
 
   generateAndDownloadReport(gameId: string): void {

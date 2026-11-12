@@ -7,13 +7,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { Ticket } from '../../../../graphql/graphql-gateway.service';
 import { RoomTicket } from '../room-types';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-voting-history',
   templateUrl: './voting-history.component.html',
   styleUrl: './voting-history.component.scss',
   standalone: true,
-  imports: [CommonModule, DragDropModule, MatTooltipModule, MatButtonModule, MatIconModule, MatMenuModule],
+  imports: [TranslocoPipe, CommonModule, DragDropModule, MatTooltipModule, MatButtonModule, MatIconModule, MatMenuModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VotingHistoryComponent {
