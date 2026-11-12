@@ -68,6 +68,18 @@
     @apply inline-flex items-center gap-1.5 h-9 px-3 text-sm font-semibold rounded-full border border-gray-200 text-gray-900
       hover:border-purple-300 transition dark:border-gray-700 dark:text-white focus-ring;
   }
+  /* "Buy me a coffee": a warm tint next to the violet buttons, visible but not loud. */
+  .coffee-button {
+    @apply inline-flex items-center justify-center gap-1.5 h-9 px-3.5 text-sm font-semibold rounded-full border transition
+      border-[#efc27a] bg-[#fff3df] text-[#6e3d0b] hover:bg-[#ffe8c2]
+      dark:border-[#f5a62366] dark:bg-[#f5a6231f] dark:text-[#f8cf8a] dark:hover:bg-[#f5a62333]
+      focus:outline-none focus-visible:ring-4 focus-visible:ring-[#efc27a];
+  }
+  .coffee-button svg { @apply w-4 h-4 shrink-0 transition-transform; }
+  .coffee-button:hover svg { transform: rotate(-12deg); }
+  @media (prefers-reduced-motion: reduce) { .coffee-button:hover svg { transform: none; } }
+  .coffee-button--lg { @apply h-auto px-6 py-3.5 text-base font-bold; }
+  .coffee-button--lg svg { @apply w-5 h-5; }
   .star-count { @apply pl-1.5 ml-0.5 border-l border-gray-200 text-gray-600 dark:border-gray-700 dark:text-gray-300; }
 
   .eyebrow { @apply text-xs font-bold tracking-[0.14em] uppercase text-purple-600 dark:text-purple-400; }

@@ -12,6 +12,12 @@
       </a>
       <span class="header-spacer"></span>
 
+      <a class="opp-support-btn header-support" [href]="support.koFi" target="_blank" rel="noopener noreferrer"
+        oppDonate="ko_fi" oppDonatePlacement="header" aria-label="Buy me a coffee: support Open Planning Poker on Ko-fi">
+        <mat-icon svgIcon="opp-coffee" aria-hidden="true"></mat-icon>
+        <span class="header-support-label">Buy me a coffee</span>
+      </a>
+
       <!-- Username -->
       <!-- One button: the name and the pencil (a button inside a button is not accessible). -->
       <button type="button" class="header-welcome" *ngIf="username" (click)="handleUpdateUser()" [attr.aria-label]="'Edit username, currently ' + username">

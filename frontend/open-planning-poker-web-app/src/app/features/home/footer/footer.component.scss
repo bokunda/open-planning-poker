@@ -84,3 +84,14 @@
     justify-content: center;
   }
 }
+
+/* The coffee button keeps its own look among the plain footer links. */
+.footer-links a.footer-support {
+  height: 30px;
+  margin-left: var(--opp-space-2);
+  padding: 0 12px 0 9px;
+  color: var(--opp-support-ink);
+
+  &:hover { color: var(--opp-support-ink); }
+  mat-icon { width: 16px; height: 16px; font-size: 16px; margin-right: 0; }
+}
