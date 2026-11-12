@@ -101,9 +101,10 @@
         [class.vote-card--disabled]="ticket?.id == null"
         [disabled]="ticket?.id == null || votesRevealed"
         [attr.aria-pressed]="selectedOption === voteOption"
-        [attr.aria-label]="'voting.voteFor' | transloco: { value: voteOption }"
         (click)="selectOption(voteOption, $event)">
-        <app-poker-card [value]="voteOption" size="lg" [selected]="selectedOption === voteOption"></app-poker-card>
+        <!-- The name comes from the hidden text, so it always matches; the card face is decoration. -->
+        <span class="sr-only">{{ 'voting.voteFor' | transloco: { value: voteOption } }}</span>
+        <app-poker-card aria-hidden="true" [value]="voteOption" size="lg" [selected]="selectedOption === voteOption"></app-poker-card>
       </button>
     </div>
     <p class="hand-hint" *ngIf="!votesRevealed && !isObserver">
