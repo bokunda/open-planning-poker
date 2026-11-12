@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -19,6 +19,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OpenPlanningPoker.GameEngine.Domain\OpenPlanningPoker.GameEngine.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Report fonts (OFL, see Features/Games/Report/Resources/README.md) and logo -->
+    <EmbeddedResource Include="Features\Games\Report\Resources\*.ttf" />
+    <EmbeddedResource Include="Features\Games\Report\Resources\*.png" />
   </ItemGroup>
 
 </Project>

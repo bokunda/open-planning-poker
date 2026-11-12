@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
 jobs:
   deploy-postgresql:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
 
       - name: Deploy using SSH
         uses: appleboy/ssh-action@v1

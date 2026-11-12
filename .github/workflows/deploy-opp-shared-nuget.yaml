@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
 jobs:
   publish-open-planning-poker-nuget:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4.3.0
+        uses: actions/setup-dotnet@v6.1.0
         with:
           dotnet-version: 9.0.x
 

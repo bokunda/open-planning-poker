@@ -13,10 +13,13 @@ namespace OpenPlanningPoker.GameEngine.GraphQL.Features;
 /// </summary>
 public static class GraphQLMappings
 {
+    /// <summary>Maps a collection; a missing collection (a failed query) becomes an empty one.</summary>
     public static ApiCollection<TDestination> ToGraphQL<TSource, TDestination>(
-        this Application.ApiCollection<TSource> collection,
+        this Application.ApiCollection<TSource>? collection,
         Func<TSource, TDestination> map) =>
-        new([.. collection.Items.Select(map)], collection.TotalCount);
+        collection is null
+            ? new([], 0)
+            : new([.. collection.Items.Select(map)], collection.TotalCount);
 
     public static GameType ToGraphQL(this GetGameResponse game) => new()
     {

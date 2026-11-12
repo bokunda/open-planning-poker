@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.1] — 2026-11-13
+
+A redesigned PDF report, plus clean CI runs and builds.
+
+### Changed
+- **PDF report redesigned** to match the app and the website: the logo and brand violet, Figtree and Bricolage Grotesque (full character set, so names like "Đorđe Čolić" print correctly), summary tiles (tickets, revealed, players, average estimate) and one card per ticket with the estimate, average, median, a consensus / close / wide spread label, a vote distribution and who voted what. Page numbers and a link back to openplanningpoker.com in the footer
+- The estimate on each ticket is the most common card (ties go to the card closest to the median) instead of a raw average
+- QuestPDF 2025.1.7 → 2025.7.4 (rounded corners)
+- **GitHub Actions on Node 24**: `actions/checkout` v7.0.1 and `actions/setup-dotnet` v6.1.0 (the old versions ran on the deprecated Node 20)
+- **Runners pinned to `ubuntu-24.04`** instead of `ubuntu-latest`, so the move of `ubuntu-latest` to Ubuntu 26 does not change the build without notice
+
+### Fixed
+- **Ticket votes could fail with a null reference** when the votes query returned an error; the mapping now returns an empty list instead
+- **Build warnings**: nullable warnings in the GraphQL mappings, missing XML documentation on the JWT setup, and two versions of `Microsoft.EntityFrameworkCore.Relational` in the Game Engine (now 9.0.3 everywhere). The Game Engine, User Management and the Fusion gateway build without warnings
+- **Website check marks**: the icons in the hero list ("No sign-up", "Works on phones", ...) sat 2px below the text; they are now centred on the line at any font size
+
 ## [2.1.0] — 2026-11-12
 
 A shared timer for the whole team, a faster first load, and guides on the website.

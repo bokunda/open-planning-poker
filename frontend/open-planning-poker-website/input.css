@@ -79,6 +79,8 @@
   .check::before {
     content: '';
     @apply flex-none w-5 h-5 mt-0.5 rounded-full bg-purple-100 dark:bg-purple-900;
+    /* Center the 20px icon on the first line, whatever the font size (text-sm or text-base) */
+    margin-top: max(0px, calc((1lh - 1.25rem) / 2));
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236a3ae8'%3E%3Cpath fill-rule='evenodd' d='M16.7 5.3a1 1 0 010 1.4l-8 8a1 1 0 01-1.4 0l-4-4a1 1 0 111.4-1.4L8 12.6l7.3-7.3a1 1 0 011.4 0z' clip-rule='evenodd'/%3E%3C/svg%3E");
     background-size: 14px;
     background-position: center;
