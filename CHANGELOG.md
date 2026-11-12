@@ -24,9 +24,9 @@ Open Planning Poker in your language, installable on your phone, and every pull 
 ### Developers
 - Game Engine integration tests against real PostgreSQL and Redis (Testcontainers): host-only actions, hidden votes, vote again, the timer, chat access, translated errors and the PDF report
 - Playwright end-to-end tests on the full stack (`docker-compose.e2e.yml`): create a game, a second player joins, add and import tickets, vote, reveal, vote again, the shared timer and the PDF export, with axe accessibility checks on desktop and phone
-- A CI workflow for every pull request: backend unit and integration tests, a vulnerable-package check, app and website builds, the translation check, end-to-end tests and Lighthouse budgets (performance ≥ 90, accessibility 100, best practices ≥ 95, SEO ≥ 95)
+- A CI workflow for every pull request: backend unit and integration tests, a vulnerable-package check, app and website builds, the translation check, end-to-end tests and Lighthouse budgets (performance ≥ 90, accessibility 100, best practices ≥ 95, SEO ≥ 92, with each SEO audit checked on its own)
 
-## [2.2.1] — Unreleased
+## [2.2.1] — 2026-11-13
 
 ### Security
 - Security hardening of the chat and the WebSocket connection; the chat loads after joining the game
