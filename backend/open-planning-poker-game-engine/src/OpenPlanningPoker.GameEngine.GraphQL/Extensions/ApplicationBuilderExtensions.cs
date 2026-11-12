@@ -25,6 +25,8 @@ public static class ApplicationBuilderExtensions
             .AddRedisSubscriptions(sp => sp.GetRequiredService<IConnectionMultiplexer>())
             // Subscriptions run as the user whose token the app sends in connection_init.
             .AddSocketSessionInterceptor<WebSocketAuthInterceptor>()
+            // Error messages in the caller's language.
+            .TryAddTypeInterceptor<Localization.ApplicationErrorMessageInterceptor>()
             .AddMaxExecutionDepthRule(MaxExecutionDepth)
             .ModifyRequestOptions(options =>
             {

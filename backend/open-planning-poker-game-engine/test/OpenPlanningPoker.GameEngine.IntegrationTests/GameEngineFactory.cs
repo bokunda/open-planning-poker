@@ -61,6 +61,14 @@ public sealed class GameEngineFactory : WebApplicationFactory<Program>, IAsyncLi
     }
 
     public GraphQLClient CreateAnonymous() => new(CreateClient(), Guid.Empty);
+
+    /// <summary>A signed-in user whose requests ask for answers in <paramref name="language"/>.</summary>
+    public async Task<GraphQLClient> CreateUserAsync(string name, string language)
+    {
+        var client = await CreateUserAsync(name);
+        client.AcceptLanguage(language);
+        return client;
+    }
 }
 
 [CollectionDefinition(Name)]
@@ -72,6 +80,8 @@ public sealed class GameEngineCollection : ICollectionFixture<GameEngineFactory>
 public sealed class GraphQLClient(HttpClient http, Guid userId)
 {
     public Guid UserId { get; } = userId;
+
+    public void AcceptLanguage(string language) => http.DefaultRequestHeaders.AcceptLanguage.ParseAdd(language);
 
     /// <summary>Runs a GraphQL operation and returns <c>data</c>; fails the test on transport-level GraphQL errors.</summary>
     public async Task<JsonElement> RunAsync(string query, object? variables = null)

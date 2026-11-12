@@ -126,6 +126,24 @@ public sealed class GameFlowTests(GameEngineFactory factory)
         GraphQLClient.ErrorCode(outsiderSend.GetProperty("sendChatMessage")).ShouldBe("NotMember");
     }
 
+    [Theory]
+    [InlineData("de-DE,de;q=0.9", "Nur der Host des Spiels kann das tun.")]
+    [InlineData("sr-Latn-RS", "Ovo može da uradi samo host igre.")]
+    [InlineData("fr", "Only the game host can perform this action.")]
+    public async Task ErrorMessages_FollowAcceptLanguage(string language, string expected)
+    {
+        var (_, player, gameId, _) = await GameWithTicketAsync();
+        player.AcceptLanguage(language);
+
+        var data = await player.RunAsync(
+            "mutation($input: CreateTicketInput!) { createTicket(input: $input) { errors { ... on ApplicationError { code message } } } }",
+            new { input = new { gameId, name = "Not mine", description = "" } });
+
+        var error = data.GetProperty("createTicket").GetProperty("errors")[0];
+        error.GetProperty("code").GetString().ShouldBe("NotHost");
+        error.GetProperty("message").GetString().ShouldBe(expected);
+    }
+
     [Fact]
     public async Task GameReport_IsAPdf()
     {
