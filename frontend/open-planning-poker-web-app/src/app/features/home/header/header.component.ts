@@ -10,6 +10,7 @@ import { RouterLink } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { OPP_GITHUB_REPO_URL, OPP_SUPPORT, OPP_WEBSITE_URL } from '../../../shared/constants';
 import { ThemeService } from '../../../shared/theme.service';
+import { DonateClickDirective } from '../../../shared/analytics';
 import { CHANGE_USERNAME } from '../user/gql/changeUsername.graphql';
 import { GET_USER } from '../user/gql/getUser.graphql';
 import { ChangeUsernameInput, Mutation } from '../../../graphql/graphql-gateway.service';
@@ -19,7 +20,7 @@ import { ChangeUsernameInput, Mutation } from '../../../graphql/graphql-gateway.
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule]
+  imports: [CommonModule, RouterLink, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, DonateClickDirective]
 })
 export class HeaderComponent {
   @Input() username: string = '';

@@ -18,7 +18,7 @@ Run the room together, estimate before the meeting, and keep a team's history in
 - **CSV export** of the results, next to the PDF report
 - **Async voting**: the host opens a voting window (24 hours, 3 days or a week). Everyone votes on all tickets on their own; votes stay hidden until the host reveals each ticket in the meeting
 - **Team rooms** (`/team`): a persistent room per team with an invite link, members, sprint planning sessions, the sprint history and a velocity chart (points per sprint, average of the last three sprints, with a table view)
-- **Support the project**: GitHub Sponsors and Ko-fi links in the app menu, footer and About, on the website and in the README (`.github/FUNDING.yml`). The About dialog and the website introduce the creator
+- **Support the project**: GitHub Sponsors and Ko-fi links in the app menu, footer and About, on the website and in the README (`.github/FUNDING.yml`). Clicks are counted as a `donate_click` GA4 event (platform and placement, no personal data). The About dialog and the website introduce the creator
 
 ### Changed
 - Players in a room get live updates when someone changes role, becomes co-host, leaves or is removed, and when tickets or room options change (`onGameChanged`)
