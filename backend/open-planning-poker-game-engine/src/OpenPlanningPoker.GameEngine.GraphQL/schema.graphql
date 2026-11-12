@@ -56,6 +56,11 @@ type CreateSettingsPayload {
   errors: [CreateSettingsError!]
 }
 
+type CreateTeamPayload {
+  team: Team
+  errors: [CreateTeamError!]
+}
+
 type CreateTicketPayload {
   ticket: Ticket
   errors: [CreateTicketError!]
@@ -76,13 +81,33 @@ type Game {
   id: UUID!
   name: String!
   description: String!
-  "Id of the player who created the game. Only the host can manage tickets, settings and reveals."
+  """
+  Id of the player who runs the game: the creator until the host hands it over.
+  The host and co-hosts manage tickets, settings and reveals.
+  """
   hostId: UUID!
+  "Team room the game belongs to (a sprint of that team), if any."
+  teamId: UUID
+}
+
+"""
+A small "something changed" event. It carries no data that is not already public in the game,
+so it is safe to broadcast; clients fetch the details with their own (checked) queries.
+"""
+type GameChanged {
+  gameId: UUID!
+  kind: GameChangeKind!
+  ticketId: UUID
+  playerId: UUID
 }
 
 type GamePlayer {
   name: String @cost(weight: "10")
   id: UUID!
+  "Observers watch the table and do not vote."
+  role: PlayerRole!
+  "Co-hosts can run the game next to the host."
+  isCoHost: Boolean!
 }
 
 type GameReport {
@@ -119,9 +144,19 @@ type JoinGamePayload {
   errors: [JoinGameError!]
 }
 
+type JoinTeamPayload {
+  boolean: Boolean
+  errors: [JoinTeamError!]
+}
+
 type LeaveGamePayload {
   boolean: Boolean
   errors: [LeaveGameError!]
+}
+
+type LeaveTeamPayload {
+  boolean: Boolean
+  errors: [LeaveTeamError!]
 }
 
 "Base Game Engine mutation."
@@ -132,9 +167,23 @@ type Mutation {
   joinGame(input: JoinGameInput!): JoinGamePayload! @cost(weight: "10")
   "Leave a Game. Requires a valid user token."
   leaveGame(input: LeaveGameInput!): LeaveGamePayload! @cost(weight: "10")
+  """
+  Switches between voting (PLAYER) and watching (OBSERVER). Players change their own role;
+  the host and co-hosts can change anyone's. Leave playerId empty for yourself.
+  """
+  setPlayerRole(input: SetPlayerRoleInput!): SetPlayerRolePayload! @cost(weight: "10")
+  "Makes a player co-host, or a regular player again. Host only."
+  setCoHost(input: SetCoHostInput!): SetCoHostPayload! @cost(weight: "10")
+  """
+  Removes a player from the game (their votes stay). Host and co-hosts; the host cannot be removed.
+  The removed player can join again with the link.
+  """
+  removePlayer(input: RemovePlayerInput!): RemovePlayerPayload! @cost(weight: "10")
+  "Hands the game over to another player in it. Host only; the old host stays as a player."
+  transferHost(input: TransferHostInput!): TransferHostPayload! @cost(weight: "10")
   "Creates a game, returns game details. The caller becomes the game host."
   createGame(input: CreateGameInput!): CreateGamePayload! @cost(weight: "10")
-  "Deletes a game with its tickets, votes and players. Host only."
+  "Deletes a game with its tickets, votes and players. Host only (not co-hosts)."
   deleteGame(input: DeleteGameInput!): DeleteGamePayload! @cost(weight: "10")
   "Generates a PDF report of the game. Only players of the game can generate it."
   generateGameReport(input: GenerateGameReportInput!): GenerateGameReportPayload! @cost(weight: "10")
@@ -144,10 +193,30 @@ type Mutation {
   createSettings(input: CreateSettingsInput!): CreateSettingsPayload! @cost(weight: "10")
   "Updates Game Settings. Host only."
   updateSettings(input: UpdateSettingsInput!): UpdateSettingsPayload! @cost(weight: "10")
+  """
+  Room options: auto-reveal, and the async voting window (players vote on all tickets on their own
+  until asyncVotingEndsAt; null or a past time switches to meeting mode). Host and co-hosts.
+  """
+  updateGameOptions(input: UpdateGameOptionsInput!): UpdateGameOptionsPayload! @cost(weight: "10")
+  "Creates a team room; the caller becomes its owner and first member."
+  createTeam(input: CreateTeamInput!): CreateTeamPayload! @cost(weight: "10")
+  "Renames a team room. Owner only."
+  updateTeam(input: UpdateTeamInput!): UpdateTeamPayload! @cost(weight: "10")
+  "Joins a team room with its link."
+  joinTeam(input: JoinTeamInput!): JoinTeamPayload! @cost(weight: "10")
+  "Leaves a team room. The owner cannot leave."
+  leaveTeam(input: LeaveTeamInput!): LeaveTeamPayload! @cost(weight: "10")
   "Creates a ticket for given game. Host only."
   createTicket(input: CreateTicketInput!): CreateTicketPayload! @cost(weight: "10")
-  "Updates a ticket for given game. Host only."
+  "Updates a ticket's name and description. Host and co-hosts."
   updateTicket(input: UpdateTicketInput!): UpdateTicketPayload! @cost(weight: "10")
+  "Puts the game's tickets in the given order (first id first). Host and co-hosts."
+  reorderTickets(input: ReorderTicketsInput!): ReorderTicketsPayload! @cost(weight: "10")
+  """
+  Sets the estimate the team agreed on after the reveal (any value, usually a card). An empty value clears it.
+  Host and co-hosts.
+  """
+  setFinalEstimate(input: SetFinalEstimateInput!): SetFinalEstimatePayload! @cost(weight: "10")
   """
   Re-votes a ticket: deletes its votes, hides voting again and broadcasts it as the
   active ticket to all players in the game. Host only.
@@ -159,9 +228,12 @@ type Mutation {
   startTimer(input: StartTimerInput!): StartTimerPayload! @cost(weight: "10")
   "Stops the voting timer for everyone in the game. Host only."
   stopTimer(input: StopTimerInput!): StopTimerPayload! @cost(weight: "10")
-  "Creates or updates a vote. Only players who joined the game can vote."
+  """
+  Creates or updates a vote. Only players who joined the game can vote (observers cannot).
+  With auto-reveal on, the last missing vote reveals the cards for everyone.
+  """
   createOrUpdateVote(input: CreateOrUpdateVoteInput!): CreateOrUpdateVotePayload! @cost(weight: "10")
-  "Reveals all votes for a ticket and broadcasts them to all players. Host only."
+  "Reveals all votes for a ticket and broadcasts them to all players. Host and co-hosts."
   revealVotes(input: RevealVotesInput!): RevealVotesPayload! @cost(weight: "10")
 }
 
@@ -183,6 +255,10 @@ type Query {
   ping: String! @cost(weight: "10")
   "Gets Game Settings."
   settings(gameId: UUID!): SettingsResult! @cost(weight: "10")
+  "A team room by id. Members-only fields are empty for others."
+  team(id: UUID!): TeamResult! @cost(weight: "10")
+  "Team rooms the caller belongs to."
+  myTeams: [Team!]! @cost(weight: "10")
   "Gets a ticket by id."
   ticket(id: UUID!): TicketResult! @cost(weight: "10")
   "Gets a list of tickets by gameId."
@@ -201,6 +277,16 @@ type ReVoteTicketPayload {
   errors: [ReVoteTicketError!]
 }
 
+type RemovePlayerPayload {
+  boolean: Boolean
+  errors: [RemovePlayerError!]
+}
+
+type ReorderTicketsPayload {
+  boolean: Boolean
+  errors: [ReorderTicketsError!]
+}
+
 type RevealVotesPayload {
   votesRevealed: VotesRevealed
   errors: [RevealVotesError!]
@@ -211,10 +297,40 @@ type SendChatMessagePayload {
   errors: [SendChatMessageError!]
 }
 
+type SetCoHostPayload {
+  boolean: Boolean
+  errors: [SetCoHostError!]
+}
+
+type SetFinalEstimatePayload {
+  ticket: Ticket
+  errors: [SetFinalEstimateError!]
+}
+
+type SetPlayerRolePayload {
+  boolean: Boolean
+  errors: [SetPlayerRoleError!]
+}
+
 type Settings {
   id: UUID!
   gameId: UUID!
   deckSetup: String!
+  "Cards are revealed as soon as every player (not observers) has voted."
+  autoReveal: Boolean!
+  "End of the async voting window; null when the room is in meeting mode."
+  asyncVotingEndsAt: DateTime
+}
+
+"One planning session of a team. Points add up the estimates of its revealed tickets."
+type Sprint {
+  gameId: UUID!
+  name: String!
+  description: String!
+  createdOn: DateTime!
+  ticketCount: Int!
+  estimatedCount: Int!
+  points: Float!
 }
 
 type StartTimerPayload {
@@ -233,10 +349,40 @@ type Subscription {
   onPlayerLeave(gameId: UUID!): BaseUserProfile!
   onTicketCreated(gameId: UUID!): Ticket!
   onTicketReVoted(gameId: UUID!): Ticket!
+  "Fires when players, tickets or the game itself change; reload the part named by kind."
+  onGameChanged(gameId: UUID!): GameChanged!
   "Fires when the host starts or stops the timer."
   onTimerChanged(gameId: UUID!): GameTimer!
   onVoteCreatedOrUpdated(ticketId: UUID!): Vote!
   onVotesRevealed(ticketId: UUID!): VotesRevealed!
+}
+
+"""
+A persistent team room. Anyone with the link sees its name and can join; members also see
+the other members, the sprint history and the velocity.
+"""
+type Team {
+  "True when the caller is a member (or the owner)."
+  isMember: Boolean! @cost(weight: "10")
+  "Members of the team, oldest first. Empty for non-members."
+  members: [TeamMember!]! @cost(weight: "10")
+  "The team's planning sessions, newest first, with their points. Empty for non-members."
+  sprints: [Sprint!]! @cost(weight: "10")
+  """
+  Average points of the last three sprints that estimated something; null until there is one.
+  A planning aid, not a target.
+  """
+  averageVelocity: Float @cost(weight: "10")
+  id: UUID!
+  name: String!
+  description: String!
+  ownerId: UUID!
+  createdOn: DateTime!
+}
+
+type TeamMember {
+  name: String @cost(weight: "10")
+  id: UUID!
 }
 
 type Ticket {
@@ -247,11 +393,30 @@ type Ticket {
   name: String!
   description: String!
   votesRevealed: Boolean!
+  "The estimate the host chose after the reveal; null until one is chosen."
+  finalEstimate: String
+  "Place of the ticket in the game's list (0 first)."
+  position: Int!
+}
+
+type TransferHostPayload {
+  boolean: Boolean
+  errors: [TransferHostError!]
+}
+
+type UpdateGameOptionsPayload {
+  settings: Settings
+  errors: [UpdateGameOptionsError!]
 }
 
 type UpdateSettingsPayload {
   settings: Settings
   errors: [UpdateSettingsError!]
+}
+
+type UpdateTeamPayload {
+  team: Team
+  errors: [UpdateTeamError!]
 }
 
 type UpdateTicketPayload {
@@ -279,6 +444,8 @@ union CreateOrUpdateVoteError = ApplicationError
 
 union CreateSettingsError = ApplicationError
 
+union CreateTeamError = ApplicationError
+
 union CreateTicketError = ApplicationError
 
 union DeleteGameError = ApplicationError
@@ -295,13 +462,27 @@ union InfoResult = Info | ApplicationError
 
 union JoinGameError = ApplicationError
 
+union JoinTeamError = ApplicationError
+
 union LeaveGameError = ApplicationError
 
+union LeaveTeamError = ApplicationError
+
 union ReVoteTicketError = ApplicationError
+
+union RemovePlayerError = ApplicationError
+
+union ReorderTicketsError = ApplicationError
 
 union RevealVotesError = ApplicationError
 
 union SendChatMessageError = ApplicationError
+
+union SetCoHostError = ApplicationError
+
+union SetFinalEstimateError = ApplicationError
+
+union SetPlayerRoleError = ApplicationError
 
 union SettingsDetailsResult = Settings | ApplicationError
 
@@ -311,11 +492,19 @@ union StartTimerError = ApplicationError
 
 union StopTimerError = ApplicationError
 
+union TeamResult = Team | ApplicationError
+
 union TicketResult = Ticket | ApplicationError
 
 union TicketsResult = ApiCollectionOfTicket | ApplicationError
 
+union TransferHostError = ApplicationError
+
+union UpdateGameOptionsError = ApplicationError
+
 union UpdateSettingsError = ApplicationError
+
+union UpdateTeamError = ApplicationError
 
 union UpdateTicketError = ApplicationError
 
@@ -325,6 +514,7 @@ input CreateGameInput {
   name: String!
   description: String!
   deckSetup: String
+  teamId: UUID
 }
 
 input CreateOrUpdateVoteInput {
@@ -335,6 +525,11 @@ input CreateOrUpdateVoteInput {
 input CreateSettingsInput {
   gameId: UUID!
   deckSetup: String
+}
+
+input CreateTeamInput {
+  name: String!
+  description: String
 }
 
 input CreateTicketInput {
@@ -359,13 +554,31 @@ input JoinGameInput {
   gameId: UUID!
 }
 
+input JoinTeamInput {
+  teamId: UUID!
+}
+
 input LeaveGameInput {
   gameId: UUID!
+}
+
+input LeaveTeamInput {
+  teamId: UUID!
 }
 
 input ReVoteTicketInput {
   gameId: UUID!
   ticketId: UUID!
+}
+
+input RemovePlayerInput {
+  gameId: UUID!
+  playerId: UUID!
+}
+
+input ReorderTicketsInput {
+  gameId: UUID!
+  ticketIds: [UUID!]!
 }
 
 input RevealVotesInput {
@@ -377,6 +590,23 @@ input SendChatMessageInput {
   content: String!
 }
 
+input SetCoHostInput {
+  gameId: UUID!
+  playerId: UUID!
+  isCoHost: Boolean!
+}
+
+input SetFinalEstimateInput {
+  ticketId: UUID!
+  value: String
+}
+
+input SetPlayerRoleInput {
+  gameId: UUID!
+  role: PlayerRole!
+  playerId: UUID
+}
+
 input StartTimerInput {
   gameId: UUID!
   durationSeconds: Int!
@@ -386,16 +616,50 @@ input StopTimerInput {
   gameId: UUID!
 }
 
+input TransferHostInput {
+  gameId: UUID!
+  playerId: UUID!
+}
+
+input UpdateGameOptionsInput {
+  gameId: UUID!
+  autoReveal: Boolean!
+  asyncVotingEndsAt: DateTime
+}
+
 input UpdateSettingsInput {
   id: UUID!
   gameId: UUID!
   deckSetup: String
 }
 
+input UpdateTeamInput {
+  teamId: UUID!
+  name: String!
+  description: String
+}
+
 input UpdateTicketInput {
   id: UUID!
   name: String!
   description: String!
+}
+
+"What changed in a game. Clients reload that part (players, tickets or the game and its settings)."
+enum GameChangeKind {
+  "Host, settings or options changed: reload the game."
+  GAME
+  "A player joined, left, was removed, or changed role \/ co-host."
+  PLAYERS
+  "Tickets were edited, deleted, reordered or got a final estimate."
+  TICKETS
+  "A player was removed; PlayerId says who."
+  PLAYER_REMOVED
+}
+
+enum PlayerRole {
+  PLAYER
+  OBSERVER
 }
 
 "The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."

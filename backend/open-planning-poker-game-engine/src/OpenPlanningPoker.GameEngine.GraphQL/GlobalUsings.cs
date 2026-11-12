@@ -36,3 +36,4 @@ global using Serilog;
 global using OpenPlanningPoker.GameEngine.Application.Abstractions.Authorization;
 global using OpenPlanningPoker.GameEngine.GraphQL.RateLimiting;
 global using HotChocolate.AspNetCore;
+global using OpenPlanningPoker.GameEngine.Application.Features.Teams;

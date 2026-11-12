@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.Infrastructure.Configuration;
+namespace OpenPlanningPoker.GameEngine.Infrastructure.Configuration;
 
 internal sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
 {
@@ -16,6 +16,9 @@ internal sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
 
         builder.Property(ticket => ticket.Description)
             .HasMaxLength(4080);
+
+        builder.Property(ticket => ticket.FinalEstimate)
+            .HasMaxLength(Ticket.MaxFinalEstimateLength);
 
         builder.HasMany(ticket => ticket.Votes)
             .WithOne(vote => vote.Ticket)

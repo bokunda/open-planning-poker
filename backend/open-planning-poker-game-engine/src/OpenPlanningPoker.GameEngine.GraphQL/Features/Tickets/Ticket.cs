@@ -7,6 +7,12 @@ public class Ticket
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public bool VotesRevealed { get; set; }
+
+    /// <summary>The estimate the host chose after the reveal; null until one is chosen.</summary>
+    public string? FinalEstimate { get; set; }
+
+    /// <summary>Place of the ticket in the game's list (0 first).</summary>
+    public int Position { get; set; }
     public ApiCollection<Vote> Votes { get; set; } = new([], 0);
     
     public async Task<ApiCollection<Vote>> GetVotes(

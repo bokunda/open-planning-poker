@@ -1,6 +1,6 @@
 namespace OpenPlanningPoker.GameEngine.Application.Features.Tickets;
 
-public sealed record CreateTicketResponse(Guid Id, Guid GameId, string Name, string Description, bool VotesRevealed);
+public sealed record CreateTicketResponse(Guid Id, Guid GameId, string Name, string Description, bool VotesRevealed, string? FinalEstimate = null, int Position = 0);
 
 public sealed record CreateTicketCommand(Guid GameId, string Name, string Description) : IRequest<Result<CreateTicketResponse, ApplicationError>>;
 
@@ -28,7 +28,9 @@ public static class CreateTicket
     {
         public async Task<Result<CreateTicketResponse, ApplicationError>> Handle(CreateTicketCommand request, CancellationToken cancellationToken = default)
         {
-            var ticket = Ticket.Create(request.GameId, request.Name, request.Description);
+            var existing = await ticketRepository.GetByGame(request.GameId, cancellationToken);
+            var position = existing.Select(item => item.Position).DefaultIfEmpty(-1).Max() + 1;
+            var ticket = Ticket.Create(request.GameId, request.Name, request.Description, position);
             ticketRepository.Add(ticket);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 

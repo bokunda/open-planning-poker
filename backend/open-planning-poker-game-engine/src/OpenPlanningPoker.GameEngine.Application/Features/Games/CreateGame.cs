@@ -1,8 +1,8 @@
 namespace OpenPlanningPoker.GameEngine.Application.Features.Games;
 
-public sealed record CreateGameResponse(Guid Id, string Name, string Description, Guid CreatedBy);
+public sealed record CreateGameResponse(Guid Id, string Name, string Description, Guid CreatedBy, Guid HostId = default, Guid? TeamId = null);
 
-public sealed record CreateGameCommand(string Name, string Description) : IRequest<Result<CreateGameResponse, ApplicationError>>;
+public sealed record CreateGameCommand(string Name, string Description, Guid HostId = default, Guid? TeamId = null) : IRequest<Result<CreateGameResponse, ApplicationError>>;
 
 public static class CreateGame
 {
@@ -26,7 +26,7 @@ public static class CreateGame
         public async Task<Result<CreateGameResponse, ApplicationError>> Handle(CreateGameCommand request, CancellationToken cancellationToken = default)
         {
             // Create a game
-            var game = Game.Create(request.Name, request.Description);
+            var game = Game.Create(request.Name, request.Description, request.HostId, request.TeamId);
             gameRepository.Add(game);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 

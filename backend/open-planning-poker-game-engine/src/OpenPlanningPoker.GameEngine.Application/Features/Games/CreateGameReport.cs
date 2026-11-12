@@ -31,7 +31,8 @@ public static class CreateGameReport
                     ticket.Name,
                     ticket.Description,
                     ticket.VotesRevealed,
-                    [.. (ticket.Votes ?? []).Select(vote => new ReportVote(usernames[vote.PlayerId], vote.Value))]))]);
+                    [.. (ticket.Votes ?? []).Select(vote => new ReportVote(usernames[vote.PlayerId], vote.Value))],
+                    ticket.FinalEstimate))]);
 
             using var memoryStream = new MemoryStream();
             new GameReportDocument(model).GeneratePdf(memoryStream);

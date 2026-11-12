@@ -55,7 +55,7 @@ jobs:
         run: |
           fusion compose -p gateway.fgp -s ../open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL/UserManagement.fsp
           fusion compose -p gateway.fgp -s ../open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL/GameEngine.fsp
-          unzip -p gateway.fgp fusion.graphql | grep -q "votesRevealed" && unzip -p gateway.fgp fusion.graphql | grep -q "onTimerChanged" || { echo "::error::Composed gateway schema is missing expected fields"; exit 1; }
+          unzip -p gateway.fgp fusion.graphql | grep -q "votesRevealed" && unzip -p gateway.fgp fusion.graphql | grep -q "onTimerChanged" && unzip -p gateway.fgp fusion.graphql | grep -q "onGameChanged" || { echo "::error::Composed gateway schema is missing expected fields"; exit 1; }
           unzip -p gateway.fgp GameEngine/subgraph-config.json
           unzip -p gateway.fgp UserManagement/subgraph-config.json
 

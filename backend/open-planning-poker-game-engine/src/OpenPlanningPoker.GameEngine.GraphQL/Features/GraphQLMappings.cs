@@ -26,7 +26,8 @@ public static class GraphQLMappings
         Id = game.Id,
         Name = game.Name,
         Description = game.Description,
-        HostId = game.CreatedBy
+        HostId = game.HostId == Guid.Empty ? game.CreatedBy : game.HostId,
+        TeamId = game.TeamId
     };
 
     public static GameType ToGraphQL(this CreateGameResponse game) => new()
@@ -34,10 +35,11 @@ public static class GraphQLMappings
         Id = game.Id,
         Name = game.Name,
         Description = game.Description,
-        HostId = game.CreatedBy
+        HostId = game.HostId == Guid.Empty ? game.CreatedBy : game.HostId,
+        TeamId = game.TeamId
     };
 
-    public static GamePlayerType ToGraphQL(this ListPlayersItem player) => new() { Id = player.Id };
+    public static GamePlayerType ToGraphQL(this ListPlayersItem player) => new() { Id = player.Id, Role = player.Role, IsCoHost = player.IsCoHost };
 
     public static InfoType ToGraphQL(this GetInfoResponse info) => new()
     {
@@ -46,31 +48,35 @@ public static class GraphQLMappings
         Contact = info.Contact
     };
 
-    public static SettingsType ToGraphQL(this GetGameSettingsResponse settings) => ToSettings(settings.Id, settings.GameId, settings.DeckSetup);
-    public static SettingsType ToGraphQL(this CreateGameSettingsResponse settings) => ToSettings(settings.Id, settings.GameId, settings.DeckSetup);
-    public static SettingsType ToGraphQL(this UpdateGameSettingsResponse settings) => ToSettings(settings.Id, settings.GameId, settings.DeckSetup);
+    public static SettingsType ToGraphQL(this GetGameSettingsResponse settings) => ToSettings(settings.Id, settings.GameId, settings.DeckSetup, settings.AutoReveal, settings.AsyncVotingEndsAt);
+    public static SettingsType ToGraphQL(this CreateGameSettingsResponse settings) => ToSettings(settings.Id, settings.GameId, settings.DeckSetup, settings.AutoReveal, settings.AsyncVotingEndsAt);
+    public static SettingsType ToGraphQL(this UpdateGameSettingsResponse settings) => ToSettings(settings.Id, settings.GameId, settings.DeckSetup, settings.AutoReveal, settings.AsyncVotingEndsAt);
 
-    public static TicketType ToGraphQL(this GetTicketResponse ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed);
-    public static TicketType ToGraphQL(this CreateTicketResponse ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed);
-    public static TicketType ToGraphQL(this UpdateTicketResponse ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed);
-    public static TicketType ToGraphQL(this GetTicketsItem ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed);
+    public static TicketType ToGraphQL(this GetTicketResponse ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
+    public static TicketType ToGraphQL(this CreateTicketResponse ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
+    public static TicketType ToGraphQL(this UpdateTicketResponse ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
+    public static TicketType ToGraphQL(this GetTicketsItem ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
 
     public static VoteType ToGraphQL(this GetVotesItem vote) => new() { Id = vote.Id, PlayerId = vote.PlayerId, Value = vote.Value };
     public static VoteType ToGraphQL(this CreateOrUpdateVoteResponse vote) => new() { Id = vote.Id, PlayerId = vote.PlayerId, Value = vote.Value };
 
-    private static SettingsType ToSettings(Guid id, Guid gameId, string deckSetup) => new()
+    private static SettingsType ToSettings(Guid id, Guid gameId, string deckSetup, bool autoReveal, DateTimeOffset? asyncVotingEndsAt) => new()
     {
         Id = id,
         GameId = gameId,
-        DeckSetup = deckSetup
+        DeckSetup = deckSetup,
+        AutoReveal = autoReveal,
+        AsyncVotingEndsAt = asyncVotingEndsAt
     };
 
-    private static TicketType ToTicket(Guid id, Guid gameId, string name, string description, bool votesRevealed) => new()
+    private static TicketType ToTicket(Guid id, Guid gameId, string name, string description, bool votesRevealed, string? finalEstimate, int position) => new()
     {
         Id = id,
         GameId = gameId,
         Name = name,
         Description = description,
-        VotesRevealed = votesRevealed
+        VotesRevealed = votesRevealed,
+        FinalEstimate = finalEstimate,
+        Position = position
     };
 }

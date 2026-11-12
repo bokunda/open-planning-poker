@@ -22,7 +22,11 @@ public static class ImportTickets
     {
         public async Task<Result<ApiCollection<ImportTicketItemResponse>, ApplicationError>> Handle(ImportTicketsCommand request, CancellationToken cancellationToken = default)
         {
-            var tickets = request.Tickets.Select(ticket => Ticket.Create(request.GameId, ticket.Name, ticket.Description));
+            var existing = await ticketRepository.GetByGame(request.GameId, cancellationToken);
+            var start = existing.Select(item => item.Position).DefaultIfEmpty(-1).Max() + 1;
+            var tickets = request.Tickets
+                .Select((ticket, index) => Ticket.Create(request.GameId, ticket.Name, ticket.Description, start + index))
+                .ToList();
             ticketRepository.AddRange(tickets);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 

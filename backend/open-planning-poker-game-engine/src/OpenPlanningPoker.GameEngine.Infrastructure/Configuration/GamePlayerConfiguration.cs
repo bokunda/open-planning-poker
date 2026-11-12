@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.Infrastructure.Configuration;
+namespace OpenPlanningPoker.GameEngine.Infrastructure.Configuration;
 
 internal sealed class GamePlayerConfiguration : IEntityTypeConfiguration<GamePlayer>
 {

@@ -7,7 +7,8 @@ namespace OpenPlanningPoker.GameEngine.Application.Features.Games.Report;
 
 public sealed record ReportVote(string Player, string Value);
 
-public sealed record ReportTicket(string Name, string Description, bool Revealed, IReadOnlyList<ReportVote> Votes);
+/// <param name="FinalEstimate">The estimate the host chose; when null the report shows the most common card.</param>
+public sealed record ReportTicket(string Name, string Description, bool Revealed, IReadOnlyList<ReportVote> Votes, string? FinalEstimate = null);
 
 public sealed record ReportModel(
     string GameName,
@@ -168,7 +169,7 @@ public sealed class GameReportDocument(ReportModel model) : IDocument
             column.Item().Row(row =>
             {
                 row.Spacing(18);
-                Stat(row.AutoItem(), "Estimate", stats.Estimate ?? "–", emphasize: true);
+                Stat(row.AutoItem(), ticket.FinalEstimate is null ? "Estimate" : "Final estimate", ticket.FinalEstimate ?? stats.Estimate ?? "–", emphasize: true);
                 Stat(row.AutoItem(), "Average", stats.Average is { } a ? Number(a) : "–");
                 Stat(row.AutoItem(), "Median", stats.Median is { } m ? Number(m) : "–");
                 Stat(row.AutoItem(), "Votes", ticket.Votes.Count.ToString(CultureInfo.InvariantCulture));

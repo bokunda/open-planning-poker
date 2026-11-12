@@ -9,4 +9,4 @@ global using OpenPlanningPoker.GameEngine.Domain.Tickets;
 global using OpenPlanningPoker.GameEngine.Domain.Tickets.Events;
 global using OpenPlanningPoker.GameEngine.Domain.Votes;
 global using OpenPlanningPoker.GameEngine.Domain.Votes.Events;
-global using OpenPlanningPoker.GameEngine.Domain.GameSettings.Events;
+global using OpenPlanningPoker.GameEngine.Domain.GameSettings.Events;global using OpenPlanningPoker.GameEngine.Domain.Teams;

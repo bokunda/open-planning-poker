@@ -12,31 +12,31 @@ namespace OpenPlanningPoker.GameEngine.Application;
 public static class Mappings
 {
     public static CreateGameResponse ToCreateGameResponse(this Game game) =>
-        new(game.Id, game.Name, game.Description, game.CreatedBy);
+        new(game.Id, game.Name, game.Description, game.CreatedBy, game.HostId, game.TeamId);
 
     public static GetGameResponse ToGetGameResponse(this Game game) =>
-        new(game.Id, game.Name, game.Description, game.CreatedBy);
+        new(game.Id, game.Name, game.Description, game.CreatedBy, game.HostId, game.TeamId);
 
     public static CreateGameSettingsResponse ToCreateGameSettingsResponse(this Domain.GameSettings.GameSettings settings) =>
-        new(settings.Id, settings.GameId, settings.DeckSetup);
+        new(settings.Id, settings.GameId, settings.DeckSetup, settings.AutoReveal, settings.AsyncVotingEndsAt);
 
     public static GetGameSettingsResponse ToGetGameSettingsResponse(this Domain.GameSettings.GameSettings settings) =>
-        new(settings.Id, settings.GameId, settings.DeckSetup);
+        new(settings.Id, settings.GameId, settings.DeckSetup, settings.AutoReveal, settings.AsyncVotingEndsAt);
 
     public static UpdateGameSettingsResponse ToUpdateGameSettingsResponse(this Domain.GameSettings.GameSettings settings) =>
-        new(settings.Id, settings.GameId, settings.DeckSetup);
+        new(settings.Id, settings.GameId, settings.DeckSetup, settings.AutoReveal, settings.AsyncVotingEndsAt);
 
     public static CreateTicketResponse ToCreateTicketResponse(this Ticket ticket) =>
-        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed);
+        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
 
     public static GetTicketResponse ToGetTicketResponse(this Ticket ticket) =>
-        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed);
+        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
 
     public static GetTicketsItem ToGetTicketsItem(this Ticket ticket) =>
-        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed);
+        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
 
     public static UpdateTicketResponse ToUpdateTicketResponse(this Ticket ticket) =>
-        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed);
+        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
 
     public static ImportTicketItemResponse ToImportTicketItemResponse(this Ticket ticket) =>
         new(ticket.Name, ticket.Description);
