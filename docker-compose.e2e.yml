@@ -36,6 +36,7 @@ services:
       retries: 30
 
   OpenPlanningPoker.UserManagement.GraphQL:
+    image: opp-e2e-user-management
     build:
       context: ./backend/open-planning-poker-user-management
       dockerfile: src/OpenPlanningPoker.UserManagement.GraphQL/Dockerfile
@@ -47,6 +48,7 @@ services:
       OpenPlanningPoker.Cache: { condition: service_healthy }
 
   OpenPlanningPoker.GameEngine.GraphQL:
+    image: opp-e2e-game-engine
     build:
       context: ./backend/open-planning-poker-game-engine
       dockerfile: src/OpenPlanningPoker.GameEngine.GraphQL/Dockerfile
@@ -60,6 +62,7 @@ services:
       OpenPlanningPoker.Cache: { condition: service_healthy }
 
   openplanningpoker.fusion.gateway:
+    image: opp-e2e-gateway
     build:
       context: ./backend/open-planning-poker-graphql-gateway
       dockerfile: Dockerfile
