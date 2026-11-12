@@ -5,6 +5,10 @@ on:
 jobs:
   publish-open-planning-poker-nuget:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      # NuGet.org Trusted Publishing: the OIDC token is exchanged for a short-lived API key.
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7.0.1
@@ -26,6 +30,12 @@ jobs:
         working-directory: backend/open-planning-poker-shared
         run: dotnet pack -c Release --no-build --output .
 
+      - name: Log in to NuGet.org (Trusted Publishing)
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: Bokunda
+
       - name: Publish to NuGet.org
         working-directory: backend/open-planning-poker-shared
-        run: dotnet nuget push "*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ secrets.NUGET_ORG_API_KEY }} --skip-duplicate
+        run: dotnet nuget push "*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --skip-duplicate
