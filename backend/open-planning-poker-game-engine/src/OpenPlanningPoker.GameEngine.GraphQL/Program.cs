@@ -87,3 +87,6 @@ app.MapGraphQL().WithOptions(new GraphQLServerOptions
 });
 
 app.RunWithGraphQLCommands(args);
+
+/// <summary>Entry point, public so the integration tests can host the app.</summary>
+public partial class Program;
