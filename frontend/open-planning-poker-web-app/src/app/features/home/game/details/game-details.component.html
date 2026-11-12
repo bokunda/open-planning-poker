@@ -3,6 +3,17 @@
     <div class="game-title-block">
       <h2 class="game-title">{{ game.name }}</h2>
       <p class="game-desc" *ngIf="game.description">{{ game.description }}</p>
+      <p class="game-badges" *ngIf="teamId || autoReveal || asyncOpen">
+        <a class="game-badge game-badge--link" *ngIf="teamId" [routerLink]="['/team', teamId]">
+          <mat-icon svgIcon="opp-team" aria-hidden="true"></mat-icon> Team room
+        </a>
+        <span class="game-badge" *ngIf="autoReveal">
+          <mat-icon svgIcon="opp-check" aria-hidden="true"></mat-icon> Auto-reveal on
+        </span>
+        <span class="game-badge game-badge--async" *ngIf="asyncOpen">
+          <mat-icon svgIcon="opp-clock" aria-hidden="true"></mat-icon> Async voting until {{ asyncEndsAt | date:'EEE d MMM, HH:mm' }}
+        </span>
+      </p>
     </div>
 
     <div class="game-actions">
@@ -16,6 +27,40 @@
       <button mat-stroked-button class="room-action" (click)="onGameReportClick.emit()" aria-label="Export results as PDF" matTooltip="Export results (PDF)">
         <mat-icon>download</mat-icon><span class="room-action-label">Export PDF</span>
       </button>
+      <button mat-stroked-button class="room-action" [matMenuTriggerFor]="roomMenu" aria-label="Room options" matTooltip="Room options">
+        <mat-icon svgIcon="opp-settings"></mat-icon><span class="room-action-label">Room</span>
+      </button>
+      <mat-menu #roomMenu="matMenu" xPosition="before">
+        <ng-container *ngIf="isHost">
+          <button mat-menu-item (click)="toggleAutoReveal()" role="menuitemcheckbox" [attr.aria-checked]="autoReveal">
+            <mat-icon svgIcon="opp-check" [class.menu-check--off]="!autoReveal"></mat-icon>
+            <span>Reveal when everyone has voted</span>
+          </button>
+          <mat-divider></mat-divider>
+          <ng-container *ngIf="!asyncOpen; else asyncRunning">
+            <span class="menu-caption">Async voting before the meeting</span>
+            <button mat-menu-item *ngFor="let window of asyncWindows" (click)="startAsyncVoting(window.hours)">
+              <mat-icon svgIcon="opp-clock"></mat-icon>
+              <span>Open for {{ window.label }}</span>
+            </button>
+          </ng-container>
+          <ng-template #asyncRunning>
+            <button mat-menu-item (click)="endAsyncVoting()">
+              <mat-icon svgIcon="opp-table"></mat-icon>
+              <span>End async voting and start the meeting</span>
+            </button>
+          </ng-template>
+          <mat-divider></mat-divider>
+        </ng-container>
+        <button mat-menu-item (click)="onExportCsv.emit()">
+          <mat-icon>download</mat-icon>
+          <span>Export results (CSV)</span>
+        </button>
+        <a mat-menu-item *ngIf="teamId" [routerLink]="['/team', teamId]">
+          <mat-icon svgIcon="opp-team"></mat-icon>
+          <span>Open the team room</span>
+        </a>
+      </mat-menu>
       <button mat-stroked-button class="room-action room-action--leave" (click)="onLeaveGameClick.emit()" aria-label="Leave game" matTooltip="Leave game">
         <mat-icon>logout</mat-icon><span class="room-action-label">Leave</span>
       </button>

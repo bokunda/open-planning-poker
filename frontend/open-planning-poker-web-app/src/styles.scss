@@ -132,3 +132,24 @@ h1, h2, h3, h4,
     scroll-behavior: auto !important;
   }
 }
+
+/* Ticket descriptions rendered from the Markdown subset (shared/markdown). */
+.opp-markdown {
+  color: var(--opp-text-secondary);
+  font-size: var(--opp-font-size-sm);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+
+  p, ul, ol { margin: 0 0 var(--opp-space-2); }
+  > :last-child { margin-bottom: 0; }
+  ul, ol { padding-left: 1.4em; }
+  code {
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--opp-surface-hover);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .92em;
+  }
+  a { color: var(--opp-primary); text-decoration: underline; text-underline-offset: 2px; }
+  strong { color: var(--opp-text); }
+}

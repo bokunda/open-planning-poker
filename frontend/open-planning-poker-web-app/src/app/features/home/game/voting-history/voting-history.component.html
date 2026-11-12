@@ -1,7 +1,13 @@
 <section class="history" *ngIf="tickets && tickets.length > 0" aria-label="Tickets">
-  <h3 class="history-heading">Tickets <span class="history-count opp-tabular">{{ tickets.length }}</span></h3>
-  <ol class="history-list">
-    <li class="history-row" *ngFor="let ticket of tickets; trackBy: trackByTicketId" [class.history-row--active]="ticket.id === currentTicketId">
+  <h3 class="history-heading">
+    Tickets <span class="history-count opp-tabular">{{ tickets.length }}</span>
+    <span class="history-hint" *ngIf="isHost && tickets.length > 1">Drag to reorder</span>
+  </h3>
+  <ol class="history-list" cdkDropList [cdkDropListDisabled]="!isHost" (cdkDropListDropped)="drop($event)">
+    <li class="history-row" *ngFor="let ticket of tickets; let i = index; trackBy: trackByTicketId"
+      cdkDrag [cdkDragDisabled]="!isHost" cdkDragLockAxis="y"
+      [class.history-row--active]="ticket.id === currentTicketId">
+      <mat-icon class="history-drag" *ngIf="isHost" cdkDragHandle svgIcon="opp-drag" aria-hidden="true"></mat-icon>
       <div class="history-main">
         <span class="history-name">{{ ticket.name }}</span>
         <span class="history-votes" *ngIf="isRevealed(ticket) && ticket.votes?.items?.length">
@@ -10,14 +16,38 @@
       </div>
       <div class="history-side">
         <span class="status-chip" *ngIf="ticket.id === currentTicketId">Voting now</span>
-        <span class="history-estimate opp-tabular" *ngIf="isRevealed(ticket) && ticket.votes?.items?.length; else noEstimate"
-          [attr.aria-label]="'Estimate ' + ticket.averageVotingValue">{{ ticket.averageVotingValue }}</span>
+        <ng-container *ngIf="estimate(ticket) as value; else noEstimate">
+          <span class="history-estimate opp-tabular" [class.history-estimate--final]="finalEstimate(ticket)"
+            [attr.aria-label]="(finalEstimate(ticket) ? 'Final estimate ' : 'Average ') + value"
+            [matTooltip]="finalEstimate(ticket) ? 'Final estimate' : 'Average of the votes'">{{ value }}</span>
+        </ng-container>
         <ng-template #noEstimate><span class="history-estimate history-estimate--empty" aria-label="No estimate yet">–</span></ng-template>
         <button mat-icon-button *ngIf="isHost && ticket.id !== currentTicketId"
           (click)="onReVoteTicket.emit(ticket.id)" aria-label="Vote on this ticket again" matTooltip="Vote again">
           <mat-icon>replay</mat-icon>
         </button>
+        <button mat-icon-button *ngIf="isHost" [matMenuTriggerFor]="ticketMenu" [matMenuTriggerData]="{ ticket: ticket, index: i }"
+          [attr.aria-label]="'Options for ' + ticket.name">
+          <mat-icon>more_vert</mat-icon>
+        </button>
       </div>
     </li>
   </ol>
+
+  <mat-menu #ticketMenu="matMenu" xPosition="before">
+    <ng-template matMenuContent let-ticket="ticket" let-index="index">
+      <button mat-menu-item (click)="onEditTicket.emit(asRoomTicket(ticket))">
+        <mat-icon>edit</mat-icon><span>Edit</span>
+      </button>
+      <button mat-menu-item [disabled]="index === 0" (click)="move(index, -1)">
+        <mat-icon>expand_less</mat-icon><span>Move up</span>
+      </button>
+      <button mat-menu-item [disabled]="index === tickets.length - 1" (click)="move(index, 1)">
+        <mat-icon>expand_more</mat-icon><span>Move down</span>
+      </button>
+      <button mat-menu-item class="history-menu-danger" (click)="onDeleteTicket.emit(asRoomTicket(ticket))">
+        <mat-icon svgIcon="opp-delete"></mat-icon><span>Delete</span>
+      </button>
+    </ng-template>
+  </mat-menu>
 </section>

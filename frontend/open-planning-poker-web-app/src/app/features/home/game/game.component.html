@@ -23,6 +23,9 @@
             <button mat-flat-button color="primary" class="hero-btn hero-btn--primary" (click)="handleCreateGame()">
               <mat-icon>add</mat-icon> Create game
             </button>
+            <a mat-stroked-button color="primary" class="hero-btn" routerLink="/team">
+              <mat-icon svgIcon="opp-team"></mat-icon> Team rooms
+            </a>
           </div>
 
           <form class="join-inline" (ngSubmit)="joinFromInput()">
@@ -56,11 +59,27 @@
       <app-game-details
         [game]="game"
         [isHost]="isHost"
+        [settings]="settings"
         (onLeaveGameClick)="handleLeaveGame()"
         (onGameReportClick)="handleGameReport()"
-        (onCreateNewTicket)="handleCreateTicket()"></app-game-details>
+        (onCreateNewTicket)="handleCreateTicket()"
+        (onExportCsv)="handleExportCsv()"
+        (onUpdateOptions)="handleUpdateOptions($event)"></app-game-details>
 
-      <app-voting
+      <!-- Async estimation: everyone votes on the tickets on their own until the window ends. -->
+      <app-async-voting *ngIf="asyncVotingOpen"
+        [tickets]="tickets"
+        [deck]="deckCards"
+        [currentUserId]="currentUserId"
+        [isHost]="isHost"
+        [isObserver]="isObserver"
+        [endsAt]="settings?.asyncVotingEndsAt"
+        (vote)="handleAsyncVote($event)"
+        (startMeeting)="handleUpdateOptions({ autoReveal: !!settings?.autoReveal, asyncVotingEndsAt: null })"
+        (createTicket)="handleCreateTicket()"
+        (importTickets)="handleImportTickets()"></app-async-voting>
+
+      <app-voting *ngIf="!asyncVotingOpen"
         [gameId]="game.id"
         [players]="players"
         [gameSettings]="game.settingsDetails"
@@ -69,21 +88,26 @@
         [votes]="votes"
         [votesRevealed]="votesRevealed"
         [isHost]="isHost"
+        [isObserver]="isObserver"
         [currentUserId]="currentUserId"
         (onCreateNewTicket)="handleCreateTicket()"
         (onImportTickets)="handleImportTickets()"
+        (onSetFinalEstimate)="handleSetFinalEstimate($event)"
         (OnVote)="handleVoteAction($event)"
         (onRevealVotes)="handleRevealVotes()"
         (onVoteAgain)="handleVoteAgain()"
         (onNavigateTicket)="handleReVoteTicket($event)"
         ></app-voting>
 
-      <app-voting-history
+      <app-voting-history *ngIf="!asyncVotingOpen"
         [tickets]="tickets"
         [votesRevealed]="votesRevealed"
         [currentTicketId]="ticket?.id"
         [isHost]="isHost"
         (onReVoteTicket)="handleReVoteTicket($event)"
+        (onEditTicket)="handleEditTicket($event)"
+        (onDeleteTicket)="handleDeleteTicket($event)"
+        (onReorder)="handleReorderTickets($event)"
       ></app-voting-history>
     </div>
 
@@ -94,7 +118,10 @@
         [votes]="votes"
         [votesRevealed]="votesRevealed"
         [isHost]="isHost"
+        [isOwner]="isOwner"
+        [hostId]="game.hostId"
         [currentUserId]="currentUserId"
+        (onPlayerAction)="handlePlayerAction($event)"
         [(collapsed)]="playersCollapsed"
         (onRevealCards)="handleRevealVotes()"
         (onVoteAgain)="handleVoteAgain()"

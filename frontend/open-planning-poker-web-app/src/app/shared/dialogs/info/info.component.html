@@ -1,35 +1,44 @@
 <h2 mat-dialog-title>About Open Planning Poker</h2>
-<mat-dialog-content class="mat-typography">
-  <h3>What is Open Planning Poker?</h3>
-  <p>Open Planning Poker is a free and open-source solution that implements one of the ways how to plan and estimate
-    effort. The idea is simple, you have to import or write all the user stories/features/tasks and during the 'poker'
-    sessions you have to discuss about the scope and effort of each item as a team. The next step is voting where you
-    have to assign a complexity value for the discussed story. When the voting is finished, an average value is
-    calculated and then you can argue if the average value is acceptable or to vote again.</p>
-
-  <h3>Features</h3>
-  <p>Open Planning Poker provides you with an easy option to:
-
-  <ol>
-    <li>Create a poker room.</li>
-    <li>Add stories/features/tasks</li>
-    <li>Voting mechanism</li>
-    <li>Basic voting results</li>
-  </ol>
-
-  <h3>How to play?</h3>
+<mat-dialog-content class="mat-typography about">
   <p>
-    When the page opens, you will be assigned a random username that can be changed.
+    Open Planning Poker is a free, open-source planning poker app for agile teams. Create a room, share the link,
+    vote in secret and turn the cards over together, so nobody anchors the team.
   </p>
+
+  <h3>What you can do</h3>
+  <ul>
+    <li>Estimate tickets with Fibonacci, T-shirt sizes or your own deck, with a shared timer and auto-reveal.</li>
+    <li>Run the room with co-hosts, hand it over to someone else, and let people join as observers.</li>
+    <li>Pick the final estimate after the reveal, reorder and edit tickets, and export the results as PDF or CSV.</li>
+    <li>Vote before the meeting with async voting, and keep a team room with the sprint history and velocity.</li>
+  </ul>
+
+  <h3>About the creator</h3>
   <p>
-    You can create a game, or join the existing one using a URL.
+    Open Planning Poker is built by Bojan Piskulic, founder of Bitcrafta, a software agency that designs and builds
+    web applications for its clients. Bojan created Open Planning Poker as the estimation tool he wanted for his own
+    teams: free, without sign-up or ads, and open source, so anyone can read the code or run it on their own server.
   </p>
+
+  <h3>Support the project</h3>
   <p>
-    Voting is possible only when a ticket is created.
+    Open Planning Poker has no ads and no paid plan. If it saves your team time, you can help pay for the servers and
+    new features.
   </p>
+  <div class="about-support">
+    <a mat-flat-button color="primary" [href]="support.githubSponsors" target="_blank" rel="noopener noreferrer">
+      <mat-icon svgIcon="opp-heart"></mat-icon> Sponsor on GitHub
+    </a>
+    <a mat-stroked-button color="primary" [href]="support.koFi" target="_blank" rel="noopener noreferrer">
+      <mat-icon svgIcon="opp-coffee"></mat-icon> Buy me a coffee on Ko-fi
+    </a>
+  </div>
 
   <h3>Privacy</h3>
-  <p>Open Planning Poker is an open source project so you can check the source code. Users are deleted 24h after creation. Games, ticktes and voting related data is stored longer, because it can be useful for statistics, and new features.</p>
+  <p>
+    The code is open, so you can check what is stored. Users are deleted 24 hours after they are created. Games,
+    tickets and votes are kept longer, for team rooms, reports and statistics.
+  </p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Close</button>

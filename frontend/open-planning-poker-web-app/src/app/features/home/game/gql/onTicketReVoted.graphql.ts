@@ -8,6 +8,8 @@ subscription($gameId: UUID!) {
     name
     description
     votesRevealed
+    finalEstimate
+    position
     __typename
   }
 }

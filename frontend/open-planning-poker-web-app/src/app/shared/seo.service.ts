@@ -21,6 +21,8 @@ function seoFor(path: string): PageSeo {
   if (path === '/game') return { index: true, canonicalPath: '/', description: DEFAULT_DESCRIPTION };
   // Game rooms and tickets are private, short-lived and need a link: keep them out of search results.
   if (path.startsWith('/game/')) return { index: false, description: 'A planning poker room on Open Planning Poker. Join with the link from your host.' };
+  // Team rooms are private too; "/team" only lists the visitor's own teams.
+  if (path === '/team' || path.startsWith('/team/')) return { index: false, description: 'A team room on Open Planning Poker: sprint history and velocity of one team.' };
   return { index: false };
 }
 

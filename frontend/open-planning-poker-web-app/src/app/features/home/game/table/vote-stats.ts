@@ -81,3 +81,27 @@ export function computeVoteStats(votes: Vote[], deck: string[]): VoteStats {
     highPlayerIds: spread ? cast.filter(v => cardNumber(v.value) === max).map(v => v.playerId) : [],
   };
 }
+
+/**
+ * The card the team most likely agrees on: the most common card; on a tie the one closest to
+ * the median, then the higher one (same rule as the PDF report). Null without votes.
+ */
+export function suggestedEstimate(votes: Pick<Vote, 'value'>[]): string | null {
+  const cast = votes.map(v => v.value).filter((v): v is string => !!v);
+  if (!cast.length) return null;
+  const numbers = cast.map(cardNumber).filter((n): n is number => n !== null).sort((a, b) => a - b);
+  const mid = Math.floor(numbers.length / 2);
+  const median = numbers.length ? (numbers.length % 2 ? numbers[mid] : (numbers[mid - 1] + numbers[mid]) / 2) : null;
+  const counts = new Map<string, number>();
+  for (const v of cast) counts.set(v, (counts.get(v) ?? 0) + 1);
+  return [...counts.entries()]
+    .sort(([a, ca], [b, cb]) => {
+      if (cb !== ca) return cb - ca;
+      const na = cardNumber(a);
+      const nb = cardNumber(b);
+      const da = median !== null && na !== null ? Math.abs(na - median) : Number.MAX_VALUE;
+      const db = median !== null && nb !== null ? Math.abs(nb - median) : Number.MAX_VALUE;
+      if (da !== db) return da - db;
+      return (nb ?? -Infinity) - (na ?? -Infinity);
+    })[0][0];
+}

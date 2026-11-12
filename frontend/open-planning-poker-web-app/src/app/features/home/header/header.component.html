@@ -25,6 +25,19 @@
           <mat-icon>{{ isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
           <span>{{ isDark ? 'Light mode' : 'Dark mode' }}</span>
         </button>
+        <a mat-menu-item routerLink="/team">
+          <mat-icon svgIcon="opp-team"></mat-icon>
+          <span>Team rooms</span>
+        </a>
+        <mat-divider></mat-divider>
+        <a mat-menu-item [href]="support.koFi" target="_blank" rel="noopener noreferrer">
+          <mat-icon svgIcon="opp-coffee"></mat-icon>
+          <span>Buy me a coffee</span>
+        </a>
+        <a mat-menu-item [href]="support.githubSponsors" target="_blank" rel="noopener noreferrer">
+          <mat-icon svgIcon="opp-heart"></mat-icon>
+          <span>Sponsor on GitHub</span>
+        </a>
         <mat-divider></mat-divider>
         <a mat-menu-item href="{{githubRepoUrl}}" target="_blank" rel="noopener noreferrer">
           <mat-icon svgIcon="github"></mat-icon>

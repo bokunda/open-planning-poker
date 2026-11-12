@@ -6,3 +6,12 @@ export const OPP_APP_VERSION = version;
 
 export const OPP_SNACKBAR_DURATION_DEFAULT = 2000;
 export const OPP_SNACKBAR_MODAL_LABEL_CLOSE = 'Close';
+
+/**
+ * Donation pages, in one place for the app (header menu, footer, About) and the README.
+ * GitHub Sponsors takes no fee; Ko-fi takes one-off "coffees" without an account.
+ */
+export const OPP_SUPPORT = {
+  githubSponsors: 'https://github.com/sponsors/bokunda',
+  koFi: 'https://ko-fi.com/bokunda',
+} as const;

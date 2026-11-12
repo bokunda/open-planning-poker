@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, DoCheck, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DoCheck, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiCollectionOfGamePlayer, Vote } from '../../../../graphql/graphql-gateway.service';
-import { computeVoteStats, formatNumber, VoteStats } from './vote-stats';
+import { computeVoteStats, formatNumber, suggestedEstimate, VoteStats } from './vote-stats';
 
 /**
  * Shown after the reveal: how the votes are distributed, average and median, and what the
@@ -28,6 +28,20 @@ import { computeVoteStats, formatNumber, VoteStats } from './vote-stats';
         </div>
       </div>
       <p class="results-note">{{ note }}</p>
+
+      <div class="final" *ngIf="isHost || finalEstimate">
+        <span class="final-label" id="final-label">Final estimate</span>
+        <div class="final-cards" *ngIf="isHost; else finalReadOnly" role="radiogroup" aria-labelledby="final-label">
+          <button type="button" class="final-card opp-tabular" *ngFor="let card of finalOptions"
+            role="radio" [attr.aria-checked]="card === finalEstimate"
+            [class.final-card--selected]="card === finalEstimate"
+            [class.final-card--suggested]="card === suggested && !finalEstimate"
+            [attr.title]="card === suggested ? 'Most common card' : null"
+            (click)="finalEstimateChange.emit(card === finalEstimate ? null : card)">{{ card }}</button>
+        </div>
+        <ng-template #finalReadOnly><b class="final-value opp-tabular">{{ finalEstimate }}</b></ng-template>
+        <span class="final-hint" *ngIf="isHost && !finalEstimate">Pick the card the team agreed on. It goes into the ticket list, the CSV and the report.</span>
+      </div>
     </section>
   `,
   styles: [`
@@ -61,12 +75,36 @@ import { computeVoteStats, formatNumber, VoteStats } from './vote-stats';
     @keyframes grow { from { transform: scaleX(0); } }
     .bar-count { color: var(--opp-text-secondary); font-size: var(--opp-font-size-sm); }
     .results-note { margin: 0; color: var(--opp-text-secondary); }
+    .final { display: grid; gap: var(--opp-space-2); padding-top: var(--opp-space-3); border-top: 1px solid var(--opp-border-light, var(--opp-border)); }
+    .final-label { font-size: var(--opp-font-size-sm); font-weight: 700; color: var(--opp-text); }
+    .final-cards { display: flex; flex-wrap: wrap; gap: var(--opp-space-2); }
+    .final-card {
+      min-width: 40px; height: 40px; padding: 0 10px; cursor: pointer;
+      border: 1px solid var(--opp-border); border-radius: var(--opp-radius-md);
+      background: var(--opp-surface); color: var(--opp-text);
+      font-family: var(--opp-font-display); font-weight: 800; font-size: var(--opp-font-size-md, 1rem);
+      transition: border-color var(--opp-transition-fast), background var(--opp-transition-fast);
+    }
+    .final-card:hover { border-color: var(--opp-primary-300, var(--opp-primary)); }
+    .final-card:focus-visible { outline: 3px solid var(--opp-focus-ring, var(--opp-primary)); outline-offset: 2px; }
+    .final-card--suggested { border-style: dashed; border-color: var(--opp-primary); }
+    .final-card--selected { background: var(--opp-primary); border-color: var(--opp-primary); color: var(--opp-text-on-primary, #fff); }
+    .final-value { font-family: var(--opp-font-display); font-size: var(--opp-font-size-2xl); color: var(--opp-consensus); }
+    .final-hint { font-size: var(--opp-font-size-xs); color: var(--opp-text-muted); }
   `],
 })
 export class VoteResultsComponent implements DoCheck {
   @Input() votes: Vote[] = [];
   @Input() players: ApiCollectionOfGamePlayer | undefined;
   @Input() deck: string[] = [];
+  /** Host and co-hosts pick the final estimate; others see it once it is set. */
+  @Input() isHost = false;
+  @Input() finalEstimate: string | null | undefined = null;
+  @Output() finalEstimateChange = new EventEmitter<string | null>();
+
+  /** The deck's cards plus any voted value not in the deck. */
+  finalOptions: string[] = [];
+  suggested: string | null = null;
 
   stats: VoteStats | null = null;
   totalVotes = 0;
@@ -83,6 +121,9 @@ export class VoteResultsComponent implements DoCheck {
 
     const cast = this.votes.filter(v => !!v.value);
     this.totalVotes = cast.length;
+    this.suggested = suggestedEstimate(cast);
+    this.finalOptions = [...this.deck.filter(card => card.trim()), ...cast.map(v => v.value).filter(v => !this.deck.includes(v))]
+      .filter((card, i, all) => all.indexOf(card) === i);
     this.stats = cast.length ? computeVoteStats(cast, this.deck) : null;
     if (!this.stats) return;
 

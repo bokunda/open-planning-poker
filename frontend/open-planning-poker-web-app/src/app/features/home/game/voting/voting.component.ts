@@ -8,13 +8,15 @@ import { PokerTableComponent } from '../table/poker-table.component';
 import { VoteResultsComponent } from '../table/vote-results.component';
 import { GameTimerComponent, TimerTick } from '../timer/game-timer.component';
 import { ApiCollectionOfGamePlayer, Settings, SettingsDetailsResult, Ticket, Vote } from '../../../../graphql/graphql-gateway.service';
+import { MarkdownPipe } from '../../../../shared/markdown/markdown.pipe';
+import { RoomSettings, RoomTicket } from '../room-types';
 
 @Component({
   selector: 'app-voting',
   templateUrl: './voting.component.html',
   styleUrl: './voting.component.scss',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, PokerCardComponent, PokerTableComponent, VoteResultsComponent, GameTimerComponent],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, PokerCardComponent, PokerTableComponent, VoteResultsComponent, GameTimerComponent, MarkdownPipe],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class VotingComponent implements OnInit, OnDestroy, OnChanges {
@@ -27,6 +29,8 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
   @Input() votesRevealed = false;
   @Input() isHost = false;
   @Input() currentUserId = '';
+  /** Observers watch the table and get no cards. */
+  @Input() isObserver = false;
 
   /** True while the chosen card flies from the hand to the user's seat. */
   cardInFlight = false;
@@ -50,6 +54,28 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
   @Output() onVoteAgain = new EventEmitter<void>();
   @Output() onRevealVotes = new EventEmitter<void>();
   @Output() onNavigateTicket = new EventEmitter<string>();
+  @Output() onSetFinalEstimate = new EventEmitter<string | null>();
+
+  private playersSource: ApiCollectionOfGamePlayer | undefined;
+  private seatedCache: ApiCollectionOfGamePlayer | undefined;
+
+  /** Players at the table: observers watch, so they get no seat (same object until the list changes). */
+  get seatedPlayers(): ApiCollectionOfGamePlayer | undefined {
+    if (this.players !== this.playersSource) {
+      this.playersSource = this.players;
+      const items = (this.players?.items ?? []).filter(p => (p as { role?: string }).role !== 'OBSERVER');
+      this.seatedCache = this.players ? { ...this.players, items, totalCount: items.length } : undefined;
+    }
+    return this.seatedCache;
+  }
+
+  get autoReveal(): boolean {
+    return !!(this.gameSettings as RoomSettings | undefined)?.autoReveal;
+  }
+
+  get finalEstimate(): string | null {
+    return (this.ticket as RoomTicket | undefined)?.finalEstimate ?? null;
+  }
 
   voteOptions: string[] = [];
   selectedOption: string | null = null;
@@ -72,6 +98,10 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['gameSettings'] && !changes['gameSettings'].firstChange) {
+      const deck = (this.gameSettings as Settings | undefined)?.deckSetup;
+      if (deck) this.voteOptions = deck.split(',');
+    }
     const ticketChanged = changes['ticket'] && changes['ticket'].currentValue?.id !== changes['ticket'].previousValue?.id;
     if (ticketChanged) {
       if (!changes['ticket'].firstChange) this.timer?.stopIfRunning();
@@ -150,7 +180,7 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
    */
   @HostListener('document:keydown', ['$event'])
   onShortcut(event: KeyboardEvent): void {
-    if (!this.ticket?.id || this.votesRevealed || event.ctrlKey || event.metaKey || event.altKey) return;
+    if (!this.ticket?.id || this.votesRevealed || this.isObserver || event.ctrlKey || event.metaKey || event.altKey) return;
     const target = event.target as HTMLElement | null;
     if (target?.closest('input, textarea, select, [contenteditable="true"], .cdk-overlay-container')) return;
     if (event.key.length !== 1 || !/[0-9.?½]/.test(event.key)) return;
@@ -186,7 +216,7 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   selectOption(option: string, source?: Event | HTMLElement): void {
-    if (this.votesRevealed) return;
+    if (this.votesRevealed || this.isObserver) return;
     const origin = source instanceof HTMLElement ? source : (source?.currentTarget as HTMLElement | null);
     const from = origin?.querySelector('app-poker-card') as HTMLElement | null;
     this.selectedOption = option;

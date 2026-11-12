@@ -11,19 +11,22 @@ import { HeaderComponent } from './header/header.component';
 import { BreadcrumbComponent } from './game/breadcrumb/breadcrumb.component';
 import { GameComponent } from './game/game.component';
 import { FooterComponent } from './footer/footer.component';
+import { TeamComponent } from './team/team.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, BreadcrumbComponent, GameComponent, FooterComponent]
+  imports: [CommonModule, HeaderComponent, BreadcrumbComponent, GameComponent, TeamComponent, FooterComponent]
 })
 export class HomeComponent implements OnInit {
 
   username: string = '';
   userId: string = '';
   breadcrumbItems: BreadcrumbItem[] = [];
+  /** /team and /team/:teamId show the team rooms instead of the game. */
+  isTeamView = false;
 
   private readonly title = inject(Title);
   private readonly meta = inject(Meta);
@@ -38,10 +41,21 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isTeamView = this.route.snapshot.data['view'] === 'team';
     this.updatePageMeta();
     this.route.paramMap.subscribe(params => {
-      this.updateBreadcrumb(params.get('id'), params.get('ticketId'));
+      if (this.isTeamView) {
+        this.updateTeamBreadcrumb(params.get('teamId'));
+      } else {
+        this.updateBreadcrumb(params.get('id'), params.get('ticketId'));
+      }
     });
+  }
+
+  private updateTeamBreadcrumb(teamId: string | null): void {
+    this.breadcrumbItems = teamId
+      ? [{ label: 'Home', url: '/' }, { label: 'Teams', url: '/team' }, { label: 'Team room' }]
+      : [{ label: 'Home', url: '/' }, { label: 'Teams' }];
   }
 
   private updateBreadcrumb(gameId: string | null, ticketId: string | null): void {
@@ -58,6 +72,10 @@ export class HomeComponent implements OnInit {
   }
 
   private updatePageMeta(): void {
+    if (this.isTeamView) {
+      this.title.setTitle(this.route.snapshot.paramMap.get('teamId') ? 'Team Room — Open Planning Poker' : 'Team Rooms — Open Planning Poker');
+      return;
+    }
     const gameId = this.route.snapshot.paramMap.get('id');
     const ticketId = this.route.snapshot.paramMap.get('ticketId');
     const baseUrl = 'https://app.openplanningpoker.com';
