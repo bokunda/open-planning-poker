@@ -1,5 +1,5 @@
-import { Component, inject, Input, OnChanges } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, inject, Input, OnChanges, DOCUMENT } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
 import { TranslocoService } from '@jsverse/transloco';

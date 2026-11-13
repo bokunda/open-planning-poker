@@ -29,8 +29,8 @@ export interface ConfirmDialogData {
   styles: [`
     .confirm-message { margin: 0; color: var(--opp-text-secondary); line-height: 1.5; }
     .confirm-danger {
-      --mdc-filled-button-container-color: var(--opp-danger, #b3261e);
-      --mdc-filled-button-label-text-color: #fff;
+      --mat-button-filled-container-color: var(--opp-danger, #b3261e);
+      --mat-button-filled-label-text-color: #fff;
     }
   `]
 })

@@ -37,12 +37,12 @@
 .room-action.mat-mdc-button-base {
   height: 40px;
   padding: 0 var(--opp-space-3);
-  --mdc-outlined-button-outline-color: var(--opp-border);
-  --mdc-outlined-button-label-text-color: var(--opp-text);
+  --mat-button-outlined-outline-color: var(--opp-border);
+  --mat-button-outlined-label-text-color: var(--opp-text);
   font-weight: 600;
 
   mat-icon { margin-right: 6px; color: var(--opp-text-secondary); }
-  &:hover { --mdc-outlined-button-outline-color: var(--opp-primary-300); }
+  &:hover { --mat-button-outlined-outline-color: var(--opp-primary-300); }
 }
 
 .room-action--leave:hover mat-icon { color: var(--opp-danger); }
