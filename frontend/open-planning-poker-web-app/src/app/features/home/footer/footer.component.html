@@ -1,24 +1,24 @@
 <footer class="footer-wrapper">
   <div class="footer">
     <div class="footer-brand">
-      <img class="footer-logo" src="/open-planning-poker-game-logo-64x64.png" alt="Open Planning Poker logo" width="24" height="24" />
+      <img class="footer-logo" src="/open-planning-poker-game-logo-64x64.png" [attr.alt]="'footer.logoAlt' | transloco" width="24" height="24" />
       <span class="footer-name">Open Planning Poker</span>
-      <span class="footer-copy">&copy; {{ currentYear }}. All Rights Reserved.</span>
+      <span class="footer-copy">&copy; {{ currentYear }}. {{ 'footer.rights' | transloco }}</span>
       <span class="footer-version">v{{ appVersion }}</span>
     </div>
 
     <div class="footer-links">
       <button mat-button (click)="toggleTheme()">
         <mat-icon>{{ isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
-        {{ isDark ? 'Light' : 'Dark' }}
+        {{ (isDark ? 'footer.light' : 'footer.dark') | transloco }}
       </button>
       <button mat-button (click)="openInfoDialog()">
         <mat-icon>info</mat-icon>
-        About
+        {{ 'common.about' | transloco }}
       </button>
       <a mat-button href="{{ websiteUrl }}" target="_blank" rel="noopener noreferrer">
         <mat-icon>language</mat-icon>
-        Website
+        {{ 'common.website' | transloco }}
       </a>
       <a mat-button href="{{ githubUrl }}" target="_blank" rel="noopener noreferrer">
         <mat-icon svgIcon="github"></mat-icon>
@@ -26,12 +26,12 @@
       </a>
       <a class="opp-support-btn footer-support" [href]="support.koFi" target="_blank" rel="noopener noreferrer" oppDonate="ko_fi" oppDonatePlacement="footer">
         <mat-icon svgIcon="opp-coffee" aria-hidden="true"></mat-icon>
-        Buy me a coffee
+        {{ 'support.coffee' | transloco }}
       </a>
     </div>
 
     <div class="footer-tagline">
-      Free &amp; Open Source — Built for agile teams
+      {{ 'footer.tagline' | transloco }}
     </div>
   </div>
 </footer>

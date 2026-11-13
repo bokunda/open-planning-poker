@@ -1,68 +1,68 @@
-<section class="game-details-wrapper" *ngIf="game" aria-label="Game details">
+<section class="game-details-wrapper" *ngIf="game" [attr.aria-label]="'room.details' | transloco">
   <div class="game-details">
     <div class="game-title-block">
       <h2 class="game-title">{{ game.name }}</h2>
       <p class="game-desc" *ngIf="game.description">{{ game.description }}</p>
       <p class="game-badges" *ngIf="teamId || autoReveal || asyncOpen">
         <a class="game-badge game-badge--link" *ngIf="teamId" [routerLink]="['/team', teamId]">
-          <mat-icon svgIcon="opp-team" aria-hidden="true"></mat-icon> Team room
+          <mat-icon svgIcon="opp-team" aria-hidden="true"></mat-icon> {{ 'nav.teamRoom' | transloco }}
         </a>
         <span class="game-badge" *ngIf="autoReveal">
-          <mat-icon svgIcon="opp-check" aria-hidden="true"></mat-icon> Auto-reveal on
+          <mat-icon svgIcon="opp-check" aria-hidden="true"></mat-icon> {{ 'room.autoRevealOn' | transloco }}
         </span>
         <span class="game-badge game-badge--async" *ngIf="asyncOpen">
-          <mat-icon svgIcon="opp-clock" aria-hidden="true"></mat-icon> Async voting until {{ asyncEndsAt | date:'EEE d MMM, HH:mm' }}
+          <mat-icon svgIcon="opp-clock" aria-hidden="true"></mat-icon> {{ 'room.asyncUntil' | transloco: { date: (asyncEndsAt | oppDate:'EEE d MMM, HH:mm') } }}
         </span>
       </p>
     </div>
 
     <div class="game-actions">
       <button mat-flat-button color="primary" class="invite-btn" (click)="openQrShare()">
-        <mat-icon>person_add</mat-icon> Invite
+        <mat-icon>person_add</mat-icon> {{ 'room.invite' | transloco }}
       </button>
       <!-- Always visible; on narrow screens only the icons show (the names stay as aria-labels). -->
-      <button mat-stroked-button class="room-action" (click)="copyToClipboard()" aria-label="Copy game link" matTooltip="Copy game link">
-        <mat-icon>link</mat-icon><span class="room-action-label">Copy link</span>
+      <button mat-stroked-button class="room-action" (click)="copyToClipboard()" [attr.aria-label]="'room.copyLinkShort' | transloco" [matTooltip]="'room.copyLink' | transloco">
+        <mat-icon>link</mat-icon><span class="room-action-label">{{ 'room.copyLinkShort' | transloco }}</span>
       </button>
-      <button mat-stroked-button class="room-action" (click)="onGameReportClick.emit()" aria-label="Export results as PDF" matTooltip="Export results (PDF)">
-        <mat-icon>download</mat-icon><span class="room-action-label">Export PDF</span>
+      <button mat-stroked-button class="room-action" (click)="onGameReportClick.emit()" [attr.aria-label]="'room.exportPdf' | transloco" [matTooltip]="'room.exportPdfTooltip' | transloco">
+        <mat-icon>download</mat-icon><span class="room-action-label">{{ 'room.exportPdf' | transloco }}</span>
       </button>
-      <button mat-stroked-button class="room-action" [matMenuTriggerFor]="roomMenu" aria-label="Room options" matTooltip="Room options">
-        <mat-icon svgIcon="opp-settings"></mat-icon><span class="room-action-label">Room</span>
+      <button mat-stroked-button class="room-action" [matMenuTriggerFor]="roomMenu" [attr.aria-label]="'room.options' | transloco" [matTooltip]="'room.options' | transloco">
+        <mat-icon svgIcon="opp-settings"></mat-icon><span class="room-action-label">{{ 'room.room' | transloco }}</span>
       </button>
       <mat-menu #roomMenu="matMenu" xPosition="before">
         <ng-container *ngIf="isHost">
           <button mat-menu-item (click)="toggleAutoReveal()" role="menuitemcheckbox" [attr.aria-checked]="autoReveal">
             <mat-icon svgIcon="opp-check" [class.menu-check--off]="!autoReveal"></mat-icon>
-            <span>Reveal when everyone has voted</span>
+            <span>{{ 'room.autoReveal' | transloco }}</span>
           </button>
           <mat-divider></mat-divider>
           <ng-container *ngIf="!asyncOpen; else asyncRunning">
-            <span class="menu-caption">Async voting before the meeting</span>
+            <span class="menu-caption">{{ 'room.asyncCaption' | transloco }}</span>
             <button mat-menu-item *ngFor="let window of asyncWindows" (click)="startAsyncVoting(window.hours)">
               <mat-icon svgIcon="opp-clock"></mat-icon>
-              <span>Open for {{ window.label }}</span>
+              <span>{{ window.labelKey | transloco }}</span>
             </button>
           </ng-container>
           <ng-template #asyncRunning>
             <button mat-menu-item (click)="endAsyncVoting()">
               <mat-icon svgIcon="opp-table"></mat-icon>
-              <span>End async voting and start the meeting</span>
+              <span>{{ 'async.endAndStart' | transloco }}</span>
             </button>
           </ng-template>
           <mat-divider></mat-divider>
         </ng-container>
         <button mat-menu-item (click)="onExportCsv.emit()">
           <mat-icon>download</mat-icon>
-          <span>Export results (CSV)</span>
+          <span>{{ 'room.exportCsv' | transloco }}</span>
         </button>
         <a mat-menu-item *ngIf="teamId" [routerLink]="['/team', teamId]">
           <mat-icon svgIcon="opp-team"></mat-icon>
-          <span>Open the team room</span>
+          <span>{{ 'room.openTeamRoom' | transloco }}</span>
         </a>
       </mat-menu>
-      <button mat-stroked-button class="room-action room-action--leave" (click)="onLeaveGameClick.emit()" aria-label="Leave game" matTooltip="Leave game">
-        <mat-icon>logout</mat-icon><span class="room-action-label">Leave</span>
+      <button mat-stroked-button class="room-action room-action--leave" (click)="onLeaveGameClick.emit()" [attr.aria-label]="'room.leaveGame' | transloco" [matTooltip]="'room.leaveGame' | transloco">
+        <mat-icon>logout</mat-icon><span class="room-action-label">{{ 'room.leave' | transloco }}</span>
       </button>
     </div>
   </div>

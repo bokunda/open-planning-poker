@@ -113,3 +113,16 @@ mat-toolbar {
   .header-support { width: 36px; padding: 0; justify-content: center; }
   .header-support-label { display: none; }
 }
+
+// Language section of the menu (same look as the room menu captions).
+.menu-caption {
+  display: block;
+  padding: var(--opp-space-2) var(--opp-space-4) 0;
+  font-size: var(--opp-font-size-xs);
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--opp-text-muted);
+}
+
+.menu-check--off { opacity: 0; }

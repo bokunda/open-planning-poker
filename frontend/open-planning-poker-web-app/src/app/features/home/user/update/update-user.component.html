@@ -2,12 +2,12 @@
   <div class="update-user">
     <form [formGroup]="updateUserForm" (ngSubmit)="onSubmit()" class="update-user-form">
       <mat-form-field appearance="outline">
-        <mat-label>Your name</mat-label>
+        <mat-label>{{ 'user.yourName' | transloco }}</mat-label>
         <input matInput formControlName="username" cdkFocusInitial>
       </mat-form-field>
 
       <button mat-flat-button color="primary" class="opp-submit" type="submit">
-        Save name
+        {{ 'user.save' | transloco }}
       </button>
     </form>
 

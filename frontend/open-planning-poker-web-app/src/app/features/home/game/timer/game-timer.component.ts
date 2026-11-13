@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Apollo } from 'apollo-angular';
 import type { DocumentNode } from 'graphql';
 import { GameTimerState, GET_GAME_TIMER, ON_TIMER_CHANGED, START_TIMER, STOP_TIMER } from '../gql/timer.graphql';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /** What the table ring needs: seconds left (null when the timer is not running) and the full duration. */
 export interface TimerTick { remaining: number | null; total: number; }
@@ -17,6 +18,7 @@ const DURATIONS = [30, 60, 120, 180, 300];
  */
 @Component({
   selector: 'app-game-timer',
+  imports: [TranslocoPipe],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './game-timer.component.html',

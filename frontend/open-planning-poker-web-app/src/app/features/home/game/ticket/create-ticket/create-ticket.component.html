@@ -2,12 +2,12 @@
   <div class="create-ticket">
     <form [formGroup]="createTicketForm" (ngSubmit)="onSubmit()" class="create-ticket-form">
       <mat-form-field appearance="outline">
-        <mat-label>Ticket</mat-label>
+        <mat-label>{{ 'ticket.name' | transloco }}</mat-label>
         <input matInput formControlName="name" placeholder="OPP-118 Export results to CSV" cdkFocusInitial>
       </mat-form-field>
 
       <button mat-flat-button color="primary" class="opp-submit" type="submit">
-        <mat-icon>add</mat-icon> Add ticket
+        <mat-icon>add</mat-icon> {{ 'ticket.add' | transloco }}
       </button>
     </form>
   </div>

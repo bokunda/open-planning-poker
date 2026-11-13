@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
  * Placeholder shaped like the game room (ticket, card hand, players panel), shown while
@@ -8,11 +9,11 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-room-skeleton',
   standalone: true,
-  imports: [CommonModule],
+  imports: [TranslocoPipe, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="skeleton" role="status" aria-live="polite">
-      <span class="sr-only">Loading game…</span>
+      <span class="sr-only">{{ 'room.loading' | transloco }}</span>
       <div class="skeleton-main" aria-hidden="true">
         <div class="sk sk-title"></div>
         <div class="sk sk-ticket"></div>

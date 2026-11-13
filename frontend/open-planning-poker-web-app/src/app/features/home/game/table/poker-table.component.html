@@ -1,4 +1,4 @@
-<div class="table" [class.table--crowded]="crowded" role="group" aria-label="Table">
+<div class="table" [class.table--crowded]="crowded" role="group" [attr.aria-label]="'table.aria' | transloco">
   <div class="felt">
     <div class="felt-center">
       <ng-container *ngIf="!votesRevealed; else revealedCenter">
@@ -6,14 +6,14 @@
           [class.timer-ring--active]="timerActive"
           [class.timer-ring--warn]="timerActive && timerRemaining! <= 10"
           [style.--t]="timerFraction">
-          <div class="ring" [style.--p]="progress" role="img" [attr.aria-label]="votedCount + ' of ' + total + ' voted'">
+          <div class="ring" [style.--p]="progress" role="img" [attr.aria-label]="'table.votedAria' | transloco: { count: votedCount, total: total }">
             <div class="ring-inner opp-tabular">{{ votedCount }}/{{ total }}</div>
           </div>
         </div>
-        <span class="felt-label opp-tabular">{{ timerActive ? timerLabel + ' left' : 'voted' }}</span>
+        <span class="felt-label opp-tabular">{{ timerActive ? ('timer.left' | transloco: { time: timerLabel }) : ('table.voted' | transloco) }}</span>
       </ng-container>
       <ng-template #revealedCenter>
-        <span class="felt-label">average</span>
+        <span class="felt-label">{{ 'table.average' | transloco }}</span>
         <span class="felt-result opp-tabular">{{ average }}</span>
       </ng-template>
     </div>

@@ -10,13 +10,14 @@ import { GameTimerComponent, TimerTick } from '../timer/game-timer.component';
 import { ApiCollectionOfGamePlayer, Settings, SettingsDetailsResult, Ticket, Vote } from '../../../../graphql/graphql-gateway.service';
 import { MarkdownPipe } from '../../../../shared/markdown/markdown.pipe';
 import { RoomSettings, RoomTicket } from '../room-types';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-voting',
   templateUrl: './voting.component.html',
   styleUrl: './voting.component.scss',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, PokerCardComponent, PokerTableComponent, VoteResultsComponent, GameTimerComponent, MarkdownPipe],
+  imports: [TranslocoPipe, CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, PokerCardComponent, PokerTableComponent, VoteResultsComponent, GameTimerComponent, MarkdownPipe],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class VotingComponent implements OnInit, OnDestroy, OnChanges {
@@ -46,6 +47,7 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
   }
   private readonly host = inject(ElementRef<HTMLElement>);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly i18n = inject(TranslocoService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   @Output() onCreateNewTicket = new EventEmitter<void>();
@@ -108,7 +110,7 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
       this.selectedOption = null;
       this.descriptionExpanded = true;
       if (!changes['ticket'].firstChange && this.ticket?.name) {
-        this.announce(`Now voting on ${this.ticket.name}. Pick a card.`);
+        this.announce(this.i18n.translate('voting.announceTicket', { name: this.ticket.name }));
       }
     }
     // A new voting round (re-vote) clears the card the user had chosen.
@@ -118,7 +120,7 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
     const newRound = changes['votesRevealed'] && changes['votesRevealed'].previousValue && !changes['votesRevealed'].currentValue;
     if (newRound) {
       this.selectedOption = null;
-      if (!ticketChanged) this.announce('New round. Pick a card.');
+      if (!ticketChanged) this.announce(this.i18n.translate('voting.announceRound'));
     }
     // Someone voted (only before the reveal; values stay hidden).
     const votesChange = changes['votes'];
@@ -128,7 +130,7 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
       if (arrived.length) {
         const total = this.players?.items?.length ?? 0;
         const who = arrived.map(v => this.playerName(v.playerId)).join(', ');
-        this.announce(`${who} voted. ${this.votes.length} of ${total} voted.`);
+        this.announce(this.i18n.translate('voting.announceVoted', { who, count: this.votes.length, total }));
       }
     }
   }
@@ -153,8 +155,8 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private playerName(playerId: string): string {
-    if (playerId === this.currentUserId) return 'You';
-    return this.players?.items?.find(p => p.id === playerId)?.name ?? 'A player';
+    if (playerId === this.currentUserId) return this.i18n.translate('common.you');
+    return this.players?.items?.find(p => p.id === playerId)?.name ?? this.i18n.translate('results.aPlayer');
   }
 
   /** Arrow keys, Home and End move focus inside the hand; Enter/Space vote (native buttons). */

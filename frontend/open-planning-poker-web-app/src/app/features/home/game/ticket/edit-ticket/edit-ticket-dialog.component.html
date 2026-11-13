@@ -1,23 +1,23 @@
-<h2 mat-dialog-title>Edit ticket</h2>
+<h2 mat-dialog-title>{{ 'ticket.editTitle' | transloco }}</h2>
 <form [formGroup]="form" (ngSubmit)="save()">
   <mat-dialog-content class="edit-ticket">
     <mat-form-field appearance="outline">
-      <mat-label>Ticket</mat-label>
+      <mat-label>{{ 'ticket.name' | transloco }}</mat-label>
       <input matInput formControlName="name" maxlength="255" cdkFocusInitial>
-      <mat-error *ngIf="form.controls.name.invalid">Give the ticket a title (3 to 255 characters).</mat-error>
+      <mat-error *ngIf="form.controls.name.invalid">{{ 'ticket.nameInvalid' | transloco }}</mat-error>
     </mat-form-field>
     <mat-form-field appearance="outline">
-      <mat-label>Description</mat-label>
+      <mat-label>{{ 'import.description' | transloco }}</mat-label>
       <textarea matInput formControlName="description" rows="6" maxlength="4080"></textarea>
-      <mat-hint>**bold**, *italic*, `code`, lists ("- ") and links work.</mat-hint>
+      <mat-hint>{{ 'ticket.markdownHint' | transloco }}</mat-hint>
     </mat-form-field>
     <div class="edit-preview" *ngIf="form.value.description">
-      <span class="edit-preview-label">Preview</span>
+      <span class="edit-preview-label">{{ 'ticket.preview' | transloco }}</span>
       <div class="opp-markdown" [innerHTML]="form.value.description | oppMarkdown"></div>
     </div>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-button type="button" mat-dialog-close>Cancel</button>
-    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">Save</button>
+    <button mat-button type="button" mat-dialog-close>{{ 'common.cancel' | transloco }}</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">{{ 'common.save' | transloco }}</button>
   </mat-dialog-actions>
 </form>

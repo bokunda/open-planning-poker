@@ -78,6 +78,13 @@ app.MapHealthChecks("/_health", new HealthCheckOptions
 app.UseCustomExceptionHandler();
 
 app.UseCors(corsConfig.PolicyName);
+// Messages and the PDF report in the caller's language (OPP-24). "sr" alone is listed because the
+// browser and the app send it without a script.
+app.UseRequestLocalization(options =>
+{
+    string[] cultures = ["en", "sr", "sr-Latn", "de"];
+    options.SetDefaultCulture("en").AddSupportedCultures(cultures).AddSupportedUICultures(cultures);
+});
 app.UseRateLimiter();
 app.UseWebSockets();
 app.MapGraphQL().WithOptions(new GraphQLServerOptions
@@ -87,3 +94,6 @@ app.MapGraphQL().WithOptions(new GraphQLServerOptions
 });
 
 app.RunWithGraphQLCommands(args);
+
+/// <summary>Entry point, public so the integration tests can host the app.</summary>
+public partial class Program;

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 export interface QrShareData {
   url: string;
@@ -12,16 +13,16 @@ export interface QrShareData {
 @Component({
   selector: 'app-qr-share-dialog',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
+  imports: [TranslocoPipe, CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
   template: `
     <div class="qr-share-wrapper">
-      <h2 mat-dialog-title>Invite your team</h2>
+      <h2 mat-dialog-title>{{ 'share.title' | transloco }}</h2>
       <mat-dialog-content>
-        <p class="opp-dialog-lead">Share the link to {{ data.gameName }}, or let people scan the code with their phone.</p>
+        <p class="opp-dialog-lead">{{ 'share.lead' | transloco: { name: data.gameName } }}</p>
         <div class="qr-container">
           <img
             [src]="qrImageUrl"
-            alt="QR code to share this game"
+            [alt]="'share.qrAlt' | transloco"
             width="220" height="220"
             class="qr-image" />
         </div>
@@ -29,12 +30,12 @@ export interface QrShareData {
           <code>{{ data.url }}</code>
         </div>
         <button mat-flat-button color="primary" (click)="copyUrl()" class="opp-submit copy-btn">
-          <mat-icon>content_copy</mat-icon> Copy link
+          <mat-icon>content_copy</mat-icon> {{ 'room.copyLinkShort' | transloco }}
         </button>
-        <span class="copied-msg" *ngIf="copied">Copied!</span>
+        <span class="copied-msg" *ngIf="copied">{{ 'share.copied' | transloco }}</span>
       </mat-dialog-content>
       <mat-dialog-actions align="end">
-        <button mat-button mat-dialog-close>Close</button>
+        <button mat-button mat-dialog-close>{{ 'common.close' | transloco }}</button>
       </mat-dialog-actions>
     </div>
   `,

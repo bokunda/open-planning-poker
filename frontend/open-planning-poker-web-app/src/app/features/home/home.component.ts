@@ -12,6 +12,7 @@ import { BreadcrumbComponent } from './game/breadcrumb/breadcrumb.component';
 import { GameComponent } from './game/game.component';
 import { FooterComponent } from './footer/footer.component';
 import { TeamComponent } from './team/team.component';
+import { TranslocoService } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-home',
@@ -32,6 +33,7 @@ export class HomeComponent implements OnInit {
   private readonly meta = inject(Meta);
   private readonly route = inject(ActivatedRoute);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly i18n = inject(TranslocoService);
 
   constructor(private apollo: Apollo) {
     // Delay user setup until after hydration to avoid SSR/client mismatch
@@ -43,6 +45,8 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.isTeamView = this.route.snapshot.data['view'] === 'team';
     this.updatePageMeta();
+    // Titles and descriptions follow the language.
+    this.i18n.langChanges$.subscribe(() => this.updatePageMeta());
     this.route.paramMap.subscribe(params => {
       if (this.isTeamView) {
         this.updateTeamBreadcrumb(params.get('teamId'));
@@ -54,43 +58,43 @@ export class HomeComponent implements OnInit {
 
   private updateTeamBreadcrumb(teamId: string | null): void {
     this.breadcrumbItems = teamId
-      ? [{ label: 'Home', url: '/' }, { label: 'Teams', url: '/team' }, { label: 'Team room' }]
-      : [{ label: 'Home', url: '/' }, { label: 'Teams' }];
+      ? [{ label: 'nav.home', url: '/' }, { label: 'nav.teams', url: '/team' }, { label: 'nav.teamRoom' }]
+      : [{ label: 'nav.home', url: '/' }, { label: 'nav.teams' }];
   }
 
   private updateBreadcrumb(gameId: string | null, ticketId: string | null): void {
     const items: BreadcrumbItem[] = [
-      { label: 'Home', url: '/' }
+      { label: 'nav.home', url: '/' }
     ];
     if (gameId) {
-      items.push({ label: 'Game', url: `/game/${gameId}` });
+      items.push({ label: 'nav.game', url: `/game/${gameId}` });
     }
     if (ticketId) {
-      items.push({ label: 'Voting' });
+      items.push({ label: 'nav.voting' });
     }
     this.breadcrumbItems = items;
   }
 
   private updatePageMeta(): void {
     if (this.isTeamView) {
-      this.title.setTitle(this.route.snapshot.paramMap.get('teamId') ? 'Team Room — Open Planning Poker' : 'Team Rooms — Open Planning Poker');
+      this.title.setTitle(this.i18n.translate(this.route.snapshot.paramMap.get('teamId') ? 'meta.teamRoomTitle' : 'meta.teamRoomsTitle'));
       return;
     }
     const gameId = this.route.snapshot.paramMap.get('id');
     const ticketId = this.route.snapshot.paramMap.get('ticketId');
     const baseUrl = 'https://app.openplanningpoker.com';
     let pageUrl = baseUrl;
-    let pageTitle = 'Open Planning Poker — Free Agile Estimation Tool';
-    let pageDesc = 'Play Planning Poker online for free. Create a game room, invite your team, and estimate user stories collaboratively.';
+    let pageTitle = this.i18n.translate('meta.homeTitle');
+    let pageDesc = this.i18n.translate('meta.homeDescription');
 
     if (gameId && ticketId) {
       pageUrl = `${baseUrl}/game/${gameId}/ticket/${ticketId}`;
-      pageTitle = 'Planning Poker — Voting Session | Open Planning Poker';
-      pageDesc = 'Vote on user stories in this planning poker session. Join your team and estimate collaboratively.';
+      pageTitle = this.i18n.translate('meta.votingTitle');
+      pageDesc = this.i18n.translate('meta.votingDescription');
     } else if (gameId) {
       pageUrl = `${baseUrl}/game/${gameId}`;
-      pageTitle = 'Planning Poker — Game Room | Open Planning Poker';
-      pageDesc = 'Join this planning poker game room. Estimate user stories with your agile team in real-time.';
+      pageTitle = this.i18n.translate('meta.roomTitle');
+      pageDesc = this.i18n.translate('meta.roomDescription');
     }
 
     this.title.setTitle(pageTitle);

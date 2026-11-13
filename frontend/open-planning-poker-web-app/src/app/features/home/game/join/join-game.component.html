@@ -2,12 +2,12 @@
   <div class="join-game">
     <form [formGroup]="joinGameForm" (ngSubmit)="onSubmit()" class="join-game-form">
       <mat-form-field appearance="outline">
-        <mat-label>Game link or code</mat-label>
+        <mat-label>{{ 'join.linkOrCode' | transloco }}</mat-label>
         <input matInput formControlName="id" placeholder="https://app.openplanningpoker.com/game/…" cdkFocusInitial>
       </mat-form-field>
 
       <button mat-flat-button color="primary" class="opp-submit" type="submit">
-        <mat-icon>login</mat-icon> Join game
+        <mat-icon>login</mat-icon> {{ 'join.submit' | transloco }}
       </button>
     </form>
 

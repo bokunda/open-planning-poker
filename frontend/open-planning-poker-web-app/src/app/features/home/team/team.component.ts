@@ -9,6 +9,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '../../../shared/constants';
 import { CREATE_SPRINT, CREATE_TEAM, GET_TEAM, JOIN_TEAM, LEAVE_TEAM, MY_TEAMS, TeamDetails, TeamSummary } from './team.graphql';
 import { VelocityChartComponent } from './velocity-chart.component';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { OppDatePipe } from '../../../i18n/opp-date.pipe';
 
 type Errors = { errors?: { message: string }[] | null } | null | undefined;
 
@@ -19,7 +21,7 @@ type Errors = { errors?: { message: string }[] | null } | null | undefined;
 @Component({
   selector: 'app-team',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, MatButtonModule, MatIconModule, VelocityChartComponent],
+  imports: [TranslocoPipe, OppDatePipe, CommonModule, FormsModule, RouterLink, MatButtonModule, MatIconModule, VelocityChartComponent],
   templateUrl: './team.component.html',
   styleUrl: './team.component.scss',
 })
@@ -40,6 +42,7 @@ export class TeamComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly i18n = inject(TranslocoService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   teamId: string | null = null;
@@ -111,7 +114,7 @@ export class TeamComponent implements OnInit {
         this.newTeamDescription = '';
         this.router.navigate(['/team', team.id]);
       },
-      error: () => { this.busy = false; this.notify('The team was not created. Try again.'); }
+      error: () => { this.busy = false; this.notify(this.i18n.translate('team.createFailed')); }
     });
   }
 
@@ -123,7 +126,7 @@ export class TeamComponent implements OnInit {
         this.busy = false;
         if (!this.failed(data?.joinTeam)) this.load();
       },
-      error: () => { this.busy = false; this.notify('Could not join the team. Try again.'); }
+      error: () => { this.busy = false; this.notify(this.i18n.translate('team.joinFailed')); }
     });
   }
 
@@ -154,19 +157,19 @@ export class TeamComponent implements OnInit {
         if (this.failed(data?.createGame) || !game) return;
         this.router.navigate(['/game', game.id]);
       },
-      error: () => { this.busy = false; this.notify('The planning session was not created. Try again.'); }
+      error: () => { this.busy = false; this.notify(this.i18n.translate('team.startFailed')); }
     });
   }
 
   copyInvite(): void {
     navigator.clipboard.writeText(this.inviteUrl)
-      .then(() => this.notify('Team link copied. Anyone with it can join the team.'))
-      .catch(() => this.notify('Could not copy the link.'));
+      .then(() => this.notify(this.i18n.translate('team.linkCopied')))
+      .catch(() => this.notify(this.i18n.translate('room.copyFailed')));
   }
 
   private defaultSprintName(): string {
     const date = new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
-    return `Sprint planning ${date}`;
+    return this.i18n.translate('team.defaultSprintName', { date });
   }
 
   private failed(payload: Errors): boolean {
@@ -176,6 +179,6 @@ export class TeamComponent implements OnInit {
   }
 
   private notify(message: string): void {
-    this.snackBar.open(message, OPP_SNACKBAR_MODAL_LABEL_CLOSE, { duration: OPP_SNACKBAR_DURATION_DEFAULT * 2 });
+    this.snackBar.open(message, this.i18n.translate('common.close'), { duration: OPP_SNACKBAR_DURATION_DEFAULT * 2 });
   }
 }

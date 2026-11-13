@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/@angular/service-worker/config/schema.json",
-  "index": "/index.html",
+  "index": "/index.csr.html",
+  "navigationRequestStrategy": "freshness",
   "assetGroups": [
     {
       "name": "app",
@@ -8,7 +9,8 @@
       "resources": {
         "files": [
           "/favicon.ico",
-          "/index.html",
+          "/index.csr.html",
+          "/manifest.webmanifest",
           "/*.css",
           "/*.js"
         ]
@@ -21,7 +23,9 @@
       "resources": {
         "files": [
           "/assets/**",
-          "/images/**"
+          "/fonts/**",
+          "/images/**",
+          "/*.png"
         ]
       }
     }

@@ -11,6 +11,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { RouterLink } from '@angular/router';
 import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '../../../../shared/constants';
 import { isAsyncVotingOpen, RoomSettings } from '../room-types';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { OppDatePipe } from '../../../../i18n/opp-date.pipe';
 
 /** Room options the host changes from the settings menu. */
 export interface RoomOptions {
@@ -21,9 +23,9 @@ export interface RoomOptions {
 
 /** How long the async voting window stays open. */
 export const ASYNC_WINDOWS = [
-  { label: '24 hours', hours: 24 },
-  { label: '3 days', hours: 72 },
-  { label: '1 week', hours: 168 },
+  { labelKey: 'room.async24h', hours: 24 },
+  { labelKey: 'room.async3d', hours: 72 },
+  { labelKey: 'room.async1w', hours: 168 },
 ] as const;
 
 @Component({
@@ -31,7 +33,7 @@ export const ASYNC_WINDOWS = [
   templateUrl: './game-details.component.html',
   styleUrl: './game-details.component.scss',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatButtonModule, MatIconModule, MatTooltipModule, MatMenuModule, MatDividerModule],
+  imports: [TranslocoPipe, OppDatePipe, CommonModule, RouterLink, MatButtonModule, MatIconModule, MatTooltipModule, MatMenuModule, MatDividerModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameDetailsComponent {
@@ -78,6 +80,7 @@ export class GameDetailsComponent {
 
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
+  private readonly i18n = inject(TranslocoService);
 
   async openQrShare(): Promise<void> {
     // Loaded on first open, with the QR code library.
@@ -85,7 +88,7 @@ export class GameDetailsComponent {
     this.dialog.open(QrShareDialogComponent, {
       width: '360px',
       maxWidth: '95vw',
-      data: { url: window.location.href, gameName: this.game?.name ?? 'Game' }
+      data: { url: window.location.href, gameName: this.game?.name ?? this.i18n.translate('room.gameFallbackName') }
     });
   }
 
@@ -93,12 +96,12 @@ export class GameDetailsComponent {
     navigator.clipboard
       .writeText(window.location.href)
       .then(() => {
-        this.snackBar.open('Game link copied. Share it with your team.', OPP_SNACKBAR_MODAL_LABEL_CLOSE, {
+        this.snackBar.open(this.i18n.translate('room.linkCopied'), this.i18n.translate('common.close'), {
           duration: OPP_SNACKBAR_DURATION_DEFAULT,
         });
       })
       .catch((err) => {
-        this.snackBar.open('Could not copy text to clipboard!');
+        this.snackBar.open(this.i18n.translate('room.copyFailed'), this.i18n.translate('common.close'), { duration: OPP_SNACKBAR_DURATION_DEFAULT });
         console.error('Could not copy text: ', err);
       });
   }

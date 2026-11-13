@@ -1,8 +1,8 @@
-<h2 mat-dialog-title>New game</h2>
+<h2 mat-dialog-title>{{ 'createGame.title' | transloco }}</h2>
 
 <div class="create-game-dialog-wrapper">
   <mat-dialog-content>
-    <p class="opp-dialog-lead">Name the room and pick the cards your team votes with. You can share the link right after.</p>
+    <p class="opp-dialog-lead">{{ 'createGame.lead' | transloco }}</p>
     <app-create-game></app-create-game>
   </mat-dialog-content>
 </div>

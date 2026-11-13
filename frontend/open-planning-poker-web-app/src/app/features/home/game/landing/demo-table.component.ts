@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, PLAT
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ApiCollectionOfGamePlayer, Vote } from '../../../../graphql/graphql-gateway.service';
 import { PokerTableComponent } from '../table/poker-table.component';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 const DECK = ['0', '0.5', '1', '2', '3', '5', '8', '13'];
 const PLAYERS = [
@@ -25,7 +26,7 @@ const ROUNDS: Record<string, string>[] = [
 @Component({
   selector: 'app-demo-table',
   standalone: true,
-  imports: [CommonModule, PokerTableComponent],
+  imports: [TranslocoPipe, CommonModule, PokerTableComponent],
   changeDetection: ChangeDetectionStrategy.Default,
   template: `
     <div class="demo" aria-hidden="true">
@@ -36,7 +37,7 @@ const ROUNDS: Record<string, string>[] = [
         currentUserId="you"
         [deck]="deck">
       </app-poker-table>
-      <p class="demo-caption">{{ caption }}</p>
+      <p class="demo-caption">{{ caption | transloco }}</p>
     </div>
   `,
   styles: [`
@@ -47,10 +48,14 @@ const ROUNDS: Record<string, string>[] = [
 })
 export class DemoTableComponent {
   readonly deck = DECK;
-  readonly players: ApiCollectionOfGamePlayer = { items: PLAYERS, totalCount: PLAYERS.length } as ApiCollectionOfGamePlayer;
+  private readonly you = inject(TranslocoService).translate('common.you');
+  readonly players: ApiCollectionOfGamePlayer = {
+    items: PLAYERS.map(p => (p.id === 'you' ? { ...p, name: this.you } : p)),
+    totalCount: PLAYERS.length,
+  } as ApiCollectionOfGamePlayer;
   votes: Vote[] = [];
   revealed = false;
-  caption = 'Everyone picks a card in secret.';
+  caption = 'demo.secret';
 
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly timers: ReturnType<typeof setTimeout>[] = [];
@@ -76,14 +81,14 @@ export class DemoTableComponent {
   private showFinished(): void {
     this.votes = this.votesFor(ROUNDS[1], PLAYERS.map(p => p.id));
     this.revealed = true;
-    this.caption = 'Reveal together, then talk about the outliers.';
+    this.caption = 'demo.reveal';
   }
 
   private playRound(): void {
     const plan = ROUNDS[this.round % ROUNDS.length];
     this.votes = [];
     this.revealed = false;
-    this.caption = 'Everyone picks a card in secret.';
+    this.caption = 'demo.secret';
     const order = ['stefan', 'ana', 'you', 'jelena', 'marko'];
     order.forEach((id, i) => this.later(900 + i * 650, () => {
       this.votes = this.votesFor(plan, order.slice(0, i + 1));
@@ -92,8 +97,8 @@ export class DemoTableComponent {
     this.later(revealAt, () => {
       this.revealed = true;
       this.caption = this.round % ROUNDS.length === 0
-        ? 'Wide spread: Stefan and Marko explain, then the team votes again.'
-        : 'Almost everyone agrees. Record the estimate and move on.';
+        ? 'demo.spread'
+        : 'demo.agree';
     });
     this.later(revealAt + 4200, () => {
       this.round++;

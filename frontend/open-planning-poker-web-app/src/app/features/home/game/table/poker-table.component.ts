@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ApiCollectionOfGamePlayer, Vote } from '../../../../graphql/graphql-gateway.service';
 import { PokerCardComponent } from '../../../../shared/poker-card/poker-card.component';
 import { computeVoteStats, formatNumber } from './vote-stats';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 interface Seat {
   id: string;
@@ -24,7 +25,7 @@ interface Seat {
 @Component({
   selector: 'app-poker-table',
   standalone: true,
-  imports: [CommonModule, PokerCardComponent],
+  imports: [TranslocoPipe, CommonModule, PokerCardComponent],
   templateUrl: './poker-table.component.html',
   styleUrl: './poker-table.component.scss',
 })

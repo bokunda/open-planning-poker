@@ -23,7 +23,8 @@
 - **Team Rooms** — Keep every sprint planning of a team, with the sprint history and a velocity chart
 - **Export Results** — Download game reports as PDF or CSV
 - **No Registration Required** — Anonymous usernames, no passwords, no personal data
-- **PWA Support** — Installable on mobile and desktop, works offline
+- **English, Serbian and German** — The app follows the browser language and can be switched in the menu; the website home page is translated too
+- **Installable App** — Install on mobile and desktop; opens offline with a friendly notice
 - **SEO Optimized** — Server-side rendering, structured data, meta tags for search engines
 - **Docker Ready** — Run locally or deploy to production with Docker Compose
 - **Rate Limiting & Security Headers** — Protected by design
@@ -108,7 +109,8 @@ Full setup guide: [docs/setup-and-development.md](docs/setup-and-development.md)
 - [x] Team rooms with sprint history and velocity, async voting
 - [ ] Jira integration (import issues, save estimates back)
 - [ ] Slack and Microsoft Teams apps
-- [ ] Multi-language support (i18n)
+- [x] English, Serbian and German, installable app (PWA)
+- [x] Integration, end-to-end and Lighthouse checks on every pull request
 
 ## Support the project
 

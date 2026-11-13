@@ -1,16 +1,16 @@
-<section class="voting-wrapper" aria-label="Voting area">
+<section class="voting-wrapper" [attr.aria-label]="'voting.area' | transloco">
   <div class="sr-only" aria-live="polite" aria-atomic="true">{{ announcement }}</div>
   <!-- No ticket: big CTA for host -->
   <div class="no-ticket-cta" *ngIf="!ticket?.id && isHost">
     <div class="no-ticket-illustration">🎯</div>
-    <h2 class="no-ticket-title">Ready to start?</h2>
-    <p class="no-ticket-desc">Create your first ticket to begin estimating.</p>
+    <h2 class="no-ticket-title">{{ 'voting.readyTitle' | transloco }}</h2>
+    <p class="no-ticket-desc">{{ 'voting.readyText' | transloco }}</p>
     <div class="no-ticket-actions">
       <button mat-raised-button color="primary" class="new-ticket-btn--hero" (click)="handleOnCreateNewTicket()">
-        <mat-icon>add</mat-icon> New ticket
+        <mat-icon>add</mat-icon> {{ 'ticket.newTitle' | transloco }}
       </button>
       <button mat-stroked-button color="primary" class="new-ticket-btn--hero" (click)="handleOnImportTickets()">
-        <mat-icon>file_upload</mat-icon> Import tickets
+        <mat-icon>file_upload</mat-icon> {{ 'voting.importTickets' | transloco }}
       </button>
     </div>
   </div>
@@ -19,10 +19,10 @@
   <div class="no-ticket-waiting" *ngIf="!ticket?.id && !isHost">
     <span class="waiting-icon">⏳</span>
     <ng-container *ngIf="tickets.length > 0; else noTicketsYet">
-      <p>Host has created tickets. Waiting for host to select a ticket...</p>
+      <p>{{ 'voting.waitingForSelection' | transloco }}</p>
     </ng-container>
     <ng-template #noTicketsYet>
-      <p>Waiting for host to create a ticket...</p>
+      <p>{{ 'voting.waitingForTicket' | transloco }}</p>
     </ng-template>
   </div>
 
@@ -35,7 +35,7 @@
           class="ticket-nav-btn"
           [disabled]="!hasPrevTicket"
           (click)="navigateToTicket(prevTicketId)"
-          aria-label="Previous ticket">
+          [attr.aria-label]="'voting.previousTicket' | transloco">
           <mat-icon>chevron_left</mat-icon>
         </button>
 
@@ -49,8 +49,8 @@
               [class.ticket-desc-toggle--active]="descriptionExpanded"
               (click)="toggleDescription()"
               [attr.aria-expanded]="descriptionExpanded"
-              aria-label="Show or hide the ticket description"
-              [matTooltip]="descriptionExpanded ? 'Hide description' : 'Show description'">
+              [attr.aria-label]="'voting.toggleDescription' | transloco"
+              [matTooltip]="(descriptionExpanded ? 'voting.hideDescription' : 'voting.showDescription') | transloco">
               <mat-icon>info</mat-icon>
             </button>
           </h2>
@@ -63,7 +63,7 @@
           class="ticket-nav-btn"
           [disabled]="!hasNextTicket"
           (click)="navigateToTicket(nextTicketId)"
-          aria-label="Next ticket">
+          [attr.aria-label]="'voting.nextTicket' | transloco">
           <mat-icon>chevron_right</mat-icon>
         </button>
       </div>
@@ -86,10 +86,10 @@
 
     <p class="observer-note" *ngIf="isObserver">
       <mat-icon svgIcon="opp-observe" aria-hidden="true"></mat-icon>
-      You are watching this game. To vote, choose "Vote again" next to your name in the players list.
+      {{ 'voting.observerNote' | transloco }}
     </p>
 
-    <div class="voting-cards" role="group" aria-label="Your cards. Use the arrow keys to move and Enter to vote."
+    <div class="voting-cards" role="group" [attr.aria-label]="'voting.cardsAria' | transloco"
       *ngIf="!isObserver"
       [class.voting-cards--locked]="votesRevealed" (keydown)="onHandKeydown($event)">
       <button *ngFor="let voteOption of voteOptions; let i = index; trackBy: trackByOption"
@@ -101,13 +101,14 @@
         [class.vote-card--disabled]="ticket?.id == null"
         [disabled]="ticket?.id == null || votesRevealed"
         [attr.aria-pressed]="selectedOption === voteOption"
-        [attr.aria-label]="'Vote ' + voteOption"
         (click)="selectOption(voteOption, $event)">
-        <app-poker-card [value]="voteOption" size="lg" [selected]="selectedOption === voteOption"></app-poker-card>
+        <!-- The name comes from the hidden text, so it always matches; the card face is decoration. -->
+        <span class="sr-only">{{ 'voting.voteFor' | transloco: { value: voteOption } }}</span>
+        <app-poker-card aria-hidden="true" [value]="voteOption" size="lg" [selected]="selectedOption === voteOption"></app-poker-card>
       </button>
     </div>
     <p class="hand-hint" *ngIf="!votesRevealed && !isObserver">
-      Tip: type a card's value to vote, or use ← → and Enter.<ng-container *ngIf="autoReveal"> The cards turn over when everyone has voted.</ng-container>
+      {{ 'voting.hint' | transloco }}<ng-container *ngIf="autoReveal"> {{ 'voting.hintAutoReveal' | transloco }}</ng-container>
     </p>
 
     <!-- Host action bar (below vote cards) -->
@@ -115,21 +116,21 @@
       <!-- Pre-reveal: has votes -->
       <ng-container *ngIf="!votesRevealed && votes.length > 0">
         <button mat-flat-button color="primary" class="action-btn action-btn--reveal" (click)="onRevealVotes.emit()">
-          <mat-icon>visibility</mat-icon> Reveal cards
+          <mat-icon>visibility</mat-icon> {{ 'voting.reveal' | transloco }}
         </button>
       </ng-container>
 
       <!-- Post-reveal: vote again -->
       <button mat-flat-button color="primary" class="action-btn" *ngIf="votesRevealed" (click)="onVoteAgain.emit()">
-        <mat-icon>replay</mat-icon> Vote again
+        <mat-icon>replay</mat-icon> {{ 'voting.voteAgain' | transloco }}
       </button>
 
       <!-- Always available -->
       <button mat-stroked-button color="primary" class="action-btn" (click)="handleOnCreateNewTicket()">
-        <mat-icon>add</mat-icon> New ticket
+        <mat-icon>add</mat-icon> {{ 'ticket.newTitle' | transloco }}
       </button>
       <button mat-stroked-button class="action-btn action-btn--import" (click)="handleOnImportTickets()">
-        <mat-icon>file_upload</mat-icon> Import
+        <mat-icon>file_upload</mat-icon> {{ 'voting.import' | transloco }}
       </button>
     </div>
 

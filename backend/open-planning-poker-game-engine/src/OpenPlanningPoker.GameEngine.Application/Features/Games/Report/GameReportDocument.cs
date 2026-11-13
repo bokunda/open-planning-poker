@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Reflection;
 using QuestPDF.Infrastructure;
+using OpenPlanningPoker.GameEngine.Application.Localization;
 using Unit = QuestPDF.Infrastructure.Unit;
 
 namespace OpenPlanningPoker.GameEngine.Application.Features.Games.Report;
@@ -76,7 +77,7 @@ public sealed class GameReportDocument(ReportModel model) : IDocument
                 text.Span("Open Planning ").FontFamily(DisplayFont).ExtraBold().FontSize(12);
                 text.Span("Poker").FontFamily(DisplayFont).ExtraBold().FontSize(12).FontColor(Primary);
             });
-            row.AutoItem().AlignMiddle().Text("Game report").FontSize(9).SemiBold().FontColor(TextMuted);
+            row.AutoItem().AlignMiddle().Text(T("report.title")).FontSize(9).SemiBold().FontColor(TextMuted);
         });
     }
 
@@ -102,9 +103,9 @@ public sealed class GameReportDocument(ReportModel model) : IDocument
                 title.Item().PaddingTop(4).Text(text =>
                 {
                     text.DefaultTextStyle(s => s.FontSize(8.5f).FontColor(TextMuted));
-                    text.Span($"Created {Date(model.CreatedOn)}");
+                    text.Span(T("report.created", Date(model.CreatedOn)));
                     text.Span("   ·   ");
-                    text.Span($"Exported {Date(model.GeneratedOn)} UTC");
+                    text.Span(T("report.exported", Date(model.GeneratedOn)));
                 });
             });
 
@@ -112,17 +113,17 @@ public sealed class GameReportDocument(ReportModel model) : IDocument
             column.Item().Row(row =>
             {
                 row.Spacing(8);
-                Tile(row.RelativeItem(), "Tickets", tickets.Count.ToString(CultureInfo.InvariantCulture));
-                Tile(row.RelativeItem(), "Revealed", $"{revealed} of {tickets.Count}");
-                Tile(row.RelativeItem(), "Players", players.ToString(CultureInfo.InvariantCulture));
-                Tile(row.RelativeItem(), "Average estimate", averages.Count > 0 ? Number(averages.Average()) : "–");
+                Tile(row.RelativeItem(), T("report.tickets"), tickets.Count.ToString(CultureInfo.InvariantCulture));
+                Tile(row.RelativeItem(), T("report.revealed"), T("report.revealedOf", revealed, tickets.Count));
+                Tile(row.RelativeItem(), T("report.players"), players.ToString(CultureInfo.InvariantCulture));
+                Tile(row.RelativeItem(), T("report.averageEstimate"), averages.Count > 0 ? Number(averages.Average()) : "–");
             });
 
-            column.Item().PaddingTop(4).Text("Tickets").FontFamily(DisplayFont).ExtraBold().FontSize(14);
+            column.Item().PaddingTop(4).Text(T("report.tickets")).FontFamily(DisplayFont).ExtraBold().FontSize(14);
 
             if (tickets.Count == 0)
             {
-                column.Item().Text("No tickets in this game yet.").FontColor(TextMuted);
+                column.Item().Text(T("report.noTickets")).FontColor(TextMuted);
             }
 
             foreach (var (ticket, stats) in tickets)
@@ -160,7 +161,7 @@ public sealed class GameReportDocument(ReportModel model) : IDocument
 
             if (stats.Spread is VoteSpread.NotRevealed or VoteSpread.NoVotes)
             {
-                column.Item().Text(stats.Spread == VoteSpread.NotRevealed ? "The cards were not revealed." : "Nobody voted.")
+                column.Item().Text(stats.Spread == VoteSpread.NotRevealed ? T("report.notRevealed") : T("report.nobodyVoted"))
                     .FontSize(9).FontColor(TextMuted);
                 return;
             }
@@ -169,10 +170,10 @@ public sealed class GameReportDocument(ReportModel model) : IDocument
             column.Item().Row(row =>
             {
                 row.Spacing(18);
-                Stat(row.AutoItem(), ticket.FinalEstimate is null ? "Estimate" : "Final estimate", ticket.FinalEstimate ?? stats.Estimate ?? "–", emphasize: true);
-                Stat(row.AutoItem(), "Average", stats.Average is { } a ? Number(a) : "–");
-                Stat(row.AutoItem(), "Median", stats.Median is { } m ? Number(m) : "–");
-                Stat(row.AutoItem(), "Votes", ticket.Votes.Count.ToString(CultureInfo.InvariantCulture));
+                Stat(row.AutoItem(), ticket.FinalEstimate is null ? T("report.estimate") : T("report.finalEstimate"), ticket.FinalEstimate ?? stats.Estimate ?? "–", emphasize: true);
+                Stat(row.AutoItem(), T("report.average"), stats.Average is { } a ? Number(a) : "–");
+                Stat(row.AutoItem(), T("report.median"), stats.Median is { } m ? Number(m) : "–");
+                Stat(row.AutoItem(), T("report.votes"), ticket.Votes.Count.ToString(CultureInfo.InvariantCulture));
             });
 
             // Distribution bars
@@ -228,11 +229,11 @@ public sealed class GameReportDocument(ReportModel model) : IDocument
     {
         var (label, color, background) = spread switch
         {
-            VoteSpread.Consensus => ("Consensus", Consensus, ConsensusSoft),
-            VoteSpread.Close => ("Close to consensus", Consensus, ConsensusSoft),
-            VoteSpread.Wide => ("Wide spread", Spread, SpreadSoft),
-            VoteSpread.NoVotes => ("No votes", TextMuted, Surface),
-            _ => ("Not revealed", TextMuted, Surface),
+            VoteSpread.Consensus => (T("report.consensus"), Consensus, ConsensusSoft),
+            VoteSpread.Close => (T("report.close"), Consensus, ConsensusSoft),
+            VoteSpread.Wide => (T("report.wide"), Spread, SpreadSoft),
+            VoteSpread.NoVotes => (T("report.noVotes"), TextMuted, Surface),
+            _ => (T("report.notRevealedShort"), TextMuted, Surface),
         };
         container.Background(background).CornerRadius(9).PaddingHorizontal(8).PaddingVertical(2)
             .Text(label).FontSize(7.5f).SemiBold().FontColor(color);
@@ -244,21 +245,24 @@ public sealed class GameReportDocument(ReportModel model) : IDocument
         {
             row.RelativeItem().Text(text =>
             {
-                text.Span("Generated by ").FontSize(8).FontColor(TextMuted);
+                text.Span(T("report.generatedBy")).FontSize(8).FontColor(TextMuted);
                 text.Hyperlink("openplanningpoker.com", "https://openplanningpoker.com").FontSize(8).SemiBold().FontColor(Primary);
             });
             row.AutoItem().Text(text =>
             {
                 text.DefaultTextStyle(s => s.FontSize(8).FontColor(TextMuted));
-                text.Span("Page ");
+                text.Span(T("report.page"));
                 text.CurrentPageNumber();
-                text.Span(" of ");
+                text.Span(T("report.of"));
                 text.TotalPages();
             });
         });
     }
 
-    private static string Date(DateTimeOffset value) => value.UtcDateTime.ToString("d MMM yyyy, HH:mm", CultureInfo.InvariantCulture);
+    /// <summary>Report texts follow the language of the request (Accept-Language).</summary>
+    private static string T(string key, params object[] args) => ServerText.Get(key, args);
+
+    private static string Date(DateTimeOffset value) => value.UtcDateTime.ToString("d MMM yyyy, HH:mm", ServerText.Culture);
 
     private static string Number(double value) => value.ToString(value % 1 == 0 ? "0" : "0.0#", CultureInfo.InvariantCulture);
 

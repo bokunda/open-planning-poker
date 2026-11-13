@@ -19,6 +19,13 @@ public class HeaderPropagationHandler(IHttpContextAccessor httpContextAccessor) 
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             }
 
+            // Subgraphs answer in the caller's language (error messages, PDF report).
+            if (httpContext.Request.Headers.TryGetValue("Accept-Language", out var language))
+            {
+                request.Headers.Remove("Accept-Language");
+                request.Headers.TryAddWithoutValidation("Accept-Language", language.ToString());
+            }
+
             // Subgraphs rate-limit anonymous actions (e.g. registration) by the real client address.
             request.Headers.Remove(ClientRateLimiting.ClientIpHeader);
             request.Headers.TryAddWithoutValidation(ClientRateLimiting.ClientIpHeader, ClientRateLimiting.GetClientIp(httpContext));

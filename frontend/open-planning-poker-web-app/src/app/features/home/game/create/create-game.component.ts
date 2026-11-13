@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CreateGameDialogComponent } from './dialog/create-game-dialog.component';
 import { DECK_PRESETS, DEFAULT_DECK } from '../../../../shared/deck-presets';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 export interface CreateGameResult {
   name: string;
@@ -22,7 +23,7 @@ export interface CreateGameResult {
   templateUrl: './create-game.component.html',
   styleUrl: './create-game.component.scss',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, MatTooltipModule],
+  imports: [TranslocoPipe, CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, MatTooltipModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateGameComponent {

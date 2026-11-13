@@ -10,13 +10,15 @@ import { ChatMessage } from '../../../../graphql/graphql-gateway.service';
 import { ON_CHAT_MESSAGE } from '../gql/onChatMessage.graphql';
 import { SEND_CHAT_MESSAGE } from '../gql/sendChatMessage.graphql';
 import { GET_CHAT_MESSAGES } from '../gql/getChatMessages.graphql';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { OppDatePipe } from '../../../../i18n/opp-date.pipe';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule]
+  imports: [TranslocoPipe, OppDatePipe, CommonModule, FormsModule, MatButtonModule, MatIconModule]
 })
 export class ChatComponent implements OnChanges, OnDestroy {
   @Input() gameId: string = '';
