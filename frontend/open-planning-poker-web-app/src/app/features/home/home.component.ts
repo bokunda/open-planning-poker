@@ -116,7 +116,10 @@ export class HomeComponent implements OnInit {
     this.apollo.watchQuery<Query>({query: GET_USER})
     .valueChanges
     .subscribe({
-      next: ({ data }) => {
+      next: ({ data, loading }) => {
+        // Apollo Client 4 first emits a loading result without data; registering then would
+        // replace the user (and the token) on every page load.
+        if (loading) return;
         let currentUser = data?.currentUser as User;
         if (currentUser?.userName) {
           this.username = currentUser.userName;
