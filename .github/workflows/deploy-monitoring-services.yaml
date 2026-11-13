@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   workflow_call:
     secrets:
-      SSH_PASSWORD: 
+      SSH_DEPLOY_KEY:
         required: true
 jobs:
   deploy-monitoring-services:
@@ -14,11 +14,11 @@ jobs:
         uses: actions/checkout@v7.0.1
 
       - name: Copy code to the server
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          key: ${{ secrets.SSH_DEPLOY_KEY }}
           source: "backend/open-planning-poker-monitoring-services"
           target: "/home/${{ vars.SSH_USER }}/opp-metrics"
           # Place the compose file and config/ directly in opp-metrics (as on the server).
@@ -29,7 +29,7 @@ jobs:
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          key: ${{ secrets.SSH_DEPLOY_KEY }}
           script: |
             cd /home/${{ vars.SSH_USER }}/opp-metrics
             # The OTel collector joins the app network so containers reach it as otel-collector:4317.
