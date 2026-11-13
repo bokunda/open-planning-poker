@@ -6,7 +6,7 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
-## [2.4.1] — Unreleased
+## [2.4.1] — 2026-11-13
 
 Aplikacija staje na telefon, i dva nova vodiča o igri.
 
@@ -18,7 +18,7 @@ Aplikacija staje na telefon, i dva nova vodiča o igri.
 - **Dijalog za novu igru**: dugme Napravi igru ostaje vidljivo pri dnu dok skroluješ kroz špilove
 
 
-## [2.4.0] — Unreleased
+## [2.4.0] — 2026-11-13
 
 Vodiči i spisak izmena na srpskom i nemačkom, i deploy bez lozinki.
 

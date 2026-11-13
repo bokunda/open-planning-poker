@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.4.1] — Unreleased
+## [2.4.1] — 2026-11-13
 
 The app fits on phones, and two new guides about the game.
 
@@ -19,7 +19,7 @@ The app fits on phones, and two new guides about the game.
 - **New game dialog**: the Create game button stays visible at the bottom while you scroll through the decks
 
 
-## [2.4.0] — Unreleased
+## [2.4.0] — 2026-11-13
 
 The guides and the changelog in Serbian and German, and deploys without passwords.
 

@@ -6,7 +6,7 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
-## [2.4.1] — Unreleased
+## [2.4.1] — 2026-11-13
 
 Die App passt aufs Handy, und zwei neue Anleitungen zum Spiel.
 
@@ -18,7 +18,7 @@ Die App passt aufs Handy, und zwei neue Anleitungen zum Spiel.
 - **Dialog „Neues Spiel“**: Der Button „Spiel erstellen“ bleibt unten sichtbar, während du durch die Decks scrollst
 
 
-## [2.4.0] — Unreleased
+## [2.4.0] — 2026-11-13
 
 Die Anleitungen und das Änderungsprotokoll auf Serbisch und Deutsch, und Deploys ohne Passwörter.
 
