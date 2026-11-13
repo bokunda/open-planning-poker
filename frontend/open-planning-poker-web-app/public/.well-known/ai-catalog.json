@@ -57,7 +57,7 @@
       "displayName": "Open Planning Poker source code",
       "type": "text/html",
       "url": "https://github.com/bokunda/open-planning-poker",
-      "description": "GPL-3.0 source code (Angular, .NET 9, GraphQL Fusion), issues and contribution guide."
+      "description": "GPL-3.0 source code (Angular, .NET 10, GraphQL Fusion), issues and contribution guide."
     },
     {
       "identifier": "urn:air:openplanningpoker.com:docs:guides",
