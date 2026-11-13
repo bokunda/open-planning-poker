@@ -11,7 +11,7 @@ public enum PlayerRole
 
 public sealed class GamePlayer : Entity<Guid>
 {
-    private GamePlayer(Guid Id, Guid gameId, Guid playerId, PlayerRole role)
+    private GamePlayer(Guid id, Guid gameId, Guid playerId, PlayerRole role) : base(id)
     {
         GameId = gameId;
         PlayerId = playerId;
