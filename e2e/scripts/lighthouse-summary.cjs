@@ -14,7 +14,11 @@ for (const file of fs.readdirSync(dir).filter((f) => f.endsWith('.json') && f.st
       const key = `${lhr.finalDisplayedUrl} ${ref.id}`;
       if (seen.has(key)) continue;
       seen.add(key);
-      const nodes = (audit.details?.items ?? []).slice(0, 3).map((item) => item.node?.snippet ?? item.url ?? '').filter(Boolean);
+      const nodes = (audit.details?.items ?? []).slice(0, 3)
+        .map((item) => item.node ? `${item.node.selector} ${item.node.snippet}
+      ${(item.node.explanation ?? '').replace(/
+/g, ' ')}` : item.url ?? '')
+        .filter(Boolean);
       console.log(`${lhr.finalDisplayedUrl} [${id}] ${ref.id}: ${audit.title}${nodes.length ? `\n    ${nodes.join('\n    ')}` : ''}`);
     }
   }
