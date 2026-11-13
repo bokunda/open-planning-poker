@@ -101,9 +101,28 @@ mat-toolbar {
   color: var(--opp-text-muted);
 }
 
+/* Everything in the bar can shrink, so it never pushes the page wider than the screen (OPP-111). */
+.header-brand { min-width: 0; }
+.header-brand-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.header-welcome { min-width: 0; flex: 0 1 auto; }
+
 @media (max-width: 480px) {
   .header-brand-text { font-size: 1rem; }
-  .header-welcome { max-width: 42vw; }
+  .header-welcome { max-width: 34vw; }
+}
+
+/* Small phones: the chip shows only the initial; the name stays for screen readers. */
+@media (max-width: 420px) {
+  .header-welcome { position: relative; padding: 3px; gap: 0; }
+  .header-edit-icon { display: none; }
+  .header-username {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 }
 
 .header-support { margin-right: var(--opp-space-1); }

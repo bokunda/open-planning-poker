@@ -45,6 +45,7 @@
 
 .footer-links {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--opp-space-1);
 
@@ -80,9 +81,14 @@
     text-align: center;
   }
 
-  .footer-brand {
+  /* Brand and links wrap onto more lines instead of running off the screen (OPP-111). */
+  .footer-brand,
+  .footer-links {
+    max-width: 100%;
     justify-content: center;
   }
+
+  .footer-links a.footer-support { margin-left: 0; }
 }
 
 /* The coffee button keeps its own look among the plain footer links. */
