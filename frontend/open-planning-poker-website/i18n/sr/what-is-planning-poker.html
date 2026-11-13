@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="sr-Latn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Šta je planning poker? Pravila, primer i zašto funkcioniše | Open Planning Poker</title>
+    <meta name="description" content="Planning poker je način na koji agilni tim zajedno procenjuje posao: svako u tajnosti bira kartu, karte se otkrivaju u isto vreme, a oni sa najvišom i najnižom kartom objašnjavaju. Pravila, primer runde i česte greške.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://openplanningpoker.com/sr/what-is-planning-poker/">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://openplanningpoker.com/sr/what-is-planning-poker/">
+    <meta property="og:locale" content="sr_RS">
+    <meta property="og:title" content="Šta je planning poker? Pravila, primer i zašto funkcioniše">
+    <meta property="og:description" content="Planning poker je način na koji agilni tim zajedno procenjuje posao: svako u tajnosti bira kartu, karte se otkrivaju u isto vreme, a oni sa najvišom i najnižom kartom objašnjavaju. Pravila, primer runde i česte greške.">
+    <meta property="og:image" content="https://openplanningpoker.com/images/og-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Open Planning Poker">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Šta je planning poker? Pravila, primer i zašto funkcioniše">
+    <meta name="twitter:description" content="Planning poker je način na koji agilni tim zajedno procenjuje posao: svako u tajnosti bira kartu, karte se otkrivaju u isto vreme, a oni sa najvišom i najnižom kartom objašnjavaju.">
+    <meta name="twitter:image" content="https://openplanningpoker.com/images/og-card.png">
+    <!-- SITE_HEAD -->
+    <script type="application/ld+json">
+{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Početna", "item": "https://openplanningpoker.com/sr/" },
+            { "@type": "ListItem", "position": 2, "name": "Šta je planning poker", "item": "https://openplanningpoker.com/sr/what-is-planning-poker/" }
+          ]
+        },
+        {
+          "@type": "Article",
+          "headline": "Šta je planning poker?",
+          "description": "Planning poker je način na koji agilni tim zajedno procenjuje posao: svako u tajnosti bira kartu, karte se otkrivaju u isto vreme, a oni sa najvišom i najnižom kartom objašnjavaju. Pravila, primer runde i česte greške.",
+          "url": "https://openplanningpoker.com/sr/what-is-planning-poker/",
+          "datePublished": "2026-11-13",
+          "dateModified": "2026-11-13",
+          "inLanguage": "sr-Latn",
+          "image": "https://openplanningpoker.com/images/og-card.png",
+          "author": { "@type": "Organization", "name": "Open Planning Poker", "url": "https://openplanningpoker.com" },
+          "publisher": { "@id": "https://openplanningpoker.com/#org" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            { "@type": "Question", "name": "Ko je izmislio planning poker?", "acceptedAnswer": { "@type": "Answer", "text": "James Grenning je opisao planning poker 2002. godine. Mike Cohn ga je proslavio u knjizi Agile Estimating and Planning iz 2005." } },
+            { "@type": "Question", "name": "Da li je planning poker samo za Scrum?", "acceptedAnswer": { "@type": "Answer", "text": "Ne. Može da ga koristi svaki tim koji procenjuje posao: Scrum timovi, Kanban timovi koji procenjuju backlog ili projektni tim koji planira izdanje." } },
+            { "@type": "Question", "name": "Šta znače brojevi?", "acceptedAnswer": { "@type": "Answer", "text": "To su relativne veličine, najčešće story pointovi. Petica je otprilike dvostruko više posla od dvojke ili trojke. To nisu sati." } },
+            { "@type": "Question", "name": "Koliko traje jedna runda?", "acceptedAnswer": { "@type": "Answer", "text": "Obično od jednog do tri minuta po stavci. Ako diskusija traje mnogo duže, stavka je verovatno prevelika ili nejasna i treba je prvo podeliti ili istražiti." } }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-white text-gray-600 font-sans antialiased dark:bg-gray-900 dark:text-gray-400">
+    <!-- SITE_HEADER -->
+
+    <main id="main">
+      <article class="max-w-3xl px-4 pt-28 pb-16 mx-auto lg:pt-36">
+        <nav aria-label="Putanja" class="text-sm">
+          <ol class="flex gap-2">
+            <li><a href="/" class="link">Početna</a></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">Šta je planning poker</li>
+          </ol>
+        </nav>
+        <h1 class="mt-6 font-display text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl dark:text-white">Šta je planning poker?</h1>
+        <p class="mt-5 text-lg leading-relaxed">Planning poker je način na koji agilni tim zajedno procenjuje posao. Svako u tajnosti bira kartu, karte se otkrivaju u istom trenutku, a oni sa najvišom i najnižom kartom objašnjavaju svoje razloge. Zatim tim glasa ponovo.</p>
+
+        <div class="guide mt-10">
+
+<h2>Kako izgleda jedna runda</h2>
+<ol>
+  <li><strong>Pročitajte stavku.</strong> Product owner ili host čita user story ili tiket i odgovara na pitanja.</li>
+  <li><strong>Svako u tajnosti bira kartu.</strong> Svaka karta je veličina na skali tima, na primer 1, 2, 3, 5, 8 ili 13.</li>
+  <li><strong>Otkrijte zajedno.</strong> Sve karte se okreću u istom trenutku, pa niko ne zavisi od prvog broja koji čuje.</li>
+  <li><strong>Razgovarajte o krajnostima.</strong> Ako su glasovi daleko jedan od drugog, oni sa najnižom i najvišom kartom objašnjavaju šta vide, a drugi ne.</li>
+  <li><strong>Glasajte ponovo</strong> dok se glasovi ne približe, zatim zapišite procenu i idite dalje.</li>
+</ol>
+
+<h2>Primer runde</h2>
+<p>Tim od pet ljudi procenjuje „Izvoz rezultata u CSV”. Karte su 3, 5, 5, 5 i 13. Stefan je izabrao 3 jer biblioteka za izvoz već postoji u projektu. Marko je izabrao 13 jer CSV mora da sadrži svaki glas za svaki tiket, a za to treba novi upit. Posle dva minuta tim se slaže da je upit pravi posao, glasa ponovo i dobija 5, 5, 5, 8, 5. Zapisuju 5.</p>
+<p>Vrednost runde nije bio broj. Vrednost je bila to što su za upit koji nedostaje saznali pre početka sprinta.</p>
+
+<h2>Zašto funkcioniše</h2>
+<ul>
+  <li><strong>Nema sidrenja.</strong> Kad neko prvi kaže broj, ostali se približavaju tom broju. Tajno glasanje uklanja taj efekat.</li>
+  <li><strong>Svako učestvuje.</strong> Tiši članovi tima i novi ljudi stavljaju kartu na sto kao i svi ostali.</li>
+  <li><strong>Neslaganje je korisno.</strong> Razlika u glasovima pokazuje da ljudi različito razumeju posao, a baš to tim treba da zna pre nego što počne.</li>
+  <li><strong>Relativne veličine su lakše od sati.</strong> Ljudi bolje kažu „ovo je otprilike duplo veće od onoga” nego što predviđaju sate.</li>
+</ul>
+
+<h2>Česte greške</h2>
+<ul>
+  <li><strong>Računanje proseka bez razgovora.</strong> Ako su glasovi 2 i 13, prosek sakriva pravo pitanje. Prvo pitajte one sa krajnjim kartama.</li>
+  <li><strong>Pretvaranje poena u sate.</strong> Story pointovi mere veličinu u odnosu na druge stavke, a ne vreme. Mešanje to dvoje stvara pritisak da se „bude tačan”.</li>
+  <li><strong>Procena prevelikih stavki.</strong> Ako tim stalno glasa 40 ili 100, podelite stavku.</li>
+  <li><strong>Najiskusniji govori prvi.</strong> Tako se sidrenje vraća. Svi otkrivaju karte u isto vreme.</li>
+</ul>
+
+<h2>Planning poker online</h2>
+<p>Timovi koji rade na daljinu ili hibridno ne mogu da podignu fizičke karte, pa koriste online alat. <a href="https://app.openplanningpoker.com">Open Planning Poker</a> je besplatan i open source: napravi sobu, podeli link ili QR kod, i svi glasaju sa laptopa ili telefona. Karte ostaju skrivene dok ih host ne otkrije, a rezultati pokazuju prosek, medijanu i ko treba da objasni. Pročitaj <a href="/how-to-run-planning-poker/">kako se vodi planning poker sesija</a>, korak po korak, ili <a href="/planning-poker-cards/">koju skalu karata da izabereš</a>.</p>
+
+<h2>Česta pitanja</h2>
+<details class="faq"><summary>Ko je izmislio planning poker?</summary><p>James Grenning je opisao planning poker 2002. godine. Mike Cohn ga je proslavio u knjizi Agile Estimating and Planning iz 2005.</p></details>
+<details class="faq"><summary>Da li je planning poker samo za Scrum?</summary><p>Ne. Može da ga koristi svaki tim koji procenjuje posao: Scrum timovi, Kanban timovi koji procenjuju backlog ili projektni tim koji planira izdanje.</p></details>
+<details class="faq"><summary>Šta znače brojevi?</summary><p>To su relativne veličine, najčešće story pointovi. Petica je otprilike dvostruko više posla od dvojke ili trojke. To nisu sati.</p></details>
+<details class="faq"><summary>Koliko traje jedna runda?</summary><p>Obično od jednog do tri minuta po stavci. Ako diskusija traje mnogo duže, stavka je verovatno prevelika ili nejasna i treba je prvo podeliti ili istražiti.</p></details>
+        </div>
+
+        <aside class="mt-12 p-6 border border-gray-200 rounded-2xl dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50" aria-labelledby="more-guides">
+          <h2 id="more-guides" class="font-display text-lg font-extrabold text-gray-900 dark:text-white">Još vodiča</h2>
+          <ul class="mt-3 space-y-2">
+          <li><a href="/how-to-run-planning-poker/" class="link">Kako voditi sesiju</a></li>
+          <li><a href="/planning-poker-cards/" class="link">Karte i skale</a></li>
+          <li><a href="/self-hosted-planning-poker/" class="link">Self-hosting</a></li>
+          </ul>
+        </aside>
+      </article>
+
+      <section class="px-4 pb-16 lg:pb-24">
+        <div class="cta-band max-w-screen-lg mx-auto">
+          <h2 class="font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Probaj sa svojim timom.</h2>
+          <p class="mt-3 text-lg text-purple-100">Besplatno, bez registracije. Podeli jedan link i igra počinje.</p>
+          <a href="https://app.openplanningpoker.com" class="inline-flex items-center justify-center mt-8 px-6 py-3.5 font-bold rounded-full bg-white text-purple-700 shadow-lg hover:bg-purple-50 focus:outline-none focus-visible:ring-4 focus-visible:ring-white/60 transition">Započni igru</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- SITE_FOOTER -->
+</body>
+</html>

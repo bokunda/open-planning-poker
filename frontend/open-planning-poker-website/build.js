@@ -16,7 +16,7 @@ fs.mkdirSync(dist, { recursive: true });
 
 // Generate changelog
 console.log('📋 Generating changelog...');
-require('./generate-changelog');
+const { english, translated } = require('./generate-changelog');
 
 // Build Tailwind CSS
 console.log('🎨 Building Tailwind CSS...');
@@ -30,8 +30,8 @@ const changelogContent = fs.readFileSync(path.resolve(__dirname, 'changelog-cont
 const changelogFinal = changelogTemplate.replace('<!-- CHANGELOG_CONTENT -->', changelogContent);
 
 // Home page: "What's new" card and version from the newest release in CHANGELOG.md
-const release = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'release.json'), 'utf-8'));
-const latestRelease = fs.readFileSync(path.resolve(__dirname, 'latest-release.html'), 'utf-8');
+const release = english.release;
+const latestRelease = { en: english.card, sr: translated.sr.card, de: translated.de.card };
 // The stylesheet is small (~7 KB gzipped), so it is inlined into every page: no render-blocking request.
 const css = fs.readFileSync(path.join(dist, 'output.css'), 'utf-8');
 fs.rmSync(path.join(dist, 'output.css'));
@@ -51,42 +51,68 @@ console.log(`  ✓ GitHub stars: ${stars || 'unknown'}`);
 const partial = name => fs.readFileSync(path.resolve(__dirname, 'partials', name), 'utf-8');
 const sitePartials = { head: partial('head.html'), header: partial('header.html'), footer: partial('footer.html') };
 
-const fillRelease = html => html
+const fillRelease = (html, lang = 'en') => html
   .replace('<!-- SITE_HEAD -->', sitePartials.head)
   .replace('<!-- SITE_HEADER -->', sitePartials.header)
   .replace('<!-- SITE_FOOTER -->', sitePartials.footer)
-  .replace('<!-- LATEST_RELEASE -->', latestRelease)
+  .replace('<!-- LATEST_RELEASE -->', latestRelease[lang])
   .replace(/<!-- APP_VERSION -->/g, `v${release.version}`)
   .replace(/__APP_VERSION__/g, release.version)
   .replace('<!-- GITHUB_STARS -->', starsHtml)
   .replace(/<link href="\.?\/output\.css" rel="stylesheet">/g, () => `<style>${css}</style>`);
-// Home page in English, Serbian and German (localize.js), linked with hreflang.
-const { localize, withAlternates } = require('./localize');
-const home = withAlternates(fillRelease(fs.readFileSync(path.resolve(__dirname, 'index.html'), 'utf-8')));
-fs.writeFileSync(path.join(dist, 'index.html'), home);
+// Every page in English, Serbian and German (localize.js, OPP-24), linked with hreflang.
+const { LANGUAGES, GUIDES, PAGES, localize, localizeChrome, finishPage, pageUrl } = require('./localize');
+const read = (...parts) => fs.readFileSync(path.resolve(__dirname, ...parts), 'utf-8');
+const write = (file, html) => {
+  fs.mkdirSync(path.dirname(path.join(dist, file)), { recursive: true });
+  fs.writeFileSync(path.join(dist, file), html);
+  console.log(`  ✓ ${file}`);
+};
+
+// Home: the English page, translated text by text.
+const homeEn = read('index.html');
+write('index.html', finishPage(fillRelease(homeEn), 'en', ''));
+for (const lang of ['sr', 'de']) write(`${lang}/index.html`, localize(fillRelease(homeEn, lang), lang));
+
+// Changelog: one template and one CHANGELOG.md per language.
+write('changelog/index.html', finishPage(fillRelease(changelogFinal), 'en', 'changelog/'));
 for (const lang of ['sr', 'de']) {
-  fs.mkdirSync(path.join(dist, lang), { recursive: true });
-  fs.writeFileSync(path.join(dist, lang, 'index.html'), localize(home, lang));
-  console.log(`  ✓ ${lang}/index.html`);
+  const page = read('i18n', lang, 'changelog.html').replace('<!-- CHANGELOG_CONTENT -->', translated[lang].content);
+  write(`${lang}/changelog/index.html`, localizeChrome(fillRelease(page, lang), lang, 'changelog/'));
 }
-fs.writeFileSync(path.join(changelogDir, 'index.html'), fillRelease(changelogFinal));
-console.log(`  ✓ index.html, changelog/index.html (v${release.version})`);
 
-// Sitemap: pages that change with every release (home, changelog, app) use the newest release date
-const sitemap = fs.readFileSync(path.resolve(__dirname, 'sitemap.xml'), 'utf-8')
+// Guides: pages/<slug>.html → /<slug>/, translated as whole files in i18n/<lang>/<slug>.html.
+for (const slug of GUIDES) {
+  write(`${slug}/index.html`, finishPage(fillRelease(read('pages', `${slug}.html`)), 'en', `${slug}/`));
+  for (const lang of ['sr', 'de']) {
+    const file = path.resolve(__dirname, 'i18n', lang, `${slug}.html`);
+    if (!fs.existsSync(file)) throw new Error(`Guide ${slug} has no ${lang} translation: add i18n/${lang}/${slug}.html`);
+    write(`${lang}/${slug}/index.html`, localizeChrome(fillRelease(read('i18n', lang, `${slug}.html`), lang), lang, `${slug}/`));
+  }
+}
+console.log(`  ✓ v${release.version}`);
+
+// Sitemap: every localized page in every language, with its alternates. Pages that change with every
+// release (home, changelog) use the newest release date; guides use the date in their article metadata.
+const guideDate = slug => (read('pages', `${slug}.html`).match(/"dateModified": "([^"]+)"/) || [])[1] || release.date;
+const sitemapUrls = PAGES.flatMap(page => Object.keys(LANGUAGES).map(lang => {
+  const guide = GUIDES.find(slug => `${slug}/` === page);
+  const links = Object.entries(LANGUAGES)
+    .map(([code, l]) => `    <xhtml:link rel="alternate" hreflang="${l.htmlLang}" href="${pageUrl(code, page)}"/>`)
+    .concat(`    <xhtml:link rel="alternate" hreflang="x-default" href="${pageUrl('en', page)}"/>`);
+  const priority = page === '' ? (lang === 'en' ? '1.0' : '0.9') : guide ? '0.8' : '0.6';
+  return ['  <url>', `    <loc>${pageUrl(lang, page)}</loc>`, ...links,
+    `    <lastmod>${guide ? guideDate(guide) : release.date}</lastmod>`,
+    `    <changefreq>${guide ? 'monthly' : 'weekly'}</changefreq>`,
+    `    <priority>${priority}</priority>`,
+    ...(page === '' && lang === 'en' ? ['<!-- HOME_IMAGES -->'] : []),
+    '  </url>'].join('\n');
+}));
+const sitemap = read('sitemap.xml')
+  .replace('<!-- PAGES -->', sitemapUrls.join('\n'))
   .replace(/RELEASE_DATE/g, release.date);
-fs.writeFileSync(path.join(dist, 'sitemap.xml'), sitemap);
-console.log('  ✓ sitemap.xml');
-
-// Copy remaining files (skip changelog.html since it's now a directory)
-// Guide pages: pages/<slug>.html → /<slug>/
-const pagesDir = path.resolve(__dirname, 'pages');
-for (const file of fs.readdirSync(pagesDir).filter(f => f.endsWith('.html'))) {
-  const slug = file.replace(/\.html$/, '');
-  fs.mkdirSync(path.join(dist, slug), { recursive: true });
-  fs.writeFileSync(path.join(dist, slug, 'index.html'), fillRelease(fs.readFileSync(path.join(pagesDir, file), 'utf-8')));
-  console.log(`  ✓ ${slug}/index.html`);
-}
+const homeImages = sitemap.match(/<!-- HOME_IMAGES_START -->\r?\n([\s\S]*?)<!-- HOME_IMAGES_END -->\r?\n/);
+write('sitemap.xml', sitemap.replace(homeImages[0], '').replace('<!-- HOME_IMAGES -->', homeImages[1].trimEnd()));
 
 fs.writeFileSync(path.join(dist, '404.html'), fillRelease(fs.readFileSync(path.resolve(__dirname, '404.html'), 'utf-8')));
 

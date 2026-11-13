@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planning Poker selbst hosten: Open Planning Poker auf dem eigenen Server | Open Planning Poker</title>
+    <meta name="description" content="Betreibe Open Planning Poker auf deiner eigenen Infrastruktur: woraus es besteht, was du brauchst, wie du es mit Docker startest und welche Daten es speichert. GPL-3.0, keine Konten, kein Tracking von Stimmen.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://openplanningpoker.com/de/self-hosted-planning-poker/">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://openplanningpoker.com/de/self-hosted-planning-poker/">
+    <meta property="og:locale" content="de_DE">
+    <meta property="og:title" content="Planning Poker selbst hosten: Open Planning Poker auf dem eigenen Server">
+    <meta property="og:description" content="Betreibe Open Planning Poker auf deiner eigenen Infrastruktur: woraus es besteht, was du brauchst, wie du es mit Docker startest und welche Daten es speichert. GPL-3.0, keine Konten, kein Tracking von Stimmen.">
+    <meta property="og:image" content="https://openplanningpoker.com/images/og-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Open Planning Poker">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Planning Poker selbst hosten">
+    <meta name="twitter:description" content="Betreibe Open Planning Poker auf deiner eigenen Infrastruktur: woraus es besteht, was du brauchst, wie du es mit Docker startest und welche Daten es speichert.">
+    <meta name="twitter:image" content="https://openplanningpoker.com/images/og-card.png">
+    <!-- SITE_HEAD -->
+    <script type="application/ld+json">
+{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Startseite", "item": "https://openplanningpoker.com/de/" },
+            { "@type": "ListItem", "position": 2, "name": "Planning Poker selbst hosten", "item": "https://openplanningpoker.com/de/self-hosted-planning-poker/" }
+          ]
+        },
+        {
+          "@type": "Article",
+          "headline": "Planning Poker selbst hosten",
+          "description": "Betreibe Open Planning Poker auf deiner eigenen Infrastruktur: woraus es besteht, was du brauchst, wie du es mit Docker startest und welche Daten es speichert. GPL-3.0, keine Konten, kein Tracking von Stimmen.",
+          "url": "https://openplanningpoker.com/de/self-hosted-planning-poker/",
+          "datePublished": "2026-11-13",
+          "dateModified": "2026-11-13",
+          "inLanguage": "de",
+          "image": "https://openplanningpoker.com/images/og-card.png",
+          "author": { "@type": "Organization", "name": "Open Planning Poker", "url": "https://openplanningpoker.com" },
+          "publisher": { "@id": "https://openplanningpoker.com/#org" }
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-white text-gray-600 font-sans antialiased dark:bg-gray-900 dark:text-gray-400">
+    <!-- SITE_HEADER -->
+
+    <main id="main">
+      <article class="max-w-3xl px-4 pt-28 pb-16 mx-auto lg:pt-36">
+        <nav aria-label="Brotkrümelnavigation" class="text-sm">
+          <ol class="flex gap-2">
+            <li><a href="/" class="link">Startseite</a></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">Selbst hosten</li>
+          </ol>
+        </nav>
+        <h1 class="mt-6 font-display text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl dark:text-white">Planning Poker selbst hosten</h1>
+        <p class="mt-5 text-lg leading-relaxed">Open Planning Poker ist Open Source (GPL-3.0). Du kannst es kostenlos auf openplanningpoker.com nutzen oder auf deinen eigenen Servern betreiben, wenn Schätzungen, Ticketnamen und Chat im Netzwerk deines Unternehmens bleiben müssen.</p>
+
+        <div class="guide mt-10">
+
+<h2>Wann sich Selbsthosting lohnt</h2>
+<ul>
+  <li>Eure Sicherheitsrichtlinie erlaubt keine Ticketnamen oder Diskussionen bei Drittanbietern.</li>
+  <li>Du willst es mit internen Tools, Single Sign-on oder deinem eigenen Monitoring verbinden.</li>
+  <li>Du willst die App ändern: Decks, Branding oder neue Funktionen.</li>
+</ul>
+
+<h2>Der Stack</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Teil</th><th>Technologie</th></tr></thead>
+  <tbody>
+    <tr><td>Web-App</td><td>Angular mit serverseitigem Rendering (Node.js)</td></tr>
+    <tr><td>API</td><td>.NET-9-GraphQL-Dienste (Game Engine, User Management) hinter einem HotChocolate-Fusion-Gateway</td></tr>
+    <tr><td>Echtzeit-Updates</td><td>GraphQL-Subscriptions über WebSockets</td></tr>
+    <tr><td>Speicher</td><td>PostgreSQL für Spiele, Tickets und Stimmen; Redis für Benutzernamen, Chat und den Timer</td></tr>
+    <tr><td>Observability</td><td>OpenTelemetry, Prometheus, Loki und Grafana (optional)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Was du brauchst</h2>
+<ul>
+  <li>Einen Linux-Server oder eine VM mit Docker. Eine kleine Instanz (2 vCPU, 4 GB RAM) reicht für viele Teams.</li>
+  <li>Einen Reverse Proxy mit TLS, etwa nginx mit Let's Encrypt, für die App und das GraphQL-Gateway.</li>
+  <li>Ein Secret mit mindestens 32 Zeichen zum Signieren der Benutzer-Tokens.</li>
+</ul>
+
+<h2>Erste Schritte</h2>
+<ol>
+  <li>Klone das Repository von <a href="https://github.com/bokunda/open-planning-poker">GitHub</a>.</li>
+  <li>Starte PostgreSQL und Redis mit Docker Compose.</li>
+  <li>Starte Game Engine, User Management und das Fusion-Gateway, danach die Web-App.</li>
+  <li>Richte deinen Reverse Proxy auf die Web-App und das Gateway aus.</li>
+</ol>
+<p>Die vollständigen, aktuellen Anleitungen stehen im <a href="https://github.com/bokunda/open-planning-poker/blob/main/docs/setup-and-development.md">Setup-Guide</a> und im <a href="https://github.com/bokunda/open-planning-poker/blob/main/docs/deployment.md">Deployment-Guide</a> (auf Englisch).</p>
+
+<h2>Welche Daten gespeichert werden</h2>
+<ul>
+  <li><strong>Benutzernamen</strong>: standardmäßig zufällig und nach 24 Stunden gelöscht.</li>
+  <li><strong>Spiele, Tickets und Stimmen</strong>: in PostgreSQL gespeichert, damit Teams frühere Schätzungen sehen und einen PDF-Bericht exportieren können.</li>
+  <li><strong>Chat</strong>: die letzten 100 Nachrichten pro Spiel, nach 24 Stunden gelöscht.</li>
+  <li>Keine E-Mail-Adressen oder Passwörter: Spieler treten über einen Link bei.</li>
+</ul>
+
+<h2>Mitmachen</h2>
+<p>Issues und Pull Requests sind auf <a href="https://github.com/bokunda/open-planning-poker">GitHub</a> willkommen. Jedes Release steht im <a href="/changelog/">Changelog</a>.</p>
+        </div>
+
+        <aside class="mt-12 p-6 border border-gray-200 rounded-2xl dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50" aria-labelledby="more-guides">
+          <h2 id="more-guides" class="font-display text-lg font-extrabold text-gray-900 dark:text-white">Weitere Anleitungen</h2>
+          <ul class="mt-3 space-y-2">
+          <li><a href="/what-is-planning-poker/" class="link">Was ist Planning Poker</a></li>
+          <li><a href="/how-to-run-planning-poker/" class="link">Eine Sitzung leiten</a></li>
+          <li><a href="/planning-poker-cards/" class="link">Karten und Skalen</a></li>
+          </ul>
+        </aside>
+      </article>
+
+      <section class="px-4 pb-16 lg:pb-24">
+        <div class="cta-band max-w-screen-lg mx-auto">
+          <h2 class="font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Probiere es mit deinem Team aus.</h2>
+          <p class="mt-3 text-lg text-purple-100">Kostenlos, ohne Anmeldung. Ein Link genügt, und ihr spielt.</p>
+          <a href="https://app.openplanningpoker.com" class="inline-flex items-center justify-center mt-8 px-6 py-3.5 font-bold rounded-full bg-white text-purple-700 shadow-lg hover:bg-purple-50 focus:outline-none focus-visible:ring-4 focus-visible:ring-white/60 transition">Spiel starten</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- SITE_FOOTER -->
+</body>
+</html>

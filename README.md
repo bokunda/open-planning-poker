@@ -23,7 +23,7 @@
 - **Team Rooms** — Keep every sprint planning of a team, with the sprint history and a velocity chart
 - **Export Results** — Download game reports as PDF or CSV
 - **No Registration Required** — Anonymous usernames, no passwords, no personal data
-- **English, Serbian and German** — The app follows the browser language and can be switched in the menu; the website home page is translated too
+- **English, Serbian and German** — The app follows the browser language and can be switched in the menu; the website, its guides and the changelog are translated too
 - **Installable App** — Install on mobile and desktop; opens offline with a friendly notice
 - **SEO Optimized** — Server-side rendering, structured data, meta tags for search engines
 - **Docker Ready** — Run locally or deploy to production with Docker Compose

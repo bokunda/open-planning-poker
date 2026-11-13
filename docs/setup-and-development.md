@@ -159,8 +159,17 @@ npm test
 
 Texts live in `src/app/i18n/en.ts`, `sr.ts` and `de.ts`. Add a key to all three; templates use
 `{{ 'section.key' | transloco }}` and code uses `TranslocoService.translate('section.key')`.
-The website home page is translated in `frontend/open-planning-poker-website/i18n/<lang>.json`
-(English text → translation); the build fails if a text in those files is no longer on the page.
+The website is in English, Serbian (`/sr/`) and German (`/de/`), in `frontend/open-planning-poker-website/i18n/`:
+
+- `<lang>.json` translates the home page and the shared header and footer (English text → translation); the
+  build fails if a text in those files is no longer on the page.
+- `<lang>/<guide>.html` and `<lang>/changelog.html` are the guides and the changelog page, translated as whole
+  files. A new guide in `pages/` needs both translations, or the build fails.
+- `<lang>/CHANGELOG.md` is the translated changelog. **Every release in `CHANGELOG.md` must be added to both
+  translations in the same PR**; the website build fails when the releases differ.
+
+Error messages of the Game Engine and User Management are translated by error code
+(`Localization/ServerText.cs` in each service) and follow the `Accept-Language` header, which the gateway forwards.
 
 ### End-to-end tests and Lighthouse
 
