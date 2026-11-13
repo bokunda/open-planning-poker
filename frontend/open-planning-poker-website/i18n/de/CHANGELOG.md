@@ -16,7 +16,6 @@ Die App passt aufs Handy, und zwei neue Anleitungen zum Spiel.
 ### Behoben
 - **Handys**: Der Header schneidet deinen Namen nicht mehr ab (unter 420 px zeigt der Chip deine Initiale), und die Links im Footer brechen um, statt über den Bildschirm hinauszulaufen. Kein seitliches Scrollen bei 360–390 px
 - **Dialog „Neues Spiel“**: Der Button „Spiel erstellen“ bleibt unten sichtbar, während du durch die Decks scrollst
-- Auf `/sr/` und `/de/` sagen die Anleitungskarten nicht mehr, dass die Anleitungen auf Englisch sind
 
 
 ## [2.4.0] — Unreleased

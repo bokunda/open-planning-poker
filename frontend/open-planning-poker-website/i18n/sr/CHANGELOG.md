@@ -16,7 +16,6 @@ Aplikacija staje na telefon, i dva nova vodiča o igri.
 ### Ispravljeno
 - **Telefoni**: header više ne seče tvoje ime (ispod 420 px čip prikazuje inicijal), a linkovi u footeru prelaze u novi red umesto da izađu van ekrana. Nema skrolovanja u stranu na 360–390 px
 - **Dijalog za novu igru**: dugme Napravi igru ostaje vidljivo pri dnu dok skroluješ kroz špilove
-- Na `/sr/` i `/de/` kartice vodiča više ne kažu da su vodiči na engleskom
 
 
 ## [2.4.0] — Unreleased
