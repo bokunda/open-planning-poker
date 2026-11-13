@@ -34,6 +34,7 @@ builder
         options.IncludeExceptionDetails = builder.Environment.IsDevelopment();
     })
     .DisableIntrospection(!builder.Environment.IsDevelopment())
+    .TryAddTypeInterceptor<OpenPlanningPoker.UserManagement.GraphQL.Localization.ApplicationErrorMessageInterceptor>()
     .AddTypes();
 
 builder.Services.AddClientRateLimiting(builder.Configuration);
@@ -62,6 +63,12 @@ if (isSchemaExport)
 app.UseSerilogRequestLogging();
 
 app.UseCors(corsConfig.PolicyName);
+// Error messages follow Accept-Language (OPP-24).
+app.UseRequestLocalization(options =>
+{
+    string[] cultures = ["en", "sr", "sr-Latn", "de"];
+    options.SetDefaultCulture("en").AddSupportedCultures(cultures).AddSupportedUICultures(cultures);
+});
 app.UseRateLimiter();
 
 app.UseAuthentication();

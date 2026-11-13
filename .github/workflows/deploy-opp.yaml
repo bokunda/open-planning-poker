@@ -10,27 +10,27 @@ jobs:
     name: Deploy OPP User Management
     uses: ./.github/workflows/deploy-opp-user-management.yaml
     secrets: 
-      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
       OPP_JWT_SECRET: ${{ secrets.OPP_JWT_SECRET }}
   opp-ge:
     name: Deploy OPP Game Engine
     uses: ./.github/workflows/deploy-opp-game-engine.yaml
     secrets: 
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD  }}
-      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
       OPP_JWT_SECRET: ${{ secrets.OPP_JWT_SECRET }}
   opp-graphql-gtw:
     name: Deploy OPP GraphQL Gateway
     needs: [opp-um, opp-ge]
     uses: ./.github/workflows/deploy-opp-gateway.yaml
     secrets: 
-      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
   opp-ui:
     name: Deploy OPP UI
     needs: [opp-graphql-gtw]
     uses: ./.github/workflows/deploy-opp-ui.yaml
     secrets: 
-      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
 
   # The website shows the changelog and the version, so it is rebuilt with every release.
   opp-website:
@@ -38,7 +38,7 @@ jobs:
     needs: [opp-ui]
     uses: ./.github/workflows/deploy-opp-website.yaml
     secrets:
-      SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
 
   indexnow:
     name: Ping Search Engines

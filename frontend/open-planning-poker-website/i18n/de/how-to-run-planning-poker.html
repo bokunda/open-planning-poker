@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eine Planning-Poker-Sitzung leiten (remote oder vor Ort) | Open Planning Poker</title>
+    <meta name="description" content="Eine Schritt-für-Schritt-Anleitung für Planning Poker mit Remote- oder Hybrid-Teams: Backlog vorbereiten, Skala wählen, abstimmen, mit Uneinigkeit umgehen und die Sitzung kurz halten.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://openplanningpoker.com/de/how-to-run-planning-poker/">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://openplanningpoker.com/de/how-to-run-planning-poker/">
+    <meta property="og:locale" content="de_DE">
+    <meta property="og:title" content="Eine Planning-Poker-Sitzung leiten (remote oder vor Ort)">
+    <meta property="og:description" content="Eine Schritt-für-Schritt-Anleitung für Planning Poker mit Remote- oder Hybrid-Teams: Backlog vorbereiten, Skala wählen, abstimmen, mit Uneinigkeit umgehen und die Sitzung kurz halten.">
+    <meta property="og:image" content="https://openplanningpoker.com/images/og-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Open Planning Poker">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Eine Planning-Poker-Sitzung leiten (remote oder vor Ort)">
+    <meta name="twitter:description" content="Eine Schritt-für-Schritt-Anleitung für Planning Poker mit Remote- oder Hybrid-Teams: Backlog vorbereiten, Skala wählen, abstimmen, mit Uneinigkeit umgehen und die Sitzung kurz halten.">
+    <meta name="twitter:image" content="https://openplanningpoker.com/images/og-card.png">
+    <!-- SITE_HEAD -->
+    <script type="application/ld+json">
+{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Startseite", "item": "https://openplanningpoker.com/de/" },
+            { "@type": "ListItem", "position": 2, "name": "Eine Planning-Poker-Sitzung leiten", "item": "https://openplanningpoker.com/de/how-to-run-planning-poker/" }
+          ]
+        },
+        {
+          "@type": "Article",
+          "headline": "Eine Planning-Poker-Sitzung leiten",
+          "description": "Eine Schritt-für-Schritt-Anleitung für Planning Poker mit Remote- oder Hybrid-Teams: Backlog vorbereiten, Skala wählen, abstimmen, mit Uneinigkeit umgehen und die Sitzung kurz halten.",
+          "url": "https://openplanningpoker.com/de/how-to-run-planning-poker/",
+          "datePublished": "2026-11-13",
+          "dateModified": "2026-11-13",
+          "inLanguage": "de",
+          "image": "https://openplanningpoker.com/images/og-card.png",
+          "author": { "@type": "Organization", "name": "Open Planning Poker", "url": "https://openplanningpoker.com" },
+          "publisher": { "@id": "https://openplanningpoker.com/#org" }
+        },
+        {
+          "@type": "HowTo",
+          "name": "Eine Planning-Poker-Sitzung leiten",
+          "description": "Eine Schritt-für-Schritt-Anleitung für Planning Poker mit Remote- oder Hybrid-Teams: Backlog vorbereiten, Skala wählen, abstimmen, mit Uneinigkeit umgehen und die Sitzung kurz halten.",
+          "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Einträge vorbereiten", "text": "Wähle die User Stories oder Tickets, die das Team schätzen soll, nach Priorität. Jeder Eintrag braucht eine kurze Beschreibung und Akzeptanzkriterien, damit das Team die Arbeit schätzt, statt zu raten, worum es geht." },
+            { "@type": "HowToStep", "position": 2, "name": "Kartenskala wählen", "text": "Einigt euch vor der Sitzung auf eine Skala: Fibonacci (0, ½, 1, 2, 3, 5, 8, 13) für die meisten Teams, modifiziertes Fibonacci für größere Einträge oder T-Shirt-Größen für grobe Schätzungen." },
+            { "@type": "HowToStep", "position": 3, "name": "Raum erstellen und Team einladen", "text": "Erstelle ein Spiel, wähle das Deck und teile den Link oder QR-Code. Alle treten mit einem Namen bei; Konten sind nicht nötig." },
+            { "@type": "HowToStep", "position": 4, "name": "Tickets hinzufügen", "text": "Füge die Einträge einzeln hinzu oder importiere eine Liste aus einem CSV- oder JSON-Export deines Trackers." },
+            { "@type": "HowToStep", "position": 5, "name": "Geheim abstimmen", "text": "Der Host liest den Eintrag vor und beantwortet Fragen. Alle wählen eine Karte. Niemand sieht die Werte vor dem Aufdecken." },
+            { "@type": "HowToStep", "position": 6, "name": "Aufdecken und besprechen", "text": "Der Host deckt alle Karten gleichzeitig auf. Liegen die Stimmen weit auseinander, bitte die mit der niedrigsten und höchsten Karte um eine Erklärung und stimmt erneut ab." },
+            { "@type": "HowToStep", "position": 7, "name": "Schätzung notieren und weitermachen", "text": "Wenn die Stimmen nah beieinander liegen, notiere die Schätzung im Tracker und geh zum nächsten Eintrag. Exportiere die Sitzung als PDF, wenn du ein Protokoll brauchst." }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-white text-gray-600 font-sans antialiased dark:bg-gray-900 dark:text-gray-400">
+    <!-- SITE_HEADER -->
+
+    <main id="main">
+      <article class="max-w-3xl px-4 pt-28 pb-16 mx-auto lg:pt-36">
+        <nav aria-label="Brotkrümelnavigation" class="text-sm">
+          <ol class="flex gap-2">
+            <li><a href="/" class="link">Startseite</a></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">Eine Sitzung leiten</li>
+          </ol>
+        </nav>
+        <h1 class="mt-6 font-display text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl dark:text-white">Eine Planning-Poker-Sitzung leiten</h1>
+        <p class="mt-5 text-lg leading-relaxed">Diese Anleitung führt durch eine Planning-Poker-Sitzung, von der Vorbereitung bis zur letzten Schätzung. Sie gilt für Teams vor Ort, remote und hybrid gleichermaßen; die Beispiele nutzen Open Planning Poker, das kostenlos ist und keine Anmeldung braucht.</p>
+
+        <div class="guide mt-10">
+
+<h2>Vor der Sitzung</h2>
+<p><strong>Haltet die Liste kurz.</strong> Zehn bis fünfzehn gut vorbereitete Einträge passen in eine Stunde. Eine Sitzung, die fünfzig Einträge schätzen will, endet mit müdem Raten.</p>
+<p><strong>Habt einen Referenzeintrag.</strong> Wählt einen abgeschlossenen Eintrag, an den sich das ganze Team erinnert, und einigt euch auf seine Größe, zum Beispiel „die Login-Seite war eine 3“. Neue Einträge werden damit verglichen.</p>
+
+<h2>Schritt für Schritt</h2>
+<ol class="steps">
+  <li><h3>Einträge vorbereiten</h3><p>Wähle die User Stories oder Tickets, die das Team schätzen soll, nach Priorität. Jeder Eintrag braucht eine kurze Beschreibung und Akzeptanzkriterien, damit das Team die Arbeit schätzt, statt zu raten, worum es geht.</p></li>
+  <li><h3>Kartenskala wählen</h3><p>Einigt euch vor der Sitzung auf eine Skala: Fibonacci (0, ½, 1, 2, 3, 5, 8, 13) für die meisten Teams, modifiziertes Fibonacci für größere Einträge oder T-Shirt-Größen für grobe Schätzungen.</p></li>
+  <li><h3>Raum erstellen und Team einladen</h3><p>Erstelle ein Spiel, wähle das Deck und teile den Link oder QR-Code. Alle treten mit einem Namen bei; Konten sind nicht nötig.</p></li>
+  <li><h3>Tickets hinzufügen</h3><p>Füge die Einträge einzeln hinzu oder importiere eine Liste aus einem CSV- oder JSON-Export deines Trackers.</p></li>
+  <li><h3>Geheim abstimmen</h3><p>Der Host liest den Eintrag vor und beantwortet Fragen. Alle wählen eine Karte. Niemand sieht die Werte vor dem Aufdecken.</p></li>
+  <li><h3>Aufdecken und besprechen</h3><p>Der Host deckt alle Karten gleichzeitig auf. Liegen die Stimmen weit auseinander, bitte die mit der niedrigsten und höchsten Karte um eine Erklärung und stimmt erneut ab.</p></li>
+  <li><h3>Schätzung notieren und weitermachen</h3><p>Wenn die Stimmen nah beieinander liegen, notiere die Schätzung im Tracker und geh zum nächsten Eintrag. Exportiere die Sitzung als PDF, wenn du ein Protokoll brauchst.</p></li>
+</ol>
+
+<h2>Mit Uneinigkeit umgehen</h2>
+<p>Eine große Streuung ist der wertvollste Moment der Sitzung. Beschränkt die Diskussion zuerst auf die beiden Ausreißer: Sie wissen meist etwas, das die anderen nicht wissen, etwa eine versteckte Abhängigkeit oder eine vorhandene Komponente, die die Arbeit kleiner macht. Dann stimmt erneut ab. Ist sich das Team nach zwei Runden immer noch uneinig, ist der Eintrag wahrscheinlich unklar: Notiert die offene Frage und kommt später darauf zurück.</p>
+
+<h2>Die Sitzung kurz halten</h2>
+<ul>
+  <li><strong>Nutzt einen Timer</strong> für Diskussionen. In Open Planning Poker startet der Host einen Timer, den alle sehen, und die Karten werden aufgedeckt, wenn er abläuft.</li>
+  <li><strong>Nutzt die Karte „?“</strong>, wenn jemandem Informationen fehlen. Mehrere „?“-Karten bedeuten, dass der Eintrag nicht bereit ist.</li>
+  <li><strong>Nutzt die Pausenkarte</strong>, wenn Leute eine Pause brauchen; das ist besser, als müde zu schätzen.</li>
+</ul>
+
+<h2>Tipps für Remote- und Hybrid-Teams</h2>
+<ul>
+  <li>Teilt den Raumlink im Meeting-Chat und zeigt den QR-Code auf dem geteilten Bildschirm, damit die Leute im Raum vom Handy aus beitreten können.</li>
+  <li>Bittet alle, während der Diskussionen die Kamera eingeschaltet zu lassen; das hilft den Ausreißern beim Erklären.</li>
+  <li>Lasst den Host den Bildschirm mit dem Tisch teilen, damit das ganze Team das Aufdecken im selben Moment sieht.</li>
+</ul>
+<p>Neu bei der Methode? Beginne mit <a href="/what-is-planning-poker/">was Planning Poker ist und warum es funktioniert</a>.</p>
+        </div>
+
+        <aside class="mt-12 p-6 border border-gray-200 rounded-2xl dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50" aria-labelledby="more-guides">
+          <h2 id="more-guides" class="font-display text-lg font-extrabold text-gray-900 dark:text-white">Weitere Anleitungen</h2>
+          <ul class="mt-3 space-y-2">
+          <li><a href="/what-is-planning-poker/" class="link">Was ist Planning Poker</a></li>
+          <li><a href="/planning-poker-cards/" class="link">Karten und Skalen</a></li>
+          <li><a href="/self-hosted-planning-poker/" class="link">Selbst hosten</a></li>
+          </ul>
+        </aside>
+      </article>
+
+      <section class="px-4 pb-16 lg:pb-24">
+        <div class="cta-band max-w-screen-lg mx-auto">
+          <h2 class="font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Probiere es mit deinem Team aus.</h2>
+          <p class="mt-3 text-lg text-purple-100">Kostenlos, ohne Anmeldung. Ein Link genügt, und ihr spielt.</p>
+          <a href="https://app.openplanningpoker.com" class="inline-flex items-center justify-center mt-8 px-6 py-3.5 font-bold rounded-full bg-white text-purple-700 shadow-lg hover:bg-purple-50 focus:outline-none focus-visible:ring-4 focus-visible:ring-white/60 transition">Spiel starten</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- SITE_FOOTER -->
+</body>
+</html>

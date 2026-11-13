@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="sr-Latn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kako voditi planning poker sesiju (na daljinu ili uživo) | Open Planning Poker</title>
+    <meta name="description" content="Vodič korak po korak za planning poker sa timom koji radi na daljinu ili hibridno: priprema backloga, izbor skale, glasanje, rešavanje neslaganja i kratke sesije.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://openplanningpoker.com/sr/how-to-run-planning-poker/">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://openplanningpoker.com/sr/how-to-run-planning-poker/">
+    <meta property="og:locale" content="sr_RS">
+    <meta property="og:title" content="Kako voditi planning poker sesiju (na daljinu ili uživo)">
+    <meta property="og:description" content="Vodič korak po korak za planning poker sa timom koji radi na daljinu ili hibridno: priprema backloga, izbor skale, glasanje, rešavanje neslaganja i kratke sesije.">
+    <meta property="og:image" content="https://openplanningpoker.com/images/og-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Open Planning Poker">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Kako voditi planning poker sesiju (na daljinu ili uživo)">
+    <meta name="twitter:description" content="Vodič korak po korak za planning poker sa timom koji radi na daljinu ili hibridno: priprema backloga, izbor skale, glasanje, rešavanje neslaganja i kratke sesije.">
+    <meta name="twitter:image" content="https://openplanningpoker.com/images/og-card.png">
+    <!-- SITE_HEAD -->
+    <script type="application/ld+json">
+{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Početna", "item": "https://openplanningpoker.com/sr/" },
+            { "@type": "ListItem", "position": 2, "name": "Kako voditi planning poker sesiju", "item": "https://openplanningpoker.com/sr/how-to-run-planning-poker/" }
+          ]
+        },
+        {
+          "@type": "Article",
+          "headline": "Kako voditi planning poker sesiju",
+          "description": "Vodič korak po korak za planning poker sa timom koji radi na daljinu ili hibridno: priprema backloga, izbor skale, glasanje, rešavanje neslaganja i kratke sesije.",
+          "url": "https://openplanningpoker.com/sr/how-to-run-planning-poker/",
+          "datePublished": "2026-11-13",
+          "dateModified": "2026-11-13",
+          "inLanguage": "sr-Latn",
+          "image": "https://openplanningpoker.com/images/og-card.png",
+          "author": { "@type": "Organization", "name": "Open Planning Poker", "url": "https://openplanningpoker.com" },
+          "publisher": { "@id": "https://openplanningpoker.com/#org" }
+        },
+        {
+          "@type": "HowTo",
+          "name": "Kako voditi planning poker sesiju",
+          "description": "Vodič korak po korak za planning poker sa timom koji radi na daljinu ili hibridno: priprema backloga, izbor skale, glasanje, rešavanje neslaganja i kratke sesije.",
+          "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Pripremi stavke", "text": "Izaberi user storije ili tikete koje će tim procenjivati, po prioritetu. Svaka stavka treba da ima kratak opis i kriterijume prihvatanja, da bi tim procenjivao posao, a ne pogađao šta je posao." },
+            { "@type": "HowToStep", "position": 2, "name": "Izaberi skalu karata", "text": "Dogovorite skalu pre sesije: Fibonacci (0, ½, 1, 2, 3, 5, 8, 13) za većinu timova, modifikovani Fibonacci za veće stavke ili veličine majica za grubu procenu." },
+            { "@type": "HowToStep", "position": 3, "name": "Napravi sobu i pozovi tim", "text": "Napravi igru, izaberi špil i podeli link ili QR kod. Svako ulazi sa imenom; nalozi nisu potrebni." },
+            { "@type": "HowToStep", "position": 4, "name": "Dodaj tikete", "text": "Dodaj stavke jednu po jednu ili uvezi listu iz CSV ili JSON izvoza iz svog trackera." },
+            { "@type": "HowToStep", "position": 5, "name": "Glasajte u tajnosti", "text": "Host čita stavku i odgovara na pitanja. Svako bira kartu. Niko ne vidi vrednosti do otkrivanja." },
+            { "@type": "HowToStep", "position": 6, "name": "Otkrijte i razgovarajte", "text": "Host otkriva sve karte odjednom. Ako su glasovi daleko jedan od drugog, zamoli one sa najnižom i najvišom kartom da objasne, pa glasajte ponovo." },
+            { "@type": "HowToStep", "position": 7, "name": "Zapiši procenu i idi dalje", "text": "Kad su glasovi blizu, zapiši procenu u tracker i pređi na sledeću stavku. Izvezi sesiju kao PDF ako ti treba zapisnik." }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-white text-gray-600 font-sans antialiased dark:bg-gray-900 dark:text-gray-400">
+    <!-- SITE_HEADER -->
+
+    <main id="main">
+      <article class="max-w-3xl px-4 pt-28 pb-16 mx-auto lg:pt-36">
+        <nav aria-label="Putanja" class="text-sm">
+          <ol class="flex gap-2">
+            <li><a href="/" class="link">Početna</a></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">Kako voditi sesiju</li>
+          </ol>
+        </nav>
+        <h1 class="mt-6 font-display text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl dark:text-white">Kako voditi planning poker sesiju</h1>
+        <p class="mt-5 text-lg leading-relaxed">Ovaj vodič prolazi kroz planning poker sesiju od pripreme do poslednje procene. Isto važi za timove koji rade uživo, na daljinu ili hibridno; primeri koriste Open Planning Poker, koji je besplatan i ne traži registraciju.</p>
+
+        <div class="guide mt-10">
+
+<h2>Pre sesije</h2>
+<p><strong>Neka lista bude kratka.</strong> Deset do petnaest dobro pripremljenih stavki staje u jedan sat. Sesija koja pokušava da proceni pedeset stavki završi se umornim nagađanjem.</p>
+<p><strong>Imajte referentnu stavku.</strong> Izaberite jednu završenu stavku koje se ceo tim seća i dogovorite se o njenoj veličini, na primer „stranica za prijavu je bila 3”. Nove stavke se porede sa njom.</p>
+
+<h2>Korak po korak</h2>
+<ol class="steps">
+  <li><h3>Pripremi stavke</h3><p>Izaberi user storije ili tikete koje će tim procenjivati, po prioritetu. Svaka stavka treba da ima kratak opis i kriterijume prihvatanja, da bi tim procenjivao posao, a ne pogađao šta je posao.</p></li>
+  <li><h3>Izaberi skalu karata</h3><p>Dogovorite skalu pre sesije: Fibonacci (0, ½, 1, 2, 3, 5, 8, 13) za većinu timova, modifikovani Fibonacci za veće stavke ili veličine majica za grubu procenu.</p></li>
+  <li><h3>Napravi sobu i pozovi tim</h3><p>Napravi igru, izaberi špil i podeli link ili QR kod. Svako ulazi sa imenom; nalozi nisu potrebni.</p></li>
+  <li><h3>Dodaj tikete</h3><p>Dodaj stavke jednu po jednu ili uvezi listu iz CSV ili JSON izvoza iz svog trackera.</p></li>
+  <li><h3>Glasajte u tajnosti</h3><p>Host čita stavku i odgovara na pitanja. Svako bira kartu. Niko ne vidi vrednosti do otkrivanja.</p></li>
+  <li><h3>Otkrijte i razgovarajte</h3><p>Host otkriva sve karte odjednom. Ako su glasovi daleko jedan od drugog, zamoli one sa najnižom i najvišom kartom da objasne, pa glasajte ponovo.</p></li>
+  <li><h3>Zapiši procenu i idi dalje</h3><p>Kad su glasovi blizu, zapiši procenu u tracker i pređi na sledeću stavku. Izvezi sesiju kao PDF ako ti treba zapisnik.</p></li>
+</ol>
+
+<h2>Kad se tim ne slaže</h2>
+<p>Velika razlika u glasovima je najkorisniji trenutak sesije. Diskusiju prvo ograničite na dve krajnosti: oni obično znaju nešto što drugi ne znaju, recimo skrivenu zavisnost ili postojeću komponentu koja posao čini manjim. Zatim glasajte ponovo. Ako se tim ni posle dve runde ne slaže, stavka je verovatno nejasna: zapišite otvoreno pitanje i vratite se na nju kasnije.</p>
+
+<h2>Kako da sesija bude kratka</h2>
+<ul>
+  <li><strong>Koristite tajmer</strong> za diskusije. U Open Planning Pokeru host pokreće tajmer koji svi vide, a karte se otkrivaju kad istekne.</li>
+  <li><strong>Koristite kartu „?”</strong> kad nekome fali informacija. Više karata „?” znači da stavka nije spremna.</li>
+  <li><strong>Koristite kartu za pauzu</strong> kad ljudima treba odmor; to je bolje nego procenjivati umoran.</li>
+</ul>
+
+<h2>Saveti za rad na daljinu i hibridno</h2>
+<ul>
+  <li>Podelite link sobe u četu sastanka i stavite QR kod na deljeni ekran, da bi ljudi u prostoriji ušli sa telefona.</li>
+  <li>Zamolite sve da tokom diskusije drže uključenu kameru; to pomaže onima koji objašnjavaju.</li>
+  <li>Neka host deli ekran sa stolom, da ceo tim vidi otkrivanje u istom trenutku.</li>
+</ul>
+<p>Prvi put čuješ za ovu metodu? Počni sa tekstom <a href="/what-is-planning-poker/">šta je planning poker i zašto funkcioniše</a>.</p>
+        </div>
+
+        <aside class="mt-12 p-6 border border-gray-200 rounded-2xl dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50" aria-labelledby="more-guides">
+          <h2 id="more-guides" class="font-display text-lg font-extrabold text-gray-900 dark:text-white">Još vodiča</h2>
+          <ul class="mt-3 space-y-2">
+          <li><a href="/what-is-planning-poker/" class="link">Šta je planning poker</a></li>
+          <li><a href="/planning-poker-cards/" class="link">Karte i skale</a></li>
+          <li><a href="/self-hosted-planning-poker/" class="link">Self-hosting</a></li>
+          </ul>
+        </aside>
+      </article>
+
+      <section class="px-4 pb-16 lg:pb-24">
+        <div class="cta-band max-w-screen-lg mx-auto">
+          <h2 class="font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Probaj sa svojim timom.</h2>
+          <p class="mt-3 text-lg text-purple-100">Besplatno, bez registracije. Podeli jedan link i igra počinje.</p>
+          <a href="https://app.openplanningpoker.com" class="inline-flex items-center justify-center mt-8 px-6 py-3.5 font-bold rounded-full bg-white text-purple-700 shadow-lg hover:bg-purple-50 focus:outline-none focus-visible:ring-4 focus-visible:ring-white/60 transition">Započni igru</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- SITE_FOOTER -->
+</body>
+</html>

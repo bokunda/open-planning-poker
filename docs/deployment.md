@@ -117,11 +117,11 @@ The workflows use these repository variables and secrets:
 | Variable/Secret | Purpose |
 |----------------|---------|
 | `SSH_HOST` | Public server IP (162.55.213.9) |
-| `SSH_USER` | SSH username |
-| `SSH_PASSWORD` | SSH password (secret) |
+| `SSH_USER` | Deploy user on the public server (`deploy`) |
+| `SSH_DEPLOY_KEY` | Private ed25519 key of the deploy user on the public server (secret) |
 | `SSH_PRIVATE_HOST` | Private server IP |
-| `SSH_PRIVATE_USER` | Private server SSH user |
-| `SSH_PRIVATE_PASSWORD` | Private server SSH password (secret) |
+| `SSH_PRIVATE_USER` | Deploy user on the private server (`deploy`) |
+| `SSH_PRIVATE_DEPLOY_KEY` | Private ed25519 key of the deploy user on the private server (secret) |
 | `OPP_API_GATEWAY` | GraphQL HTTP endpoint URL |
 | `OPP_WSS_URL` | GraphQL WebSocket endpoint URL |
 | `OPP_DB_HOST` | PostgreSQL host |
@@ -134,6 +134,24 @@ The workflows use these repository variables and secrets:
 | `OPP_GE_SUBGRAPH_URL` | Game Engine subgraph URL for fusion compose |
 | `OPP_UM_SUBGRAPH_URL` | User Management subgraph URL for fusion compose |
 | `OPP_GRAPHQL_GATEWAY` | Fusion Gateway URL; the web app calls it directly |
+
+### Server access
+
+Deploys log in over SSH with a key, never a password (OPP-28). Each server has a `deploy` user in the `docker`
+group with one ed25519 key, used only by GitHub Actions. Password login is off and root can only log in with a
+key (`/etc/ssh/sshd_config.d/10-opp-hardening.conf`). Both servers run `fail2ban` for SSH and
+`unattended-upgrades` for security updates (OPP-29).
+
+To set up a new server:
+
+```bash
+adduser --disabled-password --gecos "" deploy && usermod -aG docker deploy
+install -d -m 700 -o deploy -g deploy /home/deploy/.ssh
+echo "<public key>" > /home/deploy/.ssh/authorized_keys
+chown deploy:deploy /home/deploy/.ssh/authorized_keys && chmod 600 /home/deploy/.ssh/authorized_keys
+```
+
+Membership in the `docker` group is equivalent to root on that server, so keep the key only in the repository secrets.
 
 ## Nginx Configuration
 

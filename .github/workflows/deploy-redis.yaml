@@ -14,7 +14,7 @@ jobs:
         with:
           host: ${{ vars.SSH_PRIVATE_HOST }}
           username: ${{ vars.SSH_PRIVATE_USER }}
-          password: ${{ secrets.SSH_PRIVATE_PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_DEPLOY_KEY }}
           script: |
             docker pull redis:latest
             docker rm -f OpenPlanningPoker.Cache || true
