@@ -6,6 +6,27 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+## [2.4.0] — Unreleased
+
+Vodiči i spisak izmena na srpskom i nemačkom, i deploy bez lozinki.
+
+### Dodato
+- **Vodiči i spisak izmena na srpskom i nemačkom**: sva četiri vodiča i spisak izmena na `/sr/` i `/de/`, povezani preko `hreflang`. Izbor jezika u footeru ostaje na istoj stranici, a sitemap sadrži svaku stranicu na svakom jeziku
+- **Poruke User Managementa na tvom jeziku**: greške za korisničko ime, previše zahteva i nepoznatog korisnika prate jezik aplikacije, kao i poruke Game Enginea
+
+### Izmenjeno
+- „Šta je novo” na srpskoj i nemačkoj početnoj strani dolazi iz prevedenog spiska izmena, sa datumom na jeziku stranice
+
+### Ispravljeno
+- Na `/sr/` i `/de/` link „English” u footeru je vodio na istu prevedenu stranicu
+
+### Bezbednost
+- Deploy se na servere prijavljuje posebnim SSH ključem umesto lozinkom; `appleboy/scp-action` 1.0.0
+
+### Za developere
+- Prevedeni spiskovi izmena su u `frontend/open-planning-poker-website/i18n/<lang>/CHANGELOG.md`: svako izdanje iz `CHANGELOG.md` mora da se doda i tu u istom PR-u, inače build sajta pada
+
+
 ## [2.3.1] — 2026-11-13
 
 ### Izmenjeno

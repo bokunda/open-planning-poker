@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0] — Unreleased
+
+The guides and the changelog in Serbian and German, and deploys without passwords.
+
+### Added
+- **Guides and changelog in Serbian and German**: all four guides and the changelog at `/sr/` and `/de/`, linked with `hreflang`. The language switch in the footer stays on the same page, and the sitemap lists every page in every language
+- **User Management messages in your language**: errors about the username, too many requests and an unknown user follow the app's language, like the Game Engine's
+
+### Changed
+- "What's new" on the Serbian and German home pages comes from the translated changelog, with the date in the page's language
+
+### Fixed
+- On `/sr/` and `/de/` the "English" link in the footer went to the same localized page
+
+### Security
+- Deploys log in to the servers with a dedicated SSH key instead of a password; `appleboy/scp-action` 1.0.0
+
+### Developers
+- Translated changelogs are in `frontend/open-planning-poker-website/i18n/<lang>/CHANGELOG.md`: every release in `CHANGELOG.md` must be added there in the same PR, or the website build fails
+
+
 ## [2.3.1] — 2026-11-13
 
 ### Changed

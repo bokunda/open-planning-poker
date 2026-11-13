@@ -6,6 +6,27 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+## [2.4.0] — Unreleased
+
+Die Anleitungen und das Änderungsprotokoll auf Serbisch und Deutsch, und Deploys ohne Passwörter.
+
+### Hinzugefügt
+- **Anleitungen und Änderungsprotokoll auf Serbisch und Deutsch**: alle vier Anleitungen und das Änderungsprotokoll unter `/sr/` und `/de/`, verknüpft über `hreflang`. Die Sprachauswahl im Footer bleibt auf derselben Seite, und die Sitemap listet jede Seite in jeder Sprache
+- **Meldungen des User Management in deiner Sprache**: Fehler zum Benutzernamen, zu vielen Anfragen und einem unbekannten Benutzer folgen der Sprache der App, wie die der Game Engine
+
+### Geändert
+- „Neuigkeiten“ auf der serbischen und deutschen Startseite kommen aus dem übersetzten Änderungsprotokoll, mit dem Datum in der Sprache der Seite
+
+### Behoben
+- Auf `/sr/` und `/de/` führte der Link „English“ im Footer auf dieselbe übersetzte Seite
+
+### Sicherheit
+- Deploys melden sich mit einem eigenen SSH-Schlüssel statt mit einem Passwort auf den Servern an; `appleboy/scp-action` 1.0.0
+
+### Für Entwickler
+- Die übersetzten Änderungsprotokolle liegen in `frontend/open-planning-poker-website/i18n/<lang>/CHANGELOG.md`: Jedes Release aus `CHANGELOG.md` muss im selben PR dort ergänzt werden, sonst schlägt der Build der Website fehl
+
+
 ## [2.3.1] — 2026-11-13
 
 ### Geändert
