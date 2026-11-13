@@ -6,6 +6,23 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+## [3.0.0] — Unreleased
+
+Jeder Teil von Open Planning Poker auf aktuellen, unterstützten Versionen. Für Spieler ändert sich nichts; wer selbst hostet, braucht die neuen Laufzeitumgebungen.
+
+### Geändert
+- **Backend auf .NET 10 LTS**: alle Dienste und Docker-Images, mit EF Core 10, Npgsql 10, Microsoft.Extensions 10, FluentValidation 12, OpenTelemetry 1.21, QuestPDF 2026.9 und Serilog 10
+- **App auf Angular 21** (von 19) mit Angular Material 21, dem eingebauten Control Flow in allen Templates, Apollo Client 4 mit apollo-angular 14, GraphQL 16, Express 5 für das serverseitige Rendern und zone.js 0.16
+- **Website auf Tailwind CSS 4**; das ungenutzte Paket Flowbite ist entfernt. Die Seiten sehen gleich aus, und die Zahl der GitHub-Sterne hat jetzt ihre Trennlinie
+
+### Entfernt
+- Ungenutzte Pakete: Duende.AccessTokenManagement, Entity Framework 6 und AutoMapper
+
+### Für Entwickler
+- Selbsthosting braucht die .NET-10-Laufzeit (in den Docker-Images enthalten) und Node.js 22.12 oder neuer für die App
+- Bewusst beibehalten: **HotChocolate und Fusion 15** (Fusion 16 nutzt ein neues Gateway-Format und eine neue Komposition, eine eigene Migration), **Angular 22** (seine CLI braucht Node.js 22.22 / 24.15, der nächste Schritt), **MediatR 12** (neuere Versionen brauchen eine kommerzielle Lizenz), **xUnit 2** (xUnit v3 ist ein neues Testmodell), **TypeScript 5.9** (Angular 21 unterstützt TypeScript 7 nicht) und das gemeinsame NuGet-Paket auf .NET 9 (Dienste auf .NET 10 nutzen es unverändert)
+
+
 ## [2.4.0] — Unreleased
 
 Die Anleitungen und das Änderungsprotokoll auf Serbisch und Deutsch, und Deploys ohne Passwörter.
