@@ -6,7 +6,7 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
-## [3.0.0] — Unreleased
+## [3.0.0] — 2026-11-13
 
 Svaki deo Open Planning Pokera na aktuelnim, podržanim verzijama. Za igrače se ništa ne menja; za self-hosting trebaju nova okruženja.
 
@@ -22,7 +22,7 @@ Svaki deo Open Planning Pokera na aktuelnim, podržanim verzijama. Za igrače se
 - Za self-hosting treba .NET 10 runtime (Docker imidži ga sadrže) i Node.js 22.12 ili noviji za aplikaciju
 - Namerno zadržano: **HotChocolate i Fusion 15** (Fusion 16 koristi nov format gatewaya i sastavljanja, to je posebna migracija), **Angular 22** (njegov CLI traži Node.js 22.22 / 24.15, to je sledeći korak), **MediatR 12** (novije verzije traže komercijalnu licencu), **xUnit 2** (xUnit v3 je nov model testova), **TypeScript 5.9** (Angular 21 ne podržava TypeScript 7) i deljeni NuGet paket na .NET 9 (servisi na .NET 10 ga koriste takav kakav je)
 
-## [2.4.1] — Unreleased
+## [2.4.1] — 2026-11-13
 
 Aplikacija staje na telefon, i dva nova vodiča o igri.
 
@@ -34,7 +34,7 @@ Aplikacija staje na telefon, i dva nova vodiča o igri.
 - **Dijalog za novu igru**: dugme Napravi igru ostaje vidljivo pri dnu dok skroluješ kroz špilove
 
 
-## [2.4.0] — Unreleased
+## [2.4.0] — 2026-11-13
 
 Vodiči i spisak izmena na srpskom i nemačkom, i deploy bez lozinki.
 

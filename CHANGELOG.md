@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.0.0] — Unreleased
+## [3.0.0] — 2026-11-13
 
 Every part of Open Planning Poker on current, supported versions. Nothing changes for players; self-hosters need the new runtimes.
 
@@ -23,7 +23,7 @@ Every part of Open Planning Poker on current, supported versions. Nothing change
 - Self-hosting needs the .NET 10 runtime (the Docker images include it) and Node.js 22.12 or newer for the app
 - Kept on purpose: **HotChocolate and Fusion 15** (Fusion 16 uses a new gateway format and composition, a separate migration), **Angular 22** (its CLI needs Node.js 22.22 / 24.15, the next step), **MediatR 12** (later versions need a commercial license), **xUnit 2** (xUnit v3 is a new test model), **TypeScript 5.9** (Angular 21 does not support TypeScript 7), and the shared NuGet package on .NET 9 (services on .NET 10 use it as it is)
 
-## [2.4.1] — Unreleased
+## [2.4.1] — 2026-11-13
 
 The app fits on phones, and two new guides about the game.
 
@@ -35,7 +35,7 @@ The app fits on phones, and two new guides about the game.
 - **New game dialog**: the Create game button stays visible at the bottom while you scroll through the decks
 
 
-## [2.4.0] — Unreleased
+## [2.4.0] — 2026-11-13
 
 The guides and the changelog in Serbian and German, and deploys without passwords.
 

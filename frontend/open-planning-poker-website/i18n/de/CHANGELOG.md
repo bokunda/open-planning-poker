@@ -6,7 +6,7 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
-## [3.0.0] — Unreleased
+## [3.0.0] — 2026-11-13
 
 Jeder Teil von Open Planning Poker auf aktuellen, unterstützten Versionen. Für Spieler ändert sich nichts; wer selbst hostet, braucht die neuen Laufzeitumgebungen.
 
@@ -22,7 +22,7 @@ Jeder Teil von Open Planning Poker auf aktuellen, unterstützten Versionen. Für
 - Selbsthosting braucht die .NET-10-Laufzeit (in den Docker-Images enthalten) und Node.js 22.12 oder neuer für die App
 - Bewusst beibehalten: **HotChocolate und Fusion 15** (Fusion 16 nutzt ein neues Gateway-Format und eine neue Komposition, eine eigene Migration), **Angular 22** (seine CLI braucht Node.js 22.22 / 24.15, der nächste Schritt), **MediatR 12** (neuere Versionen brauchen eine kommerzielle Lizenz), **xUnit 2** (xUnit v3 ist ein neues Testmodell), **TypeScript 5.9** (Angular 21 unterstützt TypeScript 7 nicht) und das gemeinsame NuGet-Paket auf .NET 9 (Dienste auf .NET 10 nutzen es unverändert)
 
-## [2.4.1] — Unreleased
+## [2.4.1] — 2026-11-13
 
 Die App passt aufs Handy, und zwei neue Anleitungen zum Spiel.
 
@@ -34,7 +34,7 @@ Die App passt aufs Handy, und zwei neue Anleitungen zum Spiel.
 - **Dialog „Neues Spiel“**: Der Button „Spiel erstellen“ bleibt unten sichtbar, während du durch die Decks scrollst
 
 
-## [2.4.0] — Unreleased
+## [2.4.0] — 2026-11-13
 
 Die Anleitungen und das Änderungsprotokoll auf Serbisch und Deutsch, und Deploys ohne Passwörter.
 
