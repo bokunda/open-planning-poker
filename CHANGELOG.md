@@ -33,6 +33,7 @@ Open Planning Poker in your language, installable on your phone, and every pull 
 - Dependency security updates: HotChocolate 15.1 in all services, OpenTelemetry 1.19 in the shared package
 
 ### Fixed
+- Switching a player to observer or making them co-host failed with a server error (players loaded from the database lost their id, so the update matched no row)
 - Server rendering of game pages no longer opens WebSocket subscriptions (Node 22 has a global `WebSocket`), which could crash the app server
 
 ### Changed
