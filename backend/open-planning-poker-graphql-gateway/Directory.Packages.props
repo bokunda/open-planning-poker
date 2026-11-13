@@ -41,7 +41,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.3.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
-    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.2" />
+    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
@@ -54,7 +54,7 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.19.0" />
     <PackageVersion Include="Polly" Version="8.5.2" />
     <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
-    <PackageVersion Include="Serilog.Sinks.Grafana.Loki" Version="8.3.0" />
+    <PackageVersion Include="Serilog.Sinks.Grafana.Loki" Version="8.3.2" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="Snapshooter.Xunit" Version="1.0.1" />
     <PackageVersion Include="xunit" Version="2.9.3" />
