@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.1] — 2026-11-13
+
+### Changed
+- The website footer no longer links to the "What is planning poker" and "Cards and scales" guides; they are still under Guides in the menu and on the home page
+
 ## [2.3.0] — 2026-11-13
 
 Open Planning Poker in your language, installable on your phone, and every pull request tested end to end.
