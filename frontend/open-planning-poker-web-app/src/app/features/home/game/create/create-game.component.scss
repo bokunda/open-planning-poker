@@ -81,3 +81,34 @@
   font-weight: 700;
   box-shadow: var(--opp-shadow-card);
 }
+
+/* The create button stays in view at the bottom of the dialog while the deck list scrolls (OPP-111).
+   Its bar has the dialog's background, with a short fade above it, so cards never show through. */
+.create-actions {
+  position: sticky;
+  // Flush with the dialog edges: the content area has 24px side and 20px bottom padding.
+  bottom: -20px;
+  z-index: 1;
+  margin: var(--opp-space-1) -24px -20px;
+  padding: var(--opp-space-3) 24px 20px;
+  background: var(--opp-surface);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: auto 0 100% 0;
+    height: var(--opp-space-4);
+    background: linear-gradient(to bottom, transparent, var(--opp-surface));
+    pointer-events: none;
+  }
+
+  .opp-submit { width: 100%; }
+}
+
+/* Phones: a tighter deck list so more of the form fits on screen. */
+@media (max-width: 480px) {
+  .deck-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .deck-option { padding: var(--opp-space-2); gap: var(--opp-space-1); }
+  .deck-option--selected { padding: calc(var(--opp-space-2) - 1px); }
+  .mini-card { min-width: 18px; height: 24px; font-size: 0.7rem; }
+}

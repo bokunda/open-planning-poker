@@ -6,6 +6,18 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+## [2.4.1] — 2026-11-13
+
+Aplikacija staje na telefon, i dva nova vodiča o igri.
+
+### Dodato
+- **Novi vodiči**: „Kako se koristi Open Planning Poker”, obilazak cele igre (sobe, uloge, glasanje, otkrivanje, konačna procena, izveštaji, asinhrono glasanje i timske sobe), i „Asinhroni planning poker”, o proceni pre sastanka. Oba na engleskom, srpskom i nemačkom, i na početnoj strani
+
+### Ispravljeno
+- **Telefoni**: header više ne seče tvoje ime (ispod 420 px čip prikazuje inicijal), a linkovi u footeru prelaze u novi red umesto da izađu van ekrana. Nema skrolovanja u stranu na 360–390 px
+- **Dijalog za novu igru**: dugme Napravi igru ostaje vidljivo pri dnu dok skroluješ kroz špilove
+
+
 ## [2.4.0] — 2026-11-13
 
 Vodiči i spisak izmena na srpskom i nemačkom, i deploy bez lozinki.
