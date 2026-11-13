@@ -1,4 +1,29 @@
-<div class="changelog-content"><h2>[2.2.1] — Unreleased</h2>
+<div class="changelog-content"><h2>[2.3.1] — 2026-11-13</h2>
+<h3>Changed</h3>
+<ul>
+<li>The website footer no longer links to the &quot;What is planning poker&quot; and &quot;Cards and scales&quot; guides; they are still under Guides in the menu and on the home page</li>
+</ul>
+<h2>[2.3.0] — 2026-11-13</h2>
+<p>Open Planning Poker in your language, installable on your phone, and every pull request tested end to end.</p>
+<h3>Added</h3>
+<ul>
+<li><strong>Serbian and German</strong>: the app is available in English, Serbian (Latin script) and German. It follows the browser language, and you can change it in the menu; the choice is remembered. Dates, the CSV export, error messages from the server and the PDF report are translated too</li>
+<li><strong>Website in Serbian and German</strong>: the home page at <code>/sr/</code> and <code>/de/</code>, linked with <code>hreflang</code> and listed in the sitemap, with a language switch in the footer</li>
+<li><strong>Installable app</strong>: install Open Planning Poker on your phone or desktop. The app opens offline and shows a &quot;You are offline&quot; notice until the connection is back. The install offer appears at most once a week, and &quot;Install app&quot; is in the menu</li>
+<li><strong>Reload offer</strong> when a new version of the app is ready</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li>Pages are rendered on the server for each visitor&#39;s language instead of being prerendered</li>
+<li>The website menu shows from wider screens on, so longer labels fit</li>
+</ul>
+<h3>Developers</h3>
+<ul>
+<li>Game Engine integration tests against real PostgreSQL and Redis (Testcontainers): host-only actions, hidden votes, vote again, the timer, chat access, translated errors and the PDF report</li>
+<li>Playwright end-to-end tests on the full stack (<code>docker-compose.e2e.yml</code>): create a game, a second player joins, add and import tickets, vote, reveal, vote again, the shared timer and the PDF export, with axe accessibility checks on desktop and phone</li>
+<li>A CI workflow for every pull request: backend unit and integration tests, a vulnerable-package check, app and website builds, the translation check, end-to-end tests and Lighthouse budgets (performance ≥ 90, accessibility 100, best practices ≥ 95, SEO ≥ 92, with each SEO audit checked on its own)</li>
+</ul>
+<h2>[2.2.1] — 2026-11-13</h2>
 <h3>Security</h3>
 <ul>
 <li>Security hardening of the chat and the WebSocket connection; the chat loads after joining the game</li>
@@ -6,6 +31,7 @@
 </ul>
 <h3>Fixed</h3>
 <ul>
+<li>Switching a player to observer or making them co-host failed with a server error (players loaded from the database lost their id, so the update matched no row)</li>
 <li>Server rendering of game pages no longer opens WebSocket subscriptions (Node 22 has a global <code>WebSocket</code>), which could crash the app server</li>
 </ul>
 <h3>Changed</h3>
