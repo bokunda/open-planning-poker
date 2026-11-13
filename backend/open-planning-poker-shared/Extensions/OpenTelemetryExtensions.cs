@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.Shared.Extensions;
+namespace OpenPlanningPoker.Shared.Extensions;
 
 public static class OpenTelemetryExtensions
 {
@@ -12,7 +12,6 @@ public static class OpenTelemetryExtensions
                         .AddService(configuration["Otel:ServiceName"]!))
                     .AddAspNetCoreInstrumentation()
                     .AddRuntimeInstrumentation()
-                    .AddProcessInstrumentation()
                     .AddOtlpExporter(opts =>
                     {
                         opts.Endpoint = new Uri(configuration["Otel:Endpoint"]!);

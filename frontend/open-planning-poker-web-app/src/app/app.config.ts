@@ -1,4 +1,5 @@
-import { ApplicationConfig, inject, provideZoneChangeDetection, APP_INITIALIZER } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ApplicationConfig, PLATFORM_ID, inject, provideZoneChangeDetection, APP_INITIALIZER } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -7,7 +8,7 @@ import { routes } from './app.routes';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { HttpLink } from 'apollo-angular/http';
 import { provideApollo } from 'apollo-angular';
-import { ApolloLink, DefaultOptions, InMemoryCache, split } from '@apollo/client/core';
+import { ApolloLink, DefaultOptions, InMemoryCache, Observable, split } from '@apollo/client/core';
 import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
 import { createClient } from 'graphql-ws';
@@ -142,8 +143,9 @@ export const appConfig: ApplicationConfig = {
         }
       });
 
-      // WebSocket client only in browser (SSR has no WebSocket)
-      const wsLink = typeof WebSocket !== 'undefined'
+      // WebSocket client only in the browser. Node 22+ has a global WebSocket too, so checking for it
+      // opened subscriptions during server rendering that outlived the render and crashed the server.
+      const wsLink = isPlatformBrowser(inject(PLATFORM_ID))
         ? new GraphQLWsLink(createClient({
             url: gqlGatewayWss,
             connectionParams: () => {
@@ -168,19 +170,17 @@ export const appConfig: ApplicationConfig = {
 
       const httpChain = ApolloLink.from([errorLink, basic, auth, http]);
 
-      const link = wsLink
-        ? split(
-            ({ query }) => {
-              const definition = getMainDefinition(query);
-              return (
-                definition.kind === 'OperationDefinition' &&
-                definition.operation === 'subscription'
-              );
-            },
-            wsLink,
-            httpChain
-          )
-        : httpChain;
+      // Subscriptions go over the WebSocket. On the server they end at once without data: sent over HTTP,
+      // the gateway would keep the stream open and the page would never finish rendering.
+      const noSubscriptions = new ApolloLink(() => new Observable((observer) => observer.complete()));
+      const link = split(
+        ({ query }) => {
+          const definition = getMainDefinition(query);
+          return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
+        },
+        wsLink ?? noSubscriptions,
+        httpChain
+      );
 
       return {
         link,

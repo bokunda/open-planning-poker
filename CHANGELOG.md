@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.1] — 2026-11-13
+
+### Security
+- Security hardening of the chat and the WebSocket connection; the chat loads after joining the game
+- Dependency security updates: HotChocolate 15.1 in all services, OpenTelemetry 1.19 in the shared package
+
+### Fixed
+- Switching a player to observer or making them co-host failed with a server error (players loaded from the database lost their id, so the update matched no row)
+- Server rendering of game pages no longer opens WebSocket subscriptions (Node 22 has a global `WebSocket`), which could crash the app server
+
+### Changed
+- Shared package `OpenPlanningPoker.Shared` 1.1.0 no longer depends on prerelease packages; the unused Console, Prometheus and Zipkin exporters, the HTTP instrumentation and the process metrics were removed
+
 ## [2.2.0] — 2026-11-13
 
 Run the room together, estimate before the meeting, and keep a team's history in one place.

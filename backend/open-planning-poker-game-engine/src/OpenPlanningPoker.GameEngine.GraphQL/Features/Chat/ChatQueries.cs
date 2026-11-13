@@ -6,13 +6,20 @@ namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Chat;
 public class ChatQueries
 {
     /// <summary>
-    /// Returns recent chat messages for a game (from Redis, 24h TTL).
+    /// Returns recent chat messages for a game (from Redis, 24h TTL). Empty for callers who are not
+    /// players of the game.
     /// </summary>
     public async Task<List<ChatMessage>> GetChatMessagesAsync(
+        [Service] IGameAccessService gameAccess,
         [Service] IConnectionMultiplexer redis,
         [Required] Guid gameId,
         CancellationToken cancellationToken = default)
     {
+        if (await gameAccess.EnsureMemberAsync(gameId, cancellationToken) is not null)
+        {
+            return [];
+        }
+
         var db = redis.GetDatabase();
         var key = $"chat:{gameId}";
         var values = await db.ListRangeAsync(key);
