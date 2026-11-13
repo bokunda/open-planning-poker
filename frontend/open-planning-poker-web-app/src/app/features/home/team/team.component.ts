@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Apollo } from 'apollo-angular';
@@ -21,7 +21,7 @@ type Errors = { errors?: { message: string }[] | null } | null | undefined;
 @Component({
   selector: 'app-team',
   standalone: true,
-  imports: [TranslocoPipe, OppDatePipe, CommonModule, FormsModule, RouterLink, MatButtonModule, MatIconModule, VelocityChartComponent],
+  imports: [TranslocoPipe, OppDatePipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, VelocityChartComponent],
   templateUrl: './team.component.html',
   styleUrl: './team.component.scss',
 })

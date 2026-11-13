@@ -3,57 +3,71 @@
   <!-- The whole bar is clickable with the mouse; keyboard and screen readers use the button. -->
   <div class="players-header" (click)="collapsedChange.emit(!collapsed)">
     <span class="players-title">{{ 'players.title' | transloco }}</span>
-    <span class="players-consensus" *ngIf="!collapsed && totalPlayers">{{ 'players.voted' | transloco: { voted: votedCount, total: totalPlayers } }}</span>
+    @if (!collapsed && totalPlayers) {
+      <span class="players-consensus">{{ 'players.voted' | transloco: { voted: votedCount, total: totalPlayers } }}</span>
+    }
     <button mat-icon-button class="players-toggle" (click)="$event.stopPropagation(); collapsedChange.emit(!collapsed)"
       [attr.aria-label]="(collapsed ? 'players.show' : 'players.hide') | transloco" [attr.aria-expanded]="!collapsed">
       <mat-icon>{{ collapsed ? 'expand_more' : 'expand_less' }}</mat-icon>
     </button>
   </div>
 
-  <ng-container *ngIf="!collapsed">
+  @if (!collapsed) {
     <!-- Player list -->
-    <div class="players-list" *ngIf="players?.items">
-      <div class="player-row" *ngFor="let player of players?.items; let i = index; trackBy: trackByPlayerId"
-        [class.player-row--me]="player.id === currentUserId">
-        <div class="player-avatar" [class.player-avatar--voted]="getVoteData(player.id)">
-          {{ player.name?.charAt(0) || '?' }}
-        </div>
-        <span class="player-name">
-          {{ player.name }}
-          <span class="player-badge player-badge--host" *ngIf="roleLabel(asRoomPlayer(player)) as role">{{ role | transloco }}</span>
-        </span>
-        <mat-icon class="player-observer" *ngIf="isObserver(asRoomPlayer(player)); else voteCard"
-          svgIcon="opp-observe" [matTooltip]="'players.watchingTooltip' | transloco" [attr.aria-label]="'players.observer' | transloco"></mat-icon>
-        <ng-template #voteCard>
-          <app-poker-card
-            class="player-vote"
-            size="sm"
-            [value]="getVoteData(player.id)?.value"
-            [empty]="!getVoteData(player.id)"
-            [faceDown]="!votesRevealed"
-            [flipDelay]="i * 70">
-          </app-poker-card>
-        </ng-template>
-        <button mat-icon-button class="player-menu-btn" *ngIf="canManage(asRoomPlayer(player))"
-          [matMenuTriggerFor]="playerMenu" [matMenuTriggerData]="{ player: player }"
-          [attr.aria-label]="player.id === currentUserId ? ('players.optionsForYou' | transloco) : ('players.optionsFor' | transloco: { name: player.name })">
-          <mat-icon>more_vert</mat-icon>
-        </button>
+    @if (players?.items) {
+      <div class="players-list">
+        @for (player of players?.items; track trackByPlayerId(i, player); let i = $index) {
+          <div class="player-row"
+            [class.player-row--me]="player.id === currentUserId">
+            <div class="player-avatar" [class.player-avatar--voted]="getVoteData(player.id)">
+              {{ player.name?.charAt(0) || '?' }}
+            </div>
+            <span class="player-name">
+              {{ player.name }}
+              @if (roleLabel(asRoomPlayer(player)); as role) {
+                <span class="player-badge player-badge--host">{{ role | transloco }}</span>
+              }
+            </span>
+            @if (isObserver(asRoomPlayer(player))) {
+              <mat-icon class="player-observer"
+              svgIcon="opp-observe" [matTooltip]="'players.watchingTooltip' | transloco" [attr.aria-label]="'players.observer' | transloco"></mat-icon>
+            } @else {
+              <app-poker-card
+                class="player-vote"
+                size="sm"
+                [value]="getVoteData(player.id)?.value"
+                [empty]="!getVoteData(player.id)"
+                [faceDown]="!votesRevealed"
+                [flipDelay]="i * 70">
+              </app-poker-card>
+            }
+            @if (canManage(asRoomPlayer(player))) {
+              <button mat-icon-button class="player-menu-btn"
+                [matMenuTriggerFor]="playerMenu" [matMenuTriggerData]="{ player: player }"
+                [attr.aria-label]="player.id === currentUserId ? ('players.optionsForYou' | transloco) : ('players.optionsFor' | transloco: { name: player.name })">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            }
+          </div>
+        }
       </div>
-    </div>
-
+    }
     <mat-menu #playerMenu="matMenu" xPosition="before">
       <ng-template matMenuContent let-player="player">
-        <ng-container *ngIf="asRoomPlayer(player) as p">
-          <button mat-menu-item *ngIf="!isObserver(p)" (click)="onPlayerAction.emit({ kind: 'role', playerId: p.id, role: 'OBSERVER' })">
-            <mat-icon svgIcon="opp-observe"></mat-icon>
-            <span>{{ (p.id === currentUserId ? 'players.watchOnly' : 'players.makeObserver') | transloco }}</span>
-          </button>
-          <button mat-menu-item *ngIf="isObserver(p)" (click)="onPlayerAction.emit({ kind: 'role', playerId: p.id, role: 'PLAYER' })">
-            <mat-icon svgIcon="opp-check"></mat-icon>
-            <span>{{ (p.id === currentUserId ? 'players.voteAgain' : 'players.makePlayer') | transloco }}</span>
-          </button>
-          <ng-container *ngIf="isOwner && p.id !== currentUserId">
+        @if (asRoomPlayer(player); as p) {
+          @if (!isObserver(p)) {
+            <button mat-menu-item (click)="onPlayerAction.emit({ kind: 'role', playerId: p.id, role: 'OBSERVER' })">
+              <mat-icon svgIcon="opp-observe"></mat-icon>
+              <span>{{ (p.id === currentUserId ? 'players.watchOnly' : 'players.makeObserver') | transloco }}</span>
+            </button>
+          }
+          @if (isObserver(p)) {
+            <button mat-menu-item (click)="onPlayerAction.emit({ kind: 'role', playerId: p.id, role: 'PLAYER' })">
+              <mat-icon svgIcon="opp-check"></mat-icon>
+              <span>{{ (p.id === currentUserId ? 'players.voteAgain' : 'players.makePlayer') | transloco }}</span>
+            </button>
+          }
+          @if (isOwner && p.id !== currentUserId) {
             <button mat-menu-item (click)="onPlayerAction.emit({ kind: 'coHost', playerId: p.id, isCoHost: !p.isCoHost })">
               <mat-icon svgIcon="opp-team"></mat-icon>
               <span>{{ (p.isCoHost ? 'players.removeCoHost' : 'players.makeCoHost') | transloco }}</span>
@@ -62,18 +76,21 @@
               <mat-icon svgIcon="opp-star"></mat-icon>
               <span>{{ 'players.makeHost' | transloco }}</span>
             </button>
-          </ng-container>
-          <button mat-menu-item class="player-menu-danger" *ngIf="isHost && p.id !== currentUserId && p.id !== hostId"
-            (click)="onPlayerAction.emit({ kind: 'remove', playerId: p.id })">
-            <mat-icon svgIcon="opp-person-remove"></mat-icon>
-            <span>{{ 'players.remove' | transloco }}</span>
-          </button>
-        </ng-container>
+          }
+          @if (isHost && p.id !== currentUserId && p.id !== hostId) {
+            <button mat-menu-item class="player-menu-danger"
+              (click)="onPlayerAction.emit({ kind: 'remove', playerId: p.id })">
+              <mat-icon svgIcon="opp-person-remove"></mat-icon>
+              <span>{{ 'players.remove' | transloco }}</span>
+            </button>
+          }
+        }
       </ng-template>
     </mat-menu>
-
-    <div class="players-empty" *ngIf="!players?.items?.length">
-      {{ 'players.waiting' | transloco }}
-    </div>
-  </ng-container>
+    @if (!players?.items?.length) {
+      <div class="players-empty">
+        {{ 'players.waiting' | transloco }}
+      </div>
+    }
+  }
 </div>

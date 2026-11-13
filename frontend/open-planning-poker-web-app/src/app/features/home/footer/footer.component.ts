@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,7 +13,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, CommonModule, MatButtonModule, MatIconModule, DonateClickDirective]
+  imports: [TranslocoPipe, MatButtonModule, MatIconModule, DonateClickDirective]
 })
 export class FooterComponent {
   private readonly dialog = inject(MatDialog);

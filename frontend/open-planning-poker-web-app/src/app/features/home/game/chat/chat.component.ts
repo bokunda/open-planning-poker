@@ -1,6 +1,6 @@
 import { Component, EventEmitter, HostBinding, Input, Output, OnDestroy, OnChanges, SimpleChanges, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +18,7 @@ import { OppDatePipe } from '../../../../i18n/opp-date.pipe';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, OppDatePipe, CommonModule, FormsModule, MatButtonModule, MatIconModule]
+  imports: [TranslocoPipe, OppDatePipe, FormsModule, MatButtonModule, MatIconModule]
 })
 export class ChatComponent implements OnChanges, OnDestroy {
   @Input() gameId: string = '';

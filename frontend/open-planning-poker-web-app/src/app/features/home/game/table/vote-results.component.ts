@@ -14,37 +14,49 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   imports: [TranslocoPipe, CommonModule],
   changeDetection: ChangeDetectionStrategy.Default,
   template: `
-    <section class="results" *ngIf="stats" aria-live="polite" [attr.aria-label]="'results.title' | transloco">
-      <div class="results-head">
-        <span class="chip" [ngClass]="'chip--' + stats.status">{{ statusLabel }}</span>
-        <span class="stat">{{ 'results.average' | transloco }} <b class="opp-tabular">{{ fmt(stats.average) }}</b></span>
-        <span class="stat">{{ 'results.median' | transloco }} <b class="opp-tabular">{{ fmt(stats.median) }}</b></span>
-        <span class="stat">{{ 'results.votes' | transloco }} <b class="opp-tabular">{{ totalVotes }}</b></span>
-      </div>
-      <div class="bars">
-        <div class="bar-row" *ngFor="let c of stats.counts; let i = index">
-          <span class="bar-label">{{ c.value }}</span>
-          <span class="bar-track"><span class="bar-fill" [style.--w]="c.share * 100 + '%'" [style.--d]="i * 80 + 'ms'"></span></span>
-          <span class="bar-count opp-tabular">{{ c.count }}</span>
+    @if (stats) {
+      <section class="results" aria-live="polite" [attr.aria-label]="'results.title' | transloco">
+        <div class="results-head">
+          <span class="chip" [ngClass]="'chip--' + stats.status">{{ statusLabel }}</span>
+          <span class="stat">{{ 'results.average' | transloco }} <b class="opp-tabular">{{ fmt(stats.average) }}</b></span>
+          <span class="stat">{{ 'results.median' | transloco }} <b class="opp-tabular">{{ fmt(stats.median) }}</b></span>
+          <span class="stat">{{ 'results.votes' | transloco }} <b class="opp-tabular">{{ totalVotes }}</b></span>
         </div>
-      </div>
-      <p class="results-note">{{ note }}</p>
-
-      <div class="final" *ngIf="isHost || finalEstimate">
-        <span class="final-label" id="final-label">{{ 'history.finalEstimate' | transloco }}</span>
-        <div class="final-cards" *ngIf="isHost; else finalReadOnly" role="radiogroup" aria-labelledby="final-label">
-          <button type="button" class="final-card opp-tabular" *ngFor="let card of finalOptions"
-            role="radio" [attr.aria-checked]="card === finalEstimate"
-            [class.final-card--selected]="card === finalEstimate"
-            [class.final-card--suggested]="card === suggested && !finalEstimate"
-            [attr.title]="card === suggested ? ('results.mostCommon' | transloco) : null"
-            (click)="finalEstimateChange.emit(card === finalEstimate ? null : card)">{{ card }}</button>
+        <div class="bars">
+          @for (c of stats.counts; track c; let i = $index) {
+            <div class="bar-row">
+              <span class="bar-label">{{ c.value }}</span>
+              <span class="bar-track"><span class="bar-fill" [style.--w]="c.share * 100 + '%'" [style.--d]="i * 80 + 'ms'"></span></span>
+              <span class="bar-count opp-tabular">{{ c.count }}</span>
+            </div>
+          }
         </div>
-        <ng-template #finalReadOnly><b class="final-value opp-tabular">{{ finalEstimate }}</b></ng-template>
-        <span class="final-hint" *ngIf="isHost && !finalEstimate">{{ 'results.finalHint' | transloco }}</span>
-      </div>
-    </section>
-  `,
+        <p class="results-note">{{ note }}</p>
+        @if (isHost || finalEstimate) {
+          <div class="final">
+            <span class="final-label" id="final-label">{{ 'history.finalEstimate' | transloco }}</span>
+            @if (isHost) {
+              <div class="final-cards" role="radiogroup" aria-labelledby="final-label">
+                @for (card of finalOptions; track card) {
+                  <button type="button" class="final-card opp-tabular"
+                    role="radio" [attr.aria-checked]="card === finalEstimate"
+                    [class.final-card--selected]="card === finalEstimate"
+                    [class.final-card--suggested]="card === suggested && !finalEstimate"
+                    [attr.title]="card === suggested ? ('results.mostCommon' | transloco) : null"
+                  (click)="finalEstimateChange.emit(card === finalEstimate ? null : card)">{{ card }}</button>
+                }
+              </div>
+            } @else {
+              <b class="final-value opp-tabular">{{ finalEstimate }}</b>
+            }
+            @if (isHost && !finalEstimate) {
+              <span class="final-hint">{{ 'results.finalHint' | transloco }}</span>
+            }
+          </div>
+        }
+      </section>
+    }
+    `,
   styles: [`
     :host { display: block; width: 100%; max-width: 560px; margin: 0 auto; }
     .results {

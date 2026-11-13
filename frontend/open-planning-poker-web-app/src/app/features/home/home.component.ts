@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, inject, OnInit, afterNextRender, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { Title, Meta } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Mutation, Query, RegisterUserInput, User } from '../../graphql/graphql-gateway.service';
@@ -19,7 +19,7 @@ import { TranslocoService } from '@jsverse/transloco';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, BreadcrumbComponent, GameComponent, TeamComponent, FooterComponent]
+  imports: [HeaderComponent, BreadcrumbComponent, GameComponent, TeamComponent, FooterComponent]
 })
 export class HomeComponent implements OnInit {
 

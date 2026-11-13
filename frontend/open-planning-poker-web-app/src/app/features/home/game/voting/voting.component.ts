@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, QueryList, SimpleChanges, ViewChild, ViewChildren, inject } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -17,7 +17,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   templateUrl: './voting.component.html',
   styleUrl: './voting.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, PokerCardComponent, PokerTableComponent, VoteResultsComponent, GameTimerComponent, MarkdownPipe],
+  imports: [TranslocoPipe, MatButtonModule, MatIconModule, MatTooltipModule, PokerCardComponent, PokerTableComponent, VoteResultsComponent, GameTimerComponent, MarkdownPipe],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class VotingComponent implements OnInit, OnDestroy, OnChanges {

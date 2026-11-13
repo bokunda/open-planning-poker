@@ -8,33 +8,38 @@
     </button>
   </div>
 
-  <div class="chat-panel" *ngIf="!collapsed">
-    <div class="chat-messages">
-      <div class="chat-empty" *ngIf="messages.length === 0">
-        {{ 'chat.empty' | transloco }} 👋
+  @if (!collapsed) {
+    <div class="chat-panel">
+      <div class="chat-messages">
+        @if (messages.length === 0) {
+          <div class="chat-empty">
+            {{ 'chat.empty' | transloco }} 👋
+          </div>
+        }
+        @for (msg of messages; track msg; let i = $index) {
+          <div class="chat-msg"
+            [class.chat-msg-own]="msg.playerName === currentUserName">
+            <span class="chat-msg-author">{{ msg.playerName }}</span>
+            <span class="chat-msg-text" [innerHTML]="linkify(msg.content)"></span>
+            <span class="chat-msg-time">{{ msg.timestamp | oppDate:'HH:mm' }}</span>
+          </div>
+        }
       </div>
-      <div class="chat-msg" *ngFor="let msg of messages; let i = index"
-        [class.chat-msg-own]="msg.playerName === currentUserName">
-        <span class="chat-msg-author">{{ msg.playerName }}</span>
-        <span class="chat-msg-text" [innerHTML]="linkify(msg.content)"></span>
-        <span class="chat-msg-time">{{ msg.timestamp | oppDate:'HH:mm' }}</span>
+      <div class="chat-input">
+        <input
+          type="text"
+          [(ngModel)]="newMessage"
+          (keydown)="onKeyEnter($event)"
+          [placeholder]="'chat.placeholder' | transloco"
+          maxlength="500"
+          [attr.aria-label]="'chat.inputAria' | transloco"
+          />
+          <button mat-icon-button color="primary" (click)="sendMessage()"
+            [disabled]="!newMessage.trim()"
+            [attr.aria-label]="'chat.send' | transloco">
+            <mat-icon>send</mat-icon>
+          </button>
+        </div>
       </div>
-    </div>
-
-    <div class="chat-input">
-      <input
-        type="text"
-        [(ngModel)]="newMessage"
-        (keydown)="onKeyEnter($event)"
-        [placeholder]="'chat.placeholder' | transloco"
-        maxlength="500"
-        [attr.aria-label]="'chat.inputAria' | transloco"
-      />
-      <button mat-icon-button color="primary" (click)="sendMessage()"
-        [disabled]="!newMessage.trim()"
-        [attr.aria-label]="'chat.send' | transloco">
-        <mat-icon>send</mat-icon>
-      </button>
-    </div>
+    }
   </div>
-</div>

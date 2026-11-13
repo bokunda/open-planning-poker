@@ -3,49 +3,59 @@
     <mat-label>{{ 'createGame.name' | transloco }}</mat-label>
     <input matInput formControlName="name" [placeholder]="'createGame.namePlaceholder' | transloco" cdkFocusInitial
       (keydown.enter)="$event.preventDefault(); onSubmit()" />
-    <mat-error *ngIf="createGameForm.get('name')?.hasError('minlength') || createGameForm.get('name')?.hasError('required')">
-      {{ 'createGame.nameTooShort' | transloco }}
-    </mat-error>
-  </mat-form-field>
-
-  <fieldset class="deck-picker">
-    <legend class="deck-legend">{{ 'createGame.cards' | transloco }}</legend>
-    <div class="deck-options" role="radiogroup" [attr.aria-label]="'createGame.deck' | transloco">
-      <button type="button" class="deck-option" *ngFor="let deck of deckPresets"
-        role="radio" [attr.aria-checked]="selectedDeck === deck.value"
-        [class.deck-option--selected]="selectedDeck === deck.value"
-        (click)="selectDeck(deck.value)"
-        [matTooltip]="deck.hint ? (deck.key + 'Hint' | transloco) : ''" [matTooltipDisabled]="!deck.hint" matTooltipPosition="above"
-        [attr.aria-description]="deck.hint ? (deck.key + 'Hint' | transloco) : null">
-        <span class="deck-name">{{ deck.key | transloco }}</span>
-        <span class="deck-cards" aria-hidden="true">
-          <span class="mini-card" *ngFor="let card of previewCards(deck.value)">{{ card }}</span>
-        </span>
-      </button>
-      <button type="button" class="deck-option" role="radio" [attr.aria-checked]="isCustomDeck"
-        [class.deck-option--selected]="isCustomDeck" (click)="selectDeck('__custom__')">
-        <span class="deck-name">{{ 'deck.custom' | transloco }}</span>
-        <span class="deck-hint">{{ 'deck.customHint' | transloco }}</span>
-      </button>
-    </div>
-  </fieldset>
-
-  <ng-container *ngIf="isCustomDeck">
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'createGame.customValues' | transloco }}</mat-label>
-      <input matInput formControlName="customDeck" placeholder="1, 2, 3, 5, 8, 13, ?" />
+      @if (createGameForm.get('name')?.hasError('minlength') || createGameForm.get('name')?.hasError('required')) {
+        <mat-error>
+          {{ 'createGame.nameTooShort' | transloco }}
+        </mat-error>
+      }
     </mat-form-field>
-    <div class="deck-cards deck-cards--preview" *ngIf="customDeckPreview.length > 0" [attr.aria-label]="'createGame.preview' | transloco">
-      <span class="mini-card" *ngFor="let card of customDeckPreview">{{ card }}</span>
-    </div>
-  </ng-container>
 
-  <mat-form-field appearance="outline">
-    <mat-label>{{ 'createGame.description' | transloco }}</mat-label>
-    <textarea matInput formControlName="description" rows="2" [placeholder]="'createGame.descriptionPlaceholder' | transloco"></textarea>
-  </mat-form-field>
+    <fieldset class="deck-picker">
+      <legend class="deck-legend">{{ 'createGame.cards' | transloco }}</legend>
+      <div class="deck-options" role="radiogroup" [attr.aria-label]="'createGame.deck' | transloco">
+        @for (deck of deckPresets; track deck) {
+          <button type="button" class="deck-option"
+            role="radio" [attr.aria-checked]="selectedDeck === deck.value"
+            [class.deck-option--selected]="selectedDeck === deck.value"
+            (click)="selectDeck(deck.value)"
+            [matTooltip]="deck.hint ? (deck.key + 'Hint' | transloco) : ''" [matTooltipDisabled]="!deck.hint" matTooltipPosition="above"
+            [attr.aria-description]="deck.hint ? (deck.key + 'Hint' | transloco) : null">
+            <span class="deck-name">{{ deck.key | transloco }}</span>
+            <span class="deck-cards" aria-hidden="true">
+              @for (card of previewCards(deck.value); track card) {
+                <span class="mini-card">{{ card }}</span>
+              }
+            </span>
+          </button>
+        }
+        <button type="button" class="deck-option" role="radio" [attr.aria-checked]="isCustomDeck"
+          [class.deck-option--selected]="isCustomDeck" (click)="selectDeck('__custom__')">
+          <span class="deck-name">{{ 'deck.custom' | transloco }}</span>
+          <span class="deck-hint">{{ 'deck.customHint' | transloco }}</span>
+        </button>
+      </div>
+    </fieldset>
 
-  <button mat-flat-button color="primary" class="opp-submit" type="submit" [disabled]="createGameForm.invalid">
-    <mat-icon>add</mat-icon> {{ 'createGame.submit' | transloco }}
-  </button>
-</form>
+    @if (isCustomDeck) {
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'createGame.customValues' | transloco }}</mat-label>
+        <input matInput formControlName="customDeck" placeholder="1, 2, 3, 5, 8, 13, ?" />
+      </mat-form-field>
+      @if (customDeckPreview.length > 0) {
+        <div class="deck-cards deck-cards--preview" [attr.aria-label]="'createGame.preview' | transloco">
+          @for (card of customDeckPreview; track card) {
+            <span class="mini-card">{{ card }}</span>
+          }
+        </div>
+      }
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'createGame.description' | transloco }}</mat-label>
+      <textarea matInput formControlName="description" rows="2" [placeholder]="'createGame.descriptionPlaceholder' | transloco"></textarea>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" class="opp-submit" type="submit" [disabled]="createGameForm.invalid">
+      <mat-icon>add</mat-icon> {{ 'createGame.submit' | transloco }}
+    </button>
+  </form>

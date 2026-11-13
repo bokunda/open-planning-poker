@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Ticket } from '../../../../graphql/graphql-gateway.service';
@@ -15,7 +15,7 @@ import { OppDatePipe } from '../../../../i18n/opp-date.pipe';
 @Component({
   selector: 'app-async-voting',
   standalone: true,
-  imports: [TranslocoPipe, OppDatePipe, CommonModule, MatButtonModule, MatIconModule, MarkdownPipe],
+  imports: [TranslocoPipe, OppDatePipe, MatButtonModule, MatIconModule, MarkdownPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './async-voting.component.html',
   styleUrl: './async-voting.component.scss',

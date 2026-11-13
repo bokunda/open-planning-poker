@@ -1,13 +1,16 @@
-<nav [attr.aria-label]="'nav.breadcrumb' | transloco" *ngIf="items.length > 0">
-  <ol class="breadcrumb-list">
-    <li *ngFor="let item of items; let last = last; trackBy: trackByIndex" class="breadcrumb-item">
-      <ng-container *ngIf="!last && item.url; else lastItem">
-        <a [routerLink]="item.url">{{ item.label | transloco }}</a>
-        <span class="breadcrumb-separator" aria-hidden="true">/</span>
-      </ng-container>
-      <ng-template #lastItem>
-        <span class="breadcrumb-current" aria-current="page">{{ item.label | transloco }}</span>
-      </ng-template>
-    </li>
-  </ol>
-</nav>
+@if (items.length > 0) {
+  <nav [attr.aria-label]="'nav.breadcrumb' | transloco">
+    <ol class="breadcrumb-list">
+      @for (item of items; track $index; let last = $last) {
+        <li class="breadcrumb-item">
+          @if (!last && item.url) {
+            <a [routerLink]="item.url">{{ item.label | transloco }}</a>
+            <span class="breadcrumb-separator" aria-hidden="true">/</span>
+          } @else {
+            <span class="breadcrumb-current" aria-current="page">{{ item.label | transloco }}</span>
+          }
+        </li>
+      }
+    </ol>
+  </nav>
+}

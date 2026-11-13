@@ -10,45 +10,62 @@
         {{ 'async.leadAfter' | transloco }}
       </p>
     </div>
-    <div class="async-progress" *ngIf="!isObserver && openTickets.length" aria-live="polite">
-      <span class="async-progress-count opp-tabular">{{ votedCount }}/{{ openTickets.length }}</span>
-      <span class="async-progress-label">{{ 'async.voted' | transloco }}</span>
-    </div>
+    @if (!isObserver && openTickets.length) {
+      <div class="async-progress" aria-live="polite">
+        <span class="async-progress-count opp-tabular">{{ votedCount }}/{{ openTickets.length }}</span>
+        <span class="async-progress-label">{{ 'async.voted' | transloco }}</span>
+      </div>
+    }
   </header>
 
-  <div class="async-host" *ngIf="isHost">
-    <button mat-flat-button color="primary" (click)="startMeeting.emit()">
-      <mat-icon svgIcon="opp-table"></mat-icon> {{ 'async.endAndStart' | transloco }}
-    </button>
-    <button mat-stroked-button color="primary" (click)="createTicket.emit()"><mat-icon>add</mat-icon> {{ 'ticket.newTitle' | transloco }}</button>
-    <button mat-stroked-button (click)="importTickets.emit()"><mat-icon>file_upload</mat-icon> {{ 'voting.import' | transloco }}</button>
-  </div>
+  @if (isHost) {
+    <div class="async-host">
+      <button mat-flat-button color="primary" (click)="startMeeting.emit()">
+        <mat-icon svgIcon="opp-table"></mat-icon> {{ 'async.endAndStart' | transloco }}
+      </button>
+      <button mat-stroked-button color="primary" (click)="createTicket.emit()"><mat-icon>add</mat-icon> {{ 'ticket.newTitle' | transloco }}</button>
+      <button mat-stroked-button (click)="importTickets.emit()"><mat-icon>file_upload</mat-icon> {{ 'voting.import' | transloco }}</button>
+    </div>
+  }
 
-  <p class="async-empty" *ngIf="!tickets.length">
-    {{ (isHost ? 'async.emptyHost' : 'async.emptyPlayer') | transloco }}
-  </p>
+  @if (!tickets.length) {
+    <p class="async-empty">
+      {{ (isHost ? 'async.emptyHost' : 'async.emptyPlayer') | transloco }}
+    </p>
+  }
 
-  <p class="async-observer" *ngIf="isObserver">{{ 'async.observer' | transloco }}</p>
+  @if (isObserver) {
+    <p class="async-observer">{{ 'async.observer' | transloco }}</p>
+  }
 
   <ol class="async-list">
-    <li class="async-ticket" *ngFor="let ticket of tickets; let i = index; trackBy: trackById"
-      [class.async-ticket--done]="myVote(ticket) !== null">
-      <div class="async-ticket-head">
-        <span class="async-index opp-tabular">{{ i + 1 }}</span>
-        <h3 class="async-name">{{ ticket.name }}</h3>
-        <span class="async-count opp-tabular" [attr.aria-label]="'async.votesSoFar' | transloco: { count: voteCount(ticket) }">
-          {{ (voteCount(ticket) === 1 ? 'async.oneVote' : 'async.votes') | transloco: { count: voteCount(ticket) } }}
-        </span>
-      </div>
-      <div class="opp-markdown async-desc" *ngIf="ticket.description" [innerHTML]="ticket.description | oppMarkdown"></div>
-
-      <p class="async-revealed" *ngIf="ticket.votesRevealed">{{ 'async.alreadyRevealed' | transloco }}</p>
-      <div class="async-cards" *ngIf="!isObserver && !ticket.votesRevealed" role="radiogroup" [attr.aria-label]="'async.yourVoteFor' | transloco: { name: ticket.name }">
-        <button type="button" class="async-card opp-tabular" *ngFor="let card of deck"
-          role="radio" [attr.aria-checked]="myVote(ticket) === card"
-          [class.async-card--selected]="myVote(ticket) === card"
-          (click)="pick(ticket, card)">{{ card }}</button>
-      </div>
-    </li>
+    @for (ticket of tickets; track trackById(i, ticket); let i = $index) {
+      <li class="async-ticket"
+        [class.async-ticket--done]="myVote(ticket) !== null">
+        <div class="async-ticket-head">
+          <span class="async-index opp-tabular">{{ i + 1 }}</span>
+          <h3 class="async-name">{{ ticket.name }}</h3>
+          <span class="async-count opp-tabular" [attr.aria-label]="'async.votesSoFar' | transloco: { count: voteCount(ticket) }">
+            {{ (voteCount(ticket) === 1 ? 'async.oneVote' : 'async.votes') | transloco: { count: voteCount(ticket) } }}
+          </span>
+        </div>
+        @if (ticket.description) {
+          <div class="opp-markdown async-desc" [innerHTML]="ticket.description | oppMarkdown"></div>
+        }
+        @if (ticket.votesRevealed) {
+          <p class="async-revealed">{{ 'async.alreadyRevealed' | transloco }}</p>
+        }
+        @if (!isObserver && !ticket.votesRevealed) {
+          <div class="async-cards" role="radiogroup" [attr.aria-label]="'async.yourVoteFor' | transloco: { name: ticket.name }">
+            @for (card of deck; track card) {
+              <button type="button" class="async-card opp-tabular"
+                role="radio" [attr.aria-checked]="myVote(ticket) === card"
+                [class.async-card--selected]="myVote(ticket) === card"
+              (click)="pick(ticket, card)">{{ card }}</button>
+            }
+          </div>
+        }
+      </li>
+    }
   </ol>
 </section>

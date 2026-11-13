@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,7 +17,7 @@ export interface EditTicketResult {
 @Component({
   selector: 'app-edit-ticket-dialog',
   standalone: true,
-  imports: [TranslocoPipe, CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MarkdownPipe],
+  imports: [TranslocoPipe, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MarkdownPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './edit-ticket-dialog.component.html',
   styles: [`

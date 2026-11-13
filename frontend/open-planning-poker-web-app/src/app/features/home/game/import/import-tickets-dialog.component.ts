@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -17,7 +17,7 @@ export interface ImportedTicket {
   templateUrl: './import-tickets-dialog.component.html',
   styleUrl: './import-tickets-dialog.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, CommonModule, FormsModule, MatDialogModule, MatTabsModule, MatButtonModule, MatIconModule]
+  imports: [TranslocoPipe, FormsModule, MatDialogModule, MatTabsModule, MatButtonModule, MatIconModule]
 })
 export class ImportTicketsDialogComponent {
   readonly dialogRef = inject(MatDialogRef<ImportTicketsDialogComponent>);
