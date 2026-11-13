@@ -6,7 +6,7 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
-## [2.4.0] — Unreleased
+## [2.4.0] — 2026-11-13
 
 Vodiči i spisak izmena na srpskom i nemačkom, i deploy bez lozinki.
 
