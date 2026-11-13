@@ -127,5 +127,9 @@
   "Open the app": "Otvori aplikaciju",
   "Changelog": "Promene",
   "App": "Aplikacija",
-  "Language": "Jezik"
+  "Language": "Jezik",
+  "How to use Open Planning Poker": "Kako se koristi Open Planning Poker",
+  "A tour of the game: roles, the timer, the reveal and reports.": "Obilazak igre: uloge, tajmer, otkrivanje i izveštaji.",
+  "Async planning poker": "Asinhroni planning poker",
+  "Vote before the meeting and discuss only where votes differ.": "Glasajte pre sastanka, a razgovarajte samo gde se glasovi razlikuju."
 }

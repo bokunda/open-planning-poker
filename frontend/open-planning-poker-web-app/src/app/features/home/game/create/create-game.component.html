@@ -55,7 +55,9 @@
       <textarea matInput formControlName="description" rows="2" [placeholder]="'createGame.descriptionPlaceholder' | transloco"></textarea>
     </mat-form-field>
 
-    <button mat-flat-button color="primary" class="opp-submit" type="submit" [disabled]="createGameForm.invalid">
-      <mat-icon>add</mat-icon> {{ 'createGame.submit' | transloco }}
-    </button>
+    <div class="create-actions">
+      <button mat-flat-button color="primary" class="opp-submit" type="submit" [disabled]="createGameForm.invalid">
+        <mat-icon>add</mat-icon> {{ 'createGame.submit' | transloco }}
+      </button>
+    </div>
   </form>

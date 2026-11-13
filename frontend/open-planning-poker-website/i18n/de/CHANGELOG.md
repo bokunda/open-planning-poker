@@ -22,6 +22,17 @@ Jeder Teil von Open Planning Poker auf aktuellen, unterstützten Versionen. Für
 - Selbsthosting braucht die .NET-10-Laufzeit (in den Docker-Images enthalten) und Node.js 22.12 oder neuer für die App
 - Bewusst beibehalten: **HotChocolate und Fusion 15** (Fusion 16 nutzt ein neues Gateway-Format und eine neue Komposition, eine eigene Migration), **Angular 22** (seine CLI braucht Node.js 22.22 / 24.15, der nächste Schritt), **MediatR 12** (neuere Versionen brauchen eine kommerzielle Lizenz), **xUnit 2** (xUnit v3 ist ein neues Testmodell), **TypeScript 5.9** (Angular 21 unterstützt TypeScript 7 nicht) und das gemeinsame NuGet-Paket auf .NET 9 (Dienste auf .NET 10 nutzen es unverändert)
 
+## [2.4.1] — Unreleased
+
+Die App passt aufs Handy, und zwei neue Anleitungen zum Spiel.
+
+### Hinzugefügt
+- **Neue Anleitungen**: „So nutzt du Open Planning Poker“, ein Rundgang durch das ganze Spiel (Räume, Rollen, Abstimmen, Aufdecken, endgültige Schätzung, Berichte, asynchrones Abstimmen und Teamräume), und „Asynchrones Planning Poker“ zum Schätzen vor dem Meeting. Beide auf Englisch, Serbisch und Deutsch und auf der Startseite
+
+### Behoben
+- **Handys**: Der Header schneidet deinen Namen nicht mehr ab (unter 420 px zeigt der Chip deine Initiale), und die Links im Footer brechen um, statt über den Bildschirm hinauszulaufen. Kein seitliches Scrollen bei 360–390 px
+- **Dialog „Neues Spiel“**: Der Button „Spiel erstellen“ bleibt unten sichtbar, während du durch die Decks scrollst
+
 
 ## [2.4.0] — Unreleased
 

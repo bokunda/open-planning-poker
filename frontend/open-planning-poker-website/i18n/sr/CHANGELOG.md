@@ -22,6 +22,17 @@ Svaki deo Open Planning Pokera na aktuelnim, podržanim verzijama. Za igrače se
 - Za self-hosting treba .NET 10 runtime (Docker imidži ga sadrže) i Node.js 22.12 ili noviji za aplikaciju
 - Namerno zadržano: **HotChocolate i Fusion 15** (Fusion 16 koristi nov format gatewaya i sastavljanja, to je posebna migracija), **Angular 22** (njegov CLI traži Node.js 22.22 / 24.15, to je sledeći korak), **MediatR 12** (novije verzije traže komercijalnu licencu), **xUnit 2** (xUnit v3 je nov model testova), **TypeScript 5.9** (Angular 21 ne podržava TypeScript 7) i deljeni NuGet paket na .NET 9 (servisi na .NET 10 ga koriste takav kakav je)
 
+## [2.4.1] — Unreleased
+
+Aplikacija staje na telefon, i dva nova vodiča o igri.
+
+### Dodato
+- **Novi vodiči**: „Kako se koristi Open Planning Poker”, obilazak cele igre (sobe, uloge, glasanje, otkrivanje, konačna procena, izveštaji, asinhrono glasanje i timske sobe), i „Asinhroni planning poker”, o proceni pre sastanka. Oba na engleskom, srpskom i nemačkom, i na početnoj strani
+
+### Ispravljeno
+- **Telefoni**: header više ne seče tvoje ime (ispod 420 px čip prikazuje inicijal), a linkovi u footeru prelaze u novi red umesto da izađu van ekrana. Nema skrolovanja u stranu na 360–390 px
+- **Dijalog za novu igru**: dugme Napravi igru ostaje vidljivo pri dnu dok skroluješ kroz špilove
+
 
 ## [2.4.0] — Unreleased
 
