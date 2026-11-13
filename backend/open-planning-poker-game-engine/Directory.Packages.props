@@ -13,7 +13,7 @@
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
     <PackageVersion Include="HotChocolate" Version="15.1.21" />
     <PackageVersion Include="HotChocolate.Abstractions" Version="15.1.21" />
-    <PackageVersion Include="HotChocolate.AspNetCore" Version="15.1.21" />
+    <PackageVersion Include="HotChocolate.AspNetCore" Version="16.7.5" />
     <PackageVersion Include="HotChocolate.AspNetCore.Authorization" Version="15.1.21" />
     <PackageVersion Include="HotChocolate.AspNetCore.CommandLine" Version="15.1.21" />
     <PackageVersion Include="HotChocolate.Diagnostics" Version="15.1.21" />
