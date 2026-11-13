@@ -10,7 +10,7 @@
   "Is Open Planning Poker free and open source?": "Ist Open Planning Poker kostenlos und Open Source?",
   "Yes. It is free to use on openplanningpoker.com and the code is GPL-3.0 on GitHub, so you can also host it yourself with Docker. Issues and pull requests are welcome.": "Ja. Die Nutzung auf openplanningpoker.com ist kostenlos, und der Code steht unter GPL-3.0 auf GitHub, du kannst es also auch selbst mit Docker betreiben. Issues und Pull Requests sind willkommen.",
   "What is the technology stack?": "Welche Technologien werden verwendet?",
-  "Angular with server-side rendering, .NET 9, GraphQL with a Fusion gateway, Redis and PostgreSQL.": "Angular mit serverseitigem Rendering, .NET 9, GraphQL mit Fusion-Gateway, Redis und PostgreSQL.",
+  "Angular with server-side rendering, .NET 10, GraphQL with a Fusion gateway, Redis and PostgreSQL.": "Angular mit serverseitigem Rendering, .NET 10, GraphQL mit Fusion-Gateway, Redis und PostgreSQL.",
   "How can I support the project?": "Wie kann ich das Projekt unterstützen?",
   "Star it on GitHub, report bugs, or chip in for the servers through GitHub Sponsors or Ko-fi. The app stays free either way.": "Gib einen Stern auf GitHub, melde Fehler oder beteilige dich über GitHub Sponsors oder Ko-fi an den Serverkosten. Die App bleibt so oder so kostenlos.",
   "What data is collected?": "Welche Daten werden gespeichert?",

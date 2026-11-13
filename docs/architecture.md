@@ -37,10 +37,10 @@ Open Planning Poker follows these architectural principles:
 
 | Service | Port | Framework | Responsibility |
 |---------|------|-----------|---------------|
-| **Fusion Gateway** | 10010 | .NET 9 + HotChocolate 15 | GraphQL schema stitching, header propagation, CORS |
-| **Game Engine** | 9091 | .NET 9 + EF Core + MediatR | Game rooms, tickets, voting, PDF reports, WebSocket subscriptions |
-| **User Management** | 9090 | .NET 9 + HotChocolate + FluentValidation | Registration, anonymous usernames, JWT auth (Redis-backed) |
-| **Web App** | 10000 | Angular 19 + SSR + PWA | SPA with server-side rendering, service worker, Apollo GraphQL client |
+| **Fusion Gateway** | 10010 | .NET 10 + HotChocolate 15 | GraphQL schema stitching, header propagation, CORS |
+| **Game Engine** | 9091 | .NET 10 + EF Core + MediatR | Game rooms, tickets, voting, PDF reports, WebSocket subscriptions |
+| **User Management** | 9090 | .NET 10 + HotChocolate + FluentValidation | Registration, anonymous usernames, JWT auth (Redis-backed) |
+| **Web App** | 10000 | Angular 21 + SSR + PWA | SPA with server-side rendering, service worker, Apollo GraphQL client |
 | **Website** | 9010 | Tailwind CSS + Flowbite | Static landing/marketing page |
 | **PostgreSQL** | 5432 | PostgreSQL 15.5 | Game data persistence |
 | **Redis** | 6379 | Redis 7 | User session cache |

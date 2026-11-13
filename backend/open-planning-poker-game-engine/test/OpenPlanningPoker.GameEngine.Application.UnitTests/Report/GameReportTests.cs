@@ -91,6 +91,16 @@ public class GameReportDocumentTests
     }
 
     [Fact]
+    public void RegistersTheReportFonts_UnderTheFamilyNamesTheReportUses()
+    {
+        new GameReportDocument(Sample()).GeneratePdf();
+
+        var families = QuestPDF.Drawing.FontManager.GetRegisteredFonts().Select(font => font.FamilyName).ToList();
+        families.ShouldContain("Figtree");
+        families.ShouldContain("Bricolage Grotesque 48pt");
+    }
+
+    [Fact]
     public void GeneratesPdf_ForEmptyGame()
     {
         var empty = Sample() with { Tickets = [], Description = "" };

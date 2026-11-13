@@ -84,7 +84,7 @@ open-planning-poker/
 │   ├── open-planning-poker-shared/               # NuGet package (auth, CORS, OTEL, cache)
 │   └── open-planning-poker-monitoring-services/  # Docker Compose (metrics stack)
 ├── frontend/
-│   ├── open-planning-poker-web-app/              # Angular 19 SPA + SSR + PWA
+│   ├── open-planning-poker-web-app/              # Angular 21 SPA + SSR + PWA
 │   └── open-planning-poker-website/              # Tailwind CSS landing page
 ├── nginx-config/                                 # Nginx reference configs for each subdomain
 ├── diagrams/                                     # Architecture and database diagrams
