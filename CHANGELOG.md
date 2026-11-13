@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.1] — Unreleased
+
+The app fits on phones, and two new guides about the game.
+
+### Added
+- **New guides**: "How to use Open Planning Poker", a tour of the whole game (rooms, roles, voting, the reveal, the final estimate, reports, async voting and team rooms), and "Async planning poker", on estimating before the meeting. Both in English, Serbian and German, and on the home page
+
+### Fixed
+- **Phones**: the header no longer cuts off your name (under 420 px the chip shows your initial), and the footer links wrap instead of running off the screen. No sideways scrolling at 360–390 px
+- **New game dialog**: the Create game button stays visible at the bottom while you scroll through the decks
+- On `/sr/` and `/de/` the guide cards no longer say the guides are in English
+
+
 ## [2.4.0] — Unreleased
 
 The guides and the changelog in Serbian and German, and deploys without passwords.

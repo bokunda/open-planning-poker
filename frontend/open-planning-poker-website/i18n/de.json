@@ -127,5 +127,9 @@
   "Open the app": "App öffnen",
   "Changelog": "Änderungen",
   "App": "App",
-  "Language": "Sprache"
+  "Language": "Sprache",
+  "How to use Open Planning Poker": "So nutzt du Open Planning Poker",
+  "A tour of the game: roles, the timer, the reveal and reports.": "Ein Rundgang: Rollen, Timer, Aufdecken und Berichte.",
+  "Async planning poker": "Asynchrones Planning Poker",
+  "Vote before the meeting and discuss only where votes differ.": "Vor dem Meeting abstimmen, nur Abweichungen besprechen."
 }

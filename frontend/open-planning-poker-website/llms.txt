@@ -11,6 +11,8 @@
 - [How to run a planning poker session](https://openplanningpoker.com/how-to-run-planning-poker/): step by step for remote, hybrid and in-person teams
 - [Planning poker cards and scales](https://openplanningpoker.com/planning-poker-cards/): Fibonacci, modified Fibonacci, T-shirt sizes, powers of 2
 - [Self-hosted planning poker](https://openplanningpoker.com/self-hosted-planning-poker/): stack, requirements, data stored
+- [How to use Open Planning Poker](https://openplanningpoker.com/open-planning-poker-guide/): a tour of the game: rooms, roles, voting, the reveal, the final estimate, reports, async voting and team rooms
+- [Async planning poker](https://openplanningpoker.com/async-planning-poker/): estimate before the meeting and discuss only where votes differ
 
 ## Project
 - [Changelog](https://openplanningpoker.com/changelog/)
