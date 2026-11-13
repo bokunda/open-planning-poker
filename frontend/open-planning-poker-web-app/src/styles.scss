@@ -193,3 +193,9 @@ h1, h2, h3, h4,
 @media (prefers-reduced-motion: reduce) {
   .opp-support-btn:hover mat-icon { transform: none; }
 }
+
+/* Snack bar actions: the dark snack bar is the same in both themes, so its button uses a fixed light violet
+   (#cfc0ff on #424242 is 6.0:1; Angular Material 21's default violet was 4.0:1). */
+.mat-mdc-snack-bar-container {
+  --mat-snack-bar-button-color: #cfc0ff;
+}
