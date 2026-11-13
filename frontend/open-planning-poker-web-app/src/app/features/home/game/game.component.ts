@@ -331,7 +331,9 @@ export class GameComponent implements OnInit {
     })
     .valueChanges
     .subscribe({
-      next: ({ data }) => {
+      next: ({ data, dataState }) => {
+        // Apollo Client 4: only complete results carry the full type.
+        if (dataState !== 'complete') return;
         // The query returns an ApplicationError (e.g. GameNotFound) instead of a Game
         // when the id does not exist or the game was deleted.
         if (data && !data.game?.id) {
@@ -398,7 +400,9 @@ export class GameComponent implements OnInit {
     })
     .valueChanges
     .subscribe({
-      next: ({ data }) => {
+      next: ({ data, dataState }) => {
+        // Apollo Client 4: only complete results carry the full type.
+        if (dataState !== 'complete') return;
         if (data.gamePlayers?.items) {
           // Merge with existing to avoid duplicates from subscription race condition
           const existing = this.players?.items ?? [];
@@ -539,7 +543,9 @@ export class GameComponent implements OnInit {
     })
     .valueChanges
     .subscribe({
-      next: ({ data }) => {
+      next: ({ data, dataState }) => {
+        // Apollo Client 4: only complete results carry the full type.
+        if (dataState !== 'complete') return;
         if (data) {
           this.ticket = data?.ticket;
           this.votesRevealed = this.isRevealed(this.ticket);
@@ -681,7 +687,9 @@ export class GameComponent implements OnInit {
     })
     .valueChanges
     .subscribe({
-      next: ({ data }) => {
+      next: ({ data, dataState }) => {
+        // Apollo Client 4: only complete results carry the full type.
+        if (dataState !== 'complete') return;
         if (data?.votes?.items) {
           this.votes = data.votes.items;
         }

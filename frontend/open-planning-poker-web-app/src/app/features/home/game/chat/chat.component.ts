@@ -51,7 +51,9 @@ export class ChatComponent implements OnChanges, OnDestroy {
       query: GET_CHAT_MESSAGES,
       variables: { gameId: this.gameId }
     }).valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: ({ data }) => {
+      next: ({ data, dataState }) => {
+        // Apollo Client 4: only complete results carry the full type.
+        if (dataState !== 'complete') return;
         if (data?.chatMessages) {
           this.messages = data.chatMessages;
           setTimeout(() => this.scrollToBottom(), 100);
