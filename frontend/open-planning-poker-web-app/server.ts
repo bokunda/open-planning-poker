@@ -31,7 +31,8 @@ export function app(): express.Express {
   }));
 
   // Serve static files from /browser
-  server.get('*.*', express.static(browserDistFolder, { maxAge: '1y' }));
+  // Express 5 route syntax: a regular expression for files (a dot in the last path segment).
+  server.get(/\.[^/]*$/, express.static(browserDistFolder, { maxAge: '1y' }));
 
   // Paths the app has (see app.routes.ts). Anything else renders the not-found page with a real 404,
   // so search engines do not index it as a duplicate of the home page.
@@ -39,7 +40,7 @@ export function app(): express.Express {
   const knownRoute = new RegExp(`^/((game(/${uuid}(/ticket/${uuid})?)?)|(team(/${uuid})?))?/?$`, 'i');
 
   // All regular routes use the Angular engine
-  server.get('*', (req, res, next) => {
+  server.get('/{*path}', (req, res, next) => {
     const { protocol, originalUrl, baseUrl, headers } = req;
     if (!knownRoute.test(req.path)) res.status(404);
 

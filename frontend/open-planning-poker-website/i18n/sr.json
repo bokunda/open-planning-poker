@@ -10,7 +10,7 @@
   "Is Open Planning Poker free and open source?": "Da li je Open Planning Poker besplatan i otvorenog koda?",
   "Yes. It is free to use on openplanningpoker.com and the code is GPL-3.0 on GitHub, so you can also host it yourself with Docker. Issues and pull requests are welcome.": "Da. Besplatno je za korišćenje na openplanningpoker.com, a kod je pod licencom GPL-3.0 na GitHub-u, pa ga možeš pokrenuti i sam uz Docker. Prijave problema i pull request-ovi su dobrodošli.",
   "What is the technology stack?": "Koje tehnologije koristi?",
-  "Angular with server-side rendering, .NET 9, GraphQL with a Fusion gateway, Redis and PostgreSQL.": "Angular sa renderovanjem na serveru, .NET 9, GraphQL sa Fusion gateway-em, Redis i PostgreSQL.",
+  "Angular with server-side rendering, .NET 10, GraphQL with a Fusion gateway, Redis and PostgreSQL.": "Angular sa renderovanjem na serveru, .NET 10, GraphQL sa Fusion gateway-em, Redis i PostgreSQL.",
   "How can I support the project?": "Kako mogu da podržim projekat?",
   "Star it on GitHub, report bugs, or chip in for the servers through GitHub Sponsors or Ko-fi. The app stays free either way.": "Daj mu zvezdicu na GitHub-u, prijavi greške ili pomozi oko servera preko GitHub Sponsors ili Ko-fi. Aplikacija ostaje besplatna u svakom slučaju.",
   "What data is collected?": "Koji podaci se prikupljaju?",

@@ -1,5 +1,5 @@
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Injectable, InjectionToken, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Injectable, InjectionToken, PLATFORM_ID, inject, DOCUMENT } from '@angular/core';
 import { Translation, TranslocoLoader, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
 

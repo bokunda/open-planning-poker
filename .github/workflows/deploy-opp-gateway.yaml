@@ -19,7 +19,10 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v6.1.0
         with:
-          dotnet-version: 9.0.x
+          # The service builds on .NET 10; the Fusion CLI 15 tool runs on .NET 9.
+          dotnet-version: |
+            9.0.x
+            10.0.x
 
       - name: Set connection string in appsettings.json
         working-directory: backend/open-planning-poker-graphql-gateway

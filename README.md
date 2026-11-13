@@ -90,8 +90,8 @@ Full setup guide: [docs/setup-and-development.md](docs/setup-and-development.md)
 
 | Layer | Technology |
 |-------|-----------|
-| **Frontend** | Angular 19, TypeScript, Angular Material, Apollo Client, SCSS |
-| **Backend** | .NET 9, HotChocolate GraphQL, MediatR, Entity Framework Core |
+| **Frontend** | Angular 21, TypeScript, Angular Material, Apollo Client, SCSS |
+| **Backend** | .NET 10, HotChocolate GraphQL, MediatR, Entity Framework Core |
 | **Gateway** | HotChocolate Fusion |
 | **Database** | PostgreSQL 15.5 |
 | **Cache** | Redis 7 |

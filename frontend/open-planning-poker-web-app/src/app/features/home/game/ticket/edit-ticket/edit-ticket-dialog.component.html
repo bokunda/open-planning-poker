@@ -4,17 +4,21 @@
     <mat-form-field appearance="outline">
       <mat-label>{{ 'ticket.name' | transloco }}</mat-label>
       <input matInput formControlName="name" maxlength="255" cdkFocusInitial>
-      <mat-error *ngIf="form.controls.name.invalid">{{ 'ticket.nameInvalid' | transloco }}</mat-error>
+      @if (form.controls.name.invalid) {
+        <mat-error>{{ 'ticket.nameInvalid' | transloco }}</mat-error>
+      }
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>{{ 'import.description' | transloco }}</mat-label>
       <textarea matInput formControlName="description" rows="6" maxlength="4080"></textarea>
       <mat-hint>{{ 'ticket.markdownHint' | transloco }}</mat-hint>
     </mat-form-field>
-    <div class="edit-preview" *ngIf="form.value.description">
-      <span class="edit-preview-label">{{ 'ticket.preview' | transloco }}</span>
-      <div class="opp-markdown" [innerHTML]="form.value.description | oppMarkdown"></div>
-    </div>
+    @if (form.value.description) {
+      <div class="edit-preview">
+        <span class="edit-preview-label">{{ 'ticket.preview' | transloco }}</span>
+        <div class="opp-markdown" [innerHTML]="form.value.description | oppMarkdown"></div>
+      </div>
+    }
   </mat-dialog-content>
   <mat-dialog-actions align="end">
     <button mat-button type="button" mat-dialog-close>{{ 'common.cancel' | transloco }}</button>

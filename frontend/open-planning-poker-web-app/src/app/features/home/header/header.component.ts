@@ -1,5 +1,5 @@
 import { Component, inject, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatDialog } from '@angular/material/dialog';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,7 +23,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, CommonModule, RouterLink, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, DonateClickDirective]
+  imports: [TranslocoPipe, RouterLink, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, DonateClickDirective]
 })
 export class HeaderComponent {
   @Input() username: string = '';

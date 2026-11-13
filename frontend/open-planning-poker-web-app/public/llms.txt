@@ -11,7 +11,7 @@
 
 ## About
 
-Open Planning Poker is built with Angular, .NET 9, GraphQL (HotChocolate Fusion), PostgreSQL, and Redis. It supports real-time collaborative estimation, hidden votes, custom voting decks, game timers, chat, PDF reports, and more.
+Open Planning Poker is built with Angular, .NET 10, GraphQL (HotChocolate Fusion), PostgreSQL, and Redis. It supports real-time collaborative estimation, hidden votes, custom voting decks, game timers, chat, PDF reports, and more.
 
 ## API
 

@@ -1,4 +1,21 @@
-<div class="changelog-content"><h2>[2.4.1] — 2026-11-13</h2>
+<div class="changelog-content"><h2>[3.0.0] — 2026-11-13</h2>
+<p>Every part of Open Planning Poker on current, supported versions. Nothing changes for players; self-hosters need the new runtimes.</p>
+<h3>Changed</h3>
+<ul>
+<li><strong>Backend on .NET 10 LTS</strong>: all services and Docker images, with EF Core 10, Npgsql 10, Microsoft.Extensions 10, FluentValidation 12, OpenTelemetry 1.21, QuestPDF 2026.9 and Serilog 10</li>
+<li><strong>App on Angular 21</strong> (from 19) with Angular Material 21, the built-in control flow in every template, Apollo Client 4 with apollo-angular 14, GraphQL 16, Express 5 for server rendering and zone.js 0.16</li>
+<li><strong>Website on Tailwind CSS 4</strong>; the unused Flowbite package is removed. Pages look the same, and the GitHub star count now has its separator line</li>
+</ul>
+<h3>Removed</h3>
+<ul>
+<li>Unused packages: Duende.AccessTokenManagement, Entity Framework 6 and AutoMapper</li>
+</ul>
+<h3>Developers</h3>
+<ul>
+<li>Self-hosting needs the .NET 10 runtime (the Docker images include it) and Node.js 22.12 or newer for the app</li>
+<li>Kept on purpose: <strong>HotChocolate and Fusion 15</strong> (Fusion 16 uses a new gateway format and composition, a separate migration), <strong>Angular 22</strong> (its CLI needs Node.js 22.22 / 24.15, the next step), <strong>MediatR 12</strong> (later versions need a commercial license), <strong>xUnit 2</strong> (xUnit v3 is a new test model), <strong>TypeScript 5.9</strong> (Angular 21 does not support TypeScript 7), and the shared NuGet package on .NET 9 (services on .NET 10 use it as it is)</li>
+</ul>
+<h2>[2.4.1] — 2026-11-13</h2>
 <p>The app fits on phones, and two new guides about the game.</p>
 <h3>Added</h3>
 <ul>

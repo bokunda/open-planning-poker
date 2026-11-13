@@ -37,8 +37,9 @@ public sealed class GameReportDocument(ReportModel model) : IDocument
     private const string Spread = "#8a4a0c";
     private const string SpreadSoft = "#fdf0e1";
 
-    private const string BodyFont = "Figtree";
-    private const string DisplayFont = "Bricolage";
+    internal const string BodyFont = "Figtree";
+    // Family names as stored in the font files (QuestPDF 2026.9 no longer registers custom names).
+    internal const string DisplayFont = "Bricolage Grotesque 48pt";
 
     private static readonly Lazy<byte[]> Logo = new(() => ReadResource("logo.png"));
 
@@ -285,11 +286,10 @@ internal static class ReportFonts
 {
     private static readonly Lazy<bool> Registered = new(() =>
     {
-        foreach (var file in new[] { "Figtree-400.ttf", "Figtree-600.ttf", "Figtree-700.ttf" })
+        foreach (var file in new[] { "Figtree-400.ttf", "Figtree-600.ttf", "Figtree-700.ttf", "BricolageGrotesque-800.ttf" })
         {
-            QuestPDF.Drawing.FontManager.RegisterFontWithCustomName("Figtree", new MemoryStream(GameReportDocument.ReadResource(file)));
+            QuestPDF.Drawing.FontManager.RegisterFontFromStream(new MemoryStream(GameReportDocument.ReadResource(file)));
         }
-        QuestPDF.Drawing.FontManager.RegisterFontWithCustomName("Bricolage", new MemoryStream(GameReportDocument.ReadResource("BricolageGrotesque-800.ttf")));
         return true;
     }, LazyThreadSafetyMode.ExecutionAndPublication);
 

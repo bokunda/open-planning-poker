@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
@@ -9,7 +9,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 @Component({
   selector: 'app-room-skeleton',
   standalone: true,
-  imports: [TranslocoPipe, CommonModule],
+  imports: [TranslocoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="skeleton" role="status" aria-live="polite">
@@ -18,7 +18,9 @@ import { TranslocoPipe } from '@jsverse/transloco';
         <div class="sk sk-title"></div>
         <div class="sk sk-ticket"></div>
         <div class="sk-cards">
-          <div class="sk sk-card" *ngFor="let c of cards"></div>
+          @for (c of cards; track c) {
+            <div class="sk sk-card"></div>
+          }
         </div>
         <div class="sk-actions">
           <div class="sk sk-pill"></div>
@@ -27,14 +29,16 @@ import { TranslocoPipe } from '@jsverse/transloco';
       </div>
       <div class="skeleton-side" aria-hidden="true">
         <div class="sk sk-panel-head"></div>
-        <div class="sk-player" *ngFor="let p of players">
-          <div class="sk sk-avatar"></div>
-          <div class="sk sk-name"></div>
-          <div class="sk sk-mini-card"></div>
-        </div>
+        @for (p of players; track p) {
+          <div class="sk-player">
+            <div class="sk sk-avatar"></div>
+            <div class="sk sk-name"></div>
+            <div class="sk sk-mini-card"></div>
+          </div>
+        }
       </div>
     </div>
-  `,
+    `,
   styles: [`
     .skeleton {
       display: grid;

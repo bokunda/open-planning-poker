@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +14,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   templateUrl: './voting-history.component.html',
   styleUrl: './voting-history.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, CommonModule, DragDropModule, MatTooltipModule, MatButtonModule, MatIconModule, MatMenuModule],
+  imports: [TranslocoPipe, DragDropModule, MatTooltipModule, MatButtonModule, MatIconModule, MatMenuModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VotingHistoryComponent {
@@ -29,6 +29,11 @@ export class VotingHistoryComponent {
   @Output() onDeleteTicket = new EventEmitter<RoomTicket>();
   /** New order of all tickets (ids, first first). */
   @Output() onReorder = new EventEmitter<string[]>();
+
+  /** Votes can be missing on tickets from older queries, whatever the generated type says. */
+  hasVotes(ticket: Ticket): boolean {
+    return !!ticket.votes?.items?.length;
+  }
 
   isRevealed(ticket: Ticket): boolean {
     return !!ticket.votesRevealed || (ticket.id === this.currentTicketId && this.votesRevealed);

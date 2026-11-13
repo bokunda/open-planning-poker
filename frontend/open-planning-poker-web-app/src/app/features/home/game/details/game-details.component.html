@@ -1,69 +1,83 @@
-<section class="game-details-wrapper" *ngIf="game" [attr.aria-label]="'room.details' | transloco">
-  <div class="game-details">
-    <div class="game-title-block">
-      <h2 class="game-title">{{ game.name }}</h2>
-      <p class="game-desc" *ngIf="game.description">{{ game.description }}</p>
-      <p class="game-badges" *ngIf="teamId || autoReveal || asyncOpen">
-        <a class="game-badge game-badge--link" *ngIf="teamId" [routerLink]="['/team', teamId]">
-          <mat-icon svgIcon="opp-team" aria-hidden="true"></mat-icon> {{ 'nav.teamRoom' | transloco }}
-        </a>
-        <span class="game-badge" *ngIf="autoReveal">
-          <mat-icon svgIcon="opp-check" aria-hidden="true"></mat-icon> {{ 'room.autoRevealOn' | transloco }}
-        </span>
-        <span class="game-badge game-badge--async" *ngIf="asyncOpen">
-          <mat-icon svgIcon="opp-clock" aria-hidden="true"></mat-icon> {{ 'room.asyncUntil' | transloco: { date: (asyncEndsAt | oppDate:'EEE d MMM, HH:mm') } }}
-        </span>
-      </p>
-    </div>
-
-    <div class="game-actions">
-      <button mat-flat-button color="primary" class="invite-btn" (click)="openQrShare()">
-        <mat-icon>person_add</mat-icon> {{ 'room.invite' | transloco }}
-      </button>
-      <!-- Always visible; on narrow screens only the icons show (the names stay as aria-labels). -->
-      <button mat-stroked-button class="room-action" (click)="copyToClipboard()" [attr.aria-label]="'room.copyLinkShort' | transloco" [matTooltip]="'room.copyLink' | transloco">
-        <mat-icon>link</mat-icon><span class="room-action-label">{{ 'room.copyLinkShort' | transloco }}</span>
-      </button>
-      <button mat-stroked-button class="room-action" (click)="onGameReportClick.emit()" [attr.aria-label]="'room.exportPdf' | transloco" [matTooltip]="'room.exportPdfTooltip' | transloco">
-        <mat-icon>download</mat-icon><span class="room-action-label">{{ 'room.exportPdf' | transloco }}</span>
-      </button>
-      <button mat-stroked-button class="room-action" [matMenuTriggerFor]="roomMenu" [attr.aria-label]="'room.options' | transloco" [matTooltip]="'room.options' | transloco">
-        <mat-icon svgIcon="opp-settings"></mat-icon><span class="room-action-label">{{ 'room.room' | transloco }}</span>
-      </button>
-      <mat-menu #roomMenu="matMenu" xPosition="before">
-        <ng-container *ngIf="isHost">
-          <button mat-menu-item (click)="toggleAutoReveal()" role="menuitemcheckbox" [attr.aria-checked]="autoReveal">
-            <mat-icon svgIcon="opp-check" [class.menu-check--off]="!autoReveal"></mat-icon>
-            <span>{{ 'room.autoReveal' | transloco }}</span>
-          </button>
-          <mat-divider></mat-divider>
-          <ng-container *ngIf="!asyncOpen; else asyncRunning">
-            <span class="menu-caption">{{ 'room.asyncCaption' | transloco }}</span>
-            <button mat-menu-item *ngFor="let window of asyncWindows" (click)="startAsyncVoting(window.hours)">
-              <mat-icon svgIcon="opp-clock"></mat-icon>
-              <span>{{ window.labelKey | transloco }}</span>
-            </button>
-          </ng-container>
-          <ng-template #asyncRunning>
-            <button mat-menu-item (click)="endAsyncVoting()">
-              <mat-icon svgIcon="opp-table"></mat-icon>
-              <span>{{ 'async.endAndStart' | transloco }}</span>
-            </button>
-          </ng-template>
-          <mat-divider></mat-divider>
-        </ng-container>
-        <button mat-menu-item (click)="onExportCsv.emit()">
-          <mat-icon>download</mat-icon>
-          <span>{{ 'room.exportCsv' | transloco }}</span>
+@if (game) {
+  <section class="game-details-wrapper" [attr.aria-label]="'room.details' | transloco">
+    <div class="game-details">
+      <div class="game-title-block">
+        <h2 class="game-title">{{ game.name }}</h2>
+        @if (game.description) {
+          <p class="game-desc">{{ game.description }}</p>
+        }
+        @if (teamId || autoReveal || asyncOpen) {
+          <p class="game-badges">
+            @if (teamId) {
+              <a class="game-badge game-badge--link" [routerLink]="['/team', teamId]">
+                <mat-icon svgIcon="opp-team" aria-hidden="true"></mat-icon> {{ 'nav.teamRoom' | transloco }}
+              </a>
+            }
+            @if (autoReveal) {
+              <span class="game-badge">
+                <mat-icon svgIcon="opp-check" aria-hidden="true"></mat-icon> {{ 'room.autoRevealOn' | transloco }}
+              </span>
+            }
+            @if (asyncOpen) {
+              <span class="game-badge game-badge--async">
+                <mat-icon svgIcon="opp-clock" aria-hidden="true"></mat-icon> {{ 'room.asyncUntil' | transloco: { date: (asyncEndsAt | oppDate:'EEE d MMM, HH:mm') } }}
+              </span>
+            }
+          </p>
+        }
+      </div>
+      <div class="game-actions">
+        <button mat-flat-button color="primary" class="invite-btn" (click)="openQrShare()">
+          <mat-icon>person_add</mat-icon> {{ 'room.invite' | transloco }}
         </button>
-        <a mat-menu-item *ngIf="teamId" [routerLink]="['/team', teamId]">
-          <mat-icon svgIcon="opp-team"></mat-icon>
-          <span>{{ 'room.openTeamRoom' | transloco }}</span>
-        </a>
-      </mat-menu>
-      <button mat-stroked-button class="room-action room-action--leave" (click)="onLeaveGameClick.emit()" [attr.aria-label]="'room.leaveGame' | transloco" [matTooltip]="'room.leaveGame' | transloco">
-        <mat-icon>logout</mat-icon><span class="room-action-label">{{ 'room.leave' | transloco }}</span>
-      </button>
+        <!-- Always visible; on narrow screens only the icons show (the names stay as aria-labels). -->
+        <button mat-stroked-button class="room-action" (click)="copyToClipboard()" [attr.aria-label]="'room.copyLinkShort' | transloco" [matTooltip]="'room.copyLink' | transloco">
+          <mat-icon>link</mat-icon><span class="room-action-label">{{ 'room.copyLinkShort' | transloco }}</span>
+        </button>
+        <button mat-stroked-button class="room-action" (click)="onGameReportClick.emit()" [attr.aria-label]="'room.exportPdf' | transloco" [matTooltip]="'room.exportPdfTooltip' | transloco">
+          <mat-icon>download</mat-icon><span class="room-action-label">{{ 'room.exportPdf' | transloco }}</span>
+        </button>
+        <button mat-stroked-button class="room-action" [matMenuTriggerFor]="roomMenu" [attr.aria-label]="'room.options' | transloco" [matTooltip]="'room.options' | transloco">
+          <mat-icon svgIcon="opp-settings"></mat-icon><span class="room-action-label">{{ 'room.room' | transloco }}</span>
+        </button>
+        <mat-menu #roomMenu="matMenu" xPosition="before">
+          @if (isHost) {
+            <button mat-menu-item (click)="toggleAutoReveal()" role="menuitemcheckbox" [attr.aria-checked]="autoReveal">
+              <mat-icon svgIcon="opp-check" [class.menu-check--off]="!autoReveal"></mat-icon>
+              <span>{{ 'room.autoReveal' | transloco }}</span>
+            </button>
+            <mat-divider></mat-divider>
+            @if (!asyncOpen) {
+              <span class="menu-caption">{{ 'room.asyncCaption' | transloco }}</span>
+              @for (window of asyncWindows; track window) {
+                <button mat-menu-item (click)="startAsyncVoting(window.hours)">
+                  <mat-icon svgIcon="opp-clock"></mat-icon>
+                  <span>{{ window.labelKey | transloco }}</span>
+                </button>
+              }
+            } @else {
+              <button mat-menu-item (click)="endAsyncVoting()">
+                <mat-icon svgIcon="opp-table"></mat-icon>
+                <span>{{ 'async.endAndStart' | transloco }}</span>
+              </button>
+            }
+            <mat-divider></mat-divider>
+          }
+          <button mat-menu-item (click)="onExportCsv.emit()">
+            <mat-icon>download</mat-icon>
+            <span>{{ 'room.exportCsv' | transloco }}</span>
+          </button>
+          @if (teamId) {
+            <a mat-menu-item [routerLink]="['/team', teamId]">
+              <mat-icon svgIcon="opp-team"></mat-icon>
+              <span>{{ 'room.openTeamRoom' | transloco }}</span>
+            </a>
+          }
+        </mat-menu>
+        <button mat-stroked-button class="room-action room-action--leave" (click)="onLeaveGameClick.emit()" [attr.aria-label]="'room.leaveGame' | transloco" [matTooltip]="'room.leaveGame' | transloco">
+          <mat-icon>logout</mat-icon><span class="room-action-label">{{ 'room.leave' | transloco }}</span>
+        </button>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+}

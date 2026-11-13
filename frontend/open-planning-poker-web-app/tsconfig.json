@@ -15,11 +15,6 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "lib": [
-      "es2020",
-      "dom",
-      "esnext.asynciterable"
-    ],
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
   },

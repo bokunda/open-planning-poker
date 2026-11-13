@@ -20,12 +20,14 @@
 
       <!-- Username -->
       <!-- One button: the name and the pencil (a button inside a button is not accessible). -->
-      <button type="button" class="header-welcome" *ngIf="username" (click)="handleUpdateUser()">
-        <span class="header-avatar" aria-hidden="true">{{ username.charAt(0).toUpperCase() }}</span>
-        <span class="header-username">{{ username }}</span>
-        <span class="sr-only">{{ 'header.editName' | transloco }}</span>
-        <mat-icon class="header-edit-icon" aria-hidden="true">edit</mat-icon>
-      </button>
+      @if (username) {
+        <button type="button" class="header-welcome" (click)="handleUpdateUser()">
+          <span class="header-avatar" aria-hidden="true">{{ username.charAt(0).toUpperCase() }}</span>
+          <span class="header-username">{{ username }}</span>
+          <span class="sr-only">{{ 'header.editName' | transloco }}</span>
+          <mat-icon class="header-edit-icon" aria-hidden="true">edit</mat-icon>
+        </button>
+      }
 
       <mat-menu #moreMenu="matMenu">
         <button mat-menu-item (click)="toggleTheme()">
@@ -37,19 +39,19 @@
           <span>{{ 'header.teamRooms' | transloco }}</span>
         </a>
         @if (pwa.canInstall()) {
-        <button mat-menu-item (click)="pwa.install()">
-          <mat-icon>download</mat-icon>
-          <span>{{ 'pwa.installApp' | transloco }}</span>
-        </button>
+          <button mat-menu-item (click)="pwa.install()">
+            <mat-icon>download</mat-icon>
+            <span>{{ 'pwa.installApp' | transloco }}</span>
+          </button>
         }
         <mat-divider></mat-divider>
         <span class="menu-caption" id="language-caption">{{ 'header.language' | transloco }}</span>
         @for (language of languages; track language.code) {
-        <button mat-menu-item role="menuitemradio" [attr.aria-checked]="language.code === currentLanguage"
-          [attr.lang]="language.htmlLang" (click)="setLanguage(language.code)">
-          <mat-icon svgIcon="opp-check" [class.menu-check--off]="language.code !== currentLanguage"></mat-icon>
-          <span>{{ language.label }}</span>
-        </button>
+          <button mat-menu-item role="menuitemradio" [attr.aria-checked]="language.code === currentLanguage"
+            [attr.lang]="language.htmlLang" (click)="setLanguage(language.code)">
+            <mat-icon svgIcon="opp-check" [class.menu-check--off]="language.code !== currentLanguage"></mat-icon>
+            <span>{{ language.label }}</span>
+          </button>
         }
         <mat-divider></mat-divider>
         <a mat-menu-item [href]="support.koFi" target="_blank" rel="noopener noreferrer" oppDonate="ko_fi" oppDonatePlacement="header_menu">

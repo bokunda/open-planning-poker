@@ -20,7 +20,7 @@ const { english, translated } = require('./generate-changelog');
 
 // Build Tailwind CSS
 console.log('🎨 Building Tailwind CSS...');
-execSync('npx tailwindcss -i input.css -o dist/output.css --minify', { stdio: 'inherit' });
+execSync('npx @tailwindcss/cli -i input.css -o dist/output.css --minify', { stdio: 'inherit' });
 
 // Copy and process changelog.html → changelog/index.html (so /changelog works)
 const changelogDir = path.join(dist, 'changelog');

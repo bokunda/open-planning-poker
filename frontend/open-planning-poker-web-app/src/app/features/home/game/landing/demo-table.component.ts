@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, PLATFORM_ID, afterNextRender, inject } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { ApiCollectionOfGamePlayer, Vote } from '../../../../graphql/graphql-gateway.service';
 import { PokerTableComponent } from '../table/poker-table.component';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -26,7 +26,7 @@ const ROUNDS: Record<string, string>[] = [
 @Component({
   selector: 'app-demo-table',
   standalone: true,
-  imports: [TranslocoPipe, CommonModule, PokerTableComponent],
+  imports: [TranslocoPipe, PokerTableComponent],
   changeDetection: ChangeDetectionStrategy.Default,
   template: `
     <div class="demo" aria-hidden="true">

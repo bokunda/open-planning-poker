@@ -11,18 +11,18 @@
 }
 
 .mat-mdc-dialog-container {
-  --mdc-dialog-container-color: var(--opp-surface);
-  --mdc-dialog-container-shape: var(--opp-radius-xl);
-  --mdc-dialog-subhead-color: var(--opp-text);
-  --mdc-dialog-supporting-text-color: var(--opp-text-secondary);
-  --mdc-dialog-subhead-font: var(--opp-font-display);
-  --mdc-dialog-subhead-weight: 800;
-  --mdc-dialog-subhead-size: 1.5rem;
-  --mdc-dialog-subhead-line-height: 1.2;
-  --mdc-dialog-subhead-tracking: -0.01em;
-  --mdc-dialog-supporting-text-font: var(--opp-font-body);
-  --mdc-dialog-supporting-text-size: 1rem;
-  --mdc-dialog-supporting-text-tracking: normal;
+  --mat-dialog-container-color: var(--opp-surface);
+  --mat-dialog-container-shape: var(--opp-radius-xl);
+  --mat-dialog-subhead-color: var(--opp-text);
+  --mat-dialog-supporting-text-color: var(--opp-text-secondary);
+  --mat-dialog-subhead-font: var(--opp-font-display);
+  --mat-dialog-subhead-weight: 800;
+  --mat-dialog-subhead-size: 1.5rem;
+  --mat-dialog-subhead-line-height: 1.2;
+  --mat-dialog-subhead-tracking: -0.01em;
+  --mat-dialog-supporting-text-font: var(--opp-font-body);
+  --mat-dialog-supporting-text-size: 1rem;
+  --mat-dialog-supporting-text-tracking: normal;
 }
 
 .mat-mdc-dialog-surface {
@@ -61,18 +61,18 @@
 
 /* ── Outlined form fields ── */
 .mat-mdc-form-field {
-  --mdc-outlined-text-field-container-shape: 12px;
-  --mdc-outlined-text-field-outline-color: var(--opp-border);
-  --mdc-outlined-text-field-hover-outline-color: var(--opp-primary-300);
-  --mdc-outlined-text-field-focus-outline-color: var(--opp-primary);
-  --mdc-outlined-text-field-focus-outline-width: 2px;
-  --mdc-outlined-text-field-label-text-color: var(--opp-text-secondary);
-  --mdc-outlined-text-field-focus-label-text-color: var(--opp-primary);
-  --mdc-outlined-text-field-input-text-color: var(--opp-text);
-  --mdc-outlined-text-field-caret-color: var(--opp-primary);
-  --mdc-outlined-text-field-input-text-placeholder-color: var(--opp-text-muted);
+  --mat-form-field-outlined-container-shape: 12px;
+  --mat-form-field-outlined-outline-color: var(--opp-border);
+  --mat-form-field-outlined-hover-outline-color: var(--opp-primary-300);
+  --mat-form-field-outlined-focus-outline-color: var(--opp-primary);
+  --mat-form-field-outlined-focus-outline-width: 2px;
+  --mat-form-field-outlined-label-text-color: var(--opp-text-secondary);
+  --mat-form-field-outlined-focus-label-text-color: var(--opp-primary);
+  --mat-form-field-outlined-input-text-color: var(--opp-text);
+  --mat-form-field-outlined-caret-color: var(--opp-primary);
+  --mat-form-field-outlined-input-text-placeholder-color: var(--opp-text-muted);
   --mat-form-field-container-text-font: var(--opp-font-body);
-  --mdc-outlined-text-field-label-text-font: var(--opp-font-body);
+  --mat-form-field-outlined-label-text-font: var(--opp-font-body);
   width: 100%;
 }
 

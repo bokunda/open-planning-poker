@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,7 +13,7 @@ export interface QrShareData {
 @Component({
   selector: 'app-qr-share-dialog',
   standalone: true,
-  imports: [TranslocoPipe, CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
+  imports: [TranslocoPipe, MatDialogModule, MatButtonModule, MatIconModule],
   template: `
     <div class="qr-share-wrapper">
       <h2 mat-dialog-title>{{ 'share.title' | transloco }}</h2>
@@ -25,20 +25,22 @@ export interface QrShareData {
             [alt]="'share.qrAlt' | transloco"
             width="220" height="220"
             class="qr-image" />
-        </div>
-        <div class="qr-url">
-          <code>{{ data.url }}</code>
-        </div>
-        <button mat-flat-button color="primary" (click)="copyUrl()" class="opp-submit copy-btn">
-          <mat-icon>content_copy</mat-icon> {{ 'room.copyLinkShort' | transloco }}
-        </button>
-        <span class="copied-msg" *ngIf="copied">{{ 'share.copied' | transloco }}</span>
-      </mat-dialog-content>
-      <mat-dialog-actions align="end">
-        <button mat-button mat-dialog-close>{{ 'common.close' | transloco }}</button>
-      </mat-dialog-actions>
-    </div>
-  `,
+          </div>
+          <div class="qr-url">
+            <code>{{ data.url }}</code>
+          </div>
+          <button mat-flat-button color="primary" (click)="copyUrl()" class="opp-submit copy-btn">
+            <mat-icon>content_copy</mat-icon> {{ 'room.copyLinkShort' | transloco }}
+          </button>
+          @if (copied) {
+            <span class="copied-msg">{{ 'share.copied' | transloco }}</span>
+          }
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+          <button mat-button mat-dialog-close>{{ 'common.close' | transloco }}</button>
+        </mat-dialog-actions>
+      </div>
+    `,
   styles: [`
     .qr-share-wrapper { text-align: center; }
     .qr-container { display: flex; justify-content: center; padding: 16px 0; }

@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, inject, OnInit, afterNextRender, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { Title, Meta } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Mutation, Query, RegisterUserInput, User } from '../../graphql/graphql-gateway.service';
@@ -19,7 +19,7 @@ import { TranslocoService } from '@jsverse/transloco';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, BreadcrumbComponent, GameComponent, TeamComponent, FooterComponent]
+  imports: [HeaderComponent, BreadcrumbComponent, GameComponent, TeamComponent, FooterComponent]
 })
 export class HomeComponent implements OnInit {
 
@@ -116,7 +116,10 @@ export class HomeComponent implements OnInit {
     this.apollo.watchQuery<Query>({query: GET_USER})
     .valueChanges
     .subscribe({
-      next: ({ data }) => {
+      next: ({ data, loading }) => {
+        // Apollo Client 4 first emits a loading result without data; registering then would
+        // replace the user (and the token) on every page load.
+        if (loading) return;
         let currentUser = data?.currentUser as User;
         if (currentUser?.userName) {
           this.username = currentUser.userName;

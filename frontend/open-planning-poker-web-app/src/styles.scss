@@ -90,10 +90,10 @@ h1, h2, h3, h4,
 
 /* ── Buttons: pill shape for every Material button variant ── */
 :root {
-  --mdc-filled-button-container-shape: var(--opp-radius-full);
-  --mdc-protected-button-container-shape: var(--opp-radius-full);
-  --mdc-outlined-button-container-shape: var(--opp-radius-full);
-  --mdc-text-button-container-shape: var(--opp-radius-full);
+  --mat-button-filled-container-shape: var(--opp-radius-full);
+  --mat-button-protected-container-shape: var(--opp-radius-full);
+  --mat-button-outlined-container-shape: var(--opp-radius-full);
+  --mat-button-text-container-shape: var(--opp-radius-full);
 }
 
 .mat-mdc-button-base {
@@ -109,14 +109,14 @@ h1, h2, h3, h4,
 .dark-theme {
   .mat-mdc-outlined-button.mat-primary,
   .mat-mdc-button.mat-primary {
-    --mdc-outlined-button-label-text-color: var(--opp-primary);
-    --mdc-text-button-label-text-color: var(--opp-primary);
-    --mat-outlined-button-state-layer-color: var(--opp-primary);
-    --mat-text-button-state-layer-color: var(--opp-primary);
+    --mat-button-outlined-label-text-color: var(--opp-primary);
+    --mat-button-text-label-text-color: var(--opp-primary);
+    --mat-button-outlined-state-layer-color: var(--opp-primary);
+    --mat-button-text-state-layer-color: var(--opp-primary);
   }
 
   .mat-mdc-icon-button.mat-primary {
-    --mdc-icon-button-icon-color: var(--opp-primary);
+    --mat-icon-button-icon-color: var(--opp-primary);
     --mat-icon-button-state-layer-color: var(--opp-primary);
   }
 }
@@ -192,4 +192,10 @@ h1, h2, h3, h4,
 
 @media (prefers-reduced-motion: reduce) {
   .opp-support-btn:hover mat-icon { transform: none; }
+}
+
+/* Snack bar actions: the dark snack bar is the same in both themes, so its button uses a fixed light violet
+   (#cfc0ff on #424242 is 6.0:1; Angular Material 21's default violet was 4.0:1). */
+.mat-mdc-snack-bar-container {
+  --mat-snack-bar-button-color: #cfc0ff;
 }

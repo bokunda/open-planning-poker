@@ -1,25 +1,31 @@
 <main class="team-page" id="main-content">
-  <p class="team-loading" *ngIf="loading" role="status">{{ 'common.loading' | transloco }}</p>
+  @if (loading) {
+    <p class="team-loading" role="status">{{ 'common.loading' | transloco }}</p>
+  }
 
   <!-- /team: your teams and a new one -->
-  <ng-container *ngIf="!loading && !teamId">
+  @if (!loading && !teamId) {
     <header class="team-hero">
       <h1 class="team-title"><mat-icon svgIcon="opp-team" aria-hidden="true"></mat-icon> {{ 'header.teamRooms' | transloco }}</h1>
       <p class="team-lead">{{ 'team.lead' | transloco }}</p>
     </header>
-
-    <section class="team-card" aria-labelledby="my-teams" *ngIf="teams.length">
-      <h2 class="team-section-title" id="my-teams">{{ 'team.yourTeams' | transloco }}</h2>
-      <ul class="team-list">
-        <li *ngFor="let t of teams">
-          <a class="team-link" [routerLink]="['/team', t.id]">
-            <span class="team-link-name">{{ t.name }}</span>
-            <span class="team-link-desc" *ngIf="t.description">{{ t.description }}</span>
-          </a>
-        </li>
-      </ul>
-    </section>
-
+    @if (teams.length) {
+      <section class="team-card" aria-labelledby="my-teams">
+        <h2 class="team-section-title" id="my-teams">{{ 'team.yourTeams' | transloco }}</h2>
+        <ul class="team-list">
+          @for (t of teams; track t) {
+            <li>
+              <a class="team-link" [routerLink]="['/team', t.id]">
+                <span class="team-link-name">{{ t.name }}</span>
+                @if (t.description) {
+                  <span class="team-link-desc">{{ t.description }}</span>
+                }
+              </a>
+            </li>
+          }
+        </ul>
+      </section>
+    }
     <section class="team-card" aria-labelledby="new-team">
       <h2 class="team-section-title" id="new-team">{{ 'team.createTitle' | transloco }}</h2>
       <form class="team-form" (ngSubmit)="createTeam()">
@@ -32,94 +38,111 @@
         </button>
       </form>
     </section>
-  </ng-container>
+  }
 
   <!-- /team/:id -->
-  <ng-container *ngIf="!loading && teamId">
-    <section class="team-card team-missing" *ngIf="notFound">
-      <h1 class="team-title">{{ 'team.notFound' | transloco }}</h1>
-      <p class="team-lead">{{ 'team.notFoundText' | transloco }} <a routerLink="/team">{{ 'team.seeRooms' | transloco }}</a>.</p>
-    </section>
-
-    <ng-container *ngIf="team as t">
+  @if (!loading && teamId) {
+    @if (notFound) {
+      <section class="team-card team-missing">
+        <h1 class="team-title">{{ 'team.notFound' | transloco }}</h1>
+        <p class="team-lead">{{ 'team.notFoundText' | transloco }} <a routerLink="/team">{{ 'team.seeRooms' | transloco }}</a>.</p>
+      </section>
+    }
+    @if (team; as t) {
       <header class="team-hero">
         <h1 class="team-title"><mat-icon svgIcon="opp-team" aria-hidden="true"></mat-icon> {{ t.name }}</h1>
-        <p class="team-lead" *ngIf="t.description">{{ t.description }}</p>
+        @if (t.description) {
+          <p class="team-lead">{{ t.description }}</p>
+        }
       </header>
-
       <!-- Not a member yet: join first -->
-      <section class="team-card" *ngIf="!t.isMember">
-        <p class="team-lead">{{ 'team.invited' | transloco }}</p>
-        <button mat-flat-button color="primary" (click)="joinTeam()" [disabled]="busy">
-          <mat-icon>login</mat-icon> {{ 'team.join' | transloco: { name: t.name } }}
-        </button>
-      </section>
-
-      <div class="team-grid" *ngIf="t.isMember">
-        <div class="team-main">
-          <section class="team-card team-start" aria-labelledby="start-title">
-            <h2 class="team-section-title" id="start-title">{{ 'team.startTitle' | transloco }}</h2>
-            <form class="team-inline" (ngSubmit)="startSprint()">
-              <label class="sr-only" for="sprint-name">{{ 'team.sessionName' | transloco }}</label>
-              <input id="sprint-name" name="sprintName" class="team-input" [(ngModel)]="sprintName" maxlength="255" autocomplete="off">
-              <button mat-flat-button color="primary" type="submit" [disabled]="busy">
-                <mat-icon>play_arrow</mat-icon> {{ 'timer.start' | transloco }}
-              </button>
-            </form>
-            <p class="team-hint">{{ 'team.startHint' | transloco }}</p>
-          </section>
-
-          <section class="team-card" aria-labelledby="velocity-title">
-            <div class="team-section-head">
-              <h2 class="team-section-title" id="velocity-title">
-                <mat-icon svgIcon="opp-chart" aria-hidden="true"></mat-icon> {{ 'team.velocity' | transloco }}
-              </h2>
-              <span class="team-stat" *ngIf="t.averageVelocity !== null">
-                <b class="opp-tabular">{{ t.averageVelocity }}</b> {{ 'table.average' | transloco }}
-              </span>
-            </div>
-            <app-velocity-chart [sprints]="t.sprints" [average]="t.averageVelocity"></app-velocity-chart>
-            <p class="team-hint">{{ 'team.pointsHint' | transloco }}</p>
-          </section>
-
-          <section class="team-card" aria-labelledby="history-title">
-            <h2 class="team-section-title" id="history-title">{{ 'team.history' | transloco }}</h2>
-            <p class="team-hint" *ngIf="!t.sprints.length">{{ 'team.noSprints' | transloco }}</p>
-            <ol class="sprint-list" *ngIf="t.sprints.length">
-              <li class="sprint-row" *ngFor="let s of t.sprints">
-                <a class="sprint-link" [routerLink]="['/game', s.gameId]">
-                  <span class="sprint-name">{{ s.name }}</span>
-                  <span class="sprint-meta">{{ s.createdOn | oppDate:'EEE d MMM y' }} · {{ 'team.estimated' | transloco: { count: s.estimatedCount, total: s.ticketCount } }}</span>
-                </a>
-                <span class="sprint-points opp-tabular" [attr.aria-label]="'team.pointsAria' | transloco: { points: s.points }">{{ s.points }}<small>{{ 'team.pts' | transloco }}</small></span>
-              </li>
-            </ol>
-          </section>
+      @if (!t.isMember) {
+        <section class="team-card">
+          <p class="team-lead">{{ 'team.invited' | transloco }}</p>
+          <button mat-flat-button color="primary" (click)="joinTeam()" [disabled]="busy">
+            <mat-icon>login</mat-icon> {{ 'team.join' | transloco: { name: t.name } }}
+          </button>
+        </section>
+      }
+      @if (t.isMember) {
+        <div class="team-grid">
+          <div class="team-main">
+            <section class="team-card team-start" aria-labelledby="start-title">
+              <h2 class="team-section-title" id="start-title">{{ 'team.startTitle' | transloco }}</h2>
+              <form class="team-inline" (ngSubmit)="startSprint()">
+                <label class="sr-only" for="sprint-name">{{ 'team.sessionName' | transloco }}</label>
+                <input id="sprint-name" name="sprintName" class="team-input" [(ngModel)]="sprintName" maxlength="255" autocomplete="off">
+                <button mat-flat-button color="primary" type="submit" [disabled]="busy">
+                  <mat-icon>play_arrow</mat-icon> {{ 'timer.start' | transloco }}
+                </button>
+              </form>
+              <p class="team-hint">{{ 'team.startHint' | transloco }}</p>
+            </section>
+            <section class="team-card" aria-labelledby="velocity-title">
+              <div class="team-section-head">
+                <h2 class="team-section-title" id="velocity-title">
+                  <mat-icon svgIcon="opp-chart" aria-hidden="true"></mat-icon> {{ 'team.velocity' | transloco }}
+                </h2>
+                @if (t.averageVelocity !== null) {
+                  <span class="team-stat">
+                    <b class="opp-tabular">{{ t.averageVelocity }}</b> {{ 'table.average' | transloco }}
+                  </span>
+                }
+              </div>
+              <app-velocity-chart [sprints]="t.sprints" [average]="t.averageVelocity"></app-velocity-chart>
+              <p class="team-hint">{{ 'team.pointsHint' | transloco }}</p>
+            </section>
+            <section class="team-card" aria-labelledby="history-title">
+              <h2 class="team-section-title" id="history-title">{{ 'team.history' | transloco }}</h2>
+              @if (!t.sprints.length) {
+                <p class="team-hint">{{ 'team.noSprints' | transloco }}</p>
+              }
+              @if (t.sprints.length) {
+                <ol class="sprint-list">
+                  @for (s of t.sprints; track s) {
+                    <li class="sprint-row">
+                      <a class="sprint-link" [routerLink]="['/game', s.gameId]">
+                        <span class="sprint-name">{{ s.name }}</span>
+                        <span class="sprint-meta">{{ s.createdOn | oppDate:'EEE d MMM y' }} · {{ 'team.estimated' | transloco: { count: s.estimatedCount, total: s.ticketCount } }}</span>
+                      </a>
+                      <span class="sprint-points opp-tabular" [attr.aria-label]="'team.pointsAria' | transloco: { points: s.points }">{{ s.points }}<small>{{ 'team.pts' | transloco }}</small></span>
+                    </li>
+                  }
+                </ol>
+              }
+            </section>
+          </div>
+          <aside class="team-side">
+            <section class="team-card" aria-labelledby="invite-title">
+              <h2 class="team-section-title" id="invite-title">{{ 'room.invite' | transloco }}</h2>
+              <p class="team-hint">{{ 'team.inviteHint' | transloco }}</p>
+              <button mat-stroked-button color="primary" (click)="copyInvite()"><mat-icon>link</mat-icon> {{ 'team.copyLink' | transloco }}</button>
+            </section>
+            <section class="team-card" aria-labelledby="members-title">
+              <h2 class="team-section-title" id="members-title">{{ 'team.members' | transloco }} <span class="team-count opp-tabular">{{ t.members.length }}</span></h2>
+              <ul class="member-list">
+                @for (m of t.members; track m) {
+                  <li class="member">
+                    <span class="member-avatar" aria-hidden="true">{{ (m.name || '?').charAt(0).toUpperCase() }}</span>
+                    <span class="member-name">{{ m.name || ('team.formerPlayer' | transloco) }}</span>
+                    @if (m.id === t.ownerId) {
+                      <span class="member-badge">{{ 'team.owner' | transloco }}</span>
+                    }
+                    @if (m.id === currentUserId) {
+                      <span class="member-badge member-badge--you">{{ 'common.you' | transloco }}</span>
+                    }
+                  </li>
+                }
+              </ul>
+              @if (!isOwner) {
+                <button mat-button class="team-leave" (click)="leaveTeam()" [disabled]="busy">
+                  <mat-icon>logout</mat-icon> {{ 'team.leave' | transloco }}
+                </button>
+              }
+            </section>
+          </aside>
         </div>
-
-        <aside class="team-side">
-          <section class="team-card" aria-labelledby="invite-title">
-            <h2 class="team-section-title" id="invite-title">{{ 'room.invite' | transloco }}</h2>
-            <p class="team-hint">{{ 'team.inviteHint' | transloco }}</p>
-            <button mat-stroked-button color="primary" (click)="copyInvite()"><mat-icon>link</mat-icon> {{ 'team.copyLink' | transloco }}</button>
-          </section>
-
-          <section class="team-card" aria-labelledby="members-title">
-            <h2 class="team-section-title" id="members-title">{{ 'team.members' | transloco }} <span class="team-count opp-tabular">{{ t.members.length }}</span></h2>
-            <ul class="member-list">
-              <li class="member" *ngFor="let m of t.members">
-                <span class="member-avatar" aria-hidden="true">{{ (m.name || '?').charAt(0).toUpperCase() }}</span>
-                <span class="member-name">{{ m.name || ('team.formerPlayer' | transloco) }}</span>
-                <span class="member-badge" *ngIf="m.id === t.ownerId">{{ 'team.owner' | transloco }}</span>
-                <span class="member-badge member-badge--you" *ngIf="m.id === currentUserId">{{ 'common.you' | transloco }}</span>
-              </li>
-            </ul>
-            <button mat-button class="team-leave" *ngIf="!isOwner" (click)="leaveTeam()" [disabled]="busy">
-              <mat-icon>logout</mat-icon> {{ 'team.leave' | transloco }}
-            </button>
-          </section>
-        </aside>
-      </div>
-    </ng-container>
-  </ng-container>
+      }
+    }
+  }
 </main>

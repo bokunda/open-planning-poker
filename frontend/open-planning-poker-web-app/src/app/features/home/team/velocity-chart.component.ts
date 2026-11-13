@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Sprint } from './team.graphql';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { OppDatePipe } from '../../../i18n/opp-date.pipe';
@@ -19,62 +19,80 @@ interface Bar {
 @Component({
   selector: 'app-velocity-chart',
   standalone: true,
-  imports: [TranslocoPipe, OppDatePipe, CommonModule],
+  imports: [TranslocoPipe, OppDatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <figure class="velocity" *ngIf="bars.length; else empty">
-      <div class="chart-wrap">
-        <svg class="chart" [attr.viewBox]="'0 0 ' + width + ' ' + height" preserveAspectRatio="none"
-          role="img" [attr.aria-label]="ariaLabel">
-          <!-- recessive grid -->
-          <g class="grid">
-            <line *ngFor="let t of ticks" x1="0" [attr.x2]="width" [attr.y1]="yFor(t)" [attr.y2]="yFor(t)"></line>
-          </g>
-          <line class="baseline" x1="0" [attr.x2]="width" [attr.y1]="plotBottom" [attr.y2]="plotBottom"></line>
-          <line class="average" *ngIf="average !== null" x1="0" [attr.x2]="width" [attr.y1]="yFor(average)" [attr.y2]="yFor(average)"></line>
-          <!-- bars: 4px rounded top, square at the baseline -->
-          <path *ngFor="let bar of bars" class="bar" [attr.opacity]="active && bar !== active ? 0.45 : 1" [attr.d]="barPath(bar)"></path>
-          <!-- hit targets wider than the bars -->
-          <rect *ngFor="let bar of bars" class="hit" [attr.x]="bar.x - gap / 2" y="0" [attr.width]="barWidth + gap" [attr.height]="plotBottom"
-            tabindex="0" [attr.aria-label]="label(bar.sprint)"
-            (mouseenter)="active = bar" (mouseleave)="active = null" (focus)="active = bar" (blur)="active = null"></rect>
-        </svg>
-        <div class="axis-y" aria-hidden="true">
-          <span *ngFor="let t of ticks" [style.top.%]="(yFor(t) / height) * 100">{{ t }}</span>
+    @if (bars.length) {
+      <figure class="velocity">
+        <div class="chart-wrap">
+          <svg class="chart" [attr.viewBox]="'0 0 ' + width + ' ' + height" preserveAspectRatio="none"
+            role="img" [attr.aria-label]="ariaLabel">
+            <!-- recessive grid -->
+            <g class="grid">
+              @for (t of ticks; track t) {
+                <line x1="0" [attr.x2]="width" [attr.y1]="yFor(t)" [attr.y2]="yFor(t)"></line>
+              }
+            </g>
+            <line class="baseline" x1="0" [attr.x2]="width" [attr.y1]="plotBottom" [attr.y2]="plotBottom"></line>
+            @if (average !== null) {
+              <line class="average" x1="0" [attr.x2]="width" [attr.y1]="yFor(average)" [attr.y2]="yFor(average)"></line>
+            }
+            <!-- bars: 4px rounded top, square at the baseline -->
+            @for (bar of bars; track bar) {
+              <path class="bar" [attr.opacity]="active && bar !== active ? 0.45 : 1" [attr.d]="barPath(bar)"></path>
+            }
+            <!-- hit targets wider than the bars -->
+            @for (bar of bars; track bar) {
+              <rect class="hit" [attr.x]="bar.x - gap / 2" y="0" [attr.width]="barWidth + gap" [attr.height]="plotBottom"
+                tabindex="0" [attr.aria-label]="label(bar.sprint)"
+              (mouseenter)="active = bar" (mouseleave)="active = null" (focus)="active = bar" (blur)="active = null"></rect>
+            }
+          </svg>
+          <div class="axis-y" aria-hidden="true">
+            @for (t of ticks; track t) {
+              <span [style.top.%]="(yFor(t) / height) * 100">{{ t }}</span>
+            }
+          </div>
+          @if (active) {
+            <div class="tooltip" [style.left.%]="((active.x + barWidth / 2) / width) * 100"
+              [style.top.%]="(active.y / height) * 100" role="status">
+              <b class="opp-tabular">{{ active.sprint.points }} {{ 'team.pts' | transloco }}</b>
+              <span>{{ active.sprint.name }}</span>
+              <span class="tooltip-muted">{{ 'team.ticketsOf' | transloco: { count: active.sprint.estimatedCount, total: active.sprint.ticketCount } }} · {{ active.sprint.createdOn | oppDate:'d MMM' }}</span>
+            </div>
+          }
         </div>
-        <div class="tooltip" *ngIf="active" [style.left.%]="((active.x + barWidth / 2) / width) * 100"
-          [style.top.%]="(active.y / height) * 100" role="status">
-          <b class="opp-tabular">{{ active.sprint.points }} {{ 'team.pts' | transloco }}</b>
-          <span>{{ active.sprint.name }}</span>
-          <span class="tooltip-muted">{{ 'team.ticketsOf' | transloco: { count: active.sprint.estimatedCount, total: active.sprint.ticketCount } }} · {{ active.sprint.createdOn | oppDate:'d MMM' }}</span>
+        <div class="axis-x" aria-hidden="true">
+          @for (bar of bars; track bar) {
+            <span [style.left.%]="((bar.x + barWidth / 2) / width) * 100">{{ bar.sprint.createdOn | oppDate:'d MMM' }}</span>
+          }
         </div>
-      </div>
-      <div class="axis-x" aria-hidden="true">
-        <span *ngFor="let bar of bars" [style.left.%]="((bar.x + barWidth / 2) / width) * 100">{{ bar.sprint.createdOn | oppDate:'d MMM' }}</span>
-      </div>
-      <figcaption class="caption" *ngIf="average !== null">
-        <span class="caption-line" aria-hidden="true"></span> {{ 'team.averageCaption' | transloco }} <b class="opp-tabular">{{ average }}</b> {{ 'team.points' | transloco }}
-      </figcaption>
-
-      <details class="table-view">
-        <summary>{{ 'team.showTable' | transloco }}</summary>
-        <table>
-          <thead><tr><th scope="col">{{ 'team.sprint' | transloco }}</th><th scope="col">{{ 'team.date' | transloco }}</th><th scope="col" class="num">{{ 'team.pointsTitle' | transloco }}</th><th scope="col" class="num">{{ 'team.estimatedTickets' | transloco }}</th></tr></thead>
-          <tbody>
-            <tr *ngFor="let bar of bars">
-              <th scope="row">{{ bar.sprint.name }}</th>
-              <td>{{ bar.sprint.createdOn | oppDate:'d MMM y' }}</td>
-              <td class="num opp-tabular">{{ bar.sprint.points }}</td>
-              <td class="num opp-tabular">{{ bar.sprint.estimatedCount }} / {{ bar.sprint.ticketCount }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </details>
-    </figure>
-    <ng-template #empty>
+        @if (average !== null) {
+          <figcaption class="caption">
+            <span class="caption-line" aria-hidden="true"></span> {{ 'team.averageCaption' | transloco }} <b class="opp-tabular">{{ average }}</b> {{ 'team.points' | transloco }}
+          </figcaption>
+        }
+        <details class="table-view">
+          <summary>{{ 'team.showTable' | transloco }}</summary>
+          <table>
+            <thead><tr><th scope="col">{{ 'team.sprint' | transloco }}</th><th scope="col">{{ 'team.date' | transloco }}</th><th scope="col" class="num">{{ 'team.pointsTitle' | transloco }}</th><th scope="col" class="num">{{ 'team.estimatedTickets' | transloco }}</th></tr></thead>
+            <tbody>
+              @for (bar of bars; track bar) {
+                <tr>
+                  <th scope="row">{{ bar.sprint.name }}</th>
+                  <td>{{ bar.sprint.createdOn | oppDate:'d MMM y' }}</td>
+                  <td class="num opp-tabular">{{ bar.sprint.points }}</td>
+                  <td class="num opp-tabular">{{ bar.sprint.estimatedCount }} / {{ bar.sprint.ticketCount }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </details>
+      </figure>
+    } @else {
       <p class="velocity-empty">{{ 'team.chartEmpty' | transloco }}</p>
-    </ng-template>
-  `,
+    }
+    `,
   styles: [`
     :host { display: block; }
     .velocity { margin: 0; display: grid; gap: var(--opp-space-2); }

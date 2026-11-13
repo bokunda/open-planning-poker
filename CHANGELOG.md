@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] — 2026-11-13
+
+Every part of Open Planning Poker on current, supported versions. Nothing changes for players; self-hosters need the new runtimes.
+
+### Changed
+- **Backend on .NET 10 LTS**: all services and Docker images, with EF Core 10, Npgsql 10, Microsoft.Extensions 10, FluentValidation 12, OpenTelemetry 1.21, QuestPDF 2026.9 and Serilog 10
+- **App on Angular 21** (from 19) with Angular Material 21, the built-in control flow in every template, Apollo Client 4 with apollo-angular 14, GraphQL 16, Express 5 for server rendering and zone.js 0.16
+- **Website on Tailwind CSS 4**; the unused Flowbite package is removed. Pages look the same, and the GitHub star count now has its separator line
+
+### Removed
+- Unused packages: Duende.AccessTokenManagement, Entity Framework 6 and AutoMapper
+
+### Developers
+- Self-hosting needs the .NET 10 runtime (the Docker images include it) and Node.js 22.12 or newer for the app
+- Kept on purpose: **HotChocolate and Fusion 15** (Fusion 16 uses a new gateway format and composition, a separate migration), **Angular 22** (its CLI needs Node.js 22.22 / 24.15, the next step), **MediatR 12** (later versions need a commercial license), **xUnit 2** (xUnit v3 is a new test model), **TypeScript 5.9** (Angular 21 does not support TypeScript 7), and the shared NuGet package on .NET 9 (services on .NET 10 use it as it is)
+
 ## [2.4.1] — 2026-11-13
 
 The app fits on phones, and two new guides about the game.

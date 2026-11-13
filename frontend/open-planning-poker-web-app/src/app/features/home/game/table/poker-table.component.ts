@@ -1,5 +1,5 @@
 import { Component, DoCheck, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ApiCollectionOfGamePlayer, Vote } from '../../../../graphql/graphql-gateway.service';
 import { PokerCardComponent } from '../../../../shared/poker-card/poker-card.component';
 import { computeVoteStats, formatNumber } from './vote-stats';
@@ -25,7 +25,7 @@ interface Seat {
 @Component({
   selector: 'app-poker-table',
   standalone: true,
-  imports: [TranslocoPipe, CommonModule, PokerCardComponent],
+  imports: [TranslocoPipe, PokerCardComponent],
   templateUrl: './poker-table.component.html',
   styleUrl: './poker-table.component.scss',
 })

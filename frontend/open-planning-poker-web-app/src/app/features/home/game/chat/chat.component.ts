@@ -1,6 +1,6 @@
 import { Component, EventEmitter, HostBinding, Input, Output, OnDestroy, OnChanges, SimpleChanges, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +18,7 @@ import { OppDatePipe } from '../../../../i18n/opp-date.pipe';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, OppDatePipe, CommonModule, FormsModule, MatButtonModule, MatIconModule]
+  imports: [TranslocoPipe, OppDatePipe, FormsModule, MatButtonModule, MatIconModule]
 })
 export class ChatComponent implements OnChanges, OnDestroy {
   @Input() gameId: string = '';
@@ -51,7 +51,9 @@ export class ChatComponent implements OnChanges, OnDestroy {
       query: GET_CHAT_MESSAGES,
       variables: { gameId: this.gameId }
     }).valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: ({ data }) => {
+      next: ({ data, dataState }) => {
+        // Apollo Client 4: only complete results carry the full type.
+        if (dataState !== 'complete') return;
         if (data?.chatMessages) {
           this.messages = data.chatMessages;
           setTimeout(() => this.scrollToBottom(), 100);

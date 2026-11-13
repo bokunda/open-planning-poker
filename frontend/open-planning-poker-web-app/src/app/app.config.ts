@@ -11,8 +11,9 @@ import { routes } from './app.routes';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { HttpLink } from 'apollo-angular/http';
 import { provideApollo } from 'apollo-angular';
-import { ApolloLink, DefaultOptions, InMemoryCache, Observable, split } from '@apollo/client/core';
-import { onError } from '@apollo/client/link/error';
+import { ApolloClient, ApolloLink, CombinedGraphQLErrors, InMemoryCache, split } from '@apollo/client';
+import { ErrorLink } from '@apollo/client/link/error';
+import { Observable } from 'rxjs';
 import { setContext } from '@apollo/client/link/context';
 import { createClient } from 'graphql-ws';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
@@ -135,17 +136,16 @@ export const appConfig: ApplicationConfig = {
       const gqlGatewayWss = environment.gqlGatewayWss;
 
       // Error handling link — suppress expected auth errors on landing page
-      const errorLink = onError(({ graphQLErrors, networkError }) => {
-        if (graphQLErrors) {
-          graphQLErrors.forEach(({ message }) => {
+      const errorLink = new ErrorLink(({ error }) => {
+        if (CombinedGraphQLErrors.is(error)) {
+          error.errors.forEach(({ message }) => {
             // Silently ignore auth errors (expected when no token yet)
             if (!message?.includes('not authorized') && !message?.includes('Unauthorized')) {
               console.error('[GraphQL error]:', message);
             }
           });
-        }
-        if (networkError) {
-          console.error('[Network error]:', networkError.message);
+        } else {
+          console.error('[Network error]:', error.message);
         }
       });
 
@@ -185,7 +185,7 @@ export const appConfig: ApplicationConfig = {
 
       const http = httpLink.create({ uri: gqlGateway });
 
-      const defaultOptions: DefaultOptions = {
+      const defaultOptions: ApolloClient.DefaultOptions.Input = {
         watchQuery: {
           fetchPolicy: 'no-cache',
           errorPolicy: 'ignore',
@@ -218,3 +218,17 @@ export const appConfig: ApplicationConfig = {
     }),
   ],
 };
+
+// Apollo Client 4 types the results by the default error policies, so they are declared here too.
+declare module '@apollo/client' {
+  export namespace ApolloClient {
+    export namespace DeclareDefaultOptions {
+      interface WatchQuery {
+        errorPolicy: 'ignore';
+      }
+      interface Query {
+        errorPolicy: 'all';
+      }
+    }
+  }
+}

@@ -1,24 +1,24 @@
 <main class="game-wrapper" id="main-content">
   <!-- The landing page has a visible h1 below; rooms keep this one for screen readers. -->
-  <h1 class="sr-only" *ngIf="game || isLoading || gameNotFound">{{ 'meta.homeTitle' | transloco }}</h1>
+  @if (game || isLoading || gameNotFound) {
+    <h1 class="sr-only">{{ 'meta.homeTitle' | transloco }}</h1>
+  }
   <!-- Landing (no game) -->
-  <ng-container *ngIf="!game && !isLoading">
+  @if (!game && !isLoading) {
     <div class="game-landing" @fadeSlide>
       <div class="landing-grid">
         <div class="landing-copy">
-          <ng-container *ngIf="gameNotFound; else readyToPlan">
+          @if (gameNotFound) {
             <span class="landing-eyebrow landing-eyebrow--warn">{{ 'landing.notFound' | transloco }}</span>
             <h2 class="landing-title">{{ 'landing.notFoundTitle' | transloco }}</h2>
             <p class="landing-desc">{{ 'landing.notFoundText' | transloco }}</p>
-          </ng-container>
-          <ng-template #readyToPlan>
+          } @else {
             <h1 class="landing-heading">
               <span class="landing-eyebrow">{{ 'landing.eyebrow' | transloco }}</span>
               <span class="landing-title">{{ 'landing.title' | transloco }}</span>
             </h1>
             <p class="landing-desc">{{ 'landing.text' | transloco }}</p>
-          </ng-template>
-
+          }
           <div class="landing-actions">
             <button mat-flat-button color="primary" class="hero-btn hero-btn--primary" (click)="handleCreateGame()">
               <mat-icon>add</mat-icon> {{ 'createGame.submit' | transloco }}
@@ -27,117 +27,125 @@
               <mat-icon svgIcon="opp-team"></mat-icon> {{ 'header.teamRooms' | transloco }}
             </a>
           </div>
-
           <form class="join-inline" (ngSubmit)="joinFromInput()">
             <label class="join-label" for="join-input">{{ 'landing.joinLabel' | transloco }}</label>
             <div class="join-row">
               <input id="join-input" name="joinInput" class="join-input" type="text"
                 [(ngModel)]="joinInput" [placeholder]="'landing.joinPlaceholder' | transloco" autocomplete="off">
-              <button mat-stroked-button color="primary" type="submit" [disabled]="!joinInput.trim()">{{ 'landing.join' | transloco }}</button>
-            </div>
-            <p class="join-error" *ngIf="joinError" role="alert">{{ joinError }}</p>
-          </form>
-        </div>
-
-        <!-- Rendered on the server; its JS loads and hydrates when the browser is idle. -->
-        @defer (hydrate on idle) {
-        <app-demo-table class="landing-demo"></app-demo-table>
+                <button mat-stroked-button color="primary" type="submit" [disabled]="!joinInput.trim()">{{ 'landing.join' | transloco }}</button>
+              </div>
+              @if (joinError) {
+                <p class="join-error" role="alert">{{ joinError }}</p>
+              }
+            </form>
+          </div>
+          <!-- Rendered on the server; its JS loads and hydrates when the browser is idle. -->
+          @defer (hydrate on idle) {
+          <app-demo-table class="landing-demo"></app-demo-table>
         }
       </div>
     </div>
-  </ng-container>
+  }
 
-  <app-room-skeleton *ngIf="isLoading"></app-room-skeleton>
+  @if (isLoading) {
+    <app-room-skeleton></app-room-skeleton>
+  }
 
   <!-- Game active: dashboard layout. The room UI is a separate chunk, loaded once a game is open,
-       so the landing page does not download it. -->
+  so the landing page does not download it. -->
   @if (game) {
-  @defer (on immediate) {
-  <div class="game-dashboard" @fadeSlide>
-    <!-- Main column -->
-    <div class="game-main">
-      <app-game-details
-        [game]="game"
-        [isHost]="isHost"
-        [settings]="settings"
-        (onLeaveGameClick)="handleLeaveGame()"
-        (onGameReportClick)="handleGameReport()"
-        (onCreateNewTicket)="handleCreateTicket()"
-        (onExportCsv)="handleExportCsv()"
+    @defer (on immediate) {
+    <div class="game-dashboard" @fadeSlide>
+      <!-- Main column -->
+      <div class="game-main">
+        <app-game-details
+          [game]="game"
+          [isHost]="isHost"
+          [settings]="settings"
+          (onLeaveGameClick)="handleLeaveGame()"
+          (onGameReportClick)="handleGameReport()"
+          (onCreateNewTicket)="handleCreateTicket()"
+          (onExportCsv)="handleExportCsv()"
         (onUpdateOptions)="handleUpdateOptions($event)"></app-game-details>
 
-      <!-- Async estimation: everyone votes on the tickets on their own until the window ends. -->
-      <app-async-voting *ngIf="asyncVotingOpen"
-        [tickets]="tickets"
-        [deck]="deckCards"
-        [currentUserId]="currentUserId"
-        [isHost]="isHost"
-        [isObserver]="isObserver"
-        [endsAt]="settings?.asyncVotingEndsAt"
-        (vote)="handleAsyncVote($event)"
-        (startMeeting)="handleUpdateOptions({ autoReveal: !!settings?.autoReveal, asyncVotingEndsAt: null })"
-        (createTicket)="handleCreateTicket()"
-        (importTickets)="handleImportTickets()"></app-async-voting>
+        <!-- Async estimation: everyone votes on the tickets on their own until the window ends. -->
+        @if (asyncVotingOpen) {
+          <app-async-voting
+            [tickets]="tickets"
+            [deck]="deckCards"
+            [currentUserId]="currentUserId"
+            [isHost]="isHost"
+            [isObserver]="isObserver"
+            [endsAt]="settings?.asyncVotingEndsAt"
+            (vote)="handleAsyncVote($event)"
+            (startMeeting)="handleUpdateOptions({ autoReveal: !!settings?.autoReveal, asyncVotingEndsAt: null })"
+            (createTicket)="handleCreateTicket()"
+          (importTickets)="handleImportTickets()"></app-async-voting>
+        }
 
-      <app-voting *ngIf="!asyncVotingOpen"
-        [gameId]="game.id"
-        [players]="players"
-        [gameSettings]="game.settingsDetails"
-        [ticket]="ticket"
-        [tickets]="tickets"
-        [votes]="votes"
-        [votesRevealed]="votesRevealed"
-        [isHost]="isHost"
-        [isObserver]="isObserver"
-        [currentUserId]="currentUserId"
-        (onCreateNewTicket)="handleCreateTicket()"
-        (onImportTickets)="handleImportTickets()"
-        (onSetFinalEstimate)="handleSetFinalEstimate($event)"
-        (OnVote)="handleVoteAction($event)"
-        (onRevealVotes)="handleRevealVotes()"
-        (onVoteAgain)="handleVoteAgain()"
-        (onNavigateTicket)="handleReVoteTicket($event)"
-        ></app-voting>
+        @if (!asyncVotingOpen) {
+          <app-voting
+            [gameId]="game.id"
+            [players]="players"
+            [gameSettings]="game.settingsDetails"
+            [ticket]="ticket"
+            [tickets]="tickets"
+            [votes]="votes"
+            [votesRevealed]="votesRevealed"
+            [isHost]="isHost"
+            [isObserver]="isObserver"
+            [currentUserId]="currentUserId"
+            (onCreateNewTicket)="handleCreateTicket()"
+            (onImportTickets)="handleImportTickets()"
+            (onSetFinalEstimate)="handleSetFinalEstimate($event)"
+            (OnVote)="handleVoteAction($event)"
+            (onRevealVotes)="handleRevealVotes()"
+            (onVoteAgain)="handleVoteAgain()"
+            (onNavigateTicket)="handleReVoteTicket($event)"
+          ></app-voting>
+        }
 
-      <app-voting-history *ngIf="!asyncVotingOpen"
-        [tickets]="tickets"
-        [votesRevealed]="votesRevealed"
-        [currentTicketId]="ticket?.id"
-        [isHost]="isHost"
-        (onReVoteTicket)="handleReVoteTicket($event)"
-        (onEditTicket)="handleEditTicket($event)"
-        (onDeleteTicket)="handleDeleteTicket($event)"
-        (onReorder)="handleReorderTickets($event)"
-      ></app-voting-history>
+        @if (!asyncVotingOpen) {
+          <app-voting-history
+            [tickets]="tickets"
+            [votesRevealed]="votesRevealed"
+            [currentTicketId]="ticket?.id"
+            [isHost]="isHost"
+            (onReVoteTicket)="handleReVoteTicket($event)"
+            (onEditTicket)="handleEditTicket($event)"
+            (onDeleteTicket)="handleDeleteTicket($event)"
+            (onReorder)="handleReorderTickets($event)"
+          ></app-voting-history>
+        }
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="game-sidebar">
+        <app-players
+          [players]="players"
+          [votes]="votes"
+          [votesRevealed]="votesRevealed"
+          [isHost]="isHost"
+          [isOwner]="isOwner"
+          [hostId]="game.hostId"
+          [currentUserId]="currentUserId"
+          (onPlayerAction)="handlePlayerAction($event)"
+          [(collapsed)]="playersCollapsed"
+          (onRevealCards)="handleRevealVotes()"
+          (onVoteAgain)="handleVoteAgain()"
+          (onCreateNewTicket)="handleCreateTicket()">
+        </app-players>
+
+        <app-chat
+          [gameId]="chatGameId ?? ''"
+          [currentUserId]="currentUserId"
+          [currentUserName]="currentUserName"
+          [(collapsed)]="chatCollapsed">
+        </app-chat>
+      </aside>
     </div>
-
-    <!-- Sidebar -->
-    <aside class="game-sidebar">
-      <app-players
-        [players]="players"
-        [votes]="votes"
-        [votesRevealed]="votesRevealed"
-        [isHost]="isHost"
-        [isOwner]="isOwner"
-        [hostId]="game.hostId"
-        [currentUserId]="currentUserId"
-        (onPlayerAction)="handlePlayerAction($event)"
-        [(collapsed)]="playersCollapsed"
-        (onRevealCards)="handleRevealVotes()"
-        (onVoteAgain)="handleVoteAgain()"
-        (onCreateNewTicket)="handleCreateTicket()">
-      </app-players>
-
-      <app-chat
-        [gameId]="chatGameId ?? ''"
-        [currentUserId]="currentUserId"
-        [currentUserName]="currentUserName"
-        [(collapsed)]="chatCollapsed">
-      </app-chat>
-    </aside>
-  </div>
-  } @placeholder {
-  <app-room-skeleton></app-room-skeleton>
+    } @placeholder {
+    <app-room-skeleton></app-room-skeleton>
   }
-  }
+}
 </main>

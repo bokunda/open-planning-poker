@@ -83,7 +83,8 @@ $opp-dark-theme: mat.m2-define-dark-theme((
 // Only the components the app uses (all-component-themes added ~16 KB of unused CSS).
 // Add a component here when you start using it.
 @mixin opp-component-themes($theme) {
-  @include mat.core-theme($theme);
+  @include mat.elevation-classes();
+  @include mat.app-background();
   @include mat.button-theme($theme);
   @include mat.icon-button-theme($theme);
   @include mat.icon-theme($theme);
@@ -101,7 +102,8 @@ $opp-dark-theme: mat.m2-define-dark-theme((
 }
 
 @mixin opp-component-colors($theme) {
-  @include mat.core-color($theme);
+  @include mat.elevation-classes();
+  @include mat.app-background();
   @include mat.button-color($theme);
   @include mat.icon-button-color($theme);
   @include mat.icon-color($theme);

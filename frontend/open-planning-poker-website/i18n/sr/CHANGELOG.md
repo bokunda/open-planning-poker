@@ -6,6 +6,22 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+## [3.0.0] — 2026-11-13
+
+Svaki deo Open Planning Pokera na aktuelnim, podržanim verzijama. Za igrače se ništa ne menja; za self-hosting trebaju nova okruženja.
+
+### Izmenjeno
+- **Backend na .NET 10 LTS**: svi servisi i Docker imidži, uz EF Core 10, Npgsql 10, Microsoft.Extensions 10, FluentValidation 12, OpenTelemetry 1.21, QuestPDF 2026.9 i Serilog 10
+- **Aplikacija na Angularu 21** (sa 19) sa Angular Material 21, ugrađenim control flowom u svim šablonima, Apollo Client 4 uz apollo-angular 14, GraphQL 16, Express 5 za renderovanje na serveru i zone.js 0.16
+- **Sajt na Tailwind CSS 4**; nekorišćeni paket Flowbite je uklonjen. Stranice izgledaju isto, a broj GitHub zvezdica sada ima razdelnu liniju
+
+### Uklonjeno
+- Nekorišćeni paketi: Duende.AccessTokenManagement, Entity Framework 6 i AutoMapper
+
+### Za developere
+- Za self-hosting treba .NET 10 runtime (Docker imidži ga sadrže) i Node.js 22.12 ili noviji za aplikaciju
+- Namerno zadržano: **HotChocolate i Fusion 15** (Fusion 16 koristi nov format gatewaya i sastavljanja, to je posebna migracija), **Angular 22** (njegov CLI traži Node.js 22.22 / 24.15, to je sledeći korak), **MediatR 12** (novije verzije traže komercijalnu licencu), **xUnit 2** (xUnit v3 je nov model testova), **TypeScript 5.9** (Angular 21 ne podržava TypeScript 7) i deljeni NuGet paket na .NET 9 (servisi na .NET 10 ga koriste takav kakav je)
+
 ## [2.4.1] — 2026-11-13
 
 Aplikacija staje na telefon, i dva nova vodiča o igri.

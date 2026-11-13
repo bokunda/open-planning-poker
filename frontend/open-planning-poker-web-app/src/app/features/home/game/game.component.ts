@@ -1,5 +1,5 @@
 import { Component, inject, Input, OnInit, DestroyRef, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Apollo } from 'apollo-angular';
@@ -60,7 +60,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, CommonModule, FormsModule, RouterLink, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent, AsyncVotingComponent],
+  imports: [TranslocoPipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent, AsyncVotingComponent],
   animations: [
     trigger('fadeSlide', [
       transition(':enter', [
@@ -331,7 +331,9 @@ export class GameComponent implements OnInit {
     })
     .valueChanges
     .subscribe({
-      next: ({ data }) => {
+      next: ({ data, dataState }) => {
+        // Apollo Client 4: only complete results carry the full type.
+        if (dataState !== 'complete') return;
         // The query returns an ApplicationError (e.g. GameNotFound) instead of a Game
         // when the id does not exist or the game was deleted.
         if (data && !data.game?.id) {
@@ -398,7 +400,9 @@ export class GameComponent implements OnInit {
     })
     .valueChanges
     .subscribe({
-      next: ({ data }) => {
+      next: ({ data, dataState }) => {
+        // Apollo Client 4: only complete results carry the full type.
+        if (dataState !== 'complete') return;
         if (data.gamePlayers?.items) {
           // Merge with existing to avoid duplicates from subscription race condition
           const existing = this.players?.items ?? [];
@@ -539,7 +543,9 @@ export class GameComponent implements OnInit {
     })
     .valueChanges
     .subscribe({
-      next: ({ data }) => {
+      next: ({ data, dataState }) => {
+        // Apollo Client 4: only complete results carry the full type.
+        if (dataState !== 'complete') return;
         if (data) {
           this.ticket = data?.ticket;
           this.votesRevealed = this.isRevealed(this.ticket);
@@ -681,7 +687,9 @@ export class GameComponent implements OnInit {
     })
     .valueChanges
     .subscribe({
-      next: ({ data }) => {
+      next: ({ data, dataState }) => {
+        // Apollo Client 4: only complete results carry the full type.
+        if (dataState !== 'complete') return;
         if (data?.votes?.items) {
           this.votes = data.votes.items;
         }

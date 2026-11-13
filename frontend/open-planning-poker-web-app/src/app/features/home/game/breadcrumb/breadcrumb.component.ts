@@ -1,5 +1,5 @@
-import { Component, inject, Input, OnChanges } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, inject, Input, OnChanges, DOCUMENT } from '@angular/core';
+
 import { RouterModule } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
 import { TranslocoService } from '@jsverse/transloco';
@@ -16,7 +16,7 @@ export interface BreadcrumbItem {
   templateUrl: './breadcrumb.component.html',
   styleUrl: './breadcrumb.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, CommonModule, RouterModule]
+  imports: [TranslocoPipe, RouterModule]
 })
 export class BreadcrumbComponent implements OnChanges {
   @Input() items: BreadcrumbItem[] = [];
