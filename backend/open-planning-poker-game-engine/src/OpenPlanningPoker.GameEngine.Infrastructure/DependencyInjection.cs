@@ -9,6 +9,7 @@ public static class DependencyInjection
         services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 
         AddPersistence(services, configuration);
+        AddIntegrations(services, configuration);
 
         return services;
     }
@@ -34,5 +35,20 @@ public static class DependencyInjection
 
 
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<OpenPlanningPokerGameEngineDbContext>());
+    }
+
+    /// <summary>Jira (OPP-10). The keys that encrypt the tokens live in the database, next to the tokens' owners.</summary>
+    private static void AddIntegrations(IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<Application.Features.Integrations.Jira.JiraOptions>(configuration.GetSection(Application.Features.Integrations.Jira.JiraOptions.Section));
+        Microsoft.AspNetCore.DataProtection.DataProtectionBuilderExtensions.SetApplicationName(
+            Microsoft.AspNetCore.DataProtection.EntityFrameworkCoreDataProtectionExtensions.PersistKeysToDbContext<OpenPlanningPokerGameEngineDbContext>(
+                services.AddDataProtection()),
+            "OpenPlanningPoker.GameEngine");
+        services.AddScoped<Domain.Integrations.IJiraConnectionRepository, JiraConnectionRepository>();
+        services.AddScoped<Application.Features.Integrations.Jira.ISecretProtector, Integrations.DataProtectionSecretProtector>();
+        services.AddHttpClient<Application.Features.Integrations.Jira.IJiraApi, Integrations.JiraApiClient>(client =>
+            client.Timeout = TimeSpan.FromSeconds(20));
+        services.AddScoped<Application.Features.Integrations.Jira.JiraService>();
     }
 }

@@ -5,11 +5,15 @@ public sealed class OpenPlanningPokerGameEngineDbContext(
     ICurrentUserProvider currentUserProvider,
     IDateTimeProvider dateTimeProvider,
     IPublisher publisher)
-    : DbContext(options), IUnitOfWork
+    : DbContext(options), IUnitOfWork, Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.IDataProtectionKeyContext
 {
+    /// <summary>Data Protection keys for the encrypted integration tokens (OPP-10).</summary>
+    public DbSet<Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey> DataProtectionKeys => Set<Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(OpenPlanningPokerGameEngineDbContext).Assembly);
+        modelBuilder.Entity<Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey>().ToTable("data_protection_keys");
 
         // Seed the data
         DbInitializer.SeedData(modelBuilder);

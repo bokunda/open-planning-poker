@@ -19,6 +19,15 @@ public sealed class Ticket : Entity<Guid>
     /// <summary>Order of the ticket in the game's list (0 first). Tickets with the same value keep creation order.</summary>
     public int Position { get; private set; }
 
+    public const int MaxExternalKeyLength = 64;
+    public const int MaxExternalUrlLength = 512;
+
+    /// <summary>Key of the issue in the tracker the ticket was imported from (e.g. Jira "OPP-118"); null otherwise.</summary>
+    public string? ExternalKey { get; private set; }
+
+    /// <summary>Link back to that issue.</summary>
+    public string? ExternalUrl { get; private set; }
+
     public ICollection<Vote>? Votes;
 
     public Game Game { get; set; } = null!;
@@ -58,4 +67,11 @@ public sealed class Ticket : Entity<Guid>
         FinalEstimate = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
     public void MoveTo(int position) => Position = position;
+
+    /// <summary>Remembers the tracker issue this ticket came from (OPP-11).</summary>
+    public void LinkTo(string key, string url)
+    {
+        ExternalKey = key;
+        ExternalUrl = url;
+    }
 }

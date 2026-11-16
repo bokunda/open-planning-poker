@@ -20,6 +20,12 @@ internal sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         builder.Property(ticket => ticket.FinalEstimate)
             .HasMaxLength(Ticket.MaxFinalEstimateLength);
 
+        builder.Property(ticket => ticket.ExternalKey)
+            .HasMaxLength(Ticket.MaxExternalKeyLength);
+
+        builder.Property(ticket => ticket.ExternalUrl)
+            .HasMaxLength(Ticket.MaxExternalUrlLength);
+
         builder.HasMany(ticket => ticket.Votes)
             .WithOne(vote => vote.Ticket)
             .HasForeignKey(ticket => ticket.TicketId);

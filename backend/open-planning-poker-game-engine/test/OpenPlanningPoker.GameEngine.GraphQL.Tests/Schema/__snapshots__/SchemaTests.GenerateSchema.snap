@@ -90,6 +90,65 @@ type Info {
   contact: String!
 }
 
+type JiraBoardInfo {
+  id: Long!
+  name: String!
+  type: String!
+}
+
+type JiraConnectionResult {
+  sites: [JiraSiteInfo!]!
+  returnPath: String!
+  siteSelected: Boolean!
+}
+
+"The caller's Jira connection. Enabled is false when the server has no Atlassian app configured."
+type JiraConnectionStatus {
+  enabled: Boolean!
+  connected: Boolean!
+  needsReconnect: Boolean!
+  siteName: String
+  siteUrl: String
+}
+
+type JiraEstimateSaved {
+  issueKey: String!
+  value: String!
+  url: String!
+}
+
+type JiraImportSummary {
+  imported: Int!
+  skipped: Int!
+}
+
+type JiraIssuePreview {
+  key: String!
+  summary: String!
+  description: String!
+  storyPoints: Float
+  url: String!
+  alreadyInGame: Boolean!
+}
+
+type JiraIssueSearch {
+  issues: [JiraIssuePreview!]!
+  truncated: Boolean!
+  max: Int!
+}
+
+type JiraSiteInfo {
+  cloudId: String!
+  name: String!
+  url: String!
+}
+
+type JiraSprintInfo {
+  id: Long!
+  name: String!
+  state: String!
+}
+
 "Base Game Engine mutation."
 type Mutation {
   "Sends a chat message to a game. Only players of the game can send messages."
@@ -118,6 +177,18 @@ type Mutation {
   deleteGame(gameId: UUID!): Boolean!
   "Generates a PDF report of the game. Only players of the game can generate it."
   generateGameReport(gameId: UUID!): GameReport!
+  "Finishes the Atlassian consent: stores the tokens (encrypted) and lists the caller's sites."
+  completeJiraConnection(code: String! state: String!): JiraConnectionResult!
+  selectJiraSite(cloudId: String!): JiraConnectionStatus!
+  "Deletes the caller's stored Jira tokens."
+  disconnectJira: Boolean!
+  "Adds Jira issues as tickets; issues already in the game are skipped. Host or co-host only."
+  importJiraIssues(gameId: UUID! issueKeys: [String!]!): JiraImportSummary!
+  """
+  Writes the final estimate (or the most common card) to the Jira issue's story points; optionally adds a
+  comment with the votes. Host or co-host only, after the reveal.
+  """
+  saveEstimateToJira(ticketId: UUID! addComment: Boolean!): JiraEstimateSaved!
   "Dummy health-check mutation."
   ping: String!
   "Creates Game Settings. Host only."
@@ -181,6 +252,18 @@ type Query {
   game(id: UUID!): Game!
   "Returns an info about the Game Engine service."
   info: Info!
+  "Whether the integration is available and the caller has connected Jira."
+  jiraConnection: JiraConnectionStatus!
+  "The Atlassian consent page to open; it returns to the app's Jira callback, then to returnPath."
+  jiraAuthorizeUrl(returnPath: String!): String!
+  jiraSites: [JiraSiteInfo!]!
+  jiraBoards: [JiraBoardInfo!]!
+  jiraSprints(boardId: Long!): [JiraSprintInfo!]!
+  """
+  Import preview: a sprint's issues, a board's open issues, or a JQL query, with the issues that are already
+  tickets of the game marked. Host or co-host only.
+  """
+  jiraIssues(gameId: UUID! boardId: Long sprintId: Long jql: String): JiraIssueSearch!
   "Dummy health-check query."
   ping: String!
   "Gets Game Settings."
@@ -278,6 +361,10 @@ type Ticket {
   finalEstimate: String
   "Place of the ticket in the game's list (0 first)."
   position: Int!
+  "Key of the Jira issue the ticket was imported from (e.g. \"OPP-118\"); null otherwise."
+  externalKey: String
+  "Link to that issue."
+  externalUrl: String
 }
 
 type Vote {
@@ -322,5 +409,8 @@ scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time"
 
 "The `Decimal` scalar type represents a decimal floating-point number."
 scalar Decimal
+
+"The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1."
+scalar Long
 
 scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")
