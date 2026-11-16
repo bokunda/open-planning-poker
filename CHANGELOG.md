@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0] — Unreleased
+
+Safer and easier to run: nightly backups, an alert for server errors, and a password on Redis.
+
+### Added
+- **Nightly database backups**: an encrypted copy of the games, tickets and votes every night, kept for 14 days on the server and on a separate Hetzner Storage Box. Every backup is checked, and once a month it is restored into a throwaway database to prove it works. A failed backup opens a GitHub issue
+- **Alert for server errors**: Grafana emails when the gateway, the Game Engine or User Management answers more than 2% of requests with an error for 5 minutes, with links to the metrics and the logs
+
+### Security
+- Redis requires a password; the services get it at runtime from a secret
+- The Redis and PostgreSQL deploys reach the private server through the public server only
+
+### Changed
+- Redis keeps its data on a volume, so restarting or updating it no longer clears usernames, chat and timers
+- Grafana is pinned to 11.5.2 and its data sources are provisioned from the repository
+
+
 ## [3.0.0] — 2026-11-13
 
 Every part of Open Planning Poker on current, supported versions. Nothing changes for players; self-hosters need the new runtimes.

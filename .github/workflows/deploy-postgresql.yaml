@@ -12,9 +12,13 @@ jobs:
       - name: Deploy using SSH
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ vars.SSH_PRIVATE_HOST }}
+          # The private server is reached through the app server over the private network.
+          host: ${{ vars.OPP_DB_HOST }}
           username: ${{ vars.SSH_PRIVATE_USER }}
           key: ${{ secrets.SSH_PRIVATE_DEPLOY_KEY }}
+          proxy_host: ${{ vars.SSH_HOST }}
+          proxy_username: ${{ vars.SSH_USER }}
+          proxy_key: ${{ secrets.SSH_DEPLOY_KEY }}
           script: |
             docker pull postgres:15.5
             docker rm -f OpenPlanningPoker.Db || true

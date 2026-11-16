@@ -12,6 +12,7 @@ jobs:
     secrets: 
       SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
       OPP_JWT_SECRET: ${{ secrets.OPP_JWT_SECRET }}
+      REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
   opp-ge:
     name: Deploy OPP Game Engine
     uses: ./.github/workflows/deploy-opp-game-engine.yaml
@@ -19,6 +20,7 @@ jobs:
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD  }}
       SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
       OPP_JWT_SECRET: ${{ secrets.OPP_JWT_SECRET }}
+      REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
   opp-graphql-gtw:
     name: Deploy OPP GraphQL Gateway
     needs: [opp-um, opp-ge]

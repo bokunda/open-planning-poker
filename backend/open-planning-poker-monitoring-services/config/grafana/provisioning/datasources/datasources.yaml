@@ -1,0 +1,18 @@
+# Data sources, provisioned on every start (they used to be written by the container entrypoint).
+apiVersion: 1
+datasources:
+  - name: Loki
+    type: loki
+    access: proxy
+    orgId: 1
+    url: http://loki:3100
+    isDefault: true
+    editable: false
+  # Metrics from the OpenTelemetry collector, used by the 5xx alert (OPP-35).
+  - name: OPP Prometheus
+    uid: opp-prometheus
+    type: prometheus
+    access: proxy
+    orgId: 1
+    url: http://prometheus:9090
+    editable: false

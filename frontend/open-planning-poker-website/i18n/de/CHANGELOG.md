@@ -6,6 +6,23 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+## [3.1.0] — Unreleased
+
+Sicherer und leichter zu betreiben: nächtliche Backups, ein Alarm bei Serverfehlern und ein Passwort für Redis.
+
+### Hinzugefügt
+- **Nächtliche Datenbank-Backups**: jede Nacht eine verschlüsselte Kopie der Spiele, Tickets und Stimmen, 14 Tage auf dem Server und auf einer eigenen Hetzner Storage Box aufbewahrt. Jedes Backup wird geprüft, und einmal im Monat wird es in eine Wegwerf-Datenbank zurückgespielt, um zu zeigen, dass es funktioniert. Ein fehlgeschlagenes Backup öffnet ein GitHub-Issue
+- **Alarm bei Serverfehlern**: Grafana schickt eine E-Mail, wenn das Gateway, die Game Engine oder das User Management 5 Minuten lang mehr als 2 % der Anfragen mit einem Fehler beantwortet, mit Links zu den Metriken und Logs
+
+### Sicherheit
+- Redis verlangt ein Passwort; die Dienste erhalten es zur Laufzeit aus einem Secret
+- Die Deploys von Redis und PostgreSQL erreichen den privaten Server nur über den öffentlichen Server
+
+### Geändert
+- Redis speichert seine Daten auf einem Volume, ein Neustart oder Update löscht also keine Benutzernamen, Chats und Timer mehr
+- Grafana ist auf 11.5.2 festgelegt, und die Datenquellen werden aus dem Repository eingerichtet
+
+
 ## [3.0.0] — 2026-11-13
 
 Jeder Teil von Open Planning Poker auf aktuellen, unterstützten Versionen. Für Spieler ändert sich nichts; wer selbst hostet, braucht die neuen Laufzeitumgebungen.
