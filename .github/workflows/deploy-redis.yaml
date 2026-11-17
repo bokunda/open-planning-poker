@@ -1,23 +1,88 @@
 name: Deploy Redis
 run-name: "Deploying Redis to server"
+# Redis on the private server, with a password (OPP-27) and its data on a volume, so recreating the
+# container keeps usernames, chat and timers. Order without downtime is in docs/deployment.md.
 on:
   workflow_dispatch:
+    inputs:
+      step:
+        description: "set-password-live: put the password on the running Redis (no restart; run before Deploy OPP). recreate: new container with the password and the data volume."
+        type: choice
+        options: [recreate, set-password-live]
+        default: recreate
 jobs:
   deploy-redis:
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7.0.1
+      - name: Verify required secrets
+        env:
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+        run: |
+          if [ ${#REDIS_PASSWORD} -lt 32 ]; then echo "::error::REDIS_PASSWORD must be set and at least 32 characters"; exit 1; fi
+          case "$REDIS_PASSWORD" in *[!A-Za-z0-9]*) echo "::error::REDIS_PASSWORD may only contain letters and digits (it goes into a connection string)"; exit 1;; esac
 
-      - name: Deploy using SSH
+      # Connections that are already open stay authenticated, so the running services keep working while
+      # Deploy OPP brings them back with the password.
+      - name: Set the password on the running Redis
+        if: inputs.step == 'set-password-live'
         uses: appleboy/ssh-action@v1
+        env:
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
         with:
-          host: ${{ vars.SSH_PRIVATE_HOST }}
+          host: ${{ vars.OPP_DB_HOST }}
           username: ${{ vars.SSH_PRIVATE_USER }}
           key: ${{ secrets.SSH_PRIVATE_DEPLOY_KEY }}
+          proxy_host: ${{ vars.SSH_HOST }}
+          proxy_username: ${{ vars.SSH_USER }}
+          proxy_key: ${{ secrets.SSH_DEPLOY_KEY }}
+          envs: REDIS_PASSWORD
           script: |
-            docker pull redis:latest
-            docker rm -f OpenPlanningPoker.Cache || true
-            docker run -d --restart unless-stopped --name OpenPlanningPoker.Cache --network oppnetwork -p 6379:6379 redis:latest
-            docker system prune -f
+            set -e
+            # Without a password yet, CONFIG SET works unauthenticated; with one, it needs it.
+            docker exec OpenPlanningPoker.Cache redis-cli -a "$REDIS_PASSWORD" --no-auth-warning CONFIG SET requirepass "$REDIS_PASSWORD" \
+              || docker exec OpenPlanningPoker.Cache redis-cli CONFIG SET requirepass "$REDIS_PASSWORD"
+            docker exec OpenPlanningPoker.Cache redis-cli -a "$REDIS_PASSWORD" --no-auth-warning PING
+            docker exec OpenPlanningPoker.Cache redis-cli PING 2>&1 | grep -q NOAUTH
 
+      - name: Deploy using SSH
+        if: inputs.step != 'set-password-live'
+        uses: appleboy/ssh-action@v1
+        env:
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+        with:
+          # The private server is reached through the app server over the private network.
+          host: ${{ vars.OPP_DB_HOST }}
+          username: ${{ vars.SSH_PRIVATE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_DEPLOY_KEY }}
+          proxy_host: ${{ vars.SSH_HOST }}
+          proxy_username: ${{ vars.SSH_USER }}
+          proxy_key: ${{ secrets.SSH_DEPLOY_KEY }}
+          envs: REDIS_PASSWORD
+          script: |
+            set -e
+            IMAGE=redis:8.8
+            docker pull -q $IMAGE
+            # Keep the current data: save it from the running container (with or without a password).
+            if docker inspect OpenPlanningPoker.Cache >/dev/null 2>&1; then
+              docker exec OpenPlanningPoker.Cache redis-cli -a "$REDIS_PASSWORD" --no-auth-warning SAVE \
+                || docker exec OpenPlanningPoker.Cache redis-cli SAVE || true
+              docker cp OpenPlanningPoker.Cache:/data/dump.rdb /tmp/opp-redis-dump.rdb 2>/dev/null || true
+            fi
+            NEW_VOLUME=0
+            docker volume inspect opp-redis-data >/dev/null 2>&1 || { docker volume create opp-redis-data >/dev/null; NEW_VOLUME=1; }
+            docker rm -f OpenPlanningPoker.Cache >/dev/null 2>&1 || true
+            docker create --restart unless-stopped --name OpenPlanningPoker.Cache --network oppnetwork \
+              -p 6379:6379 -v opp-redis-data:/data $IMAGE \
+              redis-server --requirepass "$REDIS_PASSWORD" --save 300 1 >/dev/null
+            # The first time, the volume is empty: start from the saved data.
+            if [ "$NEW_VOLUME" = 1 ] && [ -f /tmp/opp-redis-dump.rdb ]; then
+              docker cp /tmp/opp-redis-dump.rdb OpenPlanningPoker.Cache:/data/dump.rdb
+            fi
+            rm -f /tmp/opp-redis-dump.rdb
+            docker start OpenPlanningPoker.Cache >/dev/null
+            sleep 2
+            docker exec OpenPlanningPoker.Cache redis-cli -a "$REDIS_PASSWORD" --no-auth-warning PING
+            echo "keys: $(docker exec OpenPlanningPoker.Cache redis-cli -a "$REDIS_PASSWORD" --no-auth-warning DBSIZE)"
+            # Without the password Redis must refuse commands.
+            docker exec OpenPlanningPoker.Cache redis-cli PING 2>&1 | grep -q NOAUTH
+            docker image prune -f >/dev/null

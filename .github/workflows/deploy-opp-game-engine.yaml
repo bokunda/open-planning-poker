@@ -10,6 +10,8 @@ on:
         required: true
       OPP_JWT_SECRET:
         required: true
+      REDIS_PASSWORD:
+        required: true
 jobs:
   deploy-opp-game-engine:
     runs-on: ubuntu-24.04
@@ -24,9 +26,10 @@ jobs:
         env:
           OPP_JWT_SECRET: ${{ secrets.OPP_JWT_SECRET }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
         run: |
           missing=0
-          for name in OPP_JWT_SECRET POSTGRES_PASSWORD; do
+          for name in OPP_JWT_SECRET POSTGRES_PASSWORD REDIS_PASSWORD; do
             if [ -z "${!name}" ]; then echo "::error::Secret $name is not set"; missing=1; fi
           done
           if [ ${#OPP_JWT_SECRET} -lt 32 ]; then echo "::error::OPP_JWT_SECRET must be at least 32 characters"; missing=1; fi
@@ -76,7 +79,7 @@ jobs:
               -e ASPNETCORE_HTTP_PORTS=8080 \
               -e OTEL_EXPORTER_OTLP_ENDPOINT=${{ vars.OTEL_ENDPOINT }} \
               -e 'ConnectionStrings__Database=Host=${{ vars.OPP_DB_HOST }};Port=${{ vars.OPP_DB_PORT }};Database=${{ vars.OPP_DB_GE_NAME }};Username=${{ vars.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }};' \
-              -e 'ConnectionStrings__Cache=${{ vars.REDIS_HOST }}' \
+              -e 'ConnectionStrings__Cache=${{ vars.REDIS_HOST }},password=${{ secrets.REDIS_PASSWORD }}' \
               -e 'Authentication__Secret=${{ secrets.OPP_JWT_SECRET }}' \
               -p 127.0.0.1:9091:8080 \
               ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }}

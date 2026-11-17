@@ -1,0 +1,20 @@
+# Email for every alert (OPP-35). SMTP is configured with the GF_SMTP_* variables; the recipient is
+# OPP_ALERT_EMAIL. Both come from GitHub secrets in the monitoring deploy.
+apiVersion: 1
+contactPoints:
+  - orgId: 1
+    name: opp-email
+    receivers:
+      - uid: opp-email
+        type: email
+        settings:
+          addresses: $__env{OPP_ALERT_EMAIL}
+          singleEmail: true
+        disableResolveMessage: false
+policies:
+  - orgId: 1
+    receiver: opp-email
+    group_by: ['grafana_folder', 'alertname', 'service']
+    group_wait: 30s
+    group_interval: 5m
+    repeat_interval: 4h

@@ -6,6 +6,23 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+## [3.1.0] — 2026-11-17
+
+Bezbednije i lakše za održavanje: noćni backup, alarm za greške na serveru i lozinka za Redis.
+
+### Dodato
+- **Noćni backup baze**: šifrovana kopija igara, tiketa i glasova svake noći, čuva se 14 dana na serveru i na posebnom Hetzner Storage Boxu. Svaki backup se proverava, a jednom mesečno se vraća u privremenu bazu da se dokaže da radi. Neuspeli backup otvara GitHub issue
+- **Alarm za greške na serveru**: Grafana šalje email kad gateway, Game Engine ili User Management odgovori greškom na više od 2% zahteva tokom 5 minuta, uz linkove na metrike i logove
+
+### Bezbednost
+- Redis traži lozinku; servisi je dobijaju u toku rada iz secreta
+- Deploy Redisa i PostgreSQL-a dolazi do privatnog servera samo preko javnog servera
+
+### Izmenjeno
+- Redis čuva podatke na volumeu, pa restart ili ažuriranje više ne briše korisnička imena, čet i tajmere
+- Grafana je fiksirana na 11.5.2, a izvori podataka se podešavaju iz repozitorijuma
+
+
 ## [3.0.0] — 2026-11-13
 
 Svaki deo Open Planning Pokera na aktuelnim, podržanim verzijama. Za igrače se ništa ne menja; za self-hosting trebaju nova okruženja.

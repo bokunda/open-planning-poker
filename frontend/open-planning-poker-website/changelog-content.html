@@ -1,4 +1,21 @@
-<div class="changelog-content"><h2>[3.0.0] — 2026-11-13</h2>
+<div class="changelog-content"><h2>[3.1.0] — 2026-11-17</h2>
+<p>Safer and easier to run: nightly backups, an alert for server errors, and a password on Redis.</p>
+<h3>Added</h3>
+<ul>
+<li><strong>Nightly database backups</strong>: an encrypted copy of the games, tickets and votes every night, kept for 14 days on the server and on a separate Hetzner Storage Box. Every backup is checked, and once a month it is restored into a throwaway database to prove it works. A failed backup opens a GitHub issue</li>
+<li><strong>Alert for server errors</strong>: Grafana emails when the gateway, the Game Engine or User Management answers more than 2% of requests with an error for 5 minutes, with links to the metrics and the logs</li>
+</ul>
+<h3>Security</h3>
+<ul>
+<li>Redis requires a password; the services get it at runtime from a secret</li>
+<li>The Redis and PostgreSQL deploys reach the private server through the public server only</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li>Redis keeps its data on a volume, so restarting or updating it no longer clears usernames, chat and timers</li>
+<li>Grafana is pinned to 11.5.2 and its data sources are provisioned from the repository</li>
+</ul>
+<h2>[3.0.0] — 2026-11-13</h2>
 <p>Every part of Open Planning Poker on current, supported versions. Nothing changes for players; self-hosters need the new runtimes.</p>
 <h3>Changed</h3>
 <ul>

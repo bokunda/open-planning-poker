@@ -1,0 +1,93 @@
+name: Database backup
+run-name: "Database backup"
+# OPP-36: nightly encrypted pg_dump on the private server, kept 14 days there and on the Hetzner Storage Box,
+# and on the 1st of every month a restore test. A failure opens (or updates) a GitHub issue labeled `backup`,
+# like the uptime check; GitHub emails it.
+on:
+  schedule:
+    - cron: "30 2 * * *"   # backup, every night
+    - cron: "0 4 1 * *"    # restore test, 1st of the month
+  workflow_dispatch:
+    inputs:
+      restore_test:
+        description: Run the restore test instead of a backup
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Choose the job
+        id: mode
+        run: |
+          if [ "${{ github.event.schedule }}" = "0 4 1 * *" ] || [ "${{ inputs.restore_test }}" = "true" ]; then
+            echo "script=opp-restore-test.sh" >> "$GITHUB_OUTPUT"; echo "name=Restore test" >> "$GITHUB_OUTPUT"
+          else
+            echo "script=opp-backup.sh" >> "$GITHUB_OUTPUT"; echo "name=Backup" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Copy the scripts to the private server
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ vars.OPP_DB_HOST }}
+          username: ${{ vars.SSH_PRIVATE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_DEPLOY_KEY }}
+          proxy_host: ${{ vars.SSH_HOST }}
+          proxy_username: ${{ vars.SSH_USER }}
+          proxy_key: ${{ secrets.SSH_DEPLOY_KEY }}
+          source: "backend/open-planning-poker-backup/*.sh"
+          target: "/home/${{ vars.SSH_PRIVATE_USER }}/opp-backup"
+          strip_components: 2
+
+      - name: ${{ steps.mode.outputs.name }}
+        id: run
+        uses: appleboy/ssh-action@v1
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+          STORAGE_BOX: ${{ vars.STORAGE_BOX }}
+        with:
+          host: ${{ vars.OPP_DB_HOST }}
+          username: ${{ vars.SSH_PRIVATE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_DEPLOY_KEY }}
+          proxy_host: ${{ vars.SSH_HOST }}
+          proxy_username: ${{ vars.SSH_USER }}
+          proxy_key: ${{ secrets.SSH_DEPLOY_KEY }}
+          envs: BACKUP_PASSPHRASE,STORAGE_BOX
+          command_timeout: 15m
+          script: bash ~/opp-backup/${{ steps.mode.outputs.script }}
+
+      - name: Open or update the backup issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh label create backup --color B60205 --description "Automatic database backup alerts" --force >/dev/null
+          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          body=$(printf '%s failed (%s UTC). See the run log: %s' "${{ steps.mode.outputs.name }}" "$(date -u '+%Y-%m-%d %H:%M')" "$run_url")
+          existing=$(gh issue list --label backup --state open --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then gh issue comment "$existing" --body "$body"
+          else gh issue create --title "${{ steps.mode.outputs.name }} failed" --label backup --body "$body"; fi
+
+      - name: Close the backup issue when it works again
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          for n in $(gh issue list --label backup --state open --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "${{ steps.mode.outputs.name }} succeeded again ($(date -u '+%Y-%m-%d %H:%M') UTC)."
+          done

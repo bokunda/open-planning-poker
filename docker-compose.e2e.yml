@@ -9,7 +9,8 @@ x-backend-env: &backend-env
   ASPNETCORE_HTTP_PORTS: "8080"
   Authentication__Secret: e2e-tests-only-secret-not-for-production-0123456789
   Cors__AllowedOrigins__0: http://localhost:4000
-  ConnectionStrings__Cache: OpenPlanningPoker.Cache:6379
+  # Redis has a password, as in production (OPP-27), so the tests fail if a service connects without it.
+  ConnectionStrings__Cache: OpenPlanningPoker.Cache:6379,password=e2eRedisPasswordOnlyForTests0123456789
   # Every test user comes from the same address; keep the per-client limits out of the way.
   RateLimiting__Burst: "10000"
   RateLimiting__TokensPerTenSeconds: "10000"
@@ -28,10 +29,11 @@ services:
       retries: 30
 
   OpenPlanningPoker.Cache:
-    image: redis:7-alpine
+    image: redis:8.8
     container_name: OpenPlanningPoker.Cache
+    command: ["redis-server", "--requirepass", "e2eRedisPasswordOnlyForTests0123456789"]
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "-a", "e2eRedisPasswordOnlyForTests0123456789", "--no-auth-warning", "ping"]
       interval: 2s
       retries: 30
 

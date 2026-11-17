@@ -122,6 +122,11 @@ The workflows use these repository variables and secrets:
 | `SSH_PRIVATE_HOST` | Private server IP |
 | `SSH_PRIVATE_USER` | Deploy user on the private server (`deploy`) |
 | `SSH_PRIVATE_DEPLOY_KEY` | Private ed25519 key of the deploy user on the private server (secret) |
+| `REDIS_PASSWORD` | Redis password, letters and digits, at least 32 characters (secret; OPP-27) |
+| `BACKUP_PASSPHRASE` | Passphrase the database backups are encrypted with (secret; keep a copy outside GitHub) |
+| `STORAGE_BOX` | `user@host` of the Hetzner Storage Box for the off-server backup copy |
+| `SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD` | SMTP server (`host:587`) and login for Grafana alert emails (secrets) |
+| `SMTP_FROM_ADDRESS`, `OPP_ALERT_EMAIL` | Sender and recipient of the alert emails |
 | `OPP_API_GATEWAY` | GraphQL HTTP endpoint URL |
 | `OPP_WSS_URL` | GraphQL WebSocket endpoint URL |
 | `OPP_DB_HOST` | PostgreSQL host |
@@ -152,6 +157,47 @@ chown deploy:deploy /home/deploy/.ssh/authorized_keys && chmod 600 /home/deploy/
 ```
 
 Membership in the `docker` group is equivalent to root on that server, so keep the key only in the repository secrets.
+
+### Redis password (OPP-27)
+
+Redis requires a password; the services get it in their connection string (`host:port,password=…`).
+To turn it on, or to change it, without downtime:
+
+1. Set the `REDIS_PASSWORD` secret (letters and digits, 32+ characters).
+2. Run **Deploy Redis** with the step `set-password-live`: it sets the password on the running Redis (`CONFIG SET`).
+   Connections that are already open stay authenticated, so the services keep working.
+3. Run **Deploy OPP**: User Management and the Game Engine reconnect with the password.
+4. Run **Deploy Redis** with the step `recreate`: the container is recreated with `--requirepass` and its data on the `opp-redis-data`
+   volume (the current data is copied over the first time).
+
+The Redis and PostgreSQL workflows reach the private server through the public server (`proxy_host`), because
+its own SSH port is not reachable from everywhere.
+
+### Alerts (OPP-35)
+
+Grafana has the data sources, a "5xx responses above 2%" alert per service (gateway, Game Engine, User
+Management; 5 minutes) and an email contact point provisioned from
+`backend/open-planning-poker-monitoring-services/config/grafana/provisioning/`. The email settings come from the
+`SMTP_*` secrets and `OPP_ALERT_EMAIL`; run **Deploy Monitoring Services** after changing them. The alert email
+links to the metrics and the Loki logs of the last 30 minutes.
+
+### Database backups (OPP-36)
+
+The **Database backup** workflow runs every night at 02:30 UTC: an encrypted `pg_dump` of `opp-gameengine` and
+the roles, checked with `pg_restore --list`, kept 14 days in `~/opp-backups` on the private server and mirrored
+to the Storage Box (`opp-backups/`). On the 1st of every month it restores the newest backup into a throwaway
+container and counts games, tickets and migrations. A failure opens a GitHub issue labeled `backup`.
+
+Setting up the Storage Box once: order it, enable SSH support, and add the deploy user's key
+(`/home/deploy/.ssh/storagebox.pub` on the private server) to the box's `.ssh/authorized_keys`.
+
+Restoring a backup by hand (on the private server, as `deploy`):
+
+```bash
+gpg --decrypt ~/opp-backups/opp-<date>-opp-gameengine.dump.gpg > /tmp/opp.dump   # asks for BACKUP_PASSPHRASE
+docker exec -i OpenPlanningPoker.Db pg_restore -U postgres --clean --if-exists -d opp-gameengine < /tmp/opp.dump
+rm /tmp/opp.dump
+```
 
 ## Nginx Configuration
 

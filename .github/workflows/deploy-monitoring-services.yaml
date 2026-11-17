@@ -26,7 +26,16 @@ jobs:
       
       - name: Deploy using SSH
         uses: appleboy/ssh-action@v1
+        # Email for Grafana alerts (OPP-35). Without SMTP_HOST the alerts still run, but nothing is sent.
+        env:
+          GF_SMTP_ENABLED: ${{ secrets.SMTP_HOST != '' }}
+          GF_SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          GF_SMTP_USER: ${{ secrets.SMTP_USER }}
+          GF_SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          GF_SMTP_FROM_ADDRESS: ${{ vars.SMTP_FROM_ADDRESS }}
+          OPP_ALERT_EMAIL: ${{ vars.OPP_ALERT_EMAIL }}
         with:
+          envs: GF_SMTP_ENABLED,GF_SMTP_HOST,GF_SMTP_USER,GF_SMTP_PASSWORD,GF_SMTP_FROM_ADDRESS,OPP_ALERT_EMAIL
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_DEPLOY_KEY }}
@@ -36,5 +45,8 @@ jobs:
             docker network inspect oppnetwork >/dev/null 2>&1 || docker network create oppnetwork
             docker compose pull
             docker compose up -d --remove-orphans
+            # The alert and its contact point are provisioned: fail the deploy if Grafana rejected them.
+            sleep 15
+            if docker compose logs grafana 2>&1 | grep -i "provisioning" | grep -iE "level=error|failed"; then exit 1; fi
             docker system prune -f
 
