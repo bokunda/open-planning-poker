@@ -6,6 +6,11 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+## [3.2.1] — 2026-11-17
+
+### Ispravljeno
+- **Špil**: kad napraviš igru sa špilom koji nije Fibonacci, ti kao host si i dalje video Fibonacci karte, a svi koji uđu špil koji si izabrao. Sad svi od početka dobijaju izabrani špil
+
 ## [3.2.0] — 2026-11-17
 
 Open Planning Poker radi sa alatima koje tvoj tim već koristi: Jira, Slack i Microsoft Teams.
