@@ -11,6 +11,8 @@ const GET_TICKET = gql `
         votesRevealed
         finalEstimate
         position
+        externalKey
+        externalUrl
       }
       ... on ApplicationError {
         code

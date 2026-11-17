@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.0] — 2026-11-17
+
+Open Planning Poker works with the tools your team already uses: Jira, Slack and Microsoft Teams.
+
+### Added
+- **Jira Cloud**: connect your Jira site once from the import dialog. **From Jira** imports the issues of a sprint, a board or a JQL query (up to 100, with their story points; issues already in the game are skipped). Each ticket keeps its key and a link to the issue. After the reveal, **Save to KEY** writes the agreed estimate to the issue's story points, optionally with a comment showing the votes
+- **Slack**: `/poker Sprint 43` in any channel creates a room and posts a **Join** button. Only the person who ran the command gets the link to run the game, and the result of each reveal is posted in the thread
+- **Microsoft Teams**: start a room from the message extension and share it as a card, or add Open Planning Poker as a meeting tab. The result of each reveal is posted back to the chat
+
+### Security
+- Jira and Slack tokens are stored encrypted on the server and never reach the browser. Disconnecting Jira deletes them
+- Slack requests are checked with Slack's signature, and Teams requests with the Bot Framework's keys
+
+### Developers
+- Setup for each integration is in `docs/integrations.md`; each one stays off until its secrets are set
+- Spike on an Atlassian Forge issue panel, with a prototype and a recommendation: `docs/integrations/jira-forge-spike.md`
+
+
 ## [3.1.0] — 2026-11-17
 
 Safer and easier to run: nightly backups, an alert for server errors, and a password on Redis.

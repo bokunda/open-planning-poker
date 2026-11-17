@@ -321,3 +321,16 @@
 
   mat-icon { flex: none; color: var(--opp-text-muted); }
 }
+
+/* Link to the Jira issue a ticket was imported from (OPP-11). */
+.ticket-jira-link {
+  display: inline-block;
+  margin-top: 2px;
+  font-size: var(--opp-font-size-sm);
+  font-weight: 600;
+  color: var(--opp-primary);
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+  &:focus-visible { outline: 3px solid var(--opp-primary-300); outline-offset: 2px; border-radius: 4px; }
+}

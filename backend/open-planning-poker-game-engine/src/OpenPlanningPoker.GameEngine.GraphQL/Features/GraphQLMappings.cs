@@ -52,10 +52,10 @@ public static class GraphQLMappings
     public static SettingsType ToGraphQL(this CreateGameSettingsResponse settings) => ToSettings(settings.Id, settings.GameId, settings.DeckSetup, settings.AutoReveal, settings.AsyncVotingEndsAt);
     public static SettingsType ToGraphQL(this UpdateGameSettingsResponse settings) => ToSettings(settings.Id, settings.GameId, settings.DeckSetup, settings.AutoReveal, settings.AsyncVotingEndsAt);
 
-    public static TicketType ToGraphQL(this GetTicketResponse ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
-    public static TicketType ToGraphQL(this CreateTicketResponse ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
-    public static TicketType ToGraphQL(this UpdateTicketResponse ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
-    public static TicketType ToGraphQL(this GetTicketsItem ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
+    public static TicketType ToGraphQL(this GetTicketResponse ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position, ticket.ExternalKey, ticket.ExternalUrl);
+    public static TicketType ToGraphQL(this CreateTicketResponse ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position, ticket.ExternalKey, ticket.ExternalUrl);
+    public static TicketType ToGraphQL(this UpdateTicketResponse ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position, ticket.ExternalKey, ticket.ExternalUrl);
+    public static TicketType ToGraphQL(this GetTicketsItem ticket) => ToTicket(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position, ticket.ExternalKey, ticket.ExternalUrl);
 
     public static VoteType ToGraphQL(this GetVotesItem vote) => new() { Id = vote.Id, PlayerId = vote.PlayerId, Value = vote.Value };
     public static VoteType ToGraphQL(this CreateOrUpdateVoteResponse vote) => new() { Id = vote.Id, PlayerId = vote.PlayerId, Value = vote.Value };
@@ -69,7 +69,7 @@ public static class GraphQLMappings
         AsyncVotingEndsAt = asyncVotingEndsAt
     };
 
-    private static TicketType ToTicket(Guid id, Guid gameId, string name, string description, bool votesRevealed, string? finalEstimate, int position) => new()
+    private static TicketType ToTicket(Guid id, Guid gameId, string name, string description, bool votesRevealed, string? finalEstimate, int position, string? externalKey, string? externalUrl) => new()
     {
         Id = id,
         GameId = gameId,
@@ -77,6 +77,8 @@ public static class GraphQLMappings
         Description = description,
         VotesRevealed = votesRevealed,
         FinalEstimate = finalEstimate,
-        Position = position
+        Position = position,
+        ExternalKey = externalKey,
+        ExternalUrl = externalUrl
     };
 }

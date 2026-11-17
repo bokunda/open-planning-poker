@@ -17,6 +17,9 @@ internal sealed class GameConfiguration : IEntityTypeConfiguration<Game>
 
         builder.HasIndex(game => game.TeamId);
 
+        // One-time host link of games started from Slack or Teams (hex SHA-256).
+        builder.Property(game => game.HostClaimHash).HasMaxLength(64);
+
         builder.HasOne(game => game.GameSettings)
             .WithOne(gameSettings => gameSettings.Game);
 

@@ -57,6 +57,11 @@
               </button>
             }
           </h2>
+          @if (jiraUrl) {
+            <a class="ticket-jira-link" [href]="jiraUrl" target="_blank" rel="noopener noreferrer">
+              {{ 'jira.openIssue' | transloco: { key: jiraKey } }}
+            </a>
+          }
           @if (ticket?.description) {
             <div class="ticket-description opp-markdown" [class.ticket-description--expanded]="descriptionExpanded"
             [innerHTML]="ticket!.description | oppMarkdown"></div>
@@ -145,7 +150,8 @@
   }
   @if (votesRevealed) {
     <app-vote-results [votes]="votes" [players]="players" [deck]="voteOptions"
-    [isHost]="isHost" [finalEstimate]="finalEstimate" (finalEstimateChange)="onSetFinalEstimate.emit($event)"></app-vote-results>
+    [isHost]="isHost" [finalEstimate]="finalEstimate" (finalEstimateChange)="onSetFinalEstimate.emit($event)"
+    [jiraKey]="jiraKey" [jiraSaving]="jiraSaving" (saveToJira)="onSaveToJira.emit($event)"></app-vote-results>
   }
 }
 </section>

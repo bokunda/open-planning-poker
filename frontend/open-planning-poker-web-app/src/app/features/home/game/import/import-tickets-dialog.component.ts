@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
-import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { JiraImportComponent } from './jira-import.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,15 +13,24 @@ export interface ImportedTicket {
   description: string;
 }
 
+export interface ImportTicketsDialogData {
+  /** The game the "From Jira" tab imports into; without it the tab is hidden. */
+  gameId: string;
+}
+
+/** The dialog closes with tickets to create, or with how many tickets the Jira import already added. */
+export type ImportTicketsResult = ImportedTicket[] | { jiraImported: number };
+
 @Component({
   selector: 'app-import-tickets-dialog',
   templateUrl: './import-tickets-dialog.component.html',
   styleUrl: './import-tickets-dialog.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, FormsModule, MatDialogModule, MatTabsModule, MatButtonModule, MatIconModule]
+  imports: [TranslocoPipe, FormsModule, MatDialogModule, MatTabsModule, MatButtonModule, MatIconModule, JiraImportComponent]
 })
 export class ImportTicketsDialogComponent {
   readonly dialogRef = inject(MatDialogRef<ImportTicketsDialogComponent>);
+  readonly data = inject<ImportTicketsDialogData | null>(MAT_DIALOG_DATA, { optional: true });
 
   parsedTickets: ImportedTicket[] = [];
   bulkText = '';
@@ -151,5 +161,9 @@ export class ImportTicketsDialogComponent {
   import(): void {
     if (this.parsedTickets.length === 0) return;
     this.dialogRef.close(this.parsedTickets);
+  }
+
+  onJiraImported(count: number): void {
+    this.dialogRef.close({ jiraImported: count } satisfies ImportTicketsResult);
   }
 }

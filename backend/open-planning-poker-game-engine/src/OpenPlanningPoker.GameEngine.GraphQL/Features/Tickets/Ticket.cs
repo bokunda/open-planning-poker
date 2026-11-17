@@ -13,6 +13,12 @@ public class Ticket
 
     /// <summary>Place of the ticket in the game's list (0 first).</summary>
     public int Position { get; set; }
+
+    /// <summary>Key of the Jira issue the ticket was imported from (e.g. "OPP-118"); null otherwise.</summary>
+    public string? ExternalKey { get; set; }
+
+    /// <summary>Link to that issue.</summary>
+    public string? ExternalUrl { get; set; }
     public ApiCollection<Vote> Votes { get; set; } = new([], 0);
     
     public async Task<ApiCollection<Vote>> GetVotes(

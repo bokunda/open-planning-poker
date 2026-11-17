@@ -24,6 +24,9 @@ export type RoomPlayer = GamePlayer & {
 export type RoomTicket = Ticket & {
   finalEstimate?: string | null;
   position?: number;
+  /** Jira issue the ticket was imported from (OPP-11). */
+  externalKey?: string | null;
+  externalUrl?: string | null;
 };
 
 export interface RoomSettings {

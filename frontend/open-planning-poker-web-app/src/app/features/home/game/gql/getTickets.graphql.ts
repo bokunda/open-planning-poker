@@ -12,6 +12,8 @@ query Tickets($gameId: UUID!) {
         votesRevealed
         finalEstimate
         position
+        externalKey
+        externalUrl
         votes {
             items {
                 id

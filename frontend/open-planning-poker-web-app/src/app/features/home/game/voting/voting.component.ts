@@ -57,6 +57,9 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
   @Output() onRevealVotes = new EventEmitter<void>();
   @Output() onNavigateTicket = new EventEmitter<string>();
   @Output() onSetFinalEstimate = new EventEmitter<string | null>();
+  /** Saves the estimate to the Jira issue the ticket came from; the value says whether to add a comment. */
+  @Output() onSaveToJira = new EventEmitter<boolean>();
+  @Input() jiraSaving = false;
 
   private playersSource: ApiCollectionOfGamePlayer | undefined;
   private seatedCache: ApiCollectionOfGamePlayer | undefined;
@@ -77,6 +80,14 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
 
   get finalEstimate(): string | null {
     return (this.ticket as RoomTicket | undefined)?.finalEstimate ?? null;
+  }
+
+  get jiraKey(): string | null {
+    return (this.ticket as RoomTicket | undefined)?.externalKey ?? null;
+  }
+
+  get jiraUrl(): string | null {
+    return (this.ticket as RoomTicket | undefined)?.externalUrl ?? null;
   }
 
   voteOptions: string[] = [];

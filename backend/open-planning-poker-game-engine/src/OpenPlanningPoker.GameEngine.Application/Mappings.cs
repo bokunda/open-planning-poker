@@ -27,16 +27,16 @@ public static class Mappings
         new(settings.Id, settings.GameId, settings.DeckSetup, settings.AutoReveal, settings.AsyncVotingEndsAt);
 
     public static CreateTicketResponse ToCreateTicketResponse(this Ticket ticket) =>
-        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
+        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position, ticket.ExternalKey, ticket.ExternalUrl);
 
     public static GetTicketResponse ToGetTicketResponse(this Ticket ticket) =>
-        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
+        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position, ticket.ExternalKey, ticket.ExternalUrl);
 
     public static GetTicketsItem ToGetTicketsItem(this Ticket ticket) =>
-        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
+        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position, ticket.ExternalKey, ticket.ExternalUrl);
 
     public static UpdateTicketResponse ToUpdateTicketResponse(this Ticket ticket) =>
-        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position);
+        new(ticket.Id, ticket.GameId, ticket.Name, ticket.Description, ticket.VotesRevealed, ticket.FinalEstimate, ticket.Position, ticket.ExternalKey, ticket.ExternalUrl);
 
     public static ImportTicketItemResponse ToImportTicketItemResponse(this Ticket ticket) =>
         new(ticket.Name, ticket.Description);

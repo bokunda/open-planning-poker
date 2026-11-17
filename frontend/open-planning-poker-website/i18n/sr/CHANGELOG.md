@@ -6,6 +6,24 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+## [3.2.0] — 2026-11-17
+
+Open Planning Poker radi sa alatima koje tvoj tim već koristi: Jira, Slack i Microsoft Teams.
+
+### Dodato
+- **Jira Cloud**: poveži svoj Jira sajt jednom, iz dijaloga za uvoz. **Iz Jire** uvozi issue-e iz sprinta, boarda ili JQL upita (do 100, sa story pointovima; issue-i koji su već u igri se preskaču). Svaki tiket čuva ključ i link na issue. Posle otkrivanja, **Sačuvaj u KEY** upisuje dogovorenu procenu u story points issue-a, uz opcioni komentar sa glasovima
+- **Slack**: `/poker Sprint 43` u bilo kom kanalu pravi sobu i objavljuje dugme **Join**. Samo onaj ko je pokrenuo komandu dobija link za vođenje igre, a rezultat svakog otkrivanja se objavljuje u threadu
+- **Microsoft Teams**: pokreni sobu iz message extensiona i podeli je kao karticu, ili dodaj Open Planning Poker kao tab na sastanku. Rezultat svakog otkrivanja se objavljuje u četu
+
+### Bezbednost
+- Jira i Slack tokeni se čuvaju šifrovani na serveru i nikad ne stižu do browsera. Prekid veze sa Jirom ih briše
+- Slack zahtevi se proveravaju Slackovim potpisom, a Teams zahtevi ključevima Bot Frameworka
+
+### Za developere
+- Podešavanje svake integracije je u `docs/integrations.md`; svaka ostaje isključena dok se ne postave njeni secreti
+- Spike za Atlassian Forge panel, sa prototipom i preporukom: `docs/integrations/jira-forge-spike.md`
+
+
 ## [3.1.0] — 2026-11-17
 
 Bezbednije i lakše za održavanje: noćni backup, alarm za greške na serveru i lozinka za Redis.

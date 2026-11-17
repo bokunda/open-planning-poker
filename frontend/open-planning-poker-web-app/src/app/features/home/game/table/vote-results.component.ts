@@ -1,3 +1,4 @@
+import { MatButtonModule } from '@angular/material/button';
 import { ChangeDetectionStrategy, Component, DoCheck, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiCollectionOfGamePlayer, Vote } from '../../../../graphql/graphql-gateway.service';
@@ -11,7 +12,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 @Component({
   selector: 'app-vote-results',
   standalone: true,
-  imports: [TranslocoPipe, CommonModule],
+  imports: [TranslocoPipe, CommonModule, MatButtonModule],
   changeDetection: ChangeDetectionStrategy.Default,
   template: `
     @if (stats) {
@@ -52,6 +53,19 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
             @if (isHost && !finalEstimate) {
               <span class="final-hint">{{ 'results.finalHint' | transloco }}</span>
             }
+          </div>
+        }
+        <!-- Tickets imported from Jira: write the estimate back to the issue (OPP-12). -->
+        @if (isHost && jiraKey) {
+          <div class="jira-save">
+            <label class="jira-comment">
+              <input type="checkbox" [checked]="jiraComment" (change)="jiraComment = !jiraComment">
+              {{ 'jira.addComment' | transloco }}
+            </label>
+            <button type="button" mat-stroked-button class="jira-save-btn" [disabled]="jiraSaving"
+              (click)="saveToJira.emit(jiraComment)">
+              {{ 'jira.saveTo' | transloco: { key: jiraKey } }}
+            </button>
           </div>
         }
       </section>
@@ -104,6 +118,9 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
     .final-card--selected { background: var(--opp-primary); border-color: var(--opp-primary); color: var(--opp-text-on-primary, #fff); }
     .final-value { font-family: var(--opp-font-display); font-size: var(--opp-font-size-2xl); color: var(--opp-consensus); }
     .final-hint { font-size: var(--opp-font-size-xs); color: var(--opp-text-muted); }
+    .jira-save { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--opp-space-2);
+      padding-top: var(--opp-space-3); border-top: 1px solid var(--opp-border); }
+    .jira-comment { display: inline-flex; align-items: center; gap: var(--opp-space-2); font-size: var(--opp-font-size-sm); color: var(--opp-text-secondary); }
   `],
 })
 export class VoteResultsComponent implements DoCheck {
@@ -114,6 +131,12 @@ export class VoteResultsComponent implements DoCheck {
   @Input() isHost = false;
   @Input() finalEstimate: string | null | undefined = null;
   @Output() finalEstimateChange = new EventEmitter<string | null>();
+  /** Key of the Jira issue the ticket came from; the host can save the estimate to it. */
+  @Input() jiraKey: string | null | undefined = null;
+  @Input() jiraSaving = false;
+  /** Emits whether to add a comment with the votes. */
+  @Output() saveToJira = new EventEmitter<boolean>();
+  jiraComment = false;
 
   /** The deck's cards plus any voted value not in the deck. */
   finalOptions: string[] = [];

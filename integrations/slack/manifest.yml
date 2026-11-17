@@ -1,0 +1,34 @@
+# Slack app manifest for Open Planning Poker (OPP-22).
+# Create the app at https://api.slack.com/apps → "Create New App" → "From a manifest", paste this file,
+# then copy Client ID, Client Secret and Signing Secret into the repository secrets (see docs/integrations.md).
+display_information:
+  name: Open Planning Poker
+  description: Start a planning poker room from any channel with /poker.
+  background_color: "#6a3ae8"
+  long_description: >-
+    Type /poker followed by a name, for example /poker Sprint 43, and Open Planning Poker creates a room and posts a
+    Join button in the channel. The person who ran the command gets a private link to run the game. After each
+    reveal, the ticket and its estimate are posted in the thread. Players only open a link: no Slack data is stored
+    for them.
+features:
+  bot_user:
+    display_name: Open Planning Poker
+    always_online: true
+  slash_commands:
+    - command: /poker
+      url: https://ge.openplanningpoker.com/integrations/slack/commands
+      description: Start a planning poker room
+      usage_hint: "[room name]"
+      should_escape: false
+oauth_config:
+  redirect_urls:
+    - https://ge.openplanningpoker.com/integrations/slack/oauth
+  scopes:
+    bot:
+      - commands
+      - chat:write
+      - chat:write.public
+settings:
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false

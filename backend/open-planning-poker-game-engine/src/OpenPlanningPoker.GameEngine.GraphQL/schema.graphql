@@ -1,4 +1,4 @@
-﻿schema {
+schema {
   query: Query
   mutation: Mutation
   subscription: Subscription
@@ -41,6 +41,16 @@ type ChatMessage {
   timestamp: String!
 }
 
+type ClaimGameHostPayload {
+  boolean: Boolean
+  errors: [ClaimGameHostError!]
+}
+
+type CompleteJiraConnectionPayload {
+  jiraConnectionResult: JiraConnectionResult
+  errors: [CompleteJiraConnectionError!]
+}
+
 type CreateGamePayload {
   game: Game
   errors: [CreateGameError!]
@@ -74,6 +84,11 @@ type DeleteGamePayload {
 type DeleteTicketPayload {
   boolean: Boolean
   errors: [DeleteTicketError!]
+}
+
+type DisconnectJiraPayload {
+  boolean: Boolean
+  errors: [DisconnectJiraError!]
 }
 
 type Game {
@@ -133,10 +148,90 @@ type GenerateGameReportPayload {
   errors: [GenerateGameReportError!]
 }
 
+type ImportJiraIssuesPayload {
+  jiraImportSummary: JiraImportSummary
+  errors: [ImportJiraIssuesError!]
+}
+
 type Info {
   version: String!
   author: String!
   contact: String!
+}
+
+type JiraAuthorizeLink {
+  url: String!
+}
+
+type JiraBoardInfo {
+  id: Long!
+  name: String!
+  type: String!
+}
+
+type JiraBoardList {
+  items: [JiraBoardInfo!]!
+}
+
+type JiraConnectionResult {
+  sites: [JiraSiteInfo!]!
+  returnPath: String!
+  siteSelected: Boolean!
+}
+
+"The caller's Jira connection. Enabled is false when the server has no Atlassian app configured."
+type JiraConnectionStatus {
+  enabled: Boolean!
+  connected: Boolean!
+  needsReconnect: Boolean!
+  siteName: String
+  siteUrl: String
+}
+
+type JiraEstimateSaved {
+  issueKey: String!
+  value: String!
+  url: String!
+}
+
+type JiraImportSummary {
+  imported: Int!
+  skipped: Int!
+}
+
+type JiraIssuePreview {
+  key: String!
+  summary: String!
+  description: String!
+  storyPoints: Float
+  url: String!
+  alreadyInGame: Boolean!
+}
+
+type JiraIssueSearch {
+  issues: [JiraIssuePreview!]!
+  truncated: Boolean!
+  max: Int!
+}
+
+type JiraSiteInfo {
+  cloudId: String!
+  name: String!
+  url: String!
+}
+
+type JiraSiteList {
+  items: [JiraSiteInfo!]!
+}
+
+type JiraSprintInfo {
+  id: Long!
+  name: String!
+  state: String!
+}
+
+type JiraSprintList {
+  items: [JiraSprintInfo!]!
 }
 
 type JoinGamePayload {
@@ -187,6 +282,23 @@ type Mutation {
   deleteGame(input: DeleteGameInput!): DeleteGamePayload! @cost(weight: "10")
   "Generates a PDF report of the game. Only players of the game can generate it."
   generateGameReport(input: GenerateGameReportInput!): GenerateGameReportPayload! @cost(weight: "10")
+  """
+  Makes the caller the host of a game started from Slack or Teams, with the one-time link from the chat.
+  False when the game already has a host or the link is not valid.
+  """
+  claimGameHost(input: ClaimGameHostInput!): ClaimGameHostPayload! @cost(weight: "10")
+  "Finishes the Atlassian consent: stores the tokens (encrypted) and lists the caller's sites."
+  completeJiraConnection(input: CompleteJiraConnectionInput!): CompleteJiraConnectionPayload! @cost(weight: "10")
+  selectJiraSite(input: SelectJiraSiteInput!): SelectJiraSitePayload! @cost(weight: "10")
+  "Deletes the caller's stored Jira tokens."
+  disconnectJira: DisconnectJiraPayload! @cost(weight: "10")
+  "Adds Jira issues as tickets; issues already in the game are skipped. Host or co-host only."
+  importJiraIssues(input: ImportJiraIssuesInput!): ImportJiraIssuesPayload! @cost(weight: "10")
+  """
+  Writes the final estimate (or the most common card) to the Jira issue's story points; optionally adds a
+  comment with the votes. Host or co-host only, after the reveal.
+  """
+  saveEstimateToJira(input: SaveEstimateToJiraInput!): SaveEstimateToJiraPayload! @cost(weight: "10")
   "Dummy health-check mutation."
   ping: PingPayload! @cost(weight: "10")
   "Creates Game Settings. Host only."
@@ -254,6 +366,18 @@ type Query {
   game(id: UUID!): GameResult! @cost(weight: "10")
   "Returns an info about the Game Engine service."
   info: InfoResult! @cost(weight: "10")
+  "Whether the integration is available and the caller has connected Jira."
+  jiraConnection: JiraConnectionStatus! @cost(weight: "10")
+  "The Atlassian consent page to open; it returns to the app's Jira callback, then to returnPath."
+  jiraAuthorizeUrl(returnPath: String!): JiraAuthorizeUrlResult!
+  jiraSites: JiraSitesResult! @cost(weight: "10")
+  jiraBoards: JiraBoardsResult! @cost(weight: "10")
+  jiraSprints(boardId: Long!): JiraSprintsResult! @cost(weight: "10")
+  """
+  Import preview: a sprint's issues, a board's open issues, or a JQL query, with the issues that are already
+  tickets of the game marked. Host or co-host only.
+  """
+  jiraIssues(gameId: UUID! boardId: Long sprintId: Long jql: String): JiraIssuesResult! @cost(weight: "10")
   "Dummy health-check query."
   ping: String! @cost(weight: "10")
   "Gets Game Settings."
@@ -293,6 +417,16 @@ type ReorderTicketsPayload {
 type RevealVotesPayload {
   votesRevealed: VotesRevealed
   errors: [RevealVotesError!]
+}
+
+type SaveEstimateToJiraPayload {
+  jiraEstimateSaved: JiraEstimateSaved
+  errors: [SaveEstimateToJiraError!]
+}
+
+type SelectJiraSitePayload {
+  jiraConnectionStatus: JiraConnectionStatus
+  errors: [SelectJiraSiteError!]
 }
 
 type SendChatMessagePayload {
@@ -401,6 +535,10 @@ type Ticket {
   finalEstimate: String
   "Place of the ticket in the game's list (0 first)."
   position: Int!
+  "Key of the Jira issue the ticket was imported from (e.g. \"OPP-118\"); null otherwise."
+  externalKey: String
+  "Link to that issue."
+  externalUrl: String
 }
 
 type TransferHostPayload {
@@ -442,6 +580,10 @@ type VotesRevealed {
   votes: [Vote!]!
 }
 
+union ClaimGameHostError = ApplicationError
+
+union CompleteJiraConnectionError = ApplicationError
+
 union CreateGameError = ApplicationError
 
 union CreateOrUpdateVoteError = ApplicationError
@@ -456,13 +598,27 @@ union DeleteGameError = ApplicationError
 
 union DeleteTicketError = ApplicationError
 
+union DisconnectJiraError = ApplicationError
+
 union GamePlayersResult = ApiCollectionOfGamePlayer | ApplicationError
 
 union GameResult = Game | ApplicationError
 
 union GenerateGameReportError = ApplicationError
 
+union ImportJiraIssuesError = ApplicationError
+
 union InfoResult = Info | ApplicationError
+
+union JiraAuthorizeUrlResult = JiraAuthorizeLink | ApplicationError
+
+union JiraBoardsResult = JiraBoardList | ApplicationError
+
+union JiraIssuesResult = JiraIssueSearch | ApplicationError
+
+union JiraSitesResult = JiraSiteList | ApplicationError
+
+union JiraSprintsResult = JiraSprintList | ApplicationError
 
 union JoinGameError = ApplicationError
 
@@ -479,6 +635,10 @@ union RemovePlayerError = ApplicationError
 union ReorderTicketsError = ApplicationError
 
 union RevealVotesError = ApplicationError
+
+union SaveEstimateToJiraError = ApplicationError
+
+union SelectJiraSiteError = ApplicationError
 
 union SendChatMessageError = ApplicationError
 
@@ -513,6 +673,16 @@ union UpdateTeamError = ApplicationError
 union UpdateTicketError = ApplicationError
 
 union VotesResult = ApiCollectionOfVote | ApplicationError
+
+input ClaimGameHostInput {
+  gameId: UUID!
+  token: String!
+}
+
+input CompleteJiraConnectionInput {
+  code: String!
+  state: String!
+}
 
 input CreateGameInput {
   name: String!
@@ -554,6 +724,11 @@ input GenerateGameReportInput {
   gameId: UUID!
 }
 
+input ImportJiraIssuesInput {
+  gameId: UUID!
+  issueKeys: [String!]!
+}
+
 input JoinGameInput {
   gameId: UUID!
 }
@@ -587,6 +762,15 @@ input ReorderTicketsInput {
 
 input RevealVotesInput {
   ticketId: UUID!
+}
+
+input SaveEstimateToJiraInput {
+  ticketId: UUID!
+  addComment: Boolean!
+}
+
+input SelectJiraSiteInput {
+  cloudId: String!
 }
 
 input SendChatMessageInput {
@@ -680,5 +864,8 @@ scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time"
 
 "The `Decimal` scalar type represents a decimal floating-point number."
 scalar Decimal
+
+"The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1."
+scalar Long
 
 scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")

@@ -49,6 +49,7 @@ import {
   SET_PLAYER_ROLE, TRANSFER_HOST, UPDATE_GAME_OPTIONS, UPDATE_TICKET
 } from './gql/room.graphql';
 import { GameChanged, isAsyncVotingOpen, PlayerAction, RoomPlayer, RoomSettings, RoomTicket } from './room-types';
+import { CLAIM_GAME_HOST, SAVE_ESTIMATE_TO_JIRA } from './gql/jira.graphql';
 import { ticketsToCsv } from './export/tickets-csv';
 import type { ConfirmDialogData } from '../../../shared/dialogs/confirm/confirm-dialog.component';
 import type { EditTicketResult } from './ticket/edit-ticket/edit-ticket-dialog.component';
@@ -432,12 +433,24 @@ export class GameComponent implements OnInit {
       next: () => {
         this.chatGameId = gameId;
         this.getGamePlayers(gameId);
+        this.claimHostFromLink(gameId);
       },
       error: (err) => {
         this.joinedGameId = undefined;
         console.error('Join game error:', err);
       }
     });
+  }
+
+  /**
+   * Games started from Slack or Teams have no host until someone opens the one-time host link
+   * (?claim=…, OPP-22, OPP-23). The token leaves the address bar right away, so it is not shared further.
+   */
+  private claimHostFromLink(gameId: string): void {
+    const token = this.route.snapshot.queryParamMap.get('claim');
+    if (!token) return;
+    this.location.replaceState(this.location.path().split('?')[0]);
+    this.runMutation(CLAIM_GAME_HOST, 'claimGameHost', { gameId, token }, () => this.refreshGame(gameId));
   }
 
   private async openCreateGameDialog(): Promise<void> {
@@ -579,12 +592,20 @@ export class GameComponent implements OnInit {
       width: '560px',
       maxWidth: '95vw',
       enterAnimationDuration: '150ms',
-      exitAnimationDuration: '150ms'
+      exitAnimationDuration: '150ms',
+      data: this.game?.id ? { gameId: this.game.id } : null
     });
 
-    dialogRef.afterClosed().subscribe((tickets: ImportedTicket[] | undefined) => {
-      if (!tickets?.length) return;
-      this.importTicketsSequentially(tickets);
+    dialogRef.afterClosed().subscribe((result: ImportedTicket[] | { jiraImported: number } | undefined) => {
+      if (!result) return;
+      if (!Array.isArray(result)) {
+        // The Jira import created the tickets on the server; the list reloads from the game change event too.
+        this.notify(this.i18n.translate('jira.imported', { count: result.jiraImported }));
+        if (this.game?.id) this.getTickets(this.game.id);
+        return;
+      }
+      if (!result.length) return;
+      this.importTicketsSequentially(result);
     });
   }
 
@@ -945,6 +966,19 @@ export class GameComponent implements OnInit {
       this.ticket = { ...ticket, finalEstimate: value } as RoomTicket;
       this.getTickets(ticket.gameId);
     });
+  }
+
+  jiraSaving = false;
+
+  /** Writes the agreed estimate to the ticket's Jira issue (OPP-12). */
+  handleSaveToJira(addComment: boolean): void {
+    const ticket = this.ticket as RoomTicket | undefined;
+    if (!ticket?.id || !ticket.externalKey) return;
+    this.jiraSaving = true;
+    this.runMutation(SAVE_ESTIMATE_TO_JIRA, 'saveEstimateToJira', { ticketId: ticket.id, addComment }, () => {
+      this.jiraSaving = false;
+      this.notify(this.i18n.translate('jira.saved', { key: ticket.externalKey }));
+    }, () => { this.jiraSaving = false; });
   }
 
   handleUpdateOptions(options: RoomOptions): void {

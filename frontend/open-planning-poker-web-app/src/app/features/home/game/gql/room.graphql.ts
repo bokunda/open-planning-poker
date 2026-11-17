@@ -35,7 +35,7 @@ export const TRANSFER_HOST = gql`
 export const UPDATE_TICKET = gql`
   mutation UpdateTicket($input: UpdateTicketInput!) {
     updateTicket(input: $input) {
-      ticket { id gameId name description votesRevealed finalEstimate position }
+      ticket { id gameId name description votesRevealed finalEstimate position externalKey externalUrl }
       ${ERRORS}
     }
   }`;
@@ -53,7 +53,7 @@ export const REORDER_TICKETS = gql`
 export const SET_FINAL_ESTIMATE = gql`
   mutation SetFinalEstimate($input: SetFinalEstimateInput!) {
     setFinalEstimate(input: $input) {
-      ticket { id gameId name description votesRevealed finalEstimate position }
+      ticket { id gameId name description votesRevealed finalEstimate position externalKey externalUrl }
       ${ERRORS}
     }
   }`;

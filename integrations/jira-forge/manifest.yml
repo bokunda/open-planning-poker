@@ -1,0 +1,28 @@
+# Spike (OPP-13): an Atlassian Forge app with an issue panel that starts a planning poker round for the issue.
+# Not deployed: see docs/integrations/jira-forge-spike.md for the findings and the recommendation.
+modules:
+  jira:issuePanel:
+    - key: opp-estimate-panel
+      resource: main
+      resolver:
+        function: resolver
+      render: native
+      title: Estimate with Open Planning Poker
+      icon: https://app.openplanningpoker.com/open-planning-poker-game-logo-64x64.png
+  function:
+    - key: resolver
+      handler: index.handler
+resources:
+  - key: main
+    path: src/frontend/index.jsx
+app:
+  runtime:
+    name: nodejs22.x
+  id: ari:cloud:ecosystem::app/REPLACE-WITH-forge-register
+permissions:
+  scopes:
+    - read:jira-work
+  external:
+    fetch:
+      client:
+        - address: https://app.openplanningpoker.com
