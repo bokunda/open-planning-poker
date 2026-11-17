@@ -3,9 +3,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Channels;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Protocols;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.IdentityModel.Tokens;
 using OpenPlanningPoker.GameEngine.Application.Features.Integrations.Chat;
 using OpenPlanningPoker.GameEngine.Application.Features.Integrations.Jira;
 using OpenPlanningPoker.GameEngine.Domain.Integrations;
@@ -13,7 +10,7 @@ using OpenPlanningPoker.GameEngine.GraphQL.Features.Games;
 
 namespace OpenPlanningPoker.GameEngine.GraphQL.Features.Integrations;
 
-/// <summary>Reveal results wait here, so a reveal never waits for Slack or Teams.</summary>
+/// <summary>Reveal results wait here, so a reveal never waits for Slack.</summary>
 public sealed class ChatNotificationQueue : IChatNotifications
 {
     private readonly Channel<Guid> _channel = Channel.CreateBounded<Guid>(new BoundedChannelOptions(500) { FullMode = BoundedChannelFullMode.DropOldest });
@@ -70,11 +67,6 @@ public static class ChatIntegrationEndpoints
         services.AddSingleton<ChatNotificationQueue>();
         services.AddSingleton<IChatNotifications>(sp => sp.GetRequiredService<ChatNotificationQueue>());
         services.AddHostedService<ChatNotificationWorker>();
-        services.AddSingleton<IConfigurationManager<OpenIdConnectConfiguration>>(_ =>
-            new ConfigurationManager<OpenIdConnectConfiguration>(
-                "https://login.botframework.com/v1/.well-known/openidconfiguration",
-                new OpenIdConnectConfigurationRetriever(),
-                new HttpDocumentRetriever { RequireHttps = true }));
         return services;
     }
 
@@ -84,10 +76,6 @@ public static class ChatIntegrationEndpoints
         slack.MapGet("/install", SlackInstall);
         slack.MapGet("/oauth", SlackOAuthAsync);
         slack.MapPost("/commands", SlackCommandAsync);
-
-        var teams = app.MapGroup("/integrations/teams");
-        teams.MapPost("/messages", TeamsMessageAsync);
-        teams.MapGet("/tab-config", TeamsTabConfig);
     }
 
     // ---- Slack (OPP-22) ----
@@ -187,124 +175,11 @@ public static class ChatIntegrationEndpoints
 
     private static string Escape(string text) => text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
 
-    // ---- Microsoft Teams (OPP-23) ----
-
-    private static async Task<IResult> TeamsMessageAsync(
-        HttpRequest request, IOptions<ChatOptions> options, IConfigurationManager<OpenIdConnectConfiguration> botKeys,
-        ChatGameService chat, ITeamsApi teams, CancellationToken cancellationToken)
-    {
-        var o = options.Value;
-        if (!o.TeamsEnabled) return Results.NotFound();
-
-        using var doc = await JsonDocument.ParseAsync(request.Body, cancellationToken: cancellationToken);
-        var activity = doc.RootElement;
-        var serviceUrl = Str(activity, "serviceUrl");
-        if (!await TeamsAuth.IsValidAsync(request.Headers.Authorization, o.TeamsAppId, serviceUrl, botKeys, cancellationToken))
-        {
-            return Results.Unauthorized();
-        }
-
-        var type = Str(activity, "type");
-        var conversation = activity.TryGetProperty("conversation", out var c) ? c : default;
-        var conversationId = conversation.ValueKind == JsonValueKind.Object ? Str(conversation, "id") : string.Empty;
-        var tenantId = conversation.ValueKind == JsonValueKind.Object ? Str(conversation, "tenantId") : string.Empty;
-
-        if (type == "invoke" && Str(activity, "name") == "composeExtension/submitAction")
-        {
-            var value = activity.GetProperty("value");
-            var name = value.TryGetProperty("data", out var data) && data.ValueKind == JsonValueKind.Object ? Str(data, "name") : string.Empty;
-            var game = await chat.StartGameAsync(name, cancellationToken);
-            if (conversationId.Length > 0 && serviceUrl.Length > 0)
-            {
-                await chat.RecordPostAsync(ChatPost.Create(game.GameId, ChatProviders.Teams, tenantId, conversationId, null, serviceUrl), cancellationToken);
-            }
-            return Results.Json(new { composeExtension = new { type = "result", attachmentLayout = "list", attachments = new[] { TeamsCard(string.IsNullOrWhiteSpace(name) ? "Planning poker" : name.Trim(), game) } } });
-        }
-
-        if (type == "message" && conversationId.Length > 0)
-        {
-            await teams.SendAsync(serviceUrl, conversationId, new
-            {
-                type = "message",
-                text = "Start a game from the **Open Planning Poker** message extension (the ⋯ under the message box), or add the app as a meeting tab.",
-                textFormat = "markdown",
-            }, cancellationToken);
-        }
-        return Results.Ok();
-    }
-
-    /// <summary>
-    /// The card shared in the chat. Teams cannot show a link to one person only here, so the first person who
-    /// opens it becomes the host; the host can hand the game over later.
-    /// </summary>
-    private static object TeamsCard(string title, StartedGame game) => new
-    {
-        contentType = "application/vnd.microsoft.card.adaptive",
-        content = new Dictionary<string, object>
-        {
-            ["type"] = "AdaptiveCard",
-            ["$schema"] = "http://adaptivecards.io/schemas/adaptive-card.json",
-            ["version"] = "1.4",
-            ["body"] = new object[]
-            {
-                new { type = "TextBlock", text = "Planning poker", weight = "Bolder", size = "Medium" },
-                new { type = "TextBlock", text = title, wrap = true },
-                new { type = "TextBlock", text = "The first person to open the game runs it. Results are posted here after each reveal.", wrap = true, isSubtle = true, size = "Small" },
-            },
-            ["actions"] = new object[] { new { type = "Action.OpenUrl", title = "Join", url = game.HostUrl } },
-        },
-        preview = new
-        {
-            contentType = "application/vnd.microsoft.card.thumbnail",
-            content = new { title, text = "Open Planning Poker" },
-        },
-    };
-
-    /// <summary>Configuration page of the meeting tab: pick a game link, or open a new game.</summary>
-    private static IResult TeamsTabConfig(IOptions<ChatOptions> options)
-    {
-        var appUrl = options.Value.AppUrl.TrimEnd('/');
-        var html = $$"""
-            <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Open Planning Poker tab</title>
-            <script src="https://res.cdn.office.net/teams-js/2.22.0/js/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
-            <style>body{font-family:system-ui,sans-serif;margin:24px;color:#242424}input{width:100%;padding:8px;margin:8px 0;box-sizing:border-box}</style>
-            </head><body>
-            <h1 style="font-size:20px">Open Planning Poker</h1>
-            <p>Paste the link of a game to show it in this meeting, or leave it empty to start a new game in the tab.</p>
-            <input id="link" placeholder="{{appUrl}}/game/…" aria-label="Game link">
-            <script>
-              const app = '{{appUrl}}';
-              microsoftTeams.app.initialize().then(() => {
-                const input = document.getElementById('link');
-                const update = () => {
-                  const value = input.value.trim();
-                  const ok = value === '' || value.startsWith(app + '/game/');
-                  microsoftTeams.pages.config.setValidityState(ok);
-                };
-                input.addEventListener('input', update);
-                microsoftTeams.pages.config.registerOnSaveHandler((save) => {
-                  const url = input.value.trim() || (app + '/game');
-                  microsoftTeams.pages.config.setConfig({ entityId: url, contentUrl: url, websiteUrl: url, suggestedDisplayName: 'Planning poker' })
-                    .then(() => save.notifySuccess());
-                });
-                update();
-              });
-            </script></body></html>
-            """;
-        return Results.Content(html, "text/html; charset=utf-8");
-    }
-
     private static IResult Page(string title, string message) => Results.Content(
         $"<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>{title}</title>"
         + "<style>body{font-family:system-ui,sans-serif;display:grid;place-items:center;min-height:90vh;margin:0;color:#18152b}main{max-width:460px;padding:24px;text-align:center}</style></head>"
         + $"<body><main><h1>{title}</h1><p>{message}</p><p><a href=\"https://openplanningpoker.com/\">Open Planning Poker</a></p></main></body></html>",
         "text/html; charset=utf-8");
-
-    private static string Str(JsonElement element, string name) =>
-        element.ValueKind == JsonValueKind.Object && element.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String
-            ? value.GetString() ?? string.Empty
-            : string.Empty;
 }
 
 /// <summary>Slack request signing: v0 HMAC-SHA256 of "v0:timestamp:body", at most 5 minutes old.</summary>
@@ -317,36 +192,5 @@ public static class SlackSignature
         using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(signingSecret));
         var expected = "v0=" + Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes($"v0:{timestamp}:{body}"))).ToLowerInvariant();
         return CryptographicOperations.FixedTimeEquals(Encoding.ASCII.GetBytes(expected), Encoding.ASCII.GetBytes(signature));
-    }
-}
-
-/// <summary>Checks the Bot Framework token on requests from Teams: issuer, audience (our app id), keys and service URL.</summary>
-public static class TeamsAuth
-{
-    public static async Task<bool> IsValidAsync(string? authorization, string appId, string serviceUrl,
-        IConfigurationManager<OpenIdConnectConfiguration> keys, CancellationToken cancellationToken)
-    {
-        if (authorization is null || !authorization.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)) return false;
-        var token = authorization["Bearer ".Length..].Trim();
-        try
-        {
-            var config = await keys.GetConfigurationAsync(cancellationToken);
-            var handler = new Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler();
-            var result = await handler.ValidateTokenAsync(token, new TokenValidationParameters
-            {
-                ValidIssuer = "https://api.botframework.com",
-                ValidAudience = appId,
-                IssuerSigningKeys = config.SigningKeys,
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.FromMinutes(5),
-            });
-            if (!result.IsValid) return false;
-            var claimedServiceUrl = result.Claims.TryGetValue("serviceurl", out var value) ? value?.ToString() : null;
-            return claimedServiceUrl is null || string.Equals(claimedServiceUrl.TrimEnd('/'), serviceUrl.TrimEnd('/'), StringComparison.OrdinalIgnoreCase);
-        }
-        catch (Exception ex) when (ex is SecurityTokenException or InvalidOperationException or IOException or HttpRequestException)
-        {
-            return false;
-        }
     }
 }

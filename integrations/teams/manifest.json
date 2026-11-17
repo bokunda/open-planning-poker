@@ -1,8 +1,8 @@
 {
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.17/MicrosoftTeams.schema.json",
   "manifestVersion": "1.17",
-  "version": "1.0.0",
-  "id": "{{TEAMS_APP_ID}}",
+  "version": "2.0.0",
+  "id": "b11c7c1b-a4ce-4bbf-8218-5a1db223cd8c",
   "developer": {
     "name": "Open Planning Poker",
     "websiteUrl": "https://openplanningpoker.com",
@@ -11,45 +11,18 @@
   },
   "name": { "short": "Open Planning Poker", "full": "Open Planning Poker" },
   "description": {
-    "short": "Start planning poker from a chat or a meeting.",
-    "full": "Create a planning poker room from the message extension and share it as a card with a Join button, or add Open Planning Poker as a meeting tab. After each reveal, the ticket and its estimate are posted back to the chat."
+    "short": "Free planning poker as a tab in your meeting, channel or chat.",
+    "full": "Add Open Planning Poker as a tab in a Teams meeting, channel or chat. Start a new game (you become the host) or show a game you already have. Everyone votes from the tab, in the side panel or on the meeting stage. Free and open source, no sign-up."
   },
   "icons": { "color": "color.png", "outline": "outline.png" },
   "accentColor": "#6A3AE8",
-  "bots": [
-    {
-      "botId": "{{TEAMS_APP_ID}}",
-      "scopes": ["team", "groupChat", "personal"],
-      "supportsFiles": false,
-      "isNotificationOnly": false
-    }
-  ],
-  "composeExtensions": [
-    {
-      "botId": "{{TEAMS_APP_ID}}",
-      "commands": [
-        {
-          "id": "createGame",
-          "type": "action",
-          "title": "Start planning poker",
-          "description": "Create a room and share it in this chat",
-          "context": ["compose", "commandBox"],
-          "fetchTask": false,
-          "parameters": [
-            { "name": "name", "title": "Room name", "description": "For example Sprint 43", "inputType": "text" }
-          ]
-        }
-      ]
-    }
-  ],
   "configurableTabs": [
     {
-      "configurationUrl": "https://ge.openplanningpoker.com/integrations/teams/tab-config",
+      "configurationUrl": "https://app.openplanningpoker.com/teams/config",
       "canUpdateConfiguration": true,
       "scopes": ["team", "groupChat"],
-      "context": ["meetingSidePanel", "meetingStage", "meetingChatTab", "channelTab", "privateChatTab"]
+      "context": ["channelTab", "privateChatTab", "meetingChatTab", "meetingDetailsTab", "meetingSidePanel", "meetingStage"]
     }
   ],
-  "permissions": ["identity"],
-  "validDomains": ["app.openplanningpoker.com", "ge.openplanningpoker.com"]
+  "validDomains": ["app.openplanningpoker.com"]
 }

@@ -108,7 +108,7 @@ Full setup guide: [docs/setup-and-development.md](docs/setup-and-development.md)
 - [x] Co-hosts, host hand-over, observers, final estimate, CSV export
 - [x] Team rooms with sprint history and velocity, async voting
 - [ ] Jira integration (import issues, save estimates back)
-- [ ] Slack and Microsoft Teams apps
+- [x] Slack app and a Microsoft Teams tab
 - [x] English, Serbian and German, installable app (PWA)
 - [x] Integration, end-to-end and Lighthouse checks on every pull request
 

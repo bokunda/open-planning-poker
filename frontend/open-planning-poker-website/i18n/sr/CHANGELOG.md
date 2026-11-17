@@ -6,6 +6,17 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+## [3.3.0] — 2026-11-17
+
+Microsoft Teams za svaku organizaciju: Open Planning Poker je sada tab u Teams-u.
+
+### Dodato
+- **Microsoft Teams tab**: dodaj Open Planning Poker na sastanak, u kanal ili chat. Pokreni novu igru u tabu (ti postaješ host) ili prikaži igru koju već imaš. Svi glasaju iz taba, u bočnom panelu ili na sceni sastanka, u sažetom prikazu bez zaglavlja i footera sajta
+- **Za Teams administratore**: paket aplikacije `open-planning-poker-teams.zip` je priložen uz svako izdanje. Otpremi ga jednom u Teams admin centru; ne traži Azure podešavanja ni registraciju
+
+### Izmenjeno
+- Teams bot i njegovo proširenje za poruke zamenjeni su tabom. Tražili su Azure bota u našoj Microsoft 365 organizaciji, pa ih druge organizacije ne bi mogle da koriste
+
 ## [3.2.1] — 2026-11-17
 
 ### Ispravljeno

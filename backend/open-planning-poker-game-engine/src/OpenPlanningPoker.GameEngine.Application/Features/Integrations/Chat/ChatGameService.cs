@@ -8,7 +8,7 @@ using OpenPlanningPoker.GameEngine.Domain.Integrations;
 
 namespace OpenPlanningPoker.GameEngine.Application.Features.Integrations.Chat;
 
-/// <summary>Slack (OPP-22) and Microsoft Teams (OPP-23) apps. Each is off until its credentials are set.</summary>
+/// <summary>Slack app (OPP-22). Off until its credentials are set. (Teams is a tab without a bot, OPP-23.)</summary>
 public sealed class ChatOptions
 {
     public const string Section = "Chat";
@@ -16,21 +16,14 @@ public sealed class ChatOptions
     /// <summary>Where players open games.</summary>
     public string AppUrl { get; set; } = "https://app.openplanningpoker.com";
 
-    /// <summary>Public URL of this service (Slack OAuth redirect, Teams endpoints).</summary>
+    /// <summary>Public URL of this service (Slack OAuth redirect and commands).</summary>
     public string ApiUrl { get; set; } = "https://ge.openplanningpoker.com";
 
     public string SlackClientId { get; set; } = string.Empty;
     public string SlackClientSecret { get; set; } = string.Empty;
     public string SlackSigningSecret { get; set; } = string.Empty;
 
-    public string TeamsAppId { get; set; } = string.Empty;
-    public string TeamsAppPassword { get; set; } = string.Empty;
-
-    /// <summary>Single-tenant bots: the Microsoft Entra tenant of the bot registration. Empty for multi-tenant.</summary>
-    public string TeamsTenantId { get; set; } = string.Empty;
-
     public bool SlackEnabled => !string.IsNullOrWhiteSpace(SlackClientId) && !string.IsNullOrWhiteSpace(SlackClientSecret) && !string.IsNullOrWhiteSpace(SlackSigningSecret);
-    public bool TeamsEnabled => !string.IsNullOrWhiteSpace(TeamsAppId) && !string.IsNullOrWhiteSpace(TeamsAppPassword);
     public string SlackRedirectUri => $"{ApiUrl.TrimEnd('/')}/integrations/slack/oauth";
 }
 
@@ -46,13 +39,7 @@ public interface ISlackApi
     Task<string> PostMessageAsync(string botToken, string channelId, string text, object[]? blocks, string? threadTs, CancellationToken cancellationToken);
 }
 
-public interface ITeamsApi
-{
-    /// <summary>Sends an activity (a message) to a Teams conversation through the Bot Connector.</summary>
-    Task SendAsync(string serviceUrl, string conversationId, object activity, CancellationToken cancellationToken);
-}
-
-/// <summary>Queue for posting reveal results to chat without making the reveal wait for Slack or Teams.</summary>
+/// <summary>Queue for posting reveal results to chat without making the reveal wait for Slack.</summary>
 public interface IChatNotifications
 {
     void TicketRevealed(Guid ticketId);
@@ -60,7 +47,7 @@ public interface IChatNotifications
 
 public sealed record StartedGame(Guid GameId, string JoinUrl, string HostUrl);
 
-/// <summary>Games started from Slack or Teams: creation with a host claim link, the claim, and the results.</summary>
+/// <summary>Games started from Slack: creation with a host claim link, the claim, and the results.</summary>
 public sealed class ChatGameService(
     IOptions<ChatOptions> options,
     IGameRepository games,
@@ -69,7 +56,6 @@ public sealed class ChatGameService(
     IVoteRepository votes,
     IChatIntegrationRepository chat,
     ISlackApi slack,
-    ITeamsApi teams,
     ISecretProtector protector,
     IUnitOfWork unitOfWork)
 {
@@ -146,10 +132,6 @@ public sealed class ChatGameService(
         {
             var token = await GetSlackBotTokenAsync(post.WorkspaceId, cancellationToken);
             if (token is not null) await slack.PostMessageAsync(token, post.ChannelId, text, null, post.MessageId, cancellationToken);
-        }
-        else if (post.Provider == ChatProviders.Teams && _options.TeamsEnabled && post.ServiceUrl is not null)
-        {
-            await teams.SendAsync(post.ServiceUrl, post.ChannelId, new { type = "message", text, textFormat = "markdown" }, cancellationToken);
         }
     }
 

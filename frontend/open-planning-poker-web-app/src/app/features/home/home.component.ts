@@ -13,6 +13,7 @@ import { GameComponent } from './game/game.component';
 import { FooterComponent } from './footer/footer.component';
 import { TeamComponent } from './team/team.component';
 import { TranslocoService } from '@jsverse/transloco';
+import { isEmbedded } from '../../shared/embed';
 
 @Component({
   selector: 'app-home',
@@ -28,6 +29,8 @@ export class HomeComponent implements OnInit {
   breadcrumbItems: BreadcrumbItem[] = [];
   /** /team and /team/:teamId show the team rooms instead of the game. */
   isTeamView = false;
+  /** Inside the Microsoft Teams tab: no site header, breadcrumb or footer (OPP-23). */
+  embedded = false;
 
   private readonly title = inject(Title);
   private readonly meta = inject(Meta);
@@ -38,6 +41,7 @@ export class HomeComponent implements OnInit {
   constructor(private apollo: Apollo) {
     // Delay user setup until after hydration to avoid SSR/client mismatch
     afterNextRender(() => {
+      this.embedded = isEmbedded();
       this.setupUser();
     });
   }

@@ -23,9 +23,6 @@ jobs:
       SLACK_CLIENT_ID: ${{ secrets.SLACK_CLIENT_ID }}
       SLACK_CLIENT_SECRET: ${{ secrets.SLACK_CLIENT_SECRET }}
       SLACK_SIGNING_SECRET: ${{ secrets.SLACK_SIGNING_SECRET }}
-      TEAMS_APP_ID: ${{ secrets.TEAMS_APP_ID }}
-      TEAMS_APP_PASSWORD: ${{ secrets.TEAMS_APP_PASSWORD }}
-      TEAMS_TENANT_ID: ${{ secrets.TEAMS_TENANT_ID }}
       SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
       OPP_JWT_SECRET: ${{ secrets.OPP_JWT_SECRET }}
       REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
