@@ -25,7 +25,7 @@ Open Planning Poker works with the tools your team already uses: Jira, Slack and
 - Spike on an Atlassian Forge issue panel, with a prototype and a recommendation: `docs/integrations/jira-forge-spike.md`
 
 
-## [3.1.0] — Unreleased
+## [3.1.0] — 2026-11-17
 
 Safer and easier to run: nightly backups, an alert for server errors, and a password on Redis.
 

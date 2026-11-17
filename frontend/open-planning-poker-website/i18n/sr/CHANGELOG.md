@@ -24,7 +24,7 @@ Open Planning Poker radi sa alatima koje tvoj tim već koristi: Jira, Slack i Mi
 - Spike za Atlassian Forge panel, sa prototipom i preporukom: `docs/integrations/jira-forge-spike.md`
 
 
-## [3.1.0] — Unreleased
+## [3.1.0] — 2026-11-17
 
 Bezbednije i lakše za održavanje: noćni backup, alarm za greške na serveru i lozinka za Redis.
 
