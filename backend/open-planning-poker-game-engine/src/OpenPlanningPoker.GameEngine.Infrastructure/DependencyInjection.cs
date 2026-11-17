@@ -50,5 +50,12 @@ public static class DependencyInjection
         services.AddHttpClient<Application.Features.Integrations.Jira.IJiraApi, Integrations.JiraApiClient>(client =>
             client.Timeout = TimeSpan.FromSeconds(20));
         services.AddScoped<Application.Features.Integrations.Jira.JiraService>();
+
+        // Slack and Teams (OPP-22, OPP-23).
+        services.Configure<Application.Features.Integrations.Chat.ChatOptions>(configuration.GetSection(Application.Features.Integrations.Chat.ChatOptions.Section));
+        services.AddScoped<Domain.Integrations.IChatIntegrationRepository, ChatIntegrationRepository>();
+        services.AddHttpClient<Application.Features.Integrations.Chat.ISlackApi, Integrations.SlackApiClient>(client => client.Timeout = TimeSpan.FromSeconds(10));
+        services.AddHttpClient<Application.Features.Integrations.Chat.ITeamsApi, Integrations.TeamsConnectorClient>(client => client.Timeout = TimeSpan.FromSeconds(10));
+        services.AddScoped<Application.Features.Integrations.Chat.ChatGameService>();
     }
 }

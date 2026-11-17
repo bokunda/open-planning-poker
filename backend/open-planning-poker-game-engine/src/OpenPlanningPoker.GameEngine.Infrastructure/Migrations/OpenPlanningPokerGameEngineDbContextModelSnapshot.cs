@@ -217,6 +217,15 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("character varying(4080)")
                         .HasColumnName("description");
 
+                    b.Property<DateTimeOffset?>("HostClaimExpiresOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("host_claim_expires_on");
+
+                    b.Property<string>("HostClaimHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("host_claim_hash");
+
                     b.Property<Guid>("HostId")
                         .HasColumnType("uuid")
                         .HasColumnName("host_id");
@@ -242,6 +251,67 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasDatabaseName("ix_games_team_id");
 
                     b.ToTable("games", (string)null);
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Integrations.ChatPost", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ChannelId")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("channel_id");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("game_id");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("MessageId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("message_id");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("provider");
+
+                    b.Property<string>("ServiceUrl")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("service_url");
+
+                    b.Property<string>("WorkspaceId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("workspace_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_chat_posts");
+
+                    b.HasIndex("GameId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_chat_posts_game_id");
+
+                    b.ToTable("chat_posts", (string)null);
                 });
 
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Integrations.JiraConnection", b =>
@@ -308,6 +378,52 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasDatabaseName("ix_jira_connections_player_id");
 
                     b.ToTable("jira_connections", (string)null);
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Integrations.SlackInstallation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("ProtectedBotToken")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("protected_bot_token");
+
+                    b.Property<string>("WorkspaceId")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("workspace_id");
+
+                    b.Property<string>("WorkspaceName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("workspace_name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_slack_installations");
+
+                    b.HasIndex("WorkspaceId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_slack_installations_workspace_id");
+
+                    b.ToTable("slack_installations", (string)null);
                 });
 
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.Team", b =>

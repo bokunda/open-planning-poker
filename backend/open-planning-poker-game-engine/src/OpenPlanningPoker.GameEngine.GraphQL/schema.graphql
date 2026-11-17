@@ -41,6 +41,11 @@ type ChatMessage {
   timestamp: String!
 }
 
+type ClaimGameHostPayload {
+  boolean: Boolean
+  errors: [ClaimGameHostError!]
+}
+
 type CompleteJiraConnectionPayload {
   jiraConnectionResult: JiraConnectionResult
   errors: [CompleteJiraConnectionError!]
@@ -277,6 +282,11 @@ type Mutation {
   deleteGame(input: DeleteGameInput!): DeleteGamePayload! @cost(weight: "10")
   "Generates a PDF report of the game. Only players of the game can generate it."
   generateGameReport(input: GenerateGameReportInput!): GenerateGameReportPayload! @cost(weight: "10")
+  """
+  Makes the caller the host of a game started from Slack or Teams, with the one-time link from the chat.
+  False when the game already has a host or the link is not valid.
+  """
+  claimGameHost(input: ClaimGameHostInput!): ClaimGameHostPayload! @cost(weight: "10")
   "Finishes the Atlassian consent: stores the tokens (encrypted) and lists the caller's sites."
   completeJiraConnection(input: CompleteJiraConnectionInput!): CompleteJiraConnectionPayload! @cost(weight: "10")
   selectJiraSite(input: SelectJiraSiteInput!): SelectJiraSitePayload! @cost(weight: "10")
@@ -570,6 +580,8 @@ type VotesRevealed {
   votes: [Vote!]!
 }
 
+union ClaimGameHostError = ApplicationError
+
 union CompleteJiraConnectionError = ApplicationError
 
 union CreateGameError = ApplicationError
@@ -661,6 +673,11 @@ union UpdateTeamError = ApplicationError
 union UpdateTicketError = ApplicationError
 
 union VotesResult = ApiCollectionOfVote | ApplicationError
+
+input ClaimGameHostInput {
+  gameId: UUID!
+  token: String!
+}
 
 input CompleteJiraConnectionInput {
   code: String!

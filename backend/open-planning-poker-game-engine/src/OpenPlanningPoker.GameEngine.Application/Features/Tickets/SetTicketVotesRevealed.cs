@@ -15,7 +15,7 @@ public static class SetTicketVotesRevealed
         }
     }
 
-    public sealed class RequestHandler(ITicketRepository ticketRepository, IUnitOfWork unitOfWork)
+    public sealed class RequestHandler(ITicketRepository ticketRepository, IUnitOfWork unitOfWork, Integrations.Chat.IChatNotifications chatNotifications)
         : IRequestHandler<SetTicketVotesRevealedCommand, Result<bool, ApplicationError>>
     {
         public async Task<Result<bool, ApplicationError>> Handle(SetTicketVotesRevealedCommand request, CancellationToken cancellationToken = default)
@@ -41,6 +41,12 @@ public static class SetTicketVotesRevealed
             }
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            // Games started from Slack or Teams post the result back to the chat (OPP-22, OPP-23).
+            if (request.Revealed)
+            {
+                chatNotifications.TicketRevealed(ticket.Id);
+            }
             return true;
         }
     }
