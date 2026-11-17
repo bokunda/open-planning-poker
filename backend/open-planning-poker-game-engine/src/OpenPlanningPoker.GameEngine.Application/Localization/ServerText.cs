@@ -59,6 +59,20 @@ public static class ServerText
         ["error.RateLimited"] = ("Too many requests. Please wait a moment and try again.", "Previše zahteva. Sačekaj malo i pokušaj ponovo.", "Zu viele Anfragen. Bitte warte kurz und versuche es erneut."),
         ["error.UserNotFound"] = ("User not found.", "Korisnik nije pronađen.", "Benutzer nicht gefunden."),
 
+        // Jira integration (OPP-10, OPP-11, OPP-12)
+        ["error.JiraNotConfigured"] = ("The Jira integration is not set up on this server.", "Jira integracija nije podešena na ovom serveru.", "Die Jira-Integration ist auf diesem Server nicht eingerichtet."),
+        ["error.JiraNotConnected"] = ("Connect Jira first.", "Prvo poveži Jiru.", "Verbinde zuerst Jira."),
+        ["error.JiraReconnect"] = ("Jira access was revoked or expired. Reconnect Jira.", "Pristup Jiri je opozvan ili je istekao. Ponovo poveži Jiru.", "Der Jira-Zugriff wurde widerrufen oder ist abgelaufen. Verbinde Jira erneut."),
+        ["error.JiraNoSite"] = ("Choose a Jira site first.", "Prvo izaberi Jira sajt.", "Wähle zuerst eine Jira-Site."),
+        ["error.JiraInvalidState"] = ("The Jira sign-in expired or does not belong to you. Try again.", "Jira prijava je istekla ili nije tvoja. Pokušaj ponovo.", "Die Jira-Anmeldung ist abgelaufen oder gehört nicht dir. Versuche es erneut."),
+        ["error.JiraForbidden"] = ("Jira does not allow you to do this. Ask a Jira admin for permission.", "Jira ti ovo ne dozvoljava. Zatraži dozvolu od Jira administratora.", "Jira erlaubt dir das nicht. Bitte einen Jira-Admin um die Berechtigung."),
+        ["error.JiraFieldMissing"] = ("This issue has no Story Points field on its edit screen.", "Ovaj issue nema polje Story Points na ekranu za izmenu.", "Dieses Issue hat kein Story-Points-Feld in seiner Bearbeitungsmaske."),
+        ["error.JiraNotNumeric"] = ("Only numeric estimates can be saved as story points.", "Kao story points mogu da se sačuvaju samo brojevi.", "Nur Zahlen können als Story Points gespeichert werden."),
+        ["error.JiraNoEstimate"] = ("Reveal the cards and choose an estimate first.", "Prvo otkrij karte i izaberi procenu.", "Decke zuerst die Karten auf und wähle eine Schätzung."),
+        ["error.JiraNotLinked"] = ("This ticket was not imported from Jira.", "Ovaj tiket nije uvezen iz Jire.", "Dieses Ticket wurde nicht aus Jira importiert."),
+        ["error.JiraInvalidQuery"] = ("Jira could not run this query. Check the JQL.", "Jira nije mogla da izvrši ovaj upit. Proveri JQL.", "Jira konnte diese Abfrage nicht ausführen. Prüfe die JQL."),
+        ["error.JiraFailed"] = ("Jira did not answer as expected. Try again in a moment.", "Jira nije odgovorila kako treba. Pokušaj ponovo za trenutak.", "Jira hat nicht wie erwartet geantwortet. Versuche es gleich noch einmal."),
+
         // PDF report
         ["report.title"] = ("Game report", "Izveštaj igre", "Spielbericht"),
         ["report.created"] = ("Created {0}", "Napravljeno {0}", "Erstellt am {0}"),

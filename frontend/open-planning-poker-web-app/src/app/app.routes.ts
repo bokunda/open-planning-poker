@@ -41,6 +41,12 @@ export const routes: Routes = [
     title: 'Team Room — Open Planning Poker'
   },
   {
+    // Atlassian OAuth callback (OPP-10).
+    path: 'integrations/jira/callback',
+    loadComponent: () => import('./features/integrations/jira-callback.component').then(m => m.JiraCallbackComponent),
+    title: 'Connecting Jira — Open Planning Poker'
+  },
+  {
     path: '**',
     loadComponent: () => import('./features/errors/errors.component').then(m => m.ErrorsComponent),
     title: '404 — Page Not Found | Open Planning Poker'

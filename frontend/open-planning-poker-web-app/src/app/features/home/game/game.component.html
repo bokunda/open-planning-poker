@@ -98,6 +98,8 @@
             (onCreateNewTicket)="handleCreateTicket()"
             (onImportTickets)="handleImportTickets()"
             (onSetFinalEstimate)="handleSetFinalEstimate($event)"
+            [jiraSaving]="jiraSaving"
+            (onSaveToJira)="handleSaveToJira($event)"
             (OnVote)="handleVoteAction($event)"
             (onRevealVotes)="handleRevealVotes()"
             (onVoteAgain)="handleVoteAgain()"
