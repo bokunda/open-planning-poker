@@ -103,6 +103,14 @@ const translation = {
     notFoundMessage: "Die gesuchte Seite existiert nicht oder wurde verschoben.",
     notFoundTitle: "404 - Seite nicht gefunden",
   },
+  estimateIssue: {
+    failed: "Das Spiel konnte nicht erstellt werden. Versuche es erneut.",
+    failedTitle: "Etwas ist schiefgelaufen",
+    invalid: "Diesem Link fehlt ein Jira-Issue-Schlüssel oder ein Jira-Cloud-Link.",
+    lead: "Spiel mit diesem Issue als erstem Ticket wird erstellt…",
+    openApp: "App öffnen",
+    starting: "Schätzung für {{key}}",
+  },
   facilitation: {
     breakHint: "Die Hälfte des Raums möchte eine Pause. Zeit für eine kurze?",
     caption: "Diskussion leiten",

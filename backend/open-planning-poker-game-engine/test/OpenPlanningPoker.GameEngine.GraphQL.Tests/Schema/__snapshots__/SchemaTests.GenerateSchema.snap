@@ -253,6 +253,11 @@ type Mutation {
   leaveTeam(teamId: UUID!): Boolean!
   "Creates a ticket for given game. Host only."
   createTicket(gameId: UUID! name: String! description: String!): Ticket!
+  """
+  Creates a ticket for a Jira issue and links it to the issue, so "Save to KEY" works after the reveal. Used when
+  a game is started from the Jira issue panel (OPP-120). Host only.
+  """
+  createTicketForIssue(gameId: UUID! key: String! title: String! url: String!): Ticket!
   "Updates a ticket's name and description. Host and co-hosts."
   updateTicket(id: UUID! name: String! description: String!): Ticket!
   "Puts the game's tickets in the given order (first id first). Host and co-hosts."

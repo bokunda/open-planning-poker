@@ -103,6 +103,14 @@ const translation = {
     notFoundMessage: "Stranica koju tražiš ne postoji ili je premeštena.",
     notFoundTitle: "404 - Stranica nije pronađena",
   },
+  estimateIssue: {
+    failed: "Igra nije napravljena. Pokušaj ponovo.",
+    failedTitle: "Nešto nije u redu",
+    invalid: "Ovom linku nedostaje ključ Jira issue-a ili Jira Cloud link.",
+    lead: "Pravim igru sa ovim issue-om kao prvim tiketom…",
+    openApp: "Otvori aplikaciju",
+    starting: "Procena za {{key}}",
+  },
   facilitation: {
     breakHint: "Pola sobe traži pauzu. Vreme za kratku pauzu?",
     caption: "Vođenje diskusije",

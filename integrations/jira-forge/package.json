@@ -1,7 +1,7 @@
 {
-  "name": "open-planning-poker-jira-forge-spike",
+  "name": "open-planning-poker-jira-forge",
   "private": true,
-  "description": "Spike (OPP-13): Forge issue panel for Open Planning Poker. Not deployed.",
+  "description": "Jira issue panel: estimate the issue in Open Planning Poker (OPP-120).",
   "dependencies": {
     "@forge/api": "^5.0.0",
     "@forge/bridge": "^4.0.0",

@@ -103,6 +103,14 @@ const translation = {
     notFoundMessage: "The page you are looking for does not exist or has been moved.",
     notFoundTitle: "404 - Page Not Found",
   },
+  estimateIssue: {
+    failed: "The game could not be created. Try again.",
+    failedTitle: "Something went wrong",
+    invalid: "This link is missing a Jira issue key or a Jira Cloud link.",
+    lead: "Creating a game with this issue as the first ticket…",
+    openApp: "Open the app",
+    starting: "Estimating {{key}}",
+  },
   facilitation: {
     breakHint: "Half the room asked for a break. Time for a short one?",
     caption: "Running the discussion",
