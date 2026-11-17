@@ -64,6 +64,11 @@ public static class DependencyInjection
         services.AddScoped<Application.Features.Integrations.Trackers.ITrackerClient>(sp => sp.GetRequiredService<Integrations.AzureDevOpsTrackerClient>());
         services.AddScoped<Application.Features.Integrations.Trackers.TrackerService>();
 
+        // Estimation insights (OPP-117): cycle times from Jira and the session summary webhook.
+        services.AddScoped<ITicketCycleTimeRepository, TicketCycleTimeRepository>();
+        services.AddHttpClient<Application.Features.Teams.IWebhookPoster, Integrations.WebhookPoster>(client => client.Timeout = TimeSpan.FromSeconds(10));
+        services.AddScoped<Application.Features.Teams.InsightsService>();
+
         // Slack and Teams (OPP-22, OPP-23).
         services.Configure<Application.Features.Integrations.Chat.ChatOptions>(configuration.GetSection(Application.Features.Integrations.Chat.ChatOptions.Section));
         services.AddScoped<Domain.Integrations.IChatIntegrationRepository, ChatIntegrationRepository>();

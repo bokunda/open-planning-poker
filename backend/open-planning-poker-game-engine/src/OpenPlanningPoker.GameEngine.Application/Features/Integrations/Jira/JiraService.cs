@@ -255,6 +255,29 @@ public sealed class JiraService(
         return new JiraSaveResult(key, estimate, ticket.ExternalUrl ?? string.Empty);
     }
 
+    /// <summary>Start and resolution times of issues (OPP-135), with the caller's Jira connection.</summary>
+    public async Task<Result<IReadOnlyDictionary<string, (DateTimeOffset? Started, DateTimeOffset? Done)>, ApplicationError>> GetIssueTimesAsync(
+        Guid playerId, IReadOnlyCollection<string> keys, CancellationToken cancellationToken)
+    {
+        var result = await CallAsync(playerId, requireSite: true, async (token, c) =>
+        {
+            var times = new Dictionary<string, (DateTimeOffset?, DateTimeOffset?)>(StringComparer.OrdinalIgnoreCase);
+            foreach (var key in keys)
+            {
+                try
+                {
+                    times[key] = await api.GetIssueTimesAsync(token, c.CloudId!, key, cancellationToken);
+                }
+                catch (JiraApiException exception) when (!exception.Unauthorized)
+                {
+                    // Deleted or hidden issue: leave it out.
+                }
+            }
+            return (IReadOnlyDictionary<string, (DateTimeOffset? Started, DateTimeOffset? Done)>)times;
+        }, cancellationToken);
+        return result;
+    }
+
     /// <summary>Runs a Jira call with a valid access token, refreshing it once when it expired or was rejected.</summary>
     private async Task<Result<T, ApplicationError>> CallAsync<T>(
         Guid playerId, bool requireSite, Func<string, JiraConnection, Task<T>> call, CancellationToken cancellationToken)

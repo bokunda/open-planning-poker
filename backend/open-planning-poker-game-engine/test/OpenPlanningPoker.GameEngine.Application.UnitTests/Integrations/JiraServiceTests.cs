@@ -269,6 +269,9 @@ public class JiraServiceTests
             Comment = text;
             return Task.CompletedTask;
         }
+
+        public Task<(DateTimeOffset? Started, DateTimeOffset? Done)> GetIssueTimesAsync(string accessToken, string cloudId, string issueKey, CancellationToken cancellationToken) =>
+            Task.FromResult<(DateTimeOffset?, DateTimeOffset?)>((null, null));
     }
 
     /// <summary>Readable "encryption" so the tests can see what is stored; the state is checked as the real one is.</summary>

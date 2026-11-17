@@ -107,3 +107,35 @@ public sealed class Ticket : Entity<Guid>
         ExternalProvider = provider;
     }
 }
+
+/// <summary>
+/// How long the tracker issue of a ticket took, read from Jira (OPP-135): first status change to done. Cached and
+/// refreshed at most once a day.
+/// </summary>
+public sealed class TicketCycleTime
+{
+    private TicketCycleTime(Guid ticketId) => TicketId = ticketId;
+
+    public Guid TicketId { get; private set; }
+    public DateTimeOffset? StartedOn { get; private set; }
+    public DateTimeOffset? DoneOn { get; private set; }
+    public DateTimeOffset CheckedOn { get; private set; }
+
+    public static TicketCycleTime Create(Guid ticketId) => new(ticketId);
+
+    public void Update(DateTimeOffset? startedOn, DateTimeOffset? doneOn)
+    {
+        StartedOn = startedOn;
+        DoneOn = doneOn;
+        CheckedOn = DateTimeOffset.UtcNow;
+    }
+
+    /// <summary>Days from start to done; null until the issue is done.</summary>
+    public double? Days => StartedOn is { } s && DoneOn is { } d && d >= s ? Math.Round((d - s).TotalDays, 1) : null;
+}
+
+public interface ITicketCycleTimeRepository
+{
+    Task<IReadOnlyList<TicketCycleTime>> GetAsync(IReadOnlyCollection<Guid> ticketIds, CancellationToken cancellationToken = default);
+    void Add(TicketCycleTime cycleTime);
+}

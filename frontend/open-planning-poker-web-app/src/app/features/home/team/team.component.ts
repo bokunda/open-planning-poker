@@ -10,6 +10,7 @@ import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '.
 import { CREATE_SPRINT, CREATE_TEAM, GET_TEAM, JOIN_TEAM, LEAVE_TEAM, MY_TEAMS, TeamDetails, TeamSummary } from './team.graphql';
 import { VelocityChartComponent } from './velocity-chart.component';
 import { TeamReferenceComponent } from './team-reference.component';
+import { TeamInsightsComponent } from './team-insights.component';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { OppDatePipe } from '../../../i18n/opp-date.pipe';
 
@@ -22,7 +23,7 @@ type Errors = { errors?: { message: string }[] | null } | null | undefined;
 @Component({
   selector: 'app-team',
   standalone: true,
-  imports: [TranslocoPipe, OppDatePipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, VelocityChartComponent, TeamReferenceComponent],
+  imports: [TranslocoPipe, OppDatePipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, VelocityChartComponent, TeamReferenceComponent, TeamInsightsComponent],
   templateUrl: './team.component.html',
   styleUrl: './team.component.scss',
 })

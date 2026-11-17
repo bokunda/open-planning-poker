@@ -81,6 +81,12 @@
             }
             <mat-divider></mat-divider>
           }
+          @if (isHost) {
+            <button mat-menu-item (click)="onPostSummary.emit()">
+              <mat-icon>send</mat-icon>
+              <span>{{ 'insights.postSummary' | transloco }}</span>
+            </button>
+          }
           <button mat-menu-item (click)="onExportCsv.emit()">
             <mat-icon>download</mat-icon>
             <span>{{ 'room.exportCsv' | transloco }}</span>

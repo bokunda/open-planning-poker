@@ -77,6 +77,9 @@ public static class ServerText
         ["error.TrackerFailed"] = ("The tracker did not answer as expected. Try again in a moment.", "Alat nije odgovorio kako treba. Pokušaj ponovo za trenutak.", "Der Tracker hat nicht wie erwartet geantwortet. Versuche es gleich noch einmal."),
         ["error.TrackerNotLinked"] = ("This ticket was not imported from a tracker.", "Ovaj tiket nije uvezen iz alata.", "Dieses Ticket wurde nicht aus einem Tracker importiert."),
         ["error.TrackerNoEstimate"] = ("Reveal the cards and choose an estimate first.", "Prvo otkrij karte i izaberi procenu.", "Decke zuerst die Karten auf und wähle eine Schätzung."),
+        ["error.InvalidWebhook"] = ("Use an incoming webhook link from Slack or Microsoft Teams.", "Koristi link dolaznog webhooka iz Slacka ili Microsoft Teams-a.", "Verwende einen Incoming-Webhook-Link von Slack oder Microsoft Teams."),
+        ["error.NoSummaryDestination"] = ("This game has no Slack thread and its team has no webhook.", "Ova igra nema Slack thread, a njen tim nema webhook.", "Dieses Spiel hat keinen Slack-Thread und sein Team keinen Webhook."),
+        ["error.SummaryPostFailed"] = ("The summary could not be posted. Check the webhook and try again.", "Rezime nije objavljen. Proveri webhook i pokušaj ponovo.", "Die Zusammenfassung konnte nicht gepostet werden. Prüfe den Webhook und versuche es erneut."),
         ["error.UserNotFound"] = ("User not found.", "Korisnik nije pronađen.", "Benutzer nicht gefunden."),
 
         // Jira integration (OPP-10, OPP-11, OPP-12)

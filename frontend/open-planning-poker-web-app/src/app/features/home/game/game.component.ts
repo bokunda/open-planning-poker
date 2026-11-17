@@ -50,6 +50,7 @@ import {
 } from './gql/room.graphql';
 import { UPDATE_FACILITATION_OPTIONS } from './gql/facilitation.graphql';
 import { SAVE_ESTIMATE_TO_TRACKER, trackerOfUrl } from './gql/trackers.graphql';
+import { POST_SESSION_SUMMARY, SESSION_SUMMARY } from './gql/summary.graphql';
 import { FacilitationSettings, GameChanged, isAsyncVotingOpen, PlayerAction, RoomPlayer, RoomSettings, RoomTicket } from './room-types';
 import { CLAIM_GAME_HOST, SAVE_ESTIMATE_TO_JIRA } from './gql/jira.graphql';
 import { ticketsToCsv } from './export/tickets-csv';
@@ -1015,6 +1016,31 @@ export class GameComponent implements OnInit {
     this.runMutation(UPDATE_GAME_OPTIONS, 'updateGameOptions', {
       gameId, autoReveal: options.autoReveal, asyncVotingEndsAt: options.asyncVotingEndsAt
     }, () => this.refreshGame(gameId));
+  }
+
+  /** Preview the session summary, then post it to the game's Slack thread or the team's webhook (OPP-136). */
+  handlePostSummary(): void {
+    const gameId = this.game?.id;
+    if (!gameId) return;
+    this.apollo.query<{ sessionSummary: { text?: string; destination?: string | null; message?: string } }>({
+      query: SESSION_SUMMARY, variables: { gameId },
+    }).subscribe(({ data }) => {
+      const summary = data?.sessionSummary;
+      if (!summary?.text) {
+        this.notify(summary?.message ?? this.i18n.translate('common.tryAgainNetwork'));
+        return;
+      }
+      if (!summary.destination) {
+        this.notify(this.i18n.translate('insights.noDestination'));
+        return;
+      }
+      this.confirm({
+        title: this.i18n.translate(summary.destination === 'slack' ? 'insights.postToSlack' : 'insights.postToWebhook'),
+        message: summary.text.replace(/\*/g, ''),
+        confirmLabel: this.i18n.translate('insights.post'),
+      }, () => this.runMutation(POST_SESSION_SUMMARY, 'postSessionSummary', { gameId },
+        () => this.notify(this.i18n.translate('insights.posted'))));
+    });
   }
 
   handleUpdateFacilitation(options: FacilitationSettings): void {

@@ -135,6 +135,21 @@ public sealed class ChatGameService(
         }
     }
 
+    /// <summary>True when the game was started from Slack and can still post to its thread (OPP-136).</summary>
+    public async Task<bool> HasSlackThreadAsync(Guid gameId, CancellationToken cancellationToken) =>
+        _options.SlackEnabled && await chat.GetPostAsync(gameId, cancellationToken) is { Provider: ChatProviders.Slack };
+
+    /// <summary>Posts a message to the Slack thread of a game started from Slack.</summary>
+    public async Task<bool> PostToThreadAsync(Guid gameId, string text, CancellationToken cancellationToken)
+    {
+        var post = await chat.GetPostAsync(gameId, cancellationToken);
+        if (post is null || post.Provider != ChatProviders.Slack || !_options.SlackEnabled) return false;
+        var token = await GetSlackBotTokenAsync(post.WorkspaceId, cancellationToken);
+        if (token is null) return false;
+        await slack.PostMessageAsync(token, post.ChannelId, text, null, post.MessageId, cancellationToken);
+        return true;
+    }
+
     public static string ResultText(string ticketName, IReadOnlyCollection<string> values)
     {
         var stats = TicketStats.From(true, values);

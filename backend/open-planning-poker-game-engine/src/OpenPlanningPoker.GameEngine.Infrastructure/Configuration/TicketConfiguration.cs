@@ -31,3 +31,14 @@ internal sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
             .HasForeignKey(ticket => ticket.TicketId);
     }
 }
+
+internal sealed class TicketCycleTimeConfiguration : IEntityTypeConfiguration<TicketCycleTime>
+{
+    public void Configure(EntityTypeBuilder<TicketCycleTime> builder)
+    {
+        builder.ToTable("ticket_cycle_times");
+        builder.HasKey(c => c.TicketId);
+        builder.Ignore(c => c.Days);
+        builder.HasOne<Ticket>().WithMany().HasForeignKey(c => c.TicketId).OnDelete(DeleteBehavior.Cascade);
+    }
+}

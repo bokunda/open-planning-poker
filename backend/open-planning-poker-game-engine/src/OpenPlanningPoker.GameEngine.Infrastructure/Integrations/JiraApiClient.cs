@@ -112,6 +112,31 @@ public sealed class JiraApiClient(HttpClient http, IOptions<JiraOptions> options
         using var _ = await SendAsync(accessToken, HttpMethod.Put, $"{Jira(cloudId)}/rest/api/3/issue/{Uri.EscapeDataString(issueKey)}", body, cancellationToken);
     }
 
+    public async Task<(DateTimeOffset? Started, DateTimeOffset? Done)> GetIssueTimesAsync(string accessToken, string cloudId, string issueKey, CancellationToken cancellationToken)
+    {
+        using var doc = await SendAsync(accessToken, HttpMethod.Get,
+            $"{Jira(cloudId)}/rest/api/3/issue/{Uri.EscapeDataString(issueKey)}?fields=resolutiondate&expand=changelog", null, cancellationToken);
+        var root = doc.RootElement;
+        DateTimeOffset? done = root.TryGetProperty("fields", out var fields) && fields.TryGetProperty("resolutiondate", out var r)
+            && r.ValueKind == JsonValueKind.String && DateTimeOffset.TryParse(r.GetString(), CultureInfo.InvariantCulture, DateTimeStyles.None, out var resolved)
+            ? resolved : null;
+        DateTimeOffset? started = null;
+        if (root.TryGetProperty("changelog", out var changelog) && changelog.TryGetProperty("histories", out var histories))
+        {
+            foreach (var history in histories.EnumerateArray())
+            {
+                var isStatus = history.TryGetProperty("items", out var items) && items.EnumerateArray()
+                    .Any(item => item.TryGetProperty("field", out var f) && f.GetString() == "status");
+                if (!isStatus || !history.TryGetProperty("created", out var c)) continue;
+                if (DateTimeOffset.TryParse(c.GetString(), CultureInfo.InvariantCulture, DateTimeStyles.None, out var at) && (started is null || at < started))
+                {
+                    started = at;
+                }
+            }
+        }
+        return (started, done);
+    }
+
     public async Task AddCommentAsync(string accessToken, string cloudId, string issueKey, string text, CancellationToken cancellationToken)
     {
         using var _ = await SendAsync(accessToken, HttpMethod.Post,

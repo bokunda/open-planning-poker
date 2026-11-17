@@ -4,6 +4,12 @@
   subscription: Subscription
 }
 
+type AccuracyOutlierInfo {
+  ticket: TeamTicket!
+  days: Float!
+  cardMedianDays: Float!
+}
+
 type ApiCollectionOfGamePlayer {
   items: [GamePlayer!]!
   totalCount: Int!
@@ -22,6 +28,14 @@ type ApiCollectionOfVote {
 type BaseUserProfile {
   id: UUID!
   userName: String!
+}
+
+type CardAccuracyInfo {
+  value: String!
+  count: Int!
+  medianDays: Float!
+  minDays: Float!
+  maxDays: Float!
 }
 
 type ChatMessage {
@@ -251,6 +265,10 @@ type Mutation {
   until asyncVotingEndsAt; null or a past time switches to meeting mode). Host and co-hosts.
   """
   updateGameOptions(gameId: UUID! autoReveal: Boolean! asyncVotingEndsAt: DateTime): Settings!
+  "Posts the session summary to the game's Slack thread or the team's webhook. Host and co-hosts."
+  postSessionSummary(gameId: UUID!): SessionSummaryInfo!
+  "Sets (or clears, with null) the Slack or Teams incoming webhook for session summaries. Team owner."
+  setTeamSummaryWebhook(teamId: UUID! url: String): Boolean!
   "Pins an estimated ticket of the team's sprints as the reference for its card (two per card). Team members."
   pinTeamAnchor(teamId: UUID! ticketId: UUID! note: String): TeamAnchor!
   "Removes a reference ticket. Team members."
@@ -338,6 +356,10 @@ type Query {
   ping: String!
   "Gets Game Settings."
   settings(gameId: UUID!): Settings!
+  "Cycle times per card from Jira, with the caller's Jira connection. Team members."
+  teamAccuracy(teamId: UUID!): TeamAccuracyInfo!
+  "Preview of the session summary and where it would go. Host and co-hosts."
+  sessionSummary(gameId: UUID!): SessionSummaryInfo!
   "The team's anchors and up to three similar past tickets for a ticket. Players of the game only."
   ticketReference(ticketId: UUID!): TicketReference!
   "A team room by id. Members-only fields are empty for others."
@@ -364,6 +386,11 @@ type Reaction {
   emoji: String!
 }
 
+type SessionSummaryInfo {
+  text: String!
+  destination: String
+}
+
 type Settings {
   "Discussion options of the room (OPP-114)."
   facilitation: FacilitationSettings!
@@ -385,6 +412,20 @@ type Sprint {
   ticketCount: Int!
   estimatedCount: Int!
   points: Float!
+  "Consensus, re-votes, discussion time and needs-info tickets of the session."
+  stats: SprintStats
+}
+
+"How one planning session went (OPP-134). Team numbers only."
+type SprintStats {
+  revealed: Int!
+  firstRoundConsensus: Int!
+  "Share (0–1) of revealed tickets agreed on the first vote."
+  firstRoundConsensusShare: Float
+  reVotesPerTicket: Float
+  "Average seconds from the reveal to the final estimate."
+  averageDiscussionSeconds: Float
+  needsInfo: Int!
 }
 
 type Subscription {
@@ -425,10 +466,20 @@ type Team {
   description: String!
   ownerId: UUID!
   createdOn: DateTime!
+  "The incoming webhook for session summaries. Owner only; null for others."
+  summaryWebhook: String
   "Reference tickets, by card value. Empty for non-members."
   anchors: [TeamAnchor!]!
   "Estimated tickets of all sprints, newest first, filtered by text and card value. Empty for non-members."
   history(search: String value: String skip: Int! = 0 take: Int! = 20): TeamHistory!
+}
+
+"Estimate accuracy from Jira cycle times (OPP-135)."
+type TeamAccuracyInfo {
+  cards: [CardAccuracyInfo!]!
+  outliers: [AccuracyOutlierInfo!]!
+  measured: Int!
+  pending: Int!
 }
 
 "A reference ticket of the team: what a card value looks like for this team (OPP-127)."

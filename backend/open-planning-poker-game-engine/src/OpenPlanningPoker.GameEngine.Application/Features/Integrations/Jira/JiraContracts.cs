@@ -51,6 +51,9 @@ public interface IJiraApi
     Task<IReadOnlySet<string>> GetEditableFieldsAsync(string accessToken, string cloudId, string issueKey, CancellationToken cancellationToken);
     Task SetFieldAsync(string accessToken, string cloudId, string issueKey, string fieldId, double value, CancellationToken cancellationToken);
     Task AddCommentAsync(string accessToken, string cloudId, string issueKey, string text, CancellationToken cancellationToken);
+
+    /// <summary>When work on the issue started (first status change) and when it was resolved (OPP-135).</summary>
+    Task<(DateTimeOffset? Started, DateTimeOffset? Done)> GetIssueTimesAsync(string accessToken, string cloudId, string issueKey, CancellationToken cancellationToken);
 }
 
 /// <summary>Encrypts tokens at rest and signs the short-lived OAuth state.</summary>

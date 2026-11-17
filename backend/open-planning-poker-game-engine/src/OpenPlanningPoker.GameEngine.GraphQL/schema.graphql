@@ -8,6 +8,12 @@ interface Error {
   message: String!
 }
 
+type AccuracyOutlierInfo {
+  ticket: TeamTicket!
+  days: Float!
+  cardMedianDays: Float!
+}
+
 type ApiCollectionOfGamePlayer {
   items: [GamePlayer!]!
   totalCount: Int!
@@ -31,6 +37,14 @@ type ApplicationError implements Error {
 type BaseUserProfile {
   id: UUID!
   userName: String!
+}
+
+type CardAccuracyInfo {
+  value: String!
+  count: Int!
+  medianDays: Float!
+  minDays: Float!
+  maxDays: Float!
 }
 
 type ChatMessage {
@@ -360,6 +374,10 @@ type Mutation {
   until asyncVotingEndsAt; null or a past time switches to meeting mode). Host and co-hosts.
   """
   updateGameOptions(input: UpdateGameOptionsInput!): UpdateGameOptionsPayload! @cost(weight: "10")
+  "Posts the session summary to the game's Slack thread or the team's webhook. Host and co-hosts."
+  postSessionSummary(input: PostSessionSummaryInput!): PostSessionSummaryPayload! @cost(weight: "10")
+  "Sets (or clears, with null) the Slack or Teams incoming webhook for session summaries. Team owner."
+  setTeamSummaryWebhook(input: SetTeamSummaryWebhookInput!): SetTeamSummaryWebhookPayload! @cost(weight: "10")
   "Pins an estimated ticket of the team's sprints as the reference for its card (two per card). Team members."
   pinTeamAnchor(input: PinTeamAnchorInput!): PinTeamAnchorPayload! @cost(weight: "10")
   "Removes a reference ticket. Team members."
@@ -417,6 +435,11 @@ type PingPayload {
   string: String
 }
 
+type PostSessionSummaryPayload {
+  sessionSummaryInfo: SessionSummaryInfo
+  errors: [PostSessionSummaryError!]
+}
+
 "Base Game Engine query."
 type Query {
   """
@@ -456,6 +479,10 @@ type Query {
   ping: String! @cost(weight: "10")
   "Gets Game Settings."
   settings(gameId: UUID!): SettingsResult! @cost(weight: "10")
+  "Cycle times per card from Jira, with the caller's Jira connection. Team members."
+  teamAccuracy(teamId: UUID!): TeamAccuracyResult! @cost(weight: "10")
+  "Preview of the session summary and where it would go. Host and co-hosts."
+  sessionSummary(gameId: UUID!): SessionSummaryResult! @cost(weight: "10")
   "The team's anchors and up to three similar past tickets for a ticket. Players of the game only."
   ticketReference(ticketId: UUID!): TicketReferenceResult! @cost(weight: "10")
   "A team room by id. Members-only fields are empty for others."
@@ -527,6 +554,11 @@ type SendReactionPayload {
   errors: [SendReactionError!]
 }
 
+type SessionSummaryInfo {
+  text: String!
+  destination: String
+}
+
 type SetCoHostPayload {
   boolean: Boolean
   errors: [SetCoHostError!]
@@ -545,6 +577,11 @@ type SetFinalEstimatePayload {
 type SetPlayerRolePayload {
   boolean: Boolean
   errors: [SetPlayerRoleError!]
+}
+
+type SetTeamSummaryWebhookPayload {
+  boolean: Boolean
+  errors: [SetTeamSummaryWebhookError!]
 }
 
 type SetTicketNeedsInfoPayload {
@@ -578,6 +615,20 @@ type Sprint {
   ticketCount: Int!
   estimatedCount: Int!
   points: Float!
+  "Consensus, re-votes, discussion time and needs-info tickets of the session."
+  stats: SprintStats
+}
+
+"How one planning session went (OPP-134). Team numbers only."
+type SprintStats {
+  revealed: Int!
+  firstRoundConsensus: Int!
+  "Share (0–1) of revealed tickets agreed on the first vote."
+  firstRoundConsensusShare: Float
+  reVotesPerTicket: Float
+  "Average seconds from the reveal to the final estimate."
+  averageDiscussionSeconds: Float
+  needsInfo: Int!
 }
 
 type StartTimerPayload {
@@ -628,10 +679,20 @@ type Team {
   description: String!
   ownerId: UUID!
   createdOn: DateTime!
+  "The incoming webhook for session summaries. Owner only; null for others."
+  summaryWebhook: String @cost(weight: "10")
   "Reference tickets, by card value. Empty for non-members."
   anchors: [TeamAnchor!]! @cost(weight: "10")
   "Estimated tickets of all sprints, newest first, filtered by text and card value. Empty for non-members."
   history(search: String value: String skip: Int! = 0 take: Int! = 20): TeamHistory! @cost(weight: "10")
+}
+
+"Estimate accuracy from Jira cycle times (OPP-135)."
+type TeamAccuracyInfo {
+  cards: [CardAccuracyInfo!]!
+  outliers: [AccuracyOutlierInfo!]!
+  measured: Int!
+  pending: Int!
 }
 
 "A reference ticket of the team: what a card value looks like for this team (OPP-127)."
@@ -876,6 +937,8 @@ union LeaveTeamError = ApplicationError
 
 union PinTeamAnchorError = ApplicationError
 
+union PostSessionSummaryError = ApplicationError
+
 union ReVoteTicketError = ApplicationError
 
 union RemovePlayerError = ApplicationError
@@ -894,6 +957,8 @@ union SendChatMessageError = ApplicationError
 
 union SendReactionError = ApplicationError
 
+union SessionSummaryResult = SessionSummaryInfo | ApplicationError
+
 union SetCoHostError = ApplicationError
 
 union SetConfidenceError = ApplicationError
@@ -901,6 +966,8 @@ union SetConfidenceError = ApplicationError
 union SetFinalEstimateError = ApplicationError
 
 union SetPlayerRoleError = ApplicationError
+
+union SetTeamSummaryWebhookError = ApplicationError
 
 union SetTicketNeedsInfoError = ApplicationError
 
@@ -913,6 +980,8 @@ union SettingsResult = Settings | ApplicationError
 union StartTimerError = ApplicationError
 
 union StopTimerError = ApplicationError
+
+union TeamAccuracyResult = TeamAccuracyInfo | ApplicationError
 
 union TeamResult = Team | ApplicationError
 
@@ -1048,6 +1117,10 @@ input PinTeamAnchorInput {
   note: String
 }
 
+input PostSessionSummaryInput {
+  gameId: UUID!
+}
+
 input ReVoteTicketInput {
   gameId: UUID!
   ticketId: UUID!
@@ -1110,6 +1183,11 @@ input SetPlayerRoleInput {
   gameId: UUID!
   role: PlayerRole!
   playerId: UUID
+}
+
+input SetTeamSummaryWebhookInput {
+  teamId: UUID!
+  url: String
 }
 
 input SetTicketNeedsInfoInput {

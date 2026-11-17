@@ -19,6 +19,13 @@ public sealed class Team : Entity<Guid>
 
     public ICollection<TeamMember>? Members { get; set; }
 
+    public const int MaxWebhookLength = 512;
+
+    /// <summary>Incoming webhook (Slack or Microsoft Teams) that gets the session summary (OPP-136); null when none.</summary>
+    public string? SummaryWebhookUrl { get; private set; }
+
+    public void SetSummaryWebhook(string? url) => SummaryWebhookUrl = string.IsNullOrWhiteSpace(url) ? null : url.Trim();
+
     public static Team Create(string name, string description) =>
         new(SequentialGuidGenerator.Generate(), name, description);
 
