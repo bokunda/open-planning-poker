@@ -3,6 +3,9 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { JiraImportComponent } from './jira-import.component';
+import { TrackerImportComponent } from './tracker-import.component';
+import { Apollo } from 'apollo-angular';
+import { TRACKERS, TrackerInfo } from '../gql/trackers.graphql';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,18 +22,29 @@ export interface ImportTicketsDialogData {
 }
 
 /** The dialog closes with tickets to create, or with how many tickets the Jira import already added. */
-export type ImportTicketsResult = ImportedTicket[] | { jiraImported: number };
+export type ImportTicketsResult = ImportedTicket[] | { jiraImported: number; trackerName?: string };
 
 @Component({
   selector: 'app-import-tickets-dialog',
   templateUrl: './import-tickets-dialog.component.html',
   styleUrl: './import-tickets-dialog.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, FormsModule, MatDialogModule, MatTabsModule, MatButtonModule, MatIconModule, JiraImportComponent]
+  imports: [TranslocoPipe, FormsModule, MatDialogModule, MatTabsModule, MatButtonModule, MatIconModule, JiraImportComponent, TrackerImportComponent]
 })
 export class ImportTicketsDialogComponent {
   readonly dialogRef = inject(MatDialogRef<ImportTicketsDialogComponent>);
   readonly data = inject<ImportTicketsDialogData | null>(MAT_DIALOG_DATA, { optional: true });
+
+  /** Trackers next to Jira that this server has set up. */
+  trackers: TrackerInfo[] = [];
+
+  constructor() {
+    if (this.data?.gameId) {
+      inject(Apollo).query<{ trackers: TrackerInfo[] }>({ query: TRACKERS }).subscribe(({ data }) => {
+        this.trackers = (data?.trackers ?? []).filter(t => t.enabled);
+      });
+    }
+  }
 
   parsedTickets: ImportedTicket[] = [];
   bulkText = '';
@@ -161,6 +175,10 @@ export class ImportTicketsDialogComponent {
   import(): void {
     if (this.parsedTickets.length === 0) return;
     this.dialogRef.close(this.parsedTickets);
+  }
+
+  onTrackerImported(count: number, trackerName: string): void {
+    this.dialogRef.close({ jiraImported: count, trackerName } satisfies ImportTicketsResult);
   }
 
   onJiraImported(count: number): void {

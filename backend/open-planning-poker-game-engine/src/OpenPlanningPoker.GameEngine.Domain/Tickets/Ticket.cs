@@ -28,6 +28,9 @@ public sealed class Ticket : Entity<Guid>
     /// <summary>Link back to that issue.</summary>
     public string? ExternalUrl { get; private set; }
 
+    /// <summary>Tracker of <see cref="ExternalKey"/>: "jira", "github", "linear" or "azure-devops" (OPP-130).</summary>
+    public string? ExternalProvider { get; private set; }
+
     /// <summary>When the cards were last turned over; starts the discussion timer (OPP-123).</summary>
     public DateTimeOffset? RevealedAt { get; private set; }
 
@@ -97,9 +100,10 @@ public sealed class Ticket : Entity<Guid>
     public void MoveTo(int position) => Position = position;
 
     /// <summary>Remembers the tracker issue this ticket came from (OPP-11).</summary>
-    public void LinkTo(string key, string url)
+    public void LinkTo(string key, string url, string provider = "jira")
     {
         ExternalKey = key;
         ExternalUrl = url;
+        ExternalProvider = provider;
     }
 }

@@ -41,6 +41,14 @@
           <app-jira-import [gameId]="data!.gameId" (imported)="onJiraImported($event)"></app-jira-import>
         </ng-template>
       </mat-tab>
+      <!-- GitHub, Linear, Azure DevOps (OPP-116): only the ones this server has set up -->
+      @for (tracker of trackers; track tracker.provider) {
+        <mat-tab [label]="'trackers.tab' | transloco: { name: tracker.name }">
+          <ng-template matTabContent>
+            <app-tracker-import [tracker]="tracker" [gameId]="data!.gameId" (imported)="onTrackerImported($event, tracker.name)"></app-tracker-import>
+          </ng-template>
+        </mat-tab>
+      }
     }
   </mat-tab-group>
 

@@ -47,6 +47,12 @@ export const routes: Routes = [
     title: 'Connecting Jira — Open Planning Poker'
   },
   {
+    // GitHub, Linear and Azure DevOps OAuth callbacks (OPP-116).
+    path: 'integrations/tracker/:provider/callback',
+    loadComponent: () => import('./features/integrations/tracker-callback.component').then(m => m.TrackerCallbackComponent),
+    title: 'Connecting — Open Planning Poker'
+  },
+  {
     // Started from the Jira issue panel: a game with that issue as the first ticket (OPP-120).
     path: 'estimate',
     loadComponent: () => import('./features/integrations/estimate-issue.component').then(m => m.EstimateIssueComponent),

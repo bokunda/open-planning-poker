@@ -232,6 +232,14 @@ type Mutation {
   comment with the votes. Host or co-host only, after the reveal.
   """
   saveEstimateToJira(ticketId: UUID! addComment: Boolean!): JiraEstimateSaved!
+  "Finishes the OAuth sign-in with the code and state from the callback."
+  completeTrackerConnection(provider: String! code: String! state: String!): TrackerConnected!
+  "Deletes the caller's tokens for the tracker."
+  disconnectTracker(provider: String!): Boolean!
+  "Imports issues as tickets (all of the source when keys is empty), linked for \"Save to KEY\". Host and co-hosts."
+  importTrackerIssues(provider: String! gameId: UUID! sourceId: String! query: String keys: [String!]): TrackerImportSummary!
+  "Writes the agreed estimate to the issue the ticket came from. Host and co-hosts."
+  saveEstimateToTracker(ticketId: UUID!): TrackerEstimateSaved!
   "Dummy health-check mutation."
   ping: String!
   "Creates Game Settings. Host only."
@@ -318,6 +326,14 @@ type Query {
   tickets of the game marked. Host or co-host only.
   """
   jiraIssues(gameId: UUID! boardId: Long sprintId: Long jql: String): JiraIssueSearch!
+  "The trackers this server offers, with the caller's connection to each."
+  trackers: [TrackerInfo!]!
+  "The tracker's consent page; it returns to \/integrations\/tracker\/{provider}\/callback, then to returnPath."
+  trackerAuthorizeUrl(provider: String! returnPath: String!): TrackerAuthorizeLink!
+  "Repositories, teams or projects to import from."
+  trackerSources(provider: String!): TrackerSourceList!
+  "Import preview: up to 100 issues of a source, marking those already in the game. Host and co-hosts."
+  trackerIssues(provider: String! gameId: UUID! sourceId: String! query: String): TrackerIssueList!
   "Dummy health-check query."
   ping: String!
   "Gets Game Settings."
@@ -490,6 +506,59 @@ type TicketReference {
   teamId: UUID
   anchors: [TeamAnchor!]!
   similar: [TeamTicket!]!
+}
+
+type TrackerAuthorizeLink {
+  url: String!
+}
+
+type TrackerConnected {
+  returnPath: String!
+}
+
+type TrackerEstimateSaved {
+  issueKey: String!
+  value: String!
+  url: String!
+}
+
+type TrackerImportSummary {
+  imported: Int!
+  skipped: Int!
+}
+
+"An issue tracker next to Jira (GitHub, Linear, Azure DevOps) and the caller's connection to it."
+type TrackerInfo {
+  provider: String!
+  name: String!
+  enabled: Boolean!
+  connected: Boolean!
+  needsReconnect: Boolean!
+  accountName: String
+  queryHint: String!
+}
+
+type TrackerIssueList {
+  issues: [TrackerIssuePreview!]!
+  max: Int!
+}
+
+type TrackerIssuePreview {
+  key: String!
+  title: String!
+  description: String!
+  url: String!
+  estimate: Float
+  alreadyInGame: Boolean!
+}
+
+type TrackerSourceInfo {
+  id: String!
+  name: String!
+}
+
+type TrackerSourceList {
+  items: [TrackerSourceInfo!]!
 }
 
 type Vote {

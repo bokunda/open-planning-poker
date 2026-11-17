@@ -49,6 +49,7 @@ import {
   SET_PLAYER_ROLE, TRANSFER_HOST, UPDATE_GAME_OPTIONS, UPDATE_TICKET
 } from './gql/room.graphql';
 import { UPDATE_FACILITATION_OPTIONS } from './gql/facilitation.graphql';
+import { SAVE_ESTIMATE_TO_TRACKER, trackerOfUrl } from './gql/trackers.graphql';
 import { FacilitationSettings, GameChanged, isAsyncVotingOpen, PlayerAction, RoomPlayer, RoomSettings, RoomTicket } from './room-types';
 import { CLAIM_GAME_HOST, SAVE_ESTIMATE_TO_JIRA } from './gql/jira.graphql';
 import { ticketsToCsv } from './export/tickets-csv';
@@ -612,11 +613,13 @@ export class GameComponent implements OnInit {
       data: this.game?.id ? { gameId: this.game.id } : null
     });
 
-    dialogRef.afterClosed().subscribe((result: ImportedTicket[] | { jiraImported: number } | undefined) => {
+    dialogRef.afterClosed().subscribe((result: ImportedTicket[] | { jiraImported: number; trackerName?: string } | undefined) => {
       if (!result) return;
       if (!Array.isArray(result)) {
         // The Jira import created the tickets on the server; the list reloads from the game change event too.
-        this.notify(this.i18n.translate('jira.imported', { count: result.jiraImported }));
+        this.notify(result.trackerName
+          ? this.i18n.translate('trackers.imported', { count: result.jiraImported, name: result.trackerName })
+          : this.i18n.translate('jira.imported', { count: result.jiraImported }));
         if (this.game?.id) this.getTickets(this.game.id);
         return;
       }
@@ -991,6 +994,15 @@ export class GameComponent implements OnInit {
     const ticket = this.ticket as RoomTicket | undefined;
     if (!ticket?.id || !ticket.externalKey) return;
     this.jiraSaving = true;
+    // Tickets from GitHub, Linear or Azure DevOps save through the tracker API (OPP-116).
+    const tracker = trackerOfUrl(ticket.externalUrl);
+    if (tracker && tracker !== 'jira') {
+      this.runMutation(SAVE_ESTIMATE_TO_TRACKER, 'saveEstimateToTracker', { ticketId: ticket.id }, () => {
+        this.jiraSaving = false;
+        this.notify(this.i18n.translate('jira.saved', { key: ticket.externalKey }));
+      }, () => { this.jiraSaving = false; });
+      return;
+    }
     this.runMutation(SAVE_ESTIMATE_TO_JIRA, 'saveEstimateToJira', { ticketId: ticket.id, addComment }, () => {
       this.jiraSaving = false;
       this.notify(this.i18n.translate('jira.saved', { key: ticket.externalKey }));

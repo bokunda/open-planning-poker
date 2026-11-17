@@ -51,6 +51,11 @@ type CompleteJiraConnectionPayload {
   errors: [CompleteJiraConnectionError!]
 }
 
+type CompleteTrackerConnectionPayload {
+  trackerConnected: TrackerConnected
+  errors: [CompleteTrackerConnectionError!]
+}
+
 type CreateGamePayload {
   game: Game
   errors: [CreateGameError!]
@@ -94,6 +99,11 @@ type DeleteTicketPayload {
 type DisconnectJiraPayload {
   boolean: Boolean
   errors: [DisconnectJiraError!]
+}
+
+type DisconnectTrackerPayload {
+  boolean: Boolean
+  errors: [DisconnectTrackerError!]
 }
 
 "Room options for running the discussion (OPP-114)."
@@ -168,6 +178,11 @@ type GenerateGameReportPayload {
 type ImportJiraIssuesPayload {
   jiraImportSummary: JiraImportSummary
   errors: [ImportJiraIssuesError!]
+}
+
+type ImportTrackerIssuesPayload {
+  trackerImportSummary: TrackerImportSummary
+  errors: [ImportTrackerIssuesError!]
 }
 
 type Info {
@@ -326,6 +341,14 @@ type Mutation {
   comment with the votes. Host or co-host only, after the reveal.
   """
   saveEstimateToJira(input: SaveEstimateToJiraInput!): SaveEstimateToJiraPayload! @cost(weight: "10")
+  "Finishes the OAuth sign-in with the code and state from the callback."
+  completeTrackerConnection(input: CompleteTrackerConnectionInput!): CompleteTrackerConnectionPayload! @cost(weight: "10")
+  "Deletes the caller's tokens for the tracker."
+  disconnectTracker(input: DisconnectTrackerInput!): DisconnectTrackerPayload! @cost(weight: "10")
+  "Imports issues as tickets (all of the source when keys is empty), linked for \"Save to KEY\". Host and co-hosts."
+  importTrackerIssues(input: ImportTrackerIssuesInput!): ImportTrackerIssuesPayload! @cost(weight: "10")
+  "Writes the agreed estimate to the issue the ticket came from. Host and co-hosts."
+  saveEstimateToTracker(input: SaveEstimateToTrackerInput!): SaveEstimateToTrackerPayload! @cost(weight: "10")
   "Dummy health-check mutation."
   ping: PingPayload! @cost(weight: "10")
   "Creates Game Settings. Host only."
@@ -421,6 +444,14 @@ type Query {
   tickets of the game marked. Host or co-host only.
   """
   jiraIssues(gameId: UUID! boardId: Long sprintId: Long jql: String): JiraIssuesResult! @cost(weight: "10")
+  "The trackers this server offers, with the caller's connection to each."
+  trackers: [TrackerInfo!]! @cost(weight: "10")
+  "The tracker's consent page; it returns to \/integrations\/tracker\/{provider}\/callback, then to returnPath."
+  trackerAuthorizeUrl(provider: String! returnPath: String!): TrackerAuthorizeUrlResult!
+  "Repositories, teams or projects to import from."
+  trackerSources(provider: String!): TrackerSourcesResult! @cost(weight: "10")
+  "Import preview: up to 100 issues of a source, marking those already in the game. Host and co-hosts."
+  trackerIssues(provider: String! gameId: UUID! sourceId: String! query: String): TrackerIssuesResult! @cost(weight: "10")
   "Dummy health-check query."
   ping: String! @cost(weight: "10")
   "Gets Game Settings."
@@ -474,6 +505,11 @@ type RevealVotesPayload {
 type SaveEstimateToJiraPayload {
   jiraEstimateSaved: JiraEstimateSaved
   errors: [SaveEstimateToJiraError!]
+}
+
+type SaveEstimateToTrackerPayload {
+  trackerEstimateSaved: TrackerEstimateSaved
+  errors: [SaveEstimateToTrackerError!]
 }
 
 type SelectJiraSitePayload {
@@ -675,6 +711,59 @@ type TicketReference {
   similar: [TeamTicket!]!
 }
 
+type TrackerAuthorizeLink {
+  url: String!
+}
+
+type TrackerConnected {
+  returnPath: String!
+}
+
+type TrackerEstimateSaved {
+  issueKey: String!
+  value: String!
+  url: String!
+}
+
+type TrackerImportSummary {
+  imported: Int!
+  skipped: Int!
+}
+
+"An issue tracker next to Jira (GitHub, Linear, Azure DevOps) and the caller's connection to it."
+type TrackerInfo {
+  provider: String!
+  name: String!
+  enabled: Boolean!
+  connected: Boolean!
+  needsReconnect: Boolean!
+  accountName: String
+  queryHint: String!
+}
+
+type TrackerIssueList {
+  issues: [TrackerIssuePreview!]!
+  max: Int!
+}
+
+type TrackerIssuePreview {
+  key: String!
+  title: String!
+  description: String!
+  url: String!
+  estimate: Float
+  alreadyInGame: Boolean!
+}
+
+type TrackerSourceInfo {
+  id: String!
+  name: String!
+}
+
+type TrackerSourceList {
+  items: [TrackerSourceInfo!]!
+}
+
 type TransferHostPayload {
   boolean: Boolean
   errors: [TransferHostError!]
@@ -733,6 +822,8 @@ union ClaimGameHostError = ApplicationError
 
 union CompleteJiraConnectionError = ApplicationError
 
+union CompleteTrackerConnectionError = ApplicationError
+
 union CreateGameError = ApplicationError
 
 union CreateOrUpdateVoteError = ApplicationError
@@ -751,6 +842,8 @@ union DeleteTicketError = ApplicationError
 
 union DisconnectJiraError = ApplicationError
 
+union DisconnectTrackerError = ApplicationError
+
 union GamePlayersResult = ApiCollectionOfGamePlayer | ApplicationError
 
 union GameResult = Game | ApplicationError
@@ -758,6 +851,8 @@ union GameResult = Game | ApplicationError
 union GenerateGameReportError = ApplicationError
 
 union ImportJiraIssuesError = ApplicationError
+
+union ImportTrackerIssuesError = ApplicationError
 
 union InfoResult = Info | ApplicationError
 
@@ -790,6 +885,8 @@ union ReorderTicketsError = ApplicationError
 union RevealVotesError = ApplicationError
 
 union SaveEstimateToJiraError = ApplicationError
+
+union SaveEstimateToTrackerError = ApplicationError
 
 union SelectJiraSiteError = ApplicationError
 
@@ -827,6 +924,12 @@ union TicketResult = Ticket | ApplicationError
 
 union TicketsResult = ApiCollectionOfTicket | ApplicationError
 
+union TrackerAuthorizeUrlResult = TrackerAuthorizeLink | ApplicationError
+
+union TrackerIssuesResult = TrackerIssueList | ApplicationError
+
+union TrackerSourcesResult = TrackerSourceList | ApplicationError
+
 union TransferHostError = ApplicationError
 
 union UnpinTeamAnchorError = ApplicationError
@@ -849,6 +952,12 @@ input ClaimGameHostInput {
 }
 
 input CompleteJiraConnectionInput {
+  code: String!
+  state: String!
+}
+
+input CompleteTrackerConnectionInput {
+  provider: String!
   code: String!
   state: String!
 }
@@ -896,6 +1005,10 @@ input DeleteTicketInput {
   id: UUID!
 }
 
+input DisconnectTrackerInput {
+  provider: String!
+}
+
 input GenerateGameReportInput {
   gameId: UUID!
 }
@@ -903,6 +1016,14 @@ input GenerateGameReportInput {
 input ImportJiraIssuesInput {
   gameId: UUID!
   issueKeys: [String!]!
+}
+
+input ImportTrackerIssuesInput {
+  provider: String!
+  gameId: UUID!
+  sourceId: String!
+  query: String
+  keys: [String!]
 }
 
 input JoinGameInput {
@@ -949,6 +1070,10 @@ input RevealVotesInput {
 input SaveEstimateToJiraInput {
   ticketId: UUID!
   addComment: Boolean!
+}
+
+input SaveEstimateToTrackerInput {
+  ticketId: UUID!
 }
 
 input SelectJiraSiteInput {

@@ -442,6 +442,67 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                     b.ToTable("slack_installations", (string)null);
                 });
 
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Integrations.TrackerConnection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset?>("AccessTokenExpiresOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("access_token_expires_on");
+
+                    b.Property<string>("AccountName")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("account_name");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<bool>("NeedsReconnect")
+                        .HasColumnType("boolean")
+                        .HasColumnName("needs_reconnect");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.Property<string>("ProtectedAccessToken")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("protected_access_token");
+
+                    b.Property<string>("ProtectedRefreshToken")
+                        .HasColumnType("text")
+                        .HasColumnName("protected_refresh_token");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("provider");
+
+                    b.HasKey("Id")
+                        .HasName("pk_tracker_connections");
+
+                    b.HasIndex("PlayerId", "Provider")
+                        .IsUnique()
+                        .HasDatabaseName("ix_tracker_connections_player_id_provider");
+
+                    b.ToTable("tracker_connections", (string)null);
+                });
+
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.Team", b =>
                 {
                     b.Property<Guid>("Id")
@@ -599,6 +660,10 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)")
                         .HasColumnName("external_key");
+
+                    b.Property<string>("ExternalProvider")
+                        .HasColumnType("text")
+                        .HasColumnName("external_provider");
 
                     b.Property<string>("ExternalUrl")
                         .HasMaxLength(512)

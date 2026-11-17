@@ -157,7 +157,7 @@
   @if (votesRevealed) {
     <app-vote-results [votes]="votes" [players]="players" [deck]="voteOptions"
     [isHost]="isHost" [finalEstimate]="finalEstimate" (finalEstimateChange)="onSetFinalEstimate.emit($event)"
-    [jiraKey]="jiraKey" [jiraSaving]="jiraSaving" (saveToJira)="onSaveToJira.emit($event)"></app-vote-results>
+    [jiraKey]="jiraKey" [jiraUrl]="jiraUrl" [jiraSaving]="jiraSaving" (saveToJira)="onSaveToJira.emit($event)"></app-vote-results>
     <app-facilitation-panel [gameId]="gameId" [ticketId]="ticket?.id ?? ''" [votes]="votes" [players]="players" [deck]="voteOptions"
       [currentUserId]="currentUserId" [isHost]="isHost" [isObserver]="isObserver" [finalEstimate]="finalEstimate"
       [options]="facilitation" (voteAgain)="onVoteAgain.emit()"></app-facilitation-panel>
