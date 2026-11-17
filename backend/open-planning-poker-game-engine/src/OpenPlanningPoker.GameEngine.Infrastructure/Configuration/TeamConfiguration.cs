@@ -33,3 +33,32 @@ internal sealed class TeamMemberConfiguration : IEntityTypeConfiguration<TeamMem
         builder.HasIndex(member => member.PlayerId);
     }
 }
+
+internal sealed class TeamAnchorConfiguration : IEntityTypeConfiguration<TeamAnchor>
+{
+    public void Configure(EntityTypeBuilder<TeamAnchor> builder)
+    {
+        builder.ToTable("team_anchors");
+
+        builder.HasKey(anchor => anchor.Id);
+
+        builder.HasIndex(anchor => new { anchor.TeamId, anchor.TicketId }).IsUnique();
+
+        builder.Property(anchor => anchor.Value)
+            .IsRequired()
+            .HasMaxLength(Ticket.MaxFinalEstimateLength);
+
+        builder.Property(anchor => anchor.Note)
+            .HasMaxLength(TeamAnchor.MaxNoteLength);
+
+        builder.HasOne<Team>()
+            .WithMany()
+            .HasForeignKey(anchor => anchor.TeamId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne<Ticket>()
+            .WithMany()
+            .HasForeignKey(anchor => anchor.TicketId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+}

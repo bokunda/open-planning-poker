@@ -12,6 +12,7 @@ import { MarkdownPipe } from '../../../../shared/markdown/markdown.pipe';
 import { DEFAULT_FACILITATION, FacilitationSettings, RoomSettings, RoomTicket } from '../room-types';
 import { FacilitationPanelComponent } from '../facilitation/facilitation-panel.component';
 import { ReactionsComponent } from '../facilitation/reactions.component';
+import { ReferencePanelComponent } from '../facilitation/reference-panel.component';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 @Component({
@@ -19,7 +20,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   templateUrl: './voting.component.html',
   styleUrl: './voting.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, MatButtonModule, MatIconModule, MatTooltipModule, PokerCardComponent, PokerTableComponent, VoteResultsComponent, GameTimerComponent, MarkdownPipe, FacilitationPanelComponent, ReactionsComponent],
+  imports: [TranslocoPipe, MatButtonModule, MatIconModule, MatTooltipModule, PokerCardComponent, PokerTableComponent, VoteResultsComponent, GameTimerComponent, MarkdownPipe, FacilitationPanelComponent, ReactionsComponent, ReferencePanelComponent],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class VotingComponent implements OnInit, OnDestroy, OnChanges {
@@ -34,6 +35,8 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
   @Input() currentUserId = '';
   /** Observers watch the table and get no cards. */
   @Input() isObserver = false;
+  /** Team room of the game (sprint sessions only): shows the team's reference tickets (OPP-128). */
+  @Input() teamId: string | null = null;
 
   /** True while the chosen card flies from the hand to the user's seat. */
   cardInFlight = false;

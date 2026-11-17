@@ -337,6 +337,10 @@ type Mutation {
   until asyncVotingEndsAt; null or a past time switches to meeting mode). Host and co-hosts.
   """
   updateGameOptions(input: UpdateGameOptionsInput!): UpdateGameOptionsPayload! @cost(weight: "10")
+  "Pins an estimated ticket of the team's sprints as the reference for its card (two per card). Team members."
+  pinTeamAnchor(input: PinTeamAnchorInput!): PinTeamAnchorPayload! @cost(weight: "10")
+  "Removes a reference ticket. Team members."
+  unpinTeamAnchor(input: UnpinTeamAnchorInput!): UnpinTeamAnchorPayload! @cost(weight: "10")
   "Creates a team room; the caller becomes its owner and first member."
   createTeam(input: CreateTeamInput!): CreateTeamPayload! @cost(weight: "10")
   "Renames a team room. Owner only."
@@ -381,6 +385,11 @@ type Mutation {
   revealVotes(input: RevealVotesInput!): RevealVotesPayload! @cost(weight: "10")
 }
 
+type PinTeamAnchorPayload {
+  teamAnchor: TeamAnchor
+  errors: [PinTeamAnchorError!]
+}
+
 type PingPayload {
   string: String
 }
@@ -416,6 +425,8 @@ type Query {
   ping: String! @cost(weight: "10")
   "Gets Game Settings."
   settings(gameId: UUID!): SettingsResult! @cost(weight: "10")
+  "The team's anchors and up to three similar past tickets for a ticket. Players of the game only."
+  ticketReference(ticketId: UUID!): TicketReferenceResult! @cost(weight: "10")
   "A team room by id. Members-only fields are empty for others."
   team(id: UUID!): TeamResult! @cost(weight: "10")
   "Team rooms the caller belongs to."
@@ -581,11 +592,44 @@ type Team {
   description: String!
   ownerId: UUID!
   createdOn: DateTime!
+  "Reference tickets, by card value. Empty for non-members."
+  anchors: [TeamAnchor!]! @cost(weight: "10")
+  "Estimated tickets of all sprints, newest first, filtered by text and card value. Empty for non-members."
+  history(search: String value: String skip: Int! = 0 take: Int! = 20): TeamHistory! @cost(weight: "10")
+}
+
+"A reference ticket of the team: what a card value looks like for this team (OPP-127)."
+type TeamAnchor {
+  id: UUID!
+  value: String!
+  note: String
+  ticket: TeamTicket!
+}
+
+type TeamHistory {
+  items: [TeamTicket!]!
+  totalCount: Int!
 }
 
 type TeamMember {
   name: String @cost(weight: "10")
   id: UUID!
+}
+
+"An estimated ticket from one of the team's sprints."
+type TeamTicket {
+  ticketId: UUID!
+  gameId: UUID!
+  sprintName: String!
+  sprintDate: DateTime!
+  name: String!
+  description: String!
+  externalKey: String
+  externalUrl: String
+  "The final estimate, or the most common card."
+  estimate: String!
+  "Consensus, Close or Wide (as in the report)."
+  spread: String!
 }
 
 type Ticket {
@@ -624,9 +668,21 @@ type TicketFacilitationInfo {
   myConfidence: Int
 }
 
+"Anchors and similar past tickets for the ticket being voted on (OPP-128). Empty outside team rooms."
+type TicketReference {
+  teamId: UUID
+  anchors: [TeamAnchor!]!
+  similar: [TeamTicket!]!
+}
+
 type TransferHostPayload {
   boolean: Boolean
   errors: [TransferHostError!]
+}
+
+type UnpinTeamAnchorPayload {
+  boolean: Boolean
+  errors: [UnpinTeamAnchorError!]
 }
 
 type UpdateFacilitationOptionsPayload {
@@ -723,6 +779,8 @@ union LeaveGameError = ApplicationError
 
 union LeaveTeamError = ApplicationError
 
+union PinTeamAnchorError = ApplicationError
+
 union ReVoteTicketError = ApplicationError
 
 union RemovePlayerError = ApplicationError
@@ -763,11 +821,15 @@ union TeamResult = Team | ApplicationError
 
 union TicketFacilitationResult = TicketFacilitationInfo | ApplicationError
 
+union TicketReferenceResult = TicketReference | ApplicationError
+
 union TicketResult = Ticket | ApplicationError
 
 union TicketsResult = ApiCollectionOfTicket | ApplicationError
 
 union TransferHostError = ApplicationError
+
+union UnpinTeamAnchorError = ApplicationError
 
 union UpdateFacilitationOptionsError = ApplicationError
 
@@ -859,6 +921,12 @@ input LeaveTeamInput {
   teamId: UUID!
 }
 
+input PinTeamAnchorInput {
+  teamId: UUID!
+  ticketId: UUID!
+  note: String
+}
+
 input ReVoteTicketInput {
   gameId: UUID!
   ticketId: UUID!
@@ -941,6 +1009,11 @@ input StopTimerInput {
 input TransferHostInput {
   gameId: UUID!
   playerId: UUID!
+}
+
+input UnpinTeamAnchorInput {
+  teamId: UUID!
+  anchorId: UUID!
 }
 
 input UpdateFacilitationOptionsInput {

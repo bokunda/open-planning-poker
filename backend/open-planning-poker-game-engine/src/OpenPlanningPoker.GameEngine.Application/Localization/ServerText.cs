@@ -65,6 +65,10 @@ public static class ServerText
         ["error.InvalidReaction"] = ("Unknown reaction.", "Nepoznata reakcija.", "Unbekannte Reaktion."),
         ["error.ReactionsOff"] = ("Reactions are turned off in this room.", "Reakcije su isključene u ovoj sobi.", "Reaktionen sind in diesem Raum ausgeschaltet."),
         ["error.InvalidIssueLink"] = ("Use a link to a Jira Cloud issue.", "Koristi link ka Jira Cloud issue-u.", "Verwende einen Link zu einem Jira-Cloud-Issue."),
+        ["error.TicketNotInTeam"] = ("This ticket is not part of the team's sprints.", "Ovaj tiket nije iz sprintova ovog tima.", "Dieses Ticket gehört nicht zu den Sprints des Teams."),
+        ["error.TicketNotEstimated"] = ("Only estimated tickets can be pinned.", "Mogu da se zakače samo procenjeni tiketi.", "Nur geschätzte Tickets können angeheftet werden."),
+        ["error.AnchorLimit"] = ("This card already has two reference tickets. Unpin one first.", "Ova karta već ima dva referentna tiketa. Prvo otkači jedan.", "Diese Karte hat schon zwei Referenz-Tickets. Löse zuerst eines."),
+        ["error.AnchorNotFound"] = ("Reference ticket not found.", "Referentni tiket nije pronađen.", "Referenz-Ticket nicht gefunden."),
         ["error.UserNotFound"] = ("User not found.", "Korisnik nije pronađen.", "Benutzer nicht gefunden."),
 
         // Jira integration (OPP-10, OPP-11, OPP-12)

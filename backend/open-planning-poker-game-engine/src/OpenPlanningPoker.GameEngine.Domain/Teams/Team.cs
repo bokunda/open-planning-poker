@@ -46,8 +46,39 @@ public sealed class TeamMember : Entity<Guid>
         new(SequentialGuidGenerator.Generate(), teamId, playerId);
 }
 
+/// <summary>
+/// A reference ticket of a team (OPP-127): "this is what a 3 looks like for us". It points to an estimated ticket of
+/// one of the team's sprints and keeps the card value it had when it was pinned.
+/// </summary>
+public sealed class TeamAnchor : Entity<Guid>
+{
+    public const int MaxNoteLength = 200;
+
+    /// <summary>At most this many anchors per card value, so the reference stays short.</summary>
+    public const int MaxPerValue = 2;
+
+    private TeamAnchor(Guid id, Guid teamId, Guid ticketId, string value, string? note) : base(id)
+    {
+        TeamId = teamId;
+        TicketId = ticketId;
+        Value = value;
+        Note = note;
+    }
+
+    public Guid TeamId { get; private set; }
+    public Guid TicketId { get; private set; }
+    public string Value { get; private set; }
+    public string? Note { get; private set; }
+
+    public static TeamAnchor Create(Guid teamId, Guid ticketId, string value, string? note) =>
+        new(SequentialGuidGenerator.Generate(), teamId, ticketId, value, string.IsNullOrWhiteSpace(note) ? null : note.Trim());
+}
+
 public interface ITeamRepository : IRepository<Team, Guid>
 {
+    Task<IReadOnlyList<TeamAnchor>> GetAnchorsAsync(Guid teamId, CancellationToken cancellationToken = default);
+    void AddAnchor(TeamAnchor anchor);
+    void RemoveAnchor(TeamAnchor anchor);
     Task<IReadOnlyList<TeamMember>> GetMembersAsync(Guid teamId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<Team>> GetByMemberAsync(Guid playerId, CancellationToken cancellationToken = default);
     void AddMember(TeamMember member);

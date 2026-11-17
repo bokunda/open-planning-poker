@@ -15,6 +15,16 @@ public sealed class TeamRepository(OpenPlanningPokerGameEngineDbContext dbContex
             .OrderBy(team => team.Name)
             .ToListAsync(cancellationToken);
 
+    public async Task<IReadOnlyList<TeamAnchor>> GetAnchorsAsync(Guid teamId, CancellationToken cancellationToken = default) =>
+        await DbContext.Set<TeamAnchor>()
+            .Where(anchor => anchor.TeamId == teamId)
+            .OrderBy(anchor => anchor.CreatedOn)
+            .ToListAsync(cancellationToken);
+
+    public void AddAnchor(TeamAnchor anchor) => DbContext.Set<TeamAnchor>().Add(anchor);
+
+    public void RemoveAnchor(TeamAnchor anchor) => DbContext.Set<TeamAnchor>().Remove(anchor);
+
     public void AddMember(TeamMember member) => DbContext.Set<TeamMember>().Add(member);
 
     public void RemoveMember(TeamMember member) => DbContext.Set<TeamMember>().Remove(member);

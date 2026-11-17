@@ -96,6 +96,7 @@
             [isHost]="isHost"
             [isObserver]="isObserver"
             [currentUserId]="currentUserId"
+            [teamId]="$any(game).teamId ?? null"
             (onCreateNewTicket)="handleCreateTicket()"
             (onImportTickets)="handleImportTickets()"
             (onSetFinalEstimate)="handleSetFinalEstimate($event)"
