@@ -21,12 +21,48 @@ export type RoomPlayer = GamePlayer & {
   isCoHost?: boolean;
 };
 
+/** Discussion options of a room (OPP-114). */
+export interface FacilitationSettings {
+  outlierNotes: boolean;
+  /** 0 = off, else 2, 3 or 5. */
+  discussionMinutes: number;
+  confidenceCheck: boolean;
+  reactions: boolean;
+}
+
+export const DEFAULT_FACILITATION: FacilitationSettings = { outlierNotes: true, discussionMinutes: 0, confidenceCheck: false, reactions: true };
+
+/** Discussion data of a ticket (OPP-114). */
+export interface TicketFacilitation {
+  ticketId: string;
+  revealedAt: string | null;
+  estimatedAt: string | null;
+  voteRounds: number;
+  needsInfo: boolean;
+  notes: { playerId: string; note: string }[];
+  confidenceAverage: number | null;
+  confidenceCount: number;
+  myConfidence: number | null;
+}
+
+/** Below this average confidence a ticket is flagged as risky. */
+export const LOW_CONFIDENCE = 3;
+
+export interface Reaction {
+  gameId: string;
+  playerId: string;
+  emoji: string;
+}
+
+export const REACTIONS = ['👍', '🤔', '☕', '🎉', '😂', '👀'] as const;
+
 export type RoomTicket = Ticket & {
   finalEstimate?: string | null;
   position?: number;
   /** Jira issue the ticket was imported from (OPP-11). */
   externalKey?: string | null;
   externalUrl?: string | null;
+  facilitation?: Pick<TicketFacilitation, 'needsInfo' | 'confidenceAverage' | 'confidenceCount' | 'voteRounds'> | null;
 };
 
 export interface RoomSettings {
@@ -35,6 +71,7 @@ export interface RoomSettings {
   deckSetup: string;
   autoReveal?: boolean;
   asyncVotingEndsAt?: string | null;
+  facilitation?: FacilitationSettings;
 }
 
 /** A player action from the players panel. */

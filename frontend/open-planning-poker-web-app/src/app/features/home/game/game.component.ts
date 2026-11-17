@@ -48,7 +48,8 @@ import {
   DELETE_TICKET, ON_GAME_CHANGED, REMOVE_PLAYER, REORDER_TICKETS, SET_CO_HOST, SET_FINAL_ESTIMATE,
   SET_PLAYER_ROLE, TRANSFER_HOST, UPDATE_GAME_OPTIONS, UPDATE_TICKET
 } from './gql/room.graphql';
-import { GameChanged, isAsyncVotingOpen, PlayerAction, RoomPlayer, RoomSettings, RoomTicket } from './room-types';
+import { UPDATE_FACILITATION_OPTIONS } from './gql/facilitation.graphql';
+import { FacilitationSettings, GameChanged, isAsyncVotingOpen, PlayerAction, RoomPlayer, RoomSettings, RoomTicket } from './room-types';
 import { CLAIM_GAME_HOST, SAVE_ESTIMATE_TO_JIRA } from './gql/jira.graphql';
 import { ticketsToCsv } from './export/tickets-csv';
 import type { ConfirmDialogData } from '../../../shared/dialogs/confirm/confirm-dialog.component';
@@ -1004,6 +1005,12 @@ export class GameComponent implements OnInit {
     }, () => this.refreshGame(gameId));
   }
 
+  handleUpdateFacilitation(options: FacilitationSettings): void {
+    const gameId = this.game?.id;
+    if (!gameId) return;
+    this.runMutation(UPDATE_FACILITATION_OPTIONS, 'updateFacilitationOptions', { gameId, ...options }, () => this.refreshGame(gameId));
+  }
+
   /** Async mode: a vote on any ticket, then the list reloads with our own values. */
   handleAsyncVote(vote: { ticketId: string; value: string }): void {
     this.runMutation(CREATE_OR_UPDATE_VOTE, 'createOrUpdateVote', { ticketId: vote.ticketId, value: vote.value },
@@ -1014,7 +1021,7 @@ export class GameComponent implements OnInit {
     if (!this.game) return;
     const t = (key: string) => this.i18n.translate(key);
     const csv = ticketsToCsv(this.tickets as RoomTicket[], {
-      header: ['#', t('ticket.name'), t('import.description'), t('csv.estimate'), t('csv.source'), t('results.average'), t('results.votes'), t('csv.revealed')],
+      header: ['#', t('ticket.name'), t('import.description'), t('csv.estimate'), t('csv.source'), t('results.average'), t('results.votes'), t('csv.revealed'), t('facilitation.confidence'), t('facilitation.needsInfo')],
       final: t('csv.final'),
       mostCommon: t('results.mostCommon'),
       yes: t('csv.yes'),

@@ -151,3 +151,10 @@
 }
 
 ::ng-deep .history-menu-danger { color: var(--opp-danger); }
+
+/* Needs more information / low confidence (OPP-126, OPP-124). */
+.history-flag {
+  display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 4px;
+  border-radius: 50%; font-size: 12px; font-weight: 800;
+  color: var(--opp-spread); background: color-mix(in srgb, var(--opp-spread) 16%, transparent);
+}

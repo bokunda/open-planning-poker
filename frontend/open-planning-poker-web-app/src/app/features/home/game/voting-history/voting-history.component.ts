@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { Ticket } from '../../../../graphql/graphql-gateway.service';
-import { RoomTicket } from '../room-types';
+import { LOW_CONFIDENCE, RoomTicket } from '../room-types';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
@@ -64,6 +64,12 @@ export class VotingHistoryComponent {
     const ids = this.tickets.map(t => t.id);
     moveItemInArray(ids, index, target);
     this.onReorder.emit(ids);
+  }
+
+  /** Confidence check below 3 (OPP-124). */
+  lowConfidence(ticket: Ticket): boolean {
+    const f = (ticket as RoomTicket).facilitation;
+    return !!f?.confidenceCount && (f.confidenceAverage ?? LOW_CONFIDENCE) < LOW_CONFIDENCE;
   }
 
   asRoomTicket(ticket: Ticket): RoomTicket {

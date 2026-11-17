@@ -57,6 +57,13 @@ public static class ServerText
         ["error.InvalidChatMessage"] = ("Message must be between 1 and 1000 characters.", "Poruka mora imati od 1 do 1000 znakova.", "Die Nachricht muss 1 bis 1000 Zeichen lang sein."),
         ["error.InvalidTimerDuration"] = ("Choose a timer between 10 seconds and 1 hour.", "Izaberi tajmer od 10 sekundi do 1 sata.", "Wähle einen Timer zwischen 10 Sekunden und 1 Stunde."),
         ["error.RateLimited"] = ("Too many requests. Please wait a moment and try again.", "Previše zahteva. Sačekaj malo i pokušaj ponovo.", "Zu viele Anfragen. Bitte warte kurz und versuche es erneut."),
+        ["error.CardsNotRevealed"] = ("Reveal the cards first.", "Prvo otkrij karte.", "Decke zuerst die Karten auf."),
+        ["error.NoVote"] = ("Vote on this ticket first.", "Prvo glasaj za ovaj tiket.", "Stimme zuerst für dieses Ticket ab."),
+        ["error.NoFinalEstimate"] = ("Choose the final estimate first.", "Prvo izaberi konačnu procenu.", "Wähle zuerst die endgültige Schätzung."),
+        ["error.InvalidConfidence"] = ("Confidence must be between 1 and 5.", "Sigurnost mora biti od 1 do 5.", "Die Sicherheit muss zwischen 1 und 5 liegen."),
+        ["error.InvalidDiscussionTime"] = ("Choose 0, 2, 3 or 5 minutes.", "Izaberi 0, 2, 3 ili 5 minuta.", "Wähle 0, 2, 3 oder 5 Minuten."),
+        ["error.InvalidReaction"] = ("Unknown reaction.", "Nepoznata reakcija.", "Unbekannte Reaktion."),
+        ["error.ReactionsOff"] = ("Reactions are turned off in this room.", "Reakcije su isključene u ovoj sobi.", "Reaktionen sind in diesem Raum ausgeschaltet."),
         ["error.UserNotFound"] = ("User not found.", "Korisnik nije pronađen.", "Benutzer nicht gefunden."),
 
         // Jira integration (OPP-10, OPP-11, OPP-12)
@@ -89,6 +96,9 @@ public static class ServerText
         ["report.finalEstimate"] = ("Final estimate", "Konačna procena", "Endgültige Schätzung"),
         ["report.average"] = ("Average", "Prosek", "Durchschnitt"),
         ["report.median"] = ("Median", "Medijana", "Median"),
+        ["report.needsInfo"] = ("Needs more information", "Treba više informacija", "Braucht mehr Informationen"),
+        ["report.confidence"] = ("Confidence {0} of 5", "Sigurnost {0} od 5", "Sicherheit {0} von 5"),
+        ["report.lowConfidence"] = ("low", "niska", "gering"),
         ["report.votes"] = ("Votes", "Glasovi", "Stimmen"),
         ["report.consensus"] = ("Consensus", "Konsenzus", "Konsens"),
         ["report.close"] = ("Close to consensus", "Blizu konsenzusa", "Fast Konsens"),

@@ -14,6 +14,7 @@ query Tickets($gameId: UUID!) {
         position
         externalKey
         externalUrl
+        facilitation { needsInfo confidenceAverage confidenceCount voteRounds }
         votes {
             items {
                 id

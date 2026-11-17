@@ -10,7 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { RouterLink } from '@angular/router';
 import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '../../../../shared/constants';
-import { isAsyncVotingOpen, RoomSettings } from '../room-types';
+import { DEFAULT_FACILITATION, FacilitationSettings, isAsyncVotingOpen, RoomSettings } from '../room-types';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { OppDatePipe } from '../../../../i18n/opp-date.pipe';
 
@@ -46,6 +46,18 @@ export class GameDetailsComponent {
   @Output() onCreateNewTicket = new EventEmitter<void>();
   @Output() onExportCsv = new EventEmitter<void>();
   @Output() onUpdateOptions = new EventEmitter<RoomOptions>();
+  /** Discussion options (OPP-114). */
+  @Output() onUpdateFacilitation = new EventEmitter<FacilitationSettings>();
+
+  readonly discussionMinutes = [0, 2, 3, 5];
+
+  get facilitation(): FacilitationSettings {
+    return this.settings?.facilitation ?? DEFAULT_FACILITATION;
+  }
+
+  setFacilitation(change: Partial<FacilitationSettings>): void {
+    this.onUpdateFacilitation.emit({ ...this.facilitation, ...change });
+  }
 
   readonly asyncWindows = ASYNC_WINDOWS;
 

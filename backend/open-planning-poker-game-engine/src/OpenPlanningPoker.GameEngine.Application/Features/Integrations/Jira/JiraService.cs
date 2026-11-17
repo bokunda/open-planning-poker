@@ -222,7 +222,10 @@ public sealed class JiraService(
         if (ticket?.ExternalKey is null) return JiraErrors.NotLinked;
         if (!ticket.VotesRevealed) return JiraErrors.NoEstimate;
 
-        var values = (await votes.GetByTicket(ticketId, null, cancellationToken)).Select(vote => vote.Value).ToList();
+        var ticketVotes = await votes.GetByTicket(ticketId, null, cancellationToken);
+        var values = ticketVotes.Select(vote => vote.Value).ToList();
+        // Notes of the lowest and highest voters go into the comment too (OPP-122).
+        var noteLines = ticketVotes.Where(vote => vote.Note is not null).Select(vote => $"Note ({vote.Value}): {vote.Note}").ToList();
         var stats = TicketStats.From(true, values);
         var estimate = ticket.FinalEstimate ?? stats.Estimate;
         if (string.IsNullOrWhiteSpace(estimate)) return JiraErrors.NoEstimate;
@@ -241,7 +244,8 @@ public sealed class JiraService(
             {
                 var distribution = string.Join(", ", stats.Distribution.Select(count => count.Count == 1 ? count.Value : $"{count.Value} ×{count.Count}"));
                 await api.AddCommentAsync(token, c.CloudId!, key,
-                    $"Estimated with Open Planning Poker: {estimate}\nVotes: {distribution}", cancellationToken);
+                    string.Join("\n", new[] { $"Estimated with Open Planning Poker: {estimate}", $"Votes: {distribution}" }.Concat(noteLines)),
+                    cancellationToken);
             }
             return true;
         }, cancellationToken);

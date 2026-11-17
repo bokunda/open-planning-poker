@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.Domain.GameSettings;
+namespace OpenPlanningPoker.GameEngine.Domain.GameSettings;
 
 public sealed class GameSettings : Entity<Guid>
 {
@@ -20,6 +20,20 @@ public sealed class GameSettings : Entity<Guid>
     /// </summary>
     public DateTimeOffset? AsyncVotingEndsAt { get; private set; }
 
+    /// <summary>After a wide spread, the lowest and highest voters are asked to explain (OPP-122).</summary>
+    public bool OutlierNotes { get; private set; } = true;
+
+    /// <summary>Minutes of discussion after the reveal before the room is asked to move on; 0 is off (OPP-123).</summary>
+    public int DiscussionMinutes { get; private set; }
+
+    /// <summary>Players rate their confidence in the final estimate (OPP-124).</summary>
+    public bool ConfidenceCheck { get; private set; }
+
+    /// <summary>Players can send short emoji reactions (OPP-125).</summary>
+    public bool Reactions { get; private set; } = true;
+
+    public static readonly int[] DiscussionMinuteOptions = [0, 2, 3, 5];
+
     public Game Game { get; set; } = null!;
 
     public static GameSettings Create(Guid gameId, string deckSetup)
@@ -40,5 +54,13 @@ public sealed class GameSettings : Entity<Guid>
     {
         AutoReveal = autoReveal;
         AsyncVotingEndsAt = asyncVotingEndsAt;
+    }
+
+    public void UpdateFacilitation(bool outlierNotes, int discussionMinutes, bool confidenceCheck, bool reactions)
+    {
+        OutlierNotes = outlierNotes;
+        DiscussionMinutes = discussionMinutes;
+        ConfidenceCheck = confidenceCheck;
+        Reactions = reactions;
     }
 }

@@ -29,6 +29,15 @@ public class Ticket
         return result.Value.ToGraphQL(item => item.ToGraphQL());
     }
 
+    /// <summary>Discussion data of the ticket: reveal time, notes (after the reveal), needs-info flag, confidence (OPP-114).</summary>
+    public async Task<Facilitation.TicketFacilitationInfo?> GetFacilitation(
+        [Service] ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new Application.Features.Facilitation.GetTicketFacilitationQuery(Id), cancellationToken);
+        return result.IsSuccess ? Facilitation.TicketFacilitationInfo.From(result.Value!) : null;
+    }
+
     public async Task<decimal> GetAverageVotingValue(
         [Service] ISender sender,
         CancellationToken cancellationToken)

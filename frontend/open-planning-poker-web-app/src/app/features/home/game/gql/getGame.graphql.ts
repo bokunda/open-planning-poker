@@ -16,6 +16,7 @@ const GET_GAME = gql `
             deckSetup
             autoReveal
             asyncVotingEndsAt
+            facilitation { outlierNotes discussionMinutes confidenceCheck reactions }
           }
           ... on ApplicationError {
             code

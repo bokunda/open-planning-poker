@@ -28,6 +28,18 @@ public sealed class Ticket : Entity<Guid>
     /// <summary>Link back to that issue.</summary>
     public string? ExternalUrl { get; private set; }
 
+    /// <summary>When the cards were last turned over; starts the discussion timer (OPP-123).</summary>
+    public DateTimeOffset? RevealedAt { get; private set; }
+
+    /// <summary>When the final estimate was chosen; with <see cref="RevealedAt"/> it gives the discussion time.</summary>
+    public DateTimeOffset? EstimatedAt { get; private set; }
+
+    /// <summary>How many times the cards were turned over for this ticket (1 = agreed on the first vote).</summary>
+    public int VoteRounds { get; private set; }
+
+    /// <summary>The team needs more information before it can estimate this ticket (OPP-126).</summary>
+    public bool NeedsInfo { get; private set; }
+
     public ICollection<Vote>? Votes;
 
     public Game Game { get; set; } = null!;
@@ -54,17 +66,33 @@ public sealed class Ticket : Entity<Guid>
         RaiseDomainEvent(new UpdateTicketDomainEvent(Id));
     }
 
-    public void RevealVotes() => VotesRevealed = true;
+    public void RevealVotes()
+    {
+        VotesRevealed = true;
+        RevealedAt = DateTimeOffset.UtcNow;
+        VoteRounds++;
+    }
 
     /// <summary>A new voting round also drops the estimate chosen in the previous one.</summary>
     public void HideVotes()
     {
         VotesRevealed = false;
         FinalEstimate = null;
+        RevealedAt = null;
+        EstimatedAt = null;
     }
 
-    public void SetFinalEstimate(string? value) =>
+    public void SetFinalEstimate(string? value)
+    {
         FinalEstimate = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+        EstimatedAt = FinalEstimate is null ? null : DateTimeOffset.UtcNow;
+        if (FinalEstimate is not null)
+        {
+            NeedsInfo = false;
+        }
+    }
+
+    public void MarkNeedsInfo(bool needsInfo) => NeedsInfo = needsInfo;
 
     public void MoveTo(int position) => Position = position;
 

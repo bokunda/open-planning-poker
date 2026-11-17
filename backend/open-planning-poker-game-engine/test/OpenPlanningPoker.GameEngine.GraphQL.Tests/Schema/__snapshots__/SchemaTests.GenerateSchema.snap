@@ -32,6 +32,18 @@ type ChatMessage {
   timestamp: String!
 }
 
+"Room options for running the discussion (OPP-114)."
+type FacilitationSettings {
+  "After a wide spread, the lowest and highest voters are asked to explain their card."
+  outlierNotes: Boolean!
+  "Minutes of discussion after the reveal (0 = off, 2, 3 or 5)."
+  discussionMinutes: Int!
+  "Players rate their confidence (1–5) in the final estimate."
+  confidenceCheck: Boolean!
+  "Players can send emoji reactions."
+  reactions: Boolean!
+}
+
 type Game {
   settingsDetails: Settings!
   id: UUID!
@@ -169,6 +181,16 @@ type JiraSprintList {
 type Mutation {
   "Sends a chat message to a game. Only players of the game can send messages."
   sendChatMessage(gameId: UUID! content: String!): ChatMessage!
+  "Explains the current user's card after the reveal (up to 200 characters; empty clears it)."
+  setVoteNote(ticketId: UUID! note: String): TicketFacilitationInfo!
+  "Rates the current user's confidence (1–5) in the final estimate; null clears it."
+  setConfidence(ticketId: UUID! value: Int): TicketFacilitationInfo!
+  "Marks a ticket as \"needs more information\" (or clears it). Host and co-hosts."
+  setTicketNeedsInfo(ticketId: UUID! needsInfo: Boolean!): TicketFacilitationInfo!
+  "Discussion options of the room. Host and co-hosts."
+  updateFacilitationOptions(gameId: UUID! outlierNotes: Boolean! discussionMinutes: Int! confidenceCheck: Boolean! reactions: Boolean!): FacilitationSettings!
+  "Sends an emoji reaction to everyone in the room. Not stored."
+  sendReaction(gameId: UUID! emoji: String!): Boolean!
   "Join Game. Requires a valid user token."
   joinGame(gameId: UUID!): Boolean!
   "Leave a Game. Requires a valid user token."
@@ -267,6 +289,8 @@ type Query {
   players of the game.
   """
   chatMessages(gameId: UUID!): [ChatMessage!]!
+  "Discussion data of a ticket. Players of the game only."
+  ticketFacilitation(ticketId: UUID!): TicketFacilitationInfo!
   "Returns game with participants"
   gamePlayers(gameId: UUID!): ApiCollectionOfGamePlayer!
   "Returns Game details."
@@ -306,7 +330,16 @@ type Query {
   votes(ticketId: UUID!): ApiCollectionOfVote!
 }
 
+"A short emoji reaction; broadcast to the room, never stored (OPP-125)."
+type Reaction {
+  gameId: UUID!
+  playerId: UUID!
+  emoji: String!
+}
+
 type Settings {
+  "Discussion options of the room (OPP-114)."
+  facilitation: FacilitationSettings!
   id: UUID!
   gameId: UUID!
   deckSetup: String!
@@ -330,6 +363,8 @@ type Sprint {
 type Subscription {
   "New chat messages of a game. Only players of the game can subscribe."
   onChatMessage(gameId: UUID!): ChatMessage!
+  "Emoji reactions in a game. Only players of the game can subscribe."
+  onReaction(gameId: UUID!): Reaction!
   onPlayerJoined(gameId: UUID!): BaseUserProfile!
   onPlayerLeave(gameId: UUID!): BaseUserProfile!
   onTicketCreated(gameId: UUID!): Ticket!
@@ -372,6 +407,8 @@ type TeamMember {
 
 type Ticket {
   votes: ApiCollectionOfVote!
+  "Discussion data of the ticket: reveal time, notes (after the reveal), needs-info flag, confidence (OPP-114)."
+  facilitation: TicketFacilitationInfo
   averageVotingValue: Decimal!
   id: UUID!
   gameId: UUID!
@@ -388,11 +425,32 @@ type Ticket {
   externalUrl: String
 }
 
+"Discussion data of a ticket: when the cards were turned over, notes, needs-info flag and confidence."
+type TicketFacilitationInfo {
+  ticketId: UUID!
+  revealedAt: DateTime
+  estimatedAt: DateTime
+  "Times the cards were turned over (1 = agreed on the first vote)."
+  voteRounds: Int!
+  needsInfo: Boolean!
+  notes: [VoteNote!]!
+  "Average confidence (1–5) of the players who rated; null when nobody did."
+  confidenceAverage: Decimal
+  confidenceCount: Int!
+  "The current user's own rating."
+  myConfidence: Int
+}
+
 type Vote {
   playerName: String!
   id: UUID!
   playerId: UUID!
   value: String!
+}
+
+type VoteNote {
+  playerId: UUID!
+  note: String!
 }
 
 type VotesRevealed {

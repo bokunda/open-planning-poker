@@ -91,6 +91,18 @@ type DisconnectJiraPayload {
   errors: [DisconnectJiraError!]
 }
 
+"Room options for running the discussion (OPP-114)."
+type FacilitationSettings {
+  "After a wide spread, the lowest and highest voters are asked to explain their card."
+  outlierNotes: Boolean!
+  "Minutes of discussion after the reveal (0 = off, 2, 3 or 5)."
+  discussionMinutes: Int!
+  "Players rate their confidence (1–5) in the final estimate."
+  confidenceCheck: Boolean!
+  "Players can send emoji reactions."
+  reactions: Boolean!
+}
+
 type Game {
   settingsDetails: SettingsDetailsResult! @cost(weight: "10")
   id: UUID!
@@ -258,6 +270,16 @@ type LeaveTeamPayload {
 type Mutation {
   "Sends a chat message to a game. Only players of the game can send messages."
   sendChatMessage(input: SendChatMessageInput!): SendChatMessagePayload! @cost(weight: "10")
+  "Explains the current user's card after the reveal (up to 200 characters; empty clears it)."
+  setVoteNote(input: SetVoteNoteInput!): SetVoteNotePayload! @cost(weight: "10")
+  "Rates the current user's confidence (1–5) in the final estimate; null clears it."
+  setConfidence(input: SetConfidenceInput!): SetConfidencePayload! @cost(weight: "10")
+  "Marks a ticket as \"needs more information\" (or clears it). Host and co-hosts."
+  setTicketNeedsInfo(input: SetTicketNeedsInfoInput!): SetTicketNeedsInfoPayload! @cost(weight: "10")
+  "Discussion options of the room. Host and co-hosts."
+  updateFacilitationOptions(input: UpdateFacilitationOptionsInput!): UpdateFacilitationOptionsPayload! @cost(weight: "10")
+  "Sends an emoji reaction to everyone in the room. Not stored."
+  sendReaction(input: SendReactionInput!): SendReactionPayload! @cost(weight: "10")
   "Join Game. Requires a valid user token."
   joinGame(input: JoinGameInput!): JoinGamePayload! @cost(weight: "10")
   "Leave a Game. Requires a valid user token."
@@ -360,6 +382,8 @@ type Query {
   players of the game.
   """
   chatMessages(gameId: UUID!): [ChatMessage!]! @cost(weight: "10")
+  "Discussion data of a ticket. Players of the game only."
+  ticketFacilitation(ticketId: UUID!): TicketFacilitationResult! @cost(weight: "10")
   "Returns game with participants"
   gamePlayers(gameId: UUID!): GamePlayersResult! @cost(weight: "10")
   "Returns Game details."
@@ -404,6 +428,13 @@ type ReVoteTicketPayload {
   errors: [ReVoteTicketError!]
 }
 
+"A short emoji reaction; broadcast to the room, never stored (OPP-125)."
+type Reaction {
+  gameId: UUID!
+  playerId: UUID!
+  emoji: String!
+}
+
 type RemovePlayerPayload {
   boolean: Boolean
   errors: [RemovePlayerError!]
@@ -434,9 +465,19 @@ type SendChatMessagePayload {
   errors: [SendChatMessageError!]
 }
 
+type SendReactionPayload {
+  boolean: Boolean
+  errors: [SendReactionError!]
+}
+
 type SetCoHostPayload {
   boolean: Boolean
   errors: [SetCoHostError!]
+}
+
+type SetConfidencePayload {
+  ticketFacilitationInfo: TicketFacilitationInfo
+  errors: [SetConfidenceError!]
 }
 
 type SetFinalEstimatePayload {
@@ -449,7 +490,19 @@ type SetPlayerRolePayload {
   errors: [SetPlayerRoleError!]
 }
 
+type SetTicketNeedsInfoPayload {
+  ticketFacilitationInfo: TicketFacilitationInfo
+  errors: [SetTicketNeedsInfoError!]
+}
+
+type SetVoteNotePayload {
+  ticketFacilitationInfo: TicketFacilitationInfo
+  errors: [SetVoteNoteError!]
+}
+
 type Settings {
+  "Discussion options of the room (OPP-114)."
+  facilitation: FacilitationSettings! @cost(weight: "10")
   id: UUID!
   gameId: UUID!
   deckSetup: String!
@@ -483,6 +536,8 @@ type StopTimerPayload {
 type Subscription {
   "New chat messages of a game. Only players of the game can subscribe."
   onChatMessage(gameId: UUID!): ChatMessage!
+  "Emoji reactions in a game. Only players of the game can subscribe."
+  onReaction(gameId: UUID!): Reaction!
   onPlayerJoined(gameId: UUID!): BaseUserProfile!
   onPlayerLeave(gameId: UUID!): BaseUserProfile!
   onTicketCreated(gameId: UUID!): Ticket!
@@ -525,6 +580,8 @@ type TeamMember {
 
 type Ticket {
   votes: ApiCollectionOfVote! @cost(weight: "10")
+  "Discussion data of the ticket: reveal time, notes (after the reveal), needs-info flag, confidence (OPP-114)."
+  facilitation: TicketFacilitationInfo @cost(weight: "10")
   averageVotingValue: Decimal! @cost(weight: "10")
   id: UUID!
   gameId: UUID!
@@ -541,9 +598,30 @@ type Ticket {
   externalUrl: String
 }
 
+"Discussion data of a ticket: when the cards were turned over, notes, needs-info flag and confidence."
+type TicketFacilitationInfo {
+  ticketId: UUID!
+  revealedAt: DateTime
+  estimatedAt: DateTime
+  "Times the cards were turned over (1 = agreed on the first vote)."
+  voteRounds: Int!
+  needsInfo: Boolean!
+  notes: [VoteNote!]!
+  "Average confidence (1–5) of the players who rated; null when nobody did."
+  confidenceAverage: Decimal
+  confidenceCount: Int!
+  "The current user's own rating."
+  myConfidence: Int
+}
+
 type TransferHostPayload {
   boolean: Boolean
   errors: [TransferHostError!]
+}
+
+type UpdateFacilitationOptionsPayload {
+  facilitationSettings: FacilitationSettings
+  errors: [UpdateFacilitationOptionsError!]
 }
 
 type UpdateGameOptionsPayload {
@@ -571,6 +649,11 @@ type Vote {
   id: UUID!
   playerId: UUID!
   value: String!
+}
+
+type VoteNote {
+  playerId: UUID!
+  note: String!
 }
 
 type VotesRevealed {
@@ -642,11 +725,19 @@ union SelectJiraSiteError = ApplicationError
 
 union SendChatMessageError = ApplicationError
 
+union SendReactionError = ApplicationError
+
 union SetCoHostError = ApplicationError
+
+union SetConfidenceError = ApplicationError
 
 union SetFinalEstimateError = ApplicationError
 
 union SetPlayerRoleError = ApplicationError
+
+union SetTicketNeedsInfoError = ApplicationError
+
+union SetVoteNoteError = ApplicationError
 
 union SettingsDetailsResult = Settings | ApplicationError
 
@@ -658,11 +749,15 @@ union StopTimerError = ApplicationError
 
 union TeamResult = Team | ApplicationError
 
+union TicketFacilitationResult = TicketFacilitationInfo | ApplicationError
+
 union TicketResult = Ticket | ApplicationError
 
 union TicketsResult = ApiCollectionOfTicket | ApplicationError
 
 union TransferHostError = ApplicationError
+
+union UpdateFacilitationOptionsError = ApplicationError
 
 union UpdateGameOptionsError = ApplicationError
 
@@ -778,10 +873,20 @@ input SendChatMessageInput {
   content: String!
 }
 
+input SendReactionInput {
+  gameId: UUID!
+  emoji: String!
+}
+
 input SetCoHostInput {
   gameId: UUID!
   playerId: UUID!
   isCoHost: Boolean!
+}
+
+input SetConfidenceInput {
+  ticketId: UUID!
+  value: Int
 }
 
 input SetFinalEstimateInput {
@@ -793,6 +898,16 @@ input SetPlayerRoleInput {
   gameId: UUID!
   role: PlayerRole!
   playerId: UUID
+}
+
+input SetTicketNeedsInfoInput {
+  ticketId: UUID!
+  needsInfo: Boolean!
+}
+
+input SetVoteNoteInput {
+  ticketId: UUID!
+  note: String
 }
 
 input StartTimerInput {
@@ -807,6 +922,14 @@ input StopTimerInput {
 input TransferHostInput {
   gameId: UUID!
   playerId: UUID!
+}
+
+input UpdateFacilitationOptionsInput {
+  gameId: UUID!
+  outlierNotes: Boolean!
+  discussionMinutes: Int!
+  confidenceCheck: Boolean!
+  reactions: Boolean!
 }
 
 input UpdateGameOptionsInput {
