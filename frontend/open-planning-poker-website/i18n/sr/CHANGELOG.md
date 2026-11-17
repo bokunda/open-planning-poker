@@ -6,7 +6,7 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
-## [3.1.0] — Unreleased
+## [3.1.0] — 2026-11-17
 
 Bezbednije i lakše za održavanje: noćni backup, alarm za greške na serveru i lozinka za Redis.
 

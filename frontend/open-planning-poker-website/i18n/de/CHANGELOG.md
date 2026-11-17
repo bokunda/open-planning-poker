@@ -6,7 +6,7 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
-## [3.1.0] — Unreleased
+## [3.1.0] — 2026-11-17
 
 Sicherer und leichter zu betreiben: nächtliche Backups, ein Alarm bei Serverfehlern und ein Passwort für Redis.
 
