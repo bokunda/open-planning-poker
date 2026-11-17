@@ -6,6 +6,33 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+## [3.4.0] — 2026-11-18
+
+Bolje diskusije posle otkrivanja karata, referentni tiketi za timske sobe, još tri alata za tikete, statistika procena i sve što treba za objavljivanje u prodavnicama.
+
+### Dodato
+- **Pitaj krajnje glasove**: posle velikog raspona, najniži i najviši glas mogu da dodaju kratku belešku zašto su izabrali kartu. Svi je vide pored rezultata, a ide i u PDF izveštaj i u Jira komentar
+- **Tajmer za diskusiju**: opcija sobe (2, 3 ili 5 minuta) koja kreće sa otkrivanjem karata, a onda pita „glasati ponovo ili dalje?”
+- **Provera sigurnosti**: posle konačne procene igrači ocenjuju koliko su sigurni, od 1 do 5. Tiketi ispod 3 su označeni u listi tiketa, PDF-u i CSV-u
+- **Reakcije**: 👍 🤔 ☕ 🎉 😂 👀 kratko lebde iznad stola. Ne čuvaju se i poštuju „smanji pokrete”
+- **Karte „?” i pauza**: broje se odvojeno od brojeva. Kada pola sobe nije sigurno, host može da označi tiket sa „treba više informacija”; kada pola traži pauzu, host dobija predlog
+- **Referentni tiketi u timskim sobama**: zakači procenjeni tiket kao primer za njegovu kartu (dva po karti, sa beleškom). Tokom glasanja panel Reference ih prikazuje uz do tri slična tiketa iz ranijih sprintova
+- **Istorija procena**: pretraži sve procenjene tikete tima po nazivu, ključu ili opisu, filtriraj po karti i zakači iz rezultata
+- **GitHub, Linear i Azure DevOps**: poveži jednom, uvezi issue-e iz repozitorijuma, tima ili projekta i sačuvaj dogovorenu procenu nazad posle otkrivanja. Svaki alat se pojavljuje kada ga server ima podešenog
+- **Kako su prošle sesije**: po sprintu u timskoj sobi, udeo tiketa dogovorenih iz prvog glasanja, ponovna glasanja po tiketu, vreme diskusije i tiketi kojima treba više informacija. Samo brojke tima, nikad po igraču
+- **Tačnost procena**: koliko su Jira tiketi svake karte zaista trajali, sa medijanom, rasponom i tiketima koje vredi pogledati na retrospektivi
+- **Rezime sesije**: host može da objavi kratak rezime sesije u Slack thread igre, ili u Slack ili Teams kanal preko dolaznog webhooka tima
+- **Procena Jira issue-a iz Jire**: aplikacija sa panelom u Jira issue-u otvara igru sa tim issue-om kao prvim tiketom, spremnu za „Save to KEY”
+- **Stranice integracija, privatnosti, podrške i uslova korišćenja** na sajtu, na engleskom, srpskom i nemačkom
+
+### Promenjeno
+- Opcije sobe: nove opcije za diskusiju su u meniju Soba. Beleške krajnjih glasova i reakcije su podrazumevano uključene, a provera sigurnosti i tajmer za diskusiju isključeni
+- Paket Teams aplikacije (2.1.0) vodi na novu politiku privatnosti i uslove korišćenja
+
+### Za programere
+- Migracije `AddFacilitation`, `AddTeamAnchors`, `AddTrackers` i `AddInsights`. Postojeće veze tiketa su označene kao Jira
+- Novi secrets za alate za tikete: `GH_TRACKER_CLIENT_ID/SECRET`, `LINEAR_CLIENT_ID/SECRET`, `AZURE_DEVOPS_CLIENT_ID/SECRET` (vidi `docs/integrations.md`). Spiskovi za prijave u prodavnice su u `docs/integrations/marketplace.md`
+
 ## [3.3.0] — 2026-11-17
 
 Microsoft Teams za svaku organizaciju: Open Planning Poker je sada tab u Teams-u.
