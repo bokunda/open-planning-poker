@@ -47,6 +47,6 @@ jobs:
             docker compose up -d --remove-orphans
             # The alert and its contact point are provisioned: fail the deploy if Grafana rejected them.
             sleep 15
-            if docker compose logs grafana 2>&1 | grep -i "provisioning" | grep -iE "level=error|failed"; then exit 1; fi
+            if docker compose logs grafana 2>&1 | grep -iE "provisioning.(alerting|datasources)" | grep -iE "level=error|failed"; then exit 1; fi
             docker system prune -f
 

@@ -6,7 +6,7 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
-## [3.2.0] — Unreleased
+## [3.2.0] — 2026-11-17
 
 Open Planning Poker arbeitet mit den Tools, die dein Team schon nutzt: Jira, Slack und Microsoft Teams.
 

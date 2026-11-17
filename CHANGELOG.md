@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.2.0] — Unreleased
+## [3.2.0] — 2026-11-17
 
 Open Planning Poker works with the tools your team already uses: Jira, Slack and Microsoft Teams.
 
