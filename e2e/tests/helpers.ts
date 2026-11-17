@@ -8,11 +8,12 @@ export async function openApp(page: Page, path = '/game'): Promise<void> {
 }
 
 /** Creates a game from the landing page and returns its id (the room URL is /game/:id). */
-export async function createGame(page: Page, name = 'Sprint 42 refinement'): Promise<string> {
+export async function createGame(page: Page, name = 'Sprint 42 refinement', deck?: string): Promise<string> {
   await openApp(page);
   await page.getByRole('button', { name: 'Create game' }).first().click();
   const dialog = page.getByRole('dialog');
   await dialog.getByLabel('Game name').fill(name);
+  if (deck) await dialog.getByRole('radio', { name: new RegExp(`^${deck}`) }).click();
   await dialog.getByRole('button', { name: 'Create game' }).click();
   await page.waitForURL(/\/game\/[0-9a-f-]{36}/);
   return page.url().split('/game/')[1].split(/[?#]/)[0];

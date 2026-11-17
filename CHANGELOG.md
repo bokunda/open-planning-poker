@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.1] — 2026-11-17
+
+### Fixed
+- **Deck**: when you created a game with a deck other than Fibonacci, you as the host still saw the Fibonacci cards, while everyone who joined saw the deck you chose. Now everyone gets the chosen deck from the start
+
 ## [3.2.0] — 2026-11-17
 
 Open Planning Poker works with the tools your team already uses: Jira, Slack and Microsoft Teams.

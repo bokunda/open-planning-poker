@@ -33,6 +33,20 @@ test.describe('A planning session', () => {
     await player.context().close();
   });
 
+  test('the host and the players get the deck chosen when the game was created', async ({ page, browser }) => {
+    const gameId = await createGame(page, 'Sprint 43', 'Powers of 2');
+    await addTicket(page, 'OPP-3 Deck');
+    const player = await joinAsSecondPlayer(browser, gameId);
+
+    // OPP-112: the host used to keep the default Fibonacci deck.
+    for (const p of [page, player]) {
+      await expect(p.getByRole('button', { name: 'Vote 64', exact: true })).toBeVisible();
+      await expect(p.getByRole('button', { name: 'Vote 13', exact: true })).toHaveCount(0);
+    }
+
+    await player.context().close();
+  });
+
   test('the host imports tickets from a pasted list', async ({ page }) => {
     await createGame(page);
     await page.getByRole('button', { name: /Import/ }).first().click();

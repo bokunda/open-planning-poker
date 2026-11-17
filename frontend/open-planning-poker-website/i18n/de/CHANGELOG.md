@@ -6,6 +6,11 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+## [3.2.1] — 2026-11-17
+
+### Behoben
+- **Kartensatz**: Wenn du ein Spiel mit einem anderen Kartensatz als Fibonacci erstellt hast, hast du als Host trotzdem die Fibonacci-Karten gesehen, alle anderen aber den gewählten Kartensatz. Jetzt bekommen alle von Anfang an den gewählten Kartensatz
+
 ## [3.2.0] — 2026-11-17
 
 Open Planning Poker arbeitet mit den Tools, die dein Team schon nutzt: Jira, Slack und Microsoft Teams.

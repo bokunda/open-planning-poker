@@ -40,7 +40,7 @@ import { VotingHistoryComponent } from './voting-history/voting-history.componen
 import { PlayersComponent } from './players/players.component';
 import { ChatComponent } from './chat/chat.component';
 import { AsyncVotingComponent } from './async-voting/async-voting.component';
-import { map } from 'rxjs';
+import { finalize, map } from 'rxjs';
 import type { DocumentNode } from 'graphql';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '../../../shared/constants';
@@ -374,24 +374,39 @@ export class GameComponent implements OnInit {
         if (data?.createGame?.game) {
           this.game = data?.createGame?.game;
 
-          // Apply deck setup via updateSettings (gateway.fgp doesn't have deckSetup in CreateGameInput yet)
+          const gameId = this.game.id;
+          const openGame = () => {
+            this.joinGame(gameId);
+            this.router.navigate([`/game/${gameId}`]);
+          };
+
+          // The deck is saved with updateSettings (CreateGameInput has no deckSetup). Open the game
+          // only after it is saved, or the host loads the default deck while everyone who joins
+          // later gets the chosen one (OPP-112).
           const settingsId = (data.createGame.game as any).settingsDetails?.id;
           if (settingsId && deckSetup) {
-            this.applyDeckSetup(this.game.id, settingsId, deckSetup);
+            this.applyDeckSetup(gameId, settingsId, deckSetup, openGame);
+          } else {
+            openGame();
           }
-
-          this.joinGame(this.game.id);
-          this.router.navigate([`/game/${this.game.id}`]);
         }
       }
     });
   }
 
-  private applyDeckSetup(gameId: string, settingsId: string, deckSetup: string): void {
-    this.apollo.mutate<UpdateSettingsPayload, MutationUpdateSettingsArgs>({
+  private applyDeckSetup(gameId: string, settingsId: string, deckSetup: string, done: () => void): void {
+    this.apollo.mutate<{ updateSettings: UpdateSettingsPayload }, MutationUpdateSettingsArgs>({
       mutation: UPDATE_SETTINGS,
       variables: { input: { id: settingsId, gameId, deckSetup } }
-    }).subscribe();
+    }).pipe(finalize(done)).subscribe({
+      next: ({ data }) => {
+        const saved = data?.updateSettings?.settings;
+        if (saved && this.game?.id === gameId) {
+          this.game = { ...this.game, settingsDetails: { ...(this.game.settingsDetails as object), ...saved } } as Game;
+        }
+      },
+      error: (err) => console.error('Could not save the deck:', err)
+    });
   }
 
   private getGamePlayers(gameId: string): void {
