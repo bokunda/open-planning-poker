@@ -12,6 +12,23 @@ on:
         required: true
       REDIS_PASSWORD:
         required: true
+      # Integrations (OPP-10, OPP-22, OPP-23): each one is off while its secrets are empty.
+      JIRA_CLIENT_ID:
+        required: false
+      JIRA_CLIENT_SECRET:
+        required: false
+      SLACK_CLIENT_ID:
+        required: false
+      SLACK_CLIENT_SECRET:
+        required: false
+      SLACK_SIGNING_SECRET:
+        required: false
+      TEAMS_APP_ID:
+        required: false
+      TEAMS_APP_PASSWORD:
+        required: false
+      TEAMS_TENANT_ID:
+        required: false
 jobs:
   deploy-opp-game-engine:
     runs-on: ubuntu-24.04
@@ -81,6 +98,14 @@ jobs:
               -e 'ConnectionStrings__Database=Host=${{ vars.OPP_DB_HOST }};Port=${{ vars.OPP_DB_PORT }};Database=${{ vars.OPP_DB_GE_NAME }};Username=${{ vars.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }};' \
               -e 'ConnectionStrings__Cache=${{ vars.REDIS_HOST }},password=${{ secrets.REDIS_PASSWORD }}' \
               -e 'Authentication__Secret=${{ secrets.OPP_JWT_SECRET }}' \
+              -e 'Jira__ClientId=${{ secrets.JIRA_CLIENT_ID }}' \
+              -e 'Jira__ClientSecret=${{ secrets.JIRA_CLIENT_SECRET }}' \
+              -e 'Chat__SlackClientId=${{ secrets.SLACK_CLIENT_ID }}' \
+              -e 'Chat__SlackClientSecret=${{ secrets.SLACK_CLIENT_SECRET }}' \
+              -e 'Chat__SlackSigningSecret=${{ secrets.SLACK_SIGNING_SECRET }}' \
+              -e 'Chat__TeamsAppId=${{ secrets.TEAMS_APP_ID }}' \
+              -e 'Chat__TeamsAppPassword=${{ secrets.TEAMS_APP_PASSWORD }}' \
+              -e 'Chat__TeamsTenantId=${{ secrets.TEAMS_TENANT_ID }}' \
               -p 127.0.0.1:9091:8080 \
               ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }}
 
