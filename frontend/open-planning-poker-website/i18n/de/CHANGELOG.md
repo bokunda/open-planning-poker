@@ -6,6 +6,24 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+## [3.2.0] — Unreleased
+
+Open Planning Poker arbeitet mit den Tools, die dein Team schon nutzt: Jira, Slack und Microsoft Teams.
+
+### Hinzugefügt
+- **Jira Cloud**: Verbinde deine Jira-Site einmal im Import-Dialog. **Aus Jira** importiert die Issues eines Sprints, eines Boards oder einer JQL-Abfrage (bis zu 100, mit ihren Story Points; Issues, die schon im Spiel sind, werden übersprungen). Jedes Ticket behält seinen Schlüssel und einen Link zum Issue. Nach dem Aufdecken schreibt **In KEY speichern** die vereinbarte Schätzung in die Story Points des Issues, auf Wunsch mit einem Kommentar mit den Stimmen
+- **Slack**: `/poker Sprint 43` in einem beliebigen Channel erstellt einen Raum und postet einen **Join**-Button. Nur wer den Befehl ausgeführt hat, erhält den Link zum Leiten des Spiels, und das Ergebnis jedes Aufdeckens wird im Thread gepostet
+- **Microsoft Teams**: Starte einen Raum über die Messaging-Erweiterung und teile ihn als Karte, oder füge Open Planning Poker als Meeting-Tab hinzu. Das Ergebnis jedes Aufdeckens wird im Chat gepostet
+
+### Sicherheit
+- Jira- und Slack-Tokens werden verschlüsselt auf dem Server gespeichert und erreichen nie den Browser. Das Trennen von Jira löscht sie
+- Slack-Anfragen werden mit Slacks Signatur geprüft, Teams-Anfragen mit den Schlüsseln des Bot Frameworks
+
+### Für Entwickler
+- Die Einrichtung jeder Integration steht in `docs/integrations.md`; jede bleibt aus, bis ihre Secrets gesetzt sind
+- Spike zu einem Atlassian-Forge-Issue-Panel, mit Prototyp und Empfehlung: `docs/integrations/jira-forge-spike.md`
+
+
 ## [3.1.0] — Unreleased
 
 Sicherer und leichter zu betreiben: nächtliche Backups, ein Alarm bei Serverfehlern und ein Passwort für Redis.
