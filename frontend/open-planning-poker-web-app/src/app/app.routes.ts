@@ -47,6 +47,12 @@ export const routes: Routes = [
     title: 'Connecting Jira — Open Planning Poker'
   },
   {
+    // Configuration page of the Microsoft Teams tab (OPP-23).
+    path: 'teams/config',
+    loadComponent: () => import('./features/integrations/teams-config.component').then(m => m.TeamsConfigComponent),
+    title: 'Open Planning Poker for Microsoft Teams'
+  },
+  {
     path: '**',
     loadComponent: () => import('./features/errors/errors.component').then(m => m.ErrorsComponent),
     title: '404 — Page Not Found | Open Planning Poker'

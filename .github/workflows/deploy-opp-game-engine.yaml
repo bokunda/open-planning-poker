@@ -23,12 +23,6 @@ on:
         required: false
       SLACK_SIGNING_SECRET:
         required: false
-      TEAMS_APP_ID:
-        required: false
-      TEAMS_APP_PASSWORD:
-        required: false
-      TEAMS_TENANT_ID:
-        required: false
 jobs:
   deploy-opp-game-engine:
     runs-on: ubuntu-24.04
@@ -103,9 +97,6 @@ jobs:
               -e 'Chat__SlackClientId=${{ secrets.SLACK_CLIENT_ID }}' \
               -e 'Chat__SlackClientSecret=${{ secrets.SLACK_CLIENT_SECRET }}' \
               -e 'Chat__SlackSigningSecret=${{ secrets.SLACK_SIGNING_SECRET }}' \
-              -e 'Chat__TeamsAppId=${{ secrets.TEAMS_APP_ID }}' \
-              -e 'Chat__TeamsAppPassword=${{ secrets.TEAMS_APP_PASSWORD }}' \
-              -e 'Chat__TeamsTenantId=${{ secrets.TEAMS_TENANT_ID }}' \
               -p 127.0.0.1:9091:8080 \
               ghcr.io/${{ github.repository_owner }}/openplanningpokergameenginegraphql:${{ github.run_number }}
 

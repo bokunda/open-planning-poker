@@ -55,7 +55,6 @@ public static class DependencyInjection
         services.Configure<Application.Features.Integrations.Chat.ChatOptions>(configuration.GetSection(Application.Features.Integrations.Chat.ChatOptions.Section));
         services.AddScoped<Domain.Integrations.IChatIntegrationRepository, ChatIntegrationRepository>();
         services.AddHttpClient<Application.Features.Integrations.Chat.ISlackApi, Integrations.SlackApiClient>(client => client.Timeout = TimeSpan.FromSeconds(10));
-        services.AddHttpClient<Application.Features.Integrations.Chat.ITeamsApi, Integrations.TeamsConnectorClient>(client => client.Timeout = TimeSpan.FromSeconds(10));
         services.AddScoped<Application.Features.Integrations.Chat.ChatGameService>();
     }
 }

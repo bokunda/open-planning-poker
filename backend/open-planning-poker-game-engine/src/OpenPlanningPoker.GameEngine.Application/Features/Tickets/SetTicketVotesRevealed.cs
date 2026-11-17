@@ -42,7 +42,7 @@ public static class SetTicketVotesRevealed
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            // Games started from Slack or Teams post the result back to the chat (OPP-22, OPP-23).
+            // Games started from Slack post the result back to the thread (OPP-22).
             if (request.Revealed)
             {
                 chatNotifications.TicketRevealed(ticket.Id);

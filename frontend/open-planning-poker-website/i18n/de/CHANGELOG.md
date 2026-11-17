@@ -6,6 +6,17 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+## [3.3.0] — 2026-11-17
+
+Microsoft Teams für jede Organisation: Open Planning Poker ist jetzt ein Tab in Teams.
+
+### Hinzugefügt
+- **Microsoft-Teams-Tab**: Füge Open Planning Poker zu einem Meeting, Kanal oder Chat hinzu. Starte ein neues Spiel im Tab (du wirst Host) oder zeige ein Spiel, das du schon hast. Alle stimmen im Tab ab, im Seitenbereich oder auf der Meeting-Bühne, in einer kompakten Ansicht ohne Kopf- und Fußzeile der Website
+- **Für Teams-Admins**: Das App-Paket `open-planning-poker-teams.zip` hängt an jedem Release. Lade es einmal im Teams Admin Center hoch; es braucht keine Azure-Einrichtung und keine Anmeldung
+
+### Geändert
+- Der Teams-Bot und seine Nachrichtenerweiterung werden durch den Tab ersetzt. Sie brauchten einen Azure-Bot in unserer eigenen Microsoft-365-Organisation, daher hätten andere Organisationen sie nicht nutzen können
+
 ## [3.2.1] — 2026-11-17
 
 ### Behoben

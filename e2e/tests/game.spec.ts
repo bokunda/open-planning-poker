@@ -47,6 +47,19 @@ test.describe('A planning session', () => {
     await player.context().close();
   });
 
+  test('in the Teams tab the game has no site header or footer', async ({ page }) => {
+    const gameId = await createGame(page, 'Teams tab');
+    await page.goto(`/game/${gameId}?embed=teams`);
+    await expect(page.getByRole('button', { name: 'New ticket' }).first()).toBeVisible();
+    await expect(page.locator('app-header')).toHaveCount(0);
+    await expect(page.locator('app-footer')).toHaveCount(0);
+  });
+
+  test('the Teams tab setup page explains itself outside Teams', async ({ page }) => {
+    await page.goto('/teams/config');
+    await expect(page.getByRole('alert')).toContainText('Microsoft Teams');
+  });
+
   test('the host imports tickets from a pasted list', async ({ page }) => {
     await createGame(page);
     await page.getByRole('button', { name: /Import/ }).first().click();

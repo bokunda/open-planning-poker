@@ -23,7 +23,8 @@ server {
 
     # Security headers
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
-    add_header X-Frame-Options "DENY" always;
+    # Microsoft Teams shows the app in a tab (OPP-23): only Teams and Office may frame it.
+    add_header Content-Security-Policy "frame-ancestors 'self' https://teams.microsoft.com https://*.teams.microsoft.com https://*.cloud.microsoft https://*.office.com https://*.skype.com" always;
     add_header X-Content-Type-Options "nosniff" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
     add_header X-Robots-Tag "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" always;

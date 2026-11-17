@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.0] — 2026-11-17
+
+Microsoft Teams, for every organisation: Open Planning Poker is now a Teams tab.
+
+### Added
+- **Microsoft Teams tab**: add Open Planning Poker to a meeting, a channel or a chat. Start a new game in the tab (you become the host) or show a game you already have. Everyone votes from the tab, in the side panel or on the meeting stage, in a compact layout without the site header and footer
+- **For Teams admins**: the app package `open-planning-poker-teams.zip` is attached to every release. Upload it once in the Teams admin center; it needs no Azure setup and no sign-up
+
+### Changed
+- The Teams bot and its message extension are replaced by the tab. They needed an Azure bot in our own Microsoft 365 organisation, so other organisations could not have used them
+
 ## [3.2.1] — 2026-11-17
 
 ### Fixed

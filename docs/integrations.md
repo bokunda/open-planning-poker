@@ -1,6 +1,7 @@
 # Integrations: Jira, Slack and Microsoft Teams
 
-Every integration runs in the Game Engine and is **off until its secrets are set**. Without them, the app hides the
+Jira and Slack run in the Game Engine and are **off until their secrets are set**. The Microsoft Teams app is a
+tab without a bot and needs no secrets. Without them, the app hides the
 feature. The **Deploy OPP** workflow passes the secrets to the Game Engine container. After changing them, run
 **Deploy OPP** again.
 
@@ -8,7 +9,6 @@ feature. The **Deploy OPP** workflow passes the secrets to the Game Engine conta
 |---|---|---|
 | Jira Cloud (OPP-10, 11, 12) | `JIRA_CLIENT_ID`, `JIRA_CLIENT_SECRET` | `Jira__ClientId`, `Jira__ClientSecret` |
 | Slack (OPP-22) | `SLACK_CLIENT_ID`, `SLACK_CLIENT_SECRET`, `SLACK_SIGNING_SECRET` | `Chat__SlackClientId`, `Chat__SlackClientSecret`, `Chat__SlackSigningSecret` |
-| Microsoft Teams (OPP-23) | `TEAMS_APP_ID`, `TEAMS_APP_PASSWORD`, optional `TEAMS_TENANT_ID` | `Chat__TeamsAppId`, `Chat__TeamsAppPassword`, `Chat__TeamsTenantId` |
 
 Tokens (the Jira user tokens and the Slack bot tokens) are encrypted with ASP.NET Core Data Protection, with the keys
 in the database (`data_protection_keys`). Only the SHA-256 hash of a chat game's host link is stored.
@@ -39,28 +39,35 @@ In a private channel, add the app first with `/invite @Open Planning Poker`.
 
 ## Microsoft Teams
 
-1. In the [Teams Developer Portal](https://dev.teams.microsoft.com/) (or the Azure portal), create a **bot**.
-   - Set its messaging endpoint to `https://ge.openplanningpoker.com/integrations/teams/messages`.
-   - Create a client secret.
-   - Put the app (client) ID in `TEAMS_APP_ID` and the secret in `TEAMS_APP_PASSWORD`.
-   - For a single-tenant bot, also set `TEAMS_TENANT_ID`.
-2. Build the app package from [`integrations/teams/`](../integrations/teams/):
-   - replace `{{TEAMS_APP_ID}}` in `manifest.json`;
-   - zip `manifest.json`, `color.png` and `outline.png`;
-   - upload the zip in Teams (**Apps → Manage your apps → Upload an app**) or in the Developer Portal.
-3. Run **Deploy OPP**.
+The Teams app (OPP-23) is a **tab**, without a bot: it needs no Azure resources and no secrets, and any
+organisation can add it. When someone adds the tab to a meeting, a channel or a chat, Teams opens
+`https://app.openplanningpoker.com/teams/config`. There they start a new game (they become the host) or paste the
+link of a game they already have. The tab then shows the game to everyone, in the side panel or on the meeting
+stage, without the site header and footer.
 
-**Allow the app in Teams frames.** The meeting tab shows `app.openplanningpoker.com` inside Teams, so its nginx site
-must allow Teams as a frame ancestor. If the site sends `X-Frame-Options: DENY` / `SAMEORIGIN`, replace it with:
+**For a Teams admin of any organisation:**
+
+1. Download `open-planning-poker-teams.zip` from the
+   [latest release](https://github.com/bokunda/open-planning-poker/releases/latest/download/open-planning-poker-teams.zip).
+2. In the [Teams admin center](https://admin.teams.microsoft.com/), go to **Teams apps → Manage apps → Upload new app**
+   and upload the zip. Your app permission policies decide who can use it.
+3. People then add it from **Apps → Built for your org**, or with **+** on a meeting, a channel or a chat.
+
+Where the organisation allows custom apps, anyone can also upload the zip for themselves: **Apps → Manage your apps →
+Upload an app**.
+
+**For this project:**
+
+- The package is built from [`integrations/teams/`](../integrations/teams/) with
+  `integrations/teams/build-package.sh`, and attached to every release. Raise `version` in `manifest.json` when
+  the manifest changes; the `id` stays the same.
+- nginx must let Teams frame `app.openplanningpoker.com`. Instead of `X-Frame-Options: DENY`, the site sends:
 
 ```nginx
-add_header Content-Security-Policy "frame-ancestors 'self' https://teams.microsoft.com https://*.teams.microsoft.com https://*.cloud.microsoft https://*.office.com" always;
+add_header Content-Security-Policy "frame-ancestors 'self' https://teams.microsoft.com https://*.teams.microsoft.com https://*.cloud.microsoft https://*.office.com https://*.skype.com" always;
 ```
 
-In a chat, use the **Start planning poker** message extension. It shares a card with a **Join** button. Teams cannot
-show a link to one person only here, so the first person who opens the room becomes the host, and they can hand
-the role over. After each reveal, the result is posted to the chat. In a meeting, add **Open Planning Poker** as a
-tab and paste a room link (or leave it empty for a new room).
+Without a bot, Teams does not get the result of each reveal in the chat; the result is in the tab.
 
 ## Forge
 
