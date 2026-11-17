@@ -9,7 +9,9 @@ import { VoteResultsComponent } from '../table/vote-results.component';
 import { GameTimerComponent, TimerTick } from '../timer/game-timer.component';
 import { ApiCollectionOfGamePlayer, Settings, SettingsDetailsResult, Ticket, Vote } from '../../../../graphql/graphql-gateway.service';
 import { MarkdownPipe } from '../../../../shared/markdown/markdown.pipe';
-import { RoomSettings, RoomTicket } from '../room-types';
+import { DEFAULT_FACILITATION, FacilitationSettings, RoomSettings, RoomTicket } from '../room-types';
+import { FacilitationPanelComponent } from '../facilitation/facilitation-panel.component';
+import { ReactionsComponent } from '../facilitation/reactions.component';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 @Component({
@@ -17,7 +19,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   templateUrl: './voting.component.html',
   styleUrl: './voting.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, MatButtonModule, MatIconModule, MatTooltipModule, PokerCardComponent, PokerTableComponent, VoteResultsComponent, GameTimerComponent, MarkdownPipe],
+  imports: [TranslocoPipe, MatButtonModule, MatIconModule, MatTooltipModule, PokerCardComponent, PokerTableComponent, VoteResultsComponent, GameTimerComponent, MarkdownPipe, FacilitationPanelComponent, ReactionsComponent],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class VotingComponent implements OnInit, OnDestroy, OnChanges {
@@ -76,6 +78,11 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
 
   get autoReveal(): boolean {
     return !!(this.gameSettings as RoomSettings | undefined)?.autoReveal;
+  }
+
+  /** Discussion options of the room (OPP-114). */
+  get facilitation(): FacilitationSettings {
+    return (this.gameSettings as RoomSettings | undefined)?.facilitation ?? DEFAULT_FACILITATION;
   }
 
   get finalEstimate(): string | null {

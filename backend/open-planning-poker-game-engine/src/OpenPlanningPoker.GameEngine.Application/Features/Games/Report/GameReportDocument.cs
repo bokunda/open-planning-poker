@@ -6,10 +6,14 @@ using Unit = QuestPDF.Infrastructure.Unit;
 
 namespace OpenPlanningPoker.GameEngine.Application.Features.Games.Report;
 
-public sealed record ReportVote(string Player, string Value);
+/// <param name="Note">Why the player chose the card (OPP-122).</param>
+public sealed record ReportVote(string Player, string Value, string? Note = null);
 
 /// <param name="FinalEstimate">The estimate the host chose; when null the report shows the most common card.</param>
-public sealed record ReportTicket(string Name, string Description, bool Revealed, IReadOnlyList<ReportVote> Votes, string? FinalEstimate = null);
+/// <param name="NeedsInfo">The team needs more information (OPP-126).</param>
+/// <param name="Confidence">Average confidence 1–5 in the final estimate (OPP-124); null when not rated.</param>
+public sealed record ReportTicket(string Name, string Description, bool Revealed, IReadOnlyList<ReportVote> Votes, string? FinalEstimate = null,
+    bool NeedsInfo = false, decimal? Confidence = null);
 
 public sealed record ReportModel(
     string GameName,
@@ -213,6 +217,28 @@ public sealed class GameReportDocument(ReportModel model) : IDocument
                         });
                 }
             });
+
+            // Discussion (OPP-114): needs-info flag, confidence and the outliers' notes
+            if (ticket.NeedsInfo || ticket.Confidence is not null)
+            {
+                var flags = new List<string>();
+                if (ticket.NeedsInfo) flags.Add(T("report.needsInfo"));
+                if (ticket.Confidence is { } confidence)
+                {
+                    flags.Add(T("report.confidence", confidence.ToString("0.0", CultureInfo.InvariantCulture))
+                        + (confidence < 3 ? " · " + T("report.lowConfidence") : string.Empty));
+                }
+                column.Item().PaddingTop(2).Text(string.Join("   ", flags)).FontSize(8).SemiBold().FontColor(TextSecondary);
+            }
+
+            foreach (var vote in ticket.Votes.Where(v => v.Note is not null))
+            {
+                column.Item().Text(text =>
+                {
+                    text.Span($"{vote.Player} ({vote.Value}): ").FontSize(8).SemiBold().FontColor(Text);
+                    text.Span(vote.Note!).FontSize(8).FontColor(TextSecondary);
+                });
+            }
         });
     }
 

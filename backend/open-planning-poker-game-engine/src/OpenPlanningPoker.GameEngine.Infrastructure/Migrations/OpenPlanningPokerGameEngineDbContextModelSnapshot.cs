@@ -165,6 +165,10 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("auto_reveal");
 
+                    b.Property<bool>("ConfidenceCheck")
+                        .HasColumnType("boolean")
+                        .HasColumnName("confidence_check");
+
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid")
                         .HasColumnName("created_by");
@@ -178,6 +182,10 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("deck_setup");
 
+                    b.Property<int>("DiscussionMinutes")
+                        .HasColumnType("integer")
+                        .HasColumnName("discussion_minutes");
+
                     b.Property<Guid>("GameId")
                         .HasColumnType("uuid")
                         .HasColumnName("game_id");
@@ -185,6 +193,14 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
+
+                    b.Property<bool>("OutlierNotes")
+                        .HasColumnType("boolean")
+                        .HasColumnName("outlier_notes");
+
+                    b.Property<bool>("Reactions")
+                        .HasColumnType("boolean")
+                        .HasColumnName("reactions");
 
                     b.HasKey("Id")
                         .HasName("pk_gamesettings");
@@ -524,6 +540,10 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("character varying(4080)")
                         .HasColumnName("description");
 
+                    b.Property<DateTimeOffset?>("EstimatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("estimated_at");
+
                     b.Property<string>("ExternalKey")
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)")
@@ -553,9 +573,21 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("name");
 
+                    b.Property<bool>("NeedsInfo")
+                        .HasColumnType("boolean")
+                        .HasColumnName("needs_info");
+
                     b.Property<int>("Position")
                         .HasColumnType("integer")
                         .HasColumnName("position");
+
+                    b.Property<DateTimeOffset?>("RevealedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("revealed_at");
+
+                    b.Property<int>("VoteRounds")
+                        .HasColumnType("integer")
+                        .HasColumnName("vote_rounds");
 
                     b.Property<bool>("VotesRevealed")
                         .HasColumnType("boolean")
@@ -580,6 +612,10 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("ticket_id");
 
+                    b.Property<int?>("Confidence")
+                        .HasColumnType("integer")
+                        .HasColumnName("confidence");
+
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid")
                         .HasColumnName("created_by");
@@ -595,6 +631,10 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
 
                     b.Property<string>("Value")
                         .IsRequired()

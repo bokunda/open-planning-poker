@@ -334,3 +334,6 @@
   &:hover { text-decoration: underline; }
   &:focus-visible { outline: 3px solid var(--opp-primary-300); outline-offset: 2px; border-radius: 4px; }
 }
+
+/* Emoji reactions under the table (OPP-125). */
+.voting-reactions { margin: var(--opp-space-2) 0; }

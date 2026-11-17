@@ -31,8 +31,12 @@ public static class CreateGameReport
                     ticket.Name,
                     ticket.Description,
                     ticket.VotesRevealed,
-                    [.. (ticket.Votes ?? []).Select(vote => new ReportVote(usernames[vote.PlayerId], vote.Value))],
-                    ticket.FinalEstimate))]);
+                    [.. (ticket.Votes ?? []).Select(vote => new ReportVote(usernames[vote.PlayerId], vote.Value, ticket.VotesRevealed ? vote.Note : null))],
+                    ticket.FinalEstimate,
+                    ticket.NeedsInfo,
+                    (ticket.Votes ?? []).Any(v => v.Confidence is not null)
+                        ? decimal.Round((decimal)(ticket.Votes ?? []).Where(v => v.Confidence is not null).Average(v => v.Confidence!.Value), 1)
+                        : null))]);
 
             using var memoryStream = new MemoryStream();
             new GameReportDocument(model).GeneratePdf(memoryStream);

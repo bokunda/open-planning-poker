@@ -47,6 +47,24 @@
               <span>{{ 'room.autoReveal' | transloco }}</span>
             </button>
             <mat-divider></mat-divider>
+            <span class="menu-caption">{{ 'facilitation.caption' | transloco }}</span>
+            <button mat-menu-item (click)="setFacilitation({ outlierNotes: !facilitation.outlierNotes })" role="menuitemcheckbox" [attr.aria-checked]="facilitation.outlierNotes">
+              <mat-icon svgIcon="opp-check" [class.menu-check--off]="!facilitation.outlierNotes"></mat-icon>
+              <span>{{ 'facilitation.optionNotes' | transloco }}</span>
+            </button>
+            <button mat-menu-item (click)="setFacilitation({ confidenceCheck: !facilitation.confidenceCheck })" role="menuitemcheckbox" [attr.aria-checked]="facilitation.confidenceCheck">
+              <mat-icon svgIcon="opp-check" [class.menu-check--off]="!facilitation.confidenceCheck"></mat-icon>
+              <span>{{ 'facilitation.optionConfidence' | transloco }}</span>
+            </button>
+            <button mat-menu-item (click)="setFacilitation({ reactions: !facilitation.reactions })" role="menuitemcheckbox" [attr.aria-checked]="facilitation.reactions">
+              <mat-icon svgIcon="opp-check" [class.menu-check--off]="!facilitation.reactions"></mat-icon>
+              <span>{{ 'facilitation.optionReactions' | transloco }}</span>
+            </button>
+            <button mat-menu-item [matMenuTriggerFor]="discussionMenu">
+              <mat-icon svgIcon="opp-clock"></mat-icon>
+              <span>{{ 'facilitation.optionDiscussion' | transloco }}: {{ facilitation.discussionMinutes ? (('facilitation.minutes' | transloco: { count: facilitation.discussionMinutes })) : ('facilitation.off' | transloco) }}</span>
+            </button>
+            <mat-divider></mat-divider>
             @if (!asyncOpen) {
               <span class="menu-caption">{{ 'room.asyncCaption' | transloco }}</span>
               @for (window of asyncWindows; track window) {
@@ -72,6 +90,14 @@
               <mat-icon svgIcon="opp-team"></mat-icon>
               <span>{{ 'room.openTeamRoom' | transloco }}</span>
             </a>
+          }
+        </mat-menu>
+        <mat-menu #discussionMenu="matMenu">
+          @for (minutes of discussionMinutes; track minutes) {
+            <button mat-menu-item role="menuitemradio" [attr.aria-checked]="facilitation.discussionMinutes === minutes" (click)="setFacilitation({ discussionMinutes: minutes })">
+              <mat-icon svgIcon="opp-check" [class.menu-check--off]="facilitation.discussionMinutes !== minutes"></mat-icon>
+              <span>{{ minutes ? ('facilitation.minutes' | transloco: { count: minutes }) : ('facilitation.off' | transloco) }}</span>
+            </button>
           }
         </mat-menu>
         <button mat-stroked-button class="room-action room-action--leave" (click)="onLeaveGameClick.emit()" [attr.aria-label]="'room.leaveGame' | transloco" [matTooltip]="'room.leaveGame' | transloco">

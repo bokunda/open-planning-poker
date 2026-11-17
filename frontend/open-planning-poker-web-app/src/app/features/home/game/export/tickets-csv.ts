@@ -21,7 +21,7 @@ export interface CsvLabels {
 }
 
 export const CSV_LABELS_EN: CsvLabels = {
-  header: ['#', 'Ticket', 'Description', 'Estimate', 'Estimate source', 'Average', 'Votes', 'Revealed'],
+  header: ['#', 'Ticket', 'Description', 'Estimate', 'Estimate source', 'Average', 'Votes', 'Revealed', 'Confidence', 'Needs more information'],
   final: 'Final (host)',
   mostCommon: 'Most common card',
   yes: 'Yes',
@@ -46,6 +46,8 @@ export function ticketsToCsv(tickets: RoomTicket[], labels: CsvLabels = CSV_LABE
       average,
       votes.map(v => `${v.playerName}: ${v.value}`).join('; '),
       revealed ? labels.yes : labels.no,
+      ticket.facilitation?.confidenceCount ? ticket.facilitation.confidenceAverage : '',
+      ticket.facilitation?.needsInfo ? labels.yes : '',
     ].map(cell).join(',');
   });
   return [header.join(','), ...rows].join('\r\n');

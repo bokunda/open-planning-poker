@@ -90,6 +90,9 @@
       [timerRemaining]="votesRevealed ? null : timerTick.remaining"
       [timerTotal]="timerTick.total">
     </app-poker-table>
+    @if (facilitation.reactions) {
+      <app-reactions class="voting-reactions" [gameId]="gameId" [players]="players" [currentUserId]="currentUserId"></app-reactions>
+    }
     @if (isObserver) {
       <p class="observer-note">
         <mat-icon svgIcon="opp-observe" aria-hidden="true"></mat-icon>
@@ -152,6 +155,9 @@
     <app-vote-results [votes]="votes" [players]="players" [deck]="voteOptions"
     [isHost]="isHost" [finalEstimate]="finalEstimate" (finalEstimateChange)="onSetFinalEstimate.emit($event)"
     [jiraKey]="jiraKey" [jiraSaving]="jiraSaving" (saveToJira)="onSaveToJira.emit($event)"></app-vote-results>
+    <app-facilitation-panel [gameId]="gameId" [ticketId]="ticket?.id ?? ''" [votes]="votes" [players]="players" [deck]="voteOptions"
+      [currentUserId]="currentUserId" [isHost]="isHost" [isObserver]="isObserver" [finalEstimate]="finalEstimate"
+      [options]="facilitation" (voteAgain)="onVoteAgain.emit()"></app-facilitation-panel>
   }
 }
 </section>

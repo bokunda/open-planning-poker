@@ -28,6 +28,12 @@
             @if (ticket.id === currentTicketId) {
               <span class="status-chip">{{ 'history.votingNow' | transloco }}</span>
             }
+            @if (asRoomTicket(ticket).facilitation?.needsInfo) {
+              <span class="history-flag" [matTooltip]="'facilitation.needsInfo' | transloco" [attr.aria-label]="'facilitation.needsInfo' | transloco">?</span>
+            }
+            @if (lowConfidence(ticket)) {
+              <span class="history-flag" [matTooltip]="'facilitation.lowConfidence' | transloco" [attr.aria-label]="'facilitation.lowConfidence' | transloco">!</span>
+            }
             @if (estimate(ticket); as value) {
               <span class="history-estimate opp-tabular" [class.history-estimate--final]="finalEstimate(ticket)"
                 [attr.aria-label]="(finalEstimate(ticket) ? 'history.finalEstimateAria' : 'history.averageAria') | transloco: { value: value }"
