@@ -58,10 +58,12 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
         <!-- Tickets imported from Jira: write the estimate back to the issue (OPP-12). -->
         @if (isHost && jiraKey) {
           <div class="jira-save">
-            <label class="jira-comment">
-              <input type="checkbox" [checked]="jiraComment" (change)="jiraComment = !jiraComment">
-              {{ 'jira.addComment' | transloco }}
-            </label>
+            @if (isJira) {
+              <label class="jira-comment">
+                <input type="checkbox" [checked]="jiraComment" (change)="jiraComment = !jiraComment">
+                {{ 'jira.addComment' | transloco }}
+              </label>
+            }
             <button type="button" mat-stroked-button class="jira-save-btn" [disabled]="jiraSaving"
               (click)="saveToJira.emit(jiraComment)">
               {{ 'jira.saveTo' | transloco: { key: jiraKey } }}
@@ -134,6 +136,9 @@ export class VoteResultsComponent implements DoCheck {
   /** Key of the Jira issue the ticket came from; the host can save the estimate to it. */
   @Input() jiraKey: string | null | undefined = null;
   @Input() jiraSaving = false;
+  /** Link of the issue; only Jira can get a comment with the votes. */
+  @Input() jiraUrl: string | null | undefined = null;
+  get isJira(): boolean { return !this.jiraUrl || this.jiraUrl.includes('.atlassian.net/'); }
   /** Emits whether to add a comment with the votes. */
   @Output() saveToJira = new EventEmitter<boolean>();
   jiraComment = false;

@@ -94,6 +94,12 @@ jobs:
               -e 'Authentication__Secret=${{ secrets.OPP_JWT_SECRET }}' \
               -e 'Jira__ClientId=${{ secrets.JIRA_CLIENT_ID }}' \
               -e 'Jira__ClientSecret=${{ secrets.JIRA_CLIENT_SECRET }}' \
+              -e 'GitHub__ClientId=${{ secrets.GH_TRACKER_CLIENT_ID }}' \
+              -e 'GitHub__ClientSecret=${{ secrets.GH_TRACKER_CLIENT_SECRET }}' \
+              -e 'Linear__ClientId=${{ secrets.LINEAR_CLIENT_ID }}' \
+              -e 'Linear__ClientSecret=${{ secrets.LINEAR_CLIENT_SECRET }}' \
+              -e 'AzureDevOps__ClientId=${{ secrets.AZURE_DEVOPS_CLIENT_ID }}' \
+              -e 'AzureDevOps__ClientSecret=${{ secrets.AZURE_DEVOPS_CLIENT_SECRET }}' \
               -e 'Chat__SlackClientId=${{ secrets.SLACK_CLIENT_ID }}' \
               -e 'Chat__SlackClientSecret=${{ secrets.SLACK_CLIENT_SECRET }}' \
               -e 'Chat__SlackSigningSecret=${{ secrets.SLACK_SIGNING_SECRET }}' \

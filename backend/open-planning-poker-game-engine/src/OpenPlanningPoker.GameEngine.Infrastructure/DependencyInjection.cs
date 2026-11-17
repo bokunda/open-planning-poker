@@ -51,6 +51,19 @@ public static class DependencyInjection
             client.Timeout = TimeSpan.FromSeconds(20));
         services.AddScoped<Application.Features.Integrations.Jira.JiraService>();
 
+        // GitHub, Linear and Azure DevOps (OPP-116): each stays off until its OAuth app is configured.
+        services.Configure<Application.Features.Integrations.Trackers.GitHubOptions>(configuration.GetSection(Application.Features.Integrations.Trackers.GitHubOptions.Section));
+        services.Configure<Application.Features.Integrations.Trackers.LinearOptions>(configuration.GetSection(Application.Features.Integrations.Trackers.LinearOptions.Section));
+        services.Configure<Application.Features.Integrations.Trackers.AzureDevOpsOptions>(configuration.GetSection(Application.Features.Integrations.Trackers.AzureDevOpsOptions.Section));
+        services.AddScoped<Domain.Integrations.ITrackerConnectionRepository, TrackerConnectionRepository>();
+        services.AddHttpClient<Integrations.GitHubTrackerClient>(client => client.Timeout = TimeSpan.FromSeconds(20));
+        services.AddHttpClient<Integrations.LinearTrackerClient>(client => client.Timeout = TimeSpan.FromSeconds(20));
+        services.AddHttpClient<Integrations.AzureDevOpsTrackerClient>(client => client.Timeout = TimeSpan.FromSeconds(20));
+        services.AddScoped<Application.Features.Integrations.Trackers.ITrackerClient>(sp => sp.GetRequiredService<Integrations.GitHubTrackerClient>());
+        services.AddScoped<Application.Features.Integrations.Trackers.ITrackerClient>(sp => sp.GetRequiredService<Integrations.LinearTrackerClient>());
+        services.AddScoped<Application.Features.Integrations.Trackers.ITrackerClient>(sp => sp.GetRequiredService<Integrations.AzureDevOpsTrackerClient>());
+        services.AddScoped<Application.Features.Integrations.Trackers.TrackerService>();
+
         // Slack and Teams (OPP-22, OPP-23).
         services.Configure<Application.Features.Integrations.Chat.ChatOptions>(configuration.GetSection(Application.Features.Integrations.Chat.ChatOptions.Section));
         services.AddScoped<Domain.Integrations.IChatIntegrationRepository, ChatIntegrationRepository>();

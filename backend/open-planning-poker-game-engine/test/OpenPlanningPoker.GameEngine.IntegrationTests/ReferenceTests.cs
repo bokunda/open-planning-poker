@@ -56,3 +56,20 @@ public sealed class ReferenceTests(GameEngineFactory factory)
         history.GetProperty("items")[0].GetProperty("sprintName").GetString().ShouldBe("Sprint 1");
     }
 }
+
+/// <summary>GitHub, Linear and Azure DevOps (OPP-116) stay off until their OAuth apps are configured.</summary>
+[Collection(GameEngineCollection.Name)]
+public sealed class TrackerTests(GameEngineFactory factory)
+{
+    [Fact]
+    public async Task Trackers_AreListed_AndOffWithoutConfiguration()
+    {
+        var host = await factory.CreateUserAsync("Ana");
+        var trackers = (await host.RunAsync("query { trackers { provider enabled connected } }")).GetProperty("trackers");
+        trackers.EnumerateArray().Select(t => t.GetProperty("provider").GetString()).ShouldBe(["github", "linear", "azure-devops"], ignoreOrder: true);
+        trackers.EnumerateArray().ShouldAllBe(t => !t.GetProperty("enabled").GetBoolean());
+
+        var url = await host.RunAsync("query { trackerAuthorizeUrl(provider: \"github\", returnPath: \"/game\") { ... on ApplicationError { code } } }");
+        url.GetProperty("trackerAuthorizeUrl").GetProperty("code").GetString().ShouldBe("TrackerNotConfigured");
+    }
+}

@@ -69,6 +69,14 @@ public static class ServerText
         ["error.TicketNotEstimated"] = ("Only estimated tickets can be pinned.", "Mogu da se zakače samo procenjeni tiketi.", "Nur geschätzte Tickets können angeheftet werden."),
         ["error.AnchorLimit"] = ("This card already has two reference tickets. Unpin one first.", "Ova karta već ima dva referentna tiketa. Prvo otkači jedan.", "Diese Karte hat schon zwei Referenz-Tickets. Löse zuerst eines."),
         ["error.AnchorNotFound"] = ("Reference ticket not found.", "Referentni tiket nije pronađen.", "Referenz-Ticket nicht gefunden."),
+        ["error.TrackerUnknown"] = ("Unknown issue tracker.", "Nepoznat alat za tikete.", "Unbekannter Issue-Tracker."),
+        ["error.TrackerNotConfigured"] = ("This tracker is not set up on this server.", "Ovaj alat nije podešen na ovom serveru.", "Dieser Tracker ist auf diesem Server nicht eingerichtet."),
+        ["error.TrackerNotConnected"] = ("Connect the tracker first.", "Prvo poveži alat.", "Verbinde zuerst den Tracker."),
+        ["error.TrackerReconnect"] = ("Access to the tracker was revoked or expired. Connect it again.", "Pristup alatu je opozvan ili je istekao. Poveži ga ponovo.", "Der Zugriff auf den Tracker wurde widerrufen oder ist abgelaufen. Verbinde ihn erneut."),
+        ["error.TrackerInvalidState"] = ("The sign-in expired or does not belong to you. Try again.", "Prijava je istekla ili nije tvoja. Pokušaj ponovo.", "Die Anmeldung ist abgelaufen oder gehört nicht dir. Versuche es erneut."),
+        ["error.TrackerFailed"] = ("The tracker did not answer as expected. Try again in a moment.", "Alat nije odgovorio kako treba. Pokušaj ponovo za trenutak.", "Der Tracker hat nicht wie erwartet geantwortet. Versuche es gleich noch einmal."),
+        ["error.TrackerNotLinked"] = ("This ticket was not imported from a tracker.", "Ovaj tiket nije uvezen iz alata.", "Dieses Ticket wurde nicht aus einem Tracker importiert."),
+        ["error.TrackerNoEstimate"] = ("Reveal the cards and choose an estimate first.", "Prvo otkrij karte i izaberi procenu.", "Decke zuerst die Karten auf und wähle eine Schätzung."),
         ["error.UserNotFound"] = ("User not found.", "Korisnik nije pronađen.", "Benutzer nicht gefunden."),
 
         // Jira integration (OPP-10, OPP-11, OPP-12)
