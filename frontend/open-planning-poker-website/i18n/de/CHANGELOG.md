@@ -6,6 +6,33 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+
+## [3.4.0] — 2026-11-18
+
+Bessere Diskussionen nach dem Aufdecken, Referenz-Tickets für Team-Räume, drei weitere Issue-Tracker, Auswertungen der Schätzungen und alles, was die Store-Einträge brauchen.
+
+### Hinzugefügt
+- **Frag die Ausreißer**: Nach einer großen Streuung können die niedrigste und die höchste Stimme kurz notieren, warum sie ihre Karte gewählt haben. Alle sehen die Notiz neben den Ergebnissen, und sie kommt in den PDF-Bericht und den Jira-Kommentar
+- **Diskussions-Timer**: eine Raum-Option (2, 3 oder 5 Minuten), die beim Aufdecken startet und dann fragt: „Noch einmal abstimmen oder weiter?“
+- **Sicherheits-Check**: Nach der endgültigen Schätzung geben die Spieler an, wie sicher sie sind, von 1 bis 5. Tickets unter 3 werden in der Ticketliste, im PDF und in der CSV markiert
+- **Reaktionen**: 👍 🤔 ☕ 🎉 😂 👀 schweben kurz über dem Tisch. Sie werden nicht gespeichert und beachten „Bewegung reduzieren“
+- **„?“- und Pausen-Karten**: werden getrennt von den Zahlen gezählt. Ist die Hälfte des Raums unsicher, kann der Host das Ticket als „braucht mehr Informationen“ markieren; möchte die Hälfte eine Pause, bekommt der Host einen Hinweis
+- **Referenz-Tickets in Team-Räumen**: Hefte ein geschätztes Ticket als Beispiel für seine Karte an (zwei pro Karte, mit Notiz). Beim Abstimmen zeigt ein Referenz-Panel sie zusammen mit bis zu drei ähnlichen Tickets aus früheren Sprints
+- **Schätzungs-Historie**: Durchsuche alle geschätzten Tickets eines Teams nach Titel, Schlüssel oder Beschreibung, filtere nach Karte und hefte direkt aus den Ergebnissen an
+- **GitHub, Linear und Azure DevOps**: einmal verbinden, Issues aus einem Repository, Team oder Projekt importieren und die vereinbarte Schätzung nach dem Aufdecken zurückspeichern. Jeder Tracker erscheint, sobald der Server ihn eingerichtet hat
+- **Wie die Sitzungen liefen**: pro Sprint im Team-Raum der Anteil der Tickets, die in der ersten Runde einig waren, neue Runden pro Ticket, Diskussionszeit und Tickets, die mehr Informationen brauchen. Nur Zahlen für das Team, nie pro Spieler
+- **Genauigkeit der Schätzungen**: wie lange die Jira-Tickets jeder Karte wirklich gedauert haben, mit Median, Spanne und den Tickets, die einen Blick in der Retro wert sind
+- **Zusammenfassung der Sitzung**: Der Host kann eine kurze Zusammenfassung im Slack-Thread des Spiels posten oder über den Incoming Webhook des Teams in einem Slack- oder Teams-Kanal
+- **Ein Jira-Issue direkt in Jira schätzen**: Die App mit dem Panel im Jira-Issue öffnet ein Spiel mit dem Issue als erstem Ticket, bereit für „Save to KEY“
+- **Seiten zu Integrationen, Datenschutz, Support und Nutzungsbedingungen** auf der Website, auf Englisch, Serbisch und Deutsch
+
+### Geändert
+- Raum-Optionen: Die neuen Diskussions-Optionen sind im Menü Raum. Ausreißer-Notizen und Reaktionen sind standardmäßig an, Sicherheits-Check und Diskussions-Timer aus
+- Das Teams-App-Paket (2.1.0) verlinkt die neue Datenschutzerklärung und die Nutzungsbedingungen
+
+### Für Entwickler
+- Migrationen `AddFacilitation`, `AddTeamAnchors`, `AddTrackers` und `AddInsights`. Bestehende Ticket-Verknüpfungen werden als Jira markiert
+- Neue Secrets für die Tracker: `GH_TRACKER_CLIENT_ID/SECRET`, `LINEAR_CLIENT_ID/SECRET`, `AZURE_DEVOPS_CLIENT_ID/SECRET` (siehe `docs/integrations.md`). Die Checklisten für die Store-Einreichungen stehen in `docs/integrations/marketplace.md`
 ## [3.3.0] — 2026-11-17
 
 Microsoft Teams für jede Organisation: Open Planning Poker ist jetzt ein Tab in Teams.

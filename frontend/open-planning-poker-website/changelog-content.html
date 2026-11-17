@@ -1,4 +1,32 @@
-<div class="changelog-content"><h2>[3.3.0] — 2026-11-17</h2>
+<div class="changelog-content"><h2>[3.4.0] — 2026-11-18</h2>
+<p>Better discussions after the reveal, reference stories for team rooms, three more issue trackers, estimation insights, and everything the store listings need.</p>
+<h3>Added</h3>
+<ul>
+<li><strong>Ask the outliers</strong>: after a wide spread, the lowest and highest voters can add a short note on why they chose their card. Everyone sees it next to the results, and it goes into the PDF report and the Jira comment</li>
+<li><strong>Discussion timer</strong>: a room option (2, 3 or 5 minutes) that starts at the reveal and then asks &quot;vote again or move on?&quot;</li>
+<li><strong>Confidence check</strong>: after the final estimate, players rate how sure they are, from 1 to 5. Tickets below 3 are flagged in the ticket list, the PDF and the CSV</li>
+<li><strong>Reactions</strong>: 👍 🤔 ☕ 🎉 😂 👀 float over the table for a moment. They are not stored and respect &quot;reduce motion&quot;</li>
+<li><strong>&quot;?&quot; and break cards</strong>: counted apart from the numbers. When half the room is unsure, the host can mark the ticket as &quot;needs more information&quot;; when half asks for a break, the host gets a prompt</li>
+<li><strong>Reference tickets in team rooms</strong>: pin an estimated ticket as the example for its card (two per card, with a note). While voting, a Reference panel shows them with up to three similar tickets from past sprints</li>
+<li><strong>Estimate history</strong>: search every estimated ticket of a team by title, key or description, filter by card, and pin from the results</li>
+<li><strong>GitHub, Linear and Azure DevOps</strong>: connect once, import issues from a repository, team or project, and save the agreed estimate back after the reveal. Each tracker appears when the server has it set up</li>
+<li><strong>How the sessions went</strong>: per sprint in the team room, the share of tickets agreed on the first vote, re-votes per ticket, discussion time and tickets that need more information. Team numbers only, never per player</li>
+<li><strong>Estimate accuracy</strong>: how long the Jira tickets of each card really took, with the median, the range and the tickets worth a look in the retro</li>
+<li><strong>Session summary</strong>: the host can post a short summary of the session to the game&#39;s Slack thread, or to a Slack or Teams channel through the team&#39;s incoming webhook</li>
+<li><strong>Estimate a Jira issue from Jira</strong>: the Jira issue panel app opens a game with the issue as its first ticket, ready for &quot;Save to KEY&quot;</li>
+<li><strong>Integrations, privacy, support and terms pages</strong> on the website, in English, Serbian and German</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li>Room options: the new discussion options are in the Room menu. Outlier notes and reactions are on by default, and the confidence check and the discussion timer are off</li>
+<li>The Teams app package (2.1.0) links to the new privacy policy and terms</li>
+</ul>
+<h3>Developers</h3>
+<ul>
+<li>Migrations <code>AddFacilitation</code>, <code>AddTeamAnchors</code>, <code>AddTrackers</code> and <code>AddInsights</code>. Existing ticket links are marked as Jira</li>
+<li>New secrets for the trackers: <code>GH_TRACKER_CLIENT_ID/SECRET</code>, <code>LINEAR_CLIENT_ID/SECRET</code>, <code>AZURE_DEVOPS_CLIENT_ID/SECRET</code> (see <code>docs/integrations.md</code>). The store submission checklists are in <code>docs/integrations/marketplace.md</code></li>
+</ul>
+<h2>[3.3.0] — 2026-11-17</h2>
 <p>Microsoft Teams, for every organisation: Open Planning Poker is now a Teams tab.</p>
 <h3>Added</h3>
 <ul>

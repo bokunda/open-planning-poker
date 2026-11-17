@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.4.0] — 2026-11-18
+
+Better discussions after the reveal, reference stories for team rooms, three more issue trackers, estimation insights, and everything the store listings need.
+
+### Added
+- **Ask the outliers**: after a wide spread, the lowest and highest voters can add a short note on why they chose their card. Everyone sees it next to the results, and it goes into the PDF report and the Jira comment
+- **Discussion timer**: a room option (2, 3 or 5 minutes) that starts at the reveal and then asks "vote again or move on?"
+- **Confidence check**: after the final estimate, players rate how sure they are, from 1 to 5. Tickets below 3 are flagged in the ticket list, the PDF and the CSV
+- **Reactions**: 👍 🤔 ☕ 🎉 😂 👀 float over the table for a moment. They are not stored and respect "reduce motion"
+- **"?" and break cards**: counted apart from the numbers. When half the room is unsure, the host can mark the ticket as "needs more information"; when half asks for a break, the host gets a prompt
+- **Reference tickets in team rooms**: pin an estimated ticket as the example for its card (two per card, with a note). While voting, a Reference panel shows them with up to three similar tickets from past sprints
+- **Estimate history**: search every estimated ticket of a team by title, key or description, filter by card, and pin from the results
+- **GitHub, Linear and Azure DevOps**: connect once, import issues from a repository, team or project, and save the agreed estimate back after the reveal. Each tracker appears when the server has it set up
+- **How the sessions went**: per sprint in the team room, the share of tickets agreed on the first vote, re-votes per ticket, discussion time and tickets that need more information. Team numbers only, never per player
+- **Estimate accuracy**: how long the Jira tickets of each card really took, with the median, the range and the tickets worth a look in the retro
+- **Session summary**: the host can post a short summary of the session to the game's Slack thread, or to a Slack or Teams channel through the team's incoming webhook
+- **Estimate a Jira issue from Jira**: the Jira issue panel app opens a game with the issue as its first ticket, ready for "Save to KEY"
+- **Integrations, privacy, support and terms pages** on the website, in English, Serbian and German
+
+### Changed
+- Room options: the new discussion options are in the Room menu. Outlier notes and reactions are on by default, and the confidence check and the discussion timer are off
+- The Teams app package (2.1.0) links to the new privacy policy and terms
+
+### Developers
+- Migrations `AddFacilitation`, `AddTeamAnchors`, `AddTrackers` and `AddInsights`. Existing ticket links are marked as Jira
+- New secrets for the trackers: `GH_TRACKER_CLIENT_ID/SECRET`, `LINEAR_CLIENT_ID/SECRET`, `AZURE_DEVOPS_CLIENT_ID/SECRET` (see `docs/integrations.md`). The store submission checklists are in `docs/integrations/marketplace.md`
+
 ## [3.3.0] — 2026-11-17
 
 Microsoft Teams, for every organisation: Open Planning Poker is now a Teams tab.
