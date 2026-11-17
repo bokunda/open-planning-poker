@@ -9,7 +9,7 @@ const H = M.host;
 type Scene = { id: string; vo: string; pad: number; render: (len: number) => React.ReactNode };
 
 /** A host clip in a browser frame under a headline. */
-const DesktopScene: React.FC<{ title: string; sub?: string; fromMs: number; rate?: number; chips?: { text: string; at: number; icon?: string }[]; zoom?: { from: number; to: number; fx: number; fy: number } }> = ({ title, sub, fromMs, rate = 1, chips = [], zoom }) => {
+export const DesktopScene: React.FC<{ title: string; sub?: string; fromMs: number; rate?: number; chips?: { text: string; at: number; icon?: string }[]; zoom?: { from: number; to: number; fx: number; fy: number } }> = ({ title, sub, fromMs, rate = 1, chips = [], zoom }) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const enter = useEnter(2, 18);
@@ -35,7 +35,7 @@ const DesktopScene: React.FC<{ title: string; sub?: string; fromMs: number; rate
 };
 
 /** Desktop and phone side by side, phone kept in sync with the host clock. */
-const SplitScene: React.FC<{ title: string; sub?: string; fromMs: number; rate?: number; phoneFromMs: number; phoneRate?: number; zoom?: { from: number; to: number; fx: number; fy: number }; chips?: { text: string; at: number; icon?: string }[] }> = ({ title, sub, fromMs, rate = 1, phoneFromMs, phoneRate = 1, zoom, chips = [] }) => {
+export const SplitScene: React.FC<{ title: string; sub?: string; fromMs: number; rate?: number; phoneFromMs: number; phoneRate?: number; zoom?: { from: number; to: number; fx: number; fy: number }; chips?: { text: string; at: number; icon?: string }[] }> = ({ title, sub, fromMs, rate = 1, phoneFromMs, phoneRate = 1, zoom, chips = [] }) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const e1 = useEnter(2, 18);
@@ -65,7 +65,7 @@ const SplitScene: React.FC<{ title: string; sub?: string; fromMs: number; rate?:
   );
 };
 
-const Intro: React.FC = () => {
+export const Intro: React.FC = () => {
   const frame = useCurrentFrame();
   const e = useEnter(4, 12);
   const cards = ['3', '5', '8', '13', '5'];
@@ -101,7 +101,7 @@ const Intro: React.FC = () => {
   );
 };
 
-const Features: React.FC<{ fromMs: number; rate: number }> = ({ fromMs, rate }) => {
+export const Features: React.FC<{ fromMs: number; rate: number; title?: string }> = ({ fromMs, rate, title = 'Everything a planning session needs' }) => {
   const at = (ms: number) => Math.max(0, sec((ms - fromMs) / 1000 / rate));
   const items = [
     { at: at(H.roomOptions), text: 'Auto-reveal & async voting', icon: '⚙' },
@@ -113,7 +113,7 @@ const Features: React.FC<{ fromMs: number; rate: number }> = ({ fromMs, rate }) 
   return (
     <SceneFade>
       <Backdrop />
-      <div style={{ position: 'absolute', left: 100, top: 58 }}><Headline text="Everything a planning session needs" size={58} /></div>
+      <div style={{ position: 'absolute', left: 100, top: 58 }}><Headline text={title} size={58} /></div>
       <div style={{ position: 'absolute', left: 90, top: 220 }}>
         <BrowserFrame width={1240}><HostClip fromMs={fromMs} rate={rate} /></BrowserFrame>
       </div>
@@ -126,7 +126,7 @@ const Features: React.FC<{ fromMs: number; rate: number }> = ({ fromMs, rate }) 
   );
 };
 
-const Outro: React.FC = () => {
+export const Outro: React.FC<{ tagline?: string }> = ({ tagline = 'Free forever · Open source · No sign-up' }) => {
   const e = useEnter(2, 12);
   const e2 = useEnter(14, 14);
   const e3 = useEnter(26, 14);
@@ -139,7 +139,7 @@ const Outro: React.FC = () => {
           Open Planning <span style={{ color: C.primary300 }}>Poker</span>
         </div>
         <div style={{ marginTop: 18, fontFamily: FONT_BODY, fontWeight: 600, fontSize: 40, color: '#cfc6f5', opacity: e2 }}>
-          Free forever · Open source · No sign-up
+          {tagline}
         </div>
         <div style={{
           marginTop: 56, padding: '26px 56px', borderRadius: 999, background: C.primary, color: '#fff', fontFamily: FONT_MONO, fontWeight: 700, fontSize: 48,
@@ -152,7 +152,7 @@ const Outro: React.FC = () => {
 };
 
 // Scene list: each scene lasts its narration plus a pad. Clip start times come from the recording marks.
-const featuresFrom = H.roomOptions - 900;
+export const featuresFrom = H.roomOptions - 900;
 const featuresRate = (H.end - featuresFrom) / 1000 / (VO.y9 + 0.9);
 export const SCENES: Scene[] = [
   { id: 'intro', vo: 'y1', pad: 1.3, render: () => <Intro /> },

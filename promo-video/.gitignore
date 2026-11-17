@@ -6,3 +6,5 @@ capture/shots/
 public/music.wav
 capture/explore*.mjs
 capture/probe.mjs
+capture/tmp-video-int/
+capture/tmp-srt.mjs

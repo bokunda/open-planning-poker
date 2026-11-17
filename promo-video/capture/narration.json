@@ -14,5 +14,18 @@
   "r3": "Your team joins with a link, right from their phones.",
   "r4": "Everyone votes in secret.",
   "r5": "Then all the cards flip at once.",
-  "r6": "Free and open source. Try it at app dot open planning poker dot com."
+  "r6": "Free and open source. Try it at app dot open planning poker dot com.",
+  "j1": "Plan straight from Jira. Connect once, pick a sprint, a board or a JQL query, and the issues come in as tickets.",
+  "j2": "After the reveal, one click saves the estimate back to the story points field.",
+  "s1": "Your team lives in Slack? Type slash poker and the sprint name, and the room is posted in the channel with a Join button.",
+  "s2": "Only you get the host link, and after every reveal, the estimate and the votes land in the thread.",
+  "t1": "In Microsoft Teams, add Open Planning Poker as a tab in a meeting, a channel or a chat, and start a new game right there.",
+  "t2": "The game runs in the meeting side panel or on the shared stage, so everyone votes without leaving the call.",
+  "f1": "Plus auto-reveal, async voting, PDF and CSV export, dark mode, three languages, and team rooms with a velocity chart.",
+  "o1": "Open Planning Poker. Free and open source, in your browser, in Slack and in Teams. Start today at app dot open planning poker dot com.",
+  "ir1": "Planning poker that lives where your team already works.",
+  "ir2": "Type slash poker in Slack, and everyone joins with one tap.",
+  "ir3": "Or add it as a tab to your Teams meeting.",
+  "ir4": "Pull the sprint in from Jira.",
+  "ir5": "The estimate goes back to Jira, and the result lands in the Slack thread."
 }
