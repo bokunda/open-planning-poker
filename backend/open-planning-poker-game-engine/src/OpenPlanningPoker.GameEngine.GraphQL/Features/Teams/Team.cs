@@ -91,6 +91,9 @@ public sealed class Sprint
     public int EstimatedCount { get; set; }
     public double Points { get; set; }
 
+    [GraphQLIgnore]
+    public SprintStats? Stats { get; set; }
+
     public static Sprint From(SprintSummary sprint) => new()
     {
         GameId = sprint.GameId,
@@ -99,7 +102,8 @@ public sealed class Sprint
         CreatedOn = sprint.CreatedOn,
         TicketCount = sprint.TicketCount,
         EstimatedCount = sprint.EstimatedCount,
-        Points = sprint.Points
+        Points = sprint.Points,
+        Stats = SprintStats.From(sprint.Stats)
     };
 }
 

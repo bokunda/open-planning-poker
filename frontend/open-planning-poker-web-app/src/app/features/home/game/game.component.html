@@ -67,7 +67,8 @@
           (onCreateNewTicket)="handleCreateTicket()"
           (onExportCsv)="handleExportCsv()"
         (onUpdateOptions)="handleUpdateOptions($event)"
-        (onUpdateFacilitation)="handleUpdateFacilitation($event)"></app-game-details>
+        (onUpdateFacilitation)="handleUpdateFacilitation($event)"
+        (onPostSummary)="handlePostSummary()"></app-game-details>
 
         <!-- Async estimation: everyone votes on the tickets on their own until the window ends. -->
         @if (asyncVotingOpen) {

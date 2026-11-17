@@ -534,6 +534,11 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("name");
 
+                    b.Property<string>("SummaryWebhookUrl")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("summary_webhook_url");
+
                     b.HasKey("Id")
                         .HasName("pk_teams");
 
@@ -718,6 +723,30 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                     b.ToTable("tickets", (string)null);
                 });
 
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Tickets.TicketCycleTime", b =>
+                {
+                    b.Property<Guid>("TicketId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ticket_id");
+
+                    b.Property<DateTimeOffset>("CheckedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("checked_on");
+
+                    b.Property<DateTimeOffset?>("DoneOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("done_on");
+
+                    b.Property<DateTimeOffset?>("StartedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("started_on");
+
+                    b.HasKey("TicketId")
+                        .HasName("pk_ticket_cycle_times");
+
+                    b.ToTable("ticket_cycle_times", (string)null);
+                });
+
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Votes.Vote", b =>
                 {
                     b.Property<Guid>("PlayerId")
@@ -832,6 +861,16 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasConstraintName("fk_tickets_games_game_id");
 
                     b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Tickets.TicketCycleTime", b =>
+                {
+                    b.HasOne("OpenPlanningPoker.GameEngine.Domain.Tickets.Ticket", null)
+                        .WithMany()
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_ticket_cycle_times_tickets_ticket_id");
                 });
 
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Votes.Vote", b =>

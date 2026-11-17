@@ -16,7 +16,9 @@ export const GET_TEAM = gql`
         isMember
         averageVelocity
         members { id name }
-        sprints { gameId name description createdOn ticketCount estimatedCount points }
+        summaryWebhook
+        sprints { gameId name description createdOn ticketCount estimatedCount points
+          stats { revealed firstRoundConsensus firstRoundConsensusShare reVotesPerTicket averageDiscussionSeconds needsInfo } }
       }
       ... on ApplicationError { code message }
     }
@@ -69,6 +71,8 @@ export interface TeamDetails extends TeamSummary {
   averageVelocity: number | null;
   members: { id: string; name: string | null }[];
   sprints: Sprint[];
+  /** Owner only (OPP-136). */
+  summaryWebhook?: string | null;
 }
 
 /* Reference stories from past sprints (OPP-115). */

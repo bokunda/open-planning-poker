@@ -48,6 +48,8 @@ export class GameDetailsComponent {
   @Output() onUpdateOptions = new EventEmitter<RoomOptions>();
   /** Discussion options (OPP-114). */
   @Output() onUpdateFacilitation = new EventEmitter<FacilitationSettings>();
+  /** Posts the session summary to Slack or the team's webhook (OPP-136). */
+  @Output() onPostSummary = new EventEmitter<void>();
 
   readonly discussionMinutes = [0, 2, 3, 5];
 

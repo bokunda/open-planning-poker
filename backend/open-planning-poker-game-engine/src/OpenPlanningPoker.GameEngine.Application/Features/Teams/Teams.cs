@@ -13,7 +13,21 @@ public sealed record SprintSummary(
     DateTimeOffset CreatedOn,
     int TicketCount,
     int EstimatedCount,
-    double Points);
+    double Points,
+    SessionStats? Stats = null);
+
+/// <summary>How a planning session went (OPP-134). Team numbers only, never per player.</summary>
+public sealed record SessionStats(int Revealed, int FirstRoundConsensus, int ReVotes, int DiscussedCount, double DiscussionSeconds, int NeedsInfo)
+{
+    /// <summary>Share (0–1) of revealed tickets agreed on the first vote; null without revealed tickets.</summary>
+    public double? FirstRoundConsensusShare => Revealed == 0 ? null : Math.Round((double)FirstRoundConsensus / Revealed, 2);
+
+    /// <summary>Extra voting rounds per revealed ticket.</summary>
+    public double? ReVotesPerTicket => Revealed == 0 ? null : Math.Round((double)ReVotes / Revealed, 2);
+
+    /// <summary>Average seconds from the reveal to the final estimate.</summary>
+    public double? AverageDiscussionSeconds => DiscussedCount == 0 ? null : Math.Round(DiscussionSeconds / DiscussedCount);
+}
 
 public sealed record CreateTeamCommand(string Name, string Description, Guid OwnerId) : IRequest<Result<TeamResponse, ApplicationError>>;
 public sealed record UpdateTeamCommand(Guid TeamId, string Name, string Description) : IRequest<Result<TeamResponse, ApplicationError>>;
@@ -169,11 +183,25 @@ public static class Teams
                     .Select(estimate => double.TryParse(estimate, NumberStyles.Float, CultureInfo.InvariantCulture, out var n) ? n : 0)
                     .Sum();
 
-                result.Add(new SprintSummary(game.Id, game.Name, game.Description, game.CreatedOn, gameTickets.Count, estimates.Count, points));
+                result.Add(new SprintSummary(game.Id, game.Name, game.Description, game.CreatedOn, gameTickets.Count, estimates.Count, points,
+                    StatsOf(gameTickets, gameVotes)));
             }
 
             return result;
         }
+    }
+
+    /// <summary>Consensus on the first vote, re-votes, discussion time and needs-info tickets of one session (OPP-134).</summary>
+    public static SessionStats StatsOf(IReadOnlyCollection<Ticket> gameTickets, IEnumerable<Vote> gameVotes)
+    {
+        var revealed = gameTickets.Where(t => t.VotesRevealed).ToList();
+        var byTicket = gameVotes.GroupBy(v => v.TicketId).ToDictionary(g => g.Key, g => g.Select(v => v.Value).ToList());
+        var consensus = revealed.Count(t => t.VoteRounds <= 1
+            && TicketStats.From(true, byTicket.GetValueOrDefault(t.Id) ?? []).Spread is VoteSpread.Consensus or VoteSpread.Close);
+        var reVotes = revealed.Sum(t => Math.Max(0, t.VoteRounds - 1));
+        var discussed = revealed.Where(t => t.RevealedAt is not null && t.EstimatedAt is not null && t.EstimatedAt >= t.RevealedAt).ToList();
+        var seconds = discussed.Sum(t => (t.EstimatedAt!.Value - t.RevealedAt!.Value).TotalSeconds);
+        return new SessionStats(revealed.Count, consensus, reVotes, discussed.Count, seconds, gameTickets.Count(t => t.NeedsInfo));
     }
 
     /// <summary>The host's final estimate, otherwise the most common card (as in the report).</summary>

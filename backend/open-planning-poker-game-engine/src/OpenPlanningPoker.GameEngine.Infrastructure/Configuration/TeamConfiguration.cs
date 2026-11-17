@@ -15,6 +15,9 @@ internal sealed class TeamConfiguration : IEntityTypeConfiguration<Team>
         builder.Property(team => team.Description)
             .HasMaxLength(4080);
 
+        builder.Property(team => team.SummaryWebhookUrl)
+            .HasMaxLength(Team.MaxWebhookLength);
+
         builder.HasMany(team => team.Members)
             .WithOne(member => member.Team)
             .HasForeignKey(member => member.TeamId);
