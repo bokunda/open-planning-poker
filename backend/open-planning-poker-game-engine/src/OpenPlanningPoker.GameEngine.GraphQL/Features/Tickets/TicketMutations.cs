@@ -44,6 +44,55 @@ public class TicketMutations
     }
 
     /// <summary>
+    /// Creates a ticket for a Jira issue and links it to the issue, so "Save to KEY" works after the reveal. Used when
+    /// a game is started from the Jira issue panel (OPP-120). Host only.
+    /// </summary>
+    public async Task<FieldResult<Ticket, ApplicationError>> CreateTicketForIssueAsync(
+        [Service] ActionRateLimiter rateLimiter,
+        [Service] ISender sender,
+        [Service] ITopicEventSender eventSender,
+        [Service] IGameAccessService gameAccess,
+        [Required] Guid gameId,
+        [Required] string key,
+        [Required] string title,
+        [Required] string url,
+        CancellationToken cancellationToken = default)
+    {
+        if (await gameAccess.EnsureHostAsync(gameId, cancellationToken) is { } accessError)
+        {
+            return accessError;
+        }
+
+        if (rateLimiter.TryAcquire(ActionRateLimiter.CreateTicket, gameAccess.CurrentUserId) is { } rateLimitError)
+        {
+            return rateLimitError;
+        }
+
+        if (!LinkTicket.IsJiraIssueUrl(url))
+        {
+            return new ApplicationError("InvalidIssueLink", "Use a link to a Jira Cloud issue.");
+        }
+
+        var name = $"{key} {title}".Trim();
+        var created = await sender.Send(new CreateTicketCommand(gameId, name.Length > 255 ? name[..255] : name, string.Empty), cancellationToken);
+        if (!created.IsSuccess)
+        {
+            return created.Error!;
+        }
+
+        var linked = await sender.Send(new LinkTicketCommand(created.Value!.Id, key, url), cancellationToken);
+        if (!linked.IsSuccess)
+        {
+            await sender.Send(new DeleteTicketCommand(created.Value.Id), cancellationToken);
+            return linked.Error!;
+        }
+
+        var ticket = linked.Value!.ToGraphQL();
+        await eventSender.SendAsync($"{nameof(CreateTicketAsync)}_{gameId}", ticket, cancellationToken);
+        return ticket;
+    }
+
+    /// <summary>
     /// Updates a ticket's name and description. Host and co-hosts.
     /// </summary>
     public async Task<FieldResult<Ticket, ApplicationError>> UpdateTicketAsync(

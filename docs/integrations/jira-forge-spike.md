@@ -1,5 +1,8 @@
 # Spike: an Atlassian Forge app with an issue panel (OPP-13)
 
+> **Update (OPP-120):** the prototype is now the issue panel app. It opens the app's `/estimate` page, which
+> creates the game for the issue. Deploying and listing it: [marketplace.md](marketplace.md).
+
 **Question:** is a Forge app (an issue panel "Estimate with Open Planning Poker") a better long-term path than the
 OAuth 2.0 (3LO) integration from our own backend that shipped in v3.2.0?
 

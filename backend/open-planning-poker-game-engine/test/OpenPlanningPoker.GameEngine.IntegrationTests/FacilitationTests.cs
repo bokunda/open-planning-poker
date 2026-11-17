@@ -110,4 +110,22 @@ public sealed class FacilitationTests(GameEngineFactory factory)
         var off = await player.RunAsync(SendReaction, new { input = new { gameId, emoji = "👍" } });
         GraphQLClient.ErrorCode(off.GetProperty("sendReaction")).ShouldBe("ReactionsOff");
     }
+
+    [Fact]
+    public async Task TicketForIssue_IsLinked_AndOnlyJiraCloudLinksAreAccepted()
+    {
+        var host = await factory.CreateUserAsync("Ana");
+        var gameId = await host.CreateGameAsync();
+        await host.JoinAsync(gameId);
+        const string create = "mutation($input: CreateTicketForIssueInput!) { createTicketForIssue(input: $input) { ticket { name externalKey externalUrl } errors { ... on ApplicationError { code } } } }";
+
+        var bad = await host.RunAsync(create, new { input = new { gameId, key = "OPP-1", title = "Login", url = "https://evil.example.com/browse/OPP-1" } });
+        GraphQLClient.ErrorCode(bad.GetProperty("createTicketForIssue")).ShouldBe("InvalidIssueLink");
+
+        var ok = await host.RunAsync(create, new { input = new { gameId, key = "OPP-1", title = "Login", url = "https://acme.atlassian.net/browse/OPP-1" } });
+        var ticket = ok.GetProperty("createTicketForIssue").GetProperty("ticket");
+        ticket.GetProperty("name").GetString().ShouldBe("OPP-1 Login");
+        ticket.GetProperty("externalKey").GetString().ShouldBe("OPP-1");
+        ticket.GetProperty("externalUrl").GetString().ShouldBe("https://acme.atlassian.net/browse/OPP-1");
+    }
 }

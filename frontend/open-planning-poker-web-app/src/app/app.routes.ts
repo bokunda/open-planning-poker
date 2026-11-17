@@ -47,6 +47,12 @@ export const routes: Routes = [
     title: 'Connecting Jira — Open Planning Poker'
   },
   {
+    // Started from the Jira issue panel: a game with that issue as the first ticket (OPP-120).
+    path: 'estimate',
+    loadComponent: () => import('./features/integrations/estimate-issue.component').then(m => m.EstimateIssueComponent),
+    title: 'Estimate a Jira issue — Open Planning Poker'
+  },
+  {
     // Configuration page of the Microsoft Teams tab (OPP-23).
     path: 'teams/config',
     loadComponent: () => import('./features/integrations/teams-config.component').then(m => m.TeamsConfigComponent),

@@ -64,6 +64,7 @@ public static class ServerText
         ["error.InvalidDiscussionTime"] = ("Choose 0, 2, 3 or 5 minutes.", "Izaberi 0, 2, 3 ili 5 minuta.", "Wähle 0, 2, 3 oder 5 Minuten."),
         ["error.InvalidReaction"] = ("Unknown reaction.", "Nepoznata reakcija.", "Unbekannte Reaktion."),
         ["error.ReactionsOff"] = ("Reactions are turned off in this room.", "Reakcije su isključene u ovoj sobi.", "Reaktionen sind in diesem Raum ausgeschaltet."),
+        ["error.InvalidIssueLink"] = ("Use a link to a Jira Cloud issue.", "Koristi link ka Jira Cloud issue-u.", "Verwende einen Link zu einem Jira-Cloud-Issue."),
         ["error.UserNotFound"] = ("User not found.", "Korisnik nije pronađen.", "Benutzer nicht gefunden."),
 
         // Jira integration (OPP-10, OPP-11, OPP-12)

@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.17/MicrosoftTeams.schema.json",
   "manifestVersion": "1.17",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "id": "b11c7c1b-a4ce-4bbf-8218-5a1db223cd8c",
   "developer": {
     "name": "Open Planning Poker",
     "websiteUrl": "https://openplanningpoker.com",
-    "privacyUrl": "https://openplanningpoker.com/",
-    "termsOfUseUrl": "https://github.com/bokunda/open-planning-poker/blob/main/LICENSE"
+    "privacyUrl": "https://openplanningpoker.com/privacy/",
+    "termsOfUseUrl": "https://openplanningpoker.com/terms/"
   },
   "name": { "short": "Open Planning Poker", "full": "Open Planning Poker" },
   "description": {

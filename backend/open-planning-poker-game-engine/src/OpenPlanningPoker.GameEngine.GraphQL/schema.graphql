@@ -71,6 +71,11 @@ type CreateTeamPayload {
   errors: [CreateTeamError!]
 }
 
+type CreateTicketForIssuePayload {
+  ticket: Ticket
+  errors: [CreateTicketForIssueError!]
+}
+
 type CreateTicketPayload {
   ticket: Ticket
   errors: [CreateTicketError!]
@@ -342,6 +347,11 @@ type Mutation {
   leaveTeam(input: LeaveTeamInput!): LeaveTeamPayload! @cost(weight: "10")
   "Creates a ticket for given game. Host only."
   createTicket(input: CreateTicketInput!): CreateTicketPayload! @cost(weight: "10")
+  """
+  Creates a ticket for a Jira issue and links it to the issue, so "Save to KEY" works after the reveal. Used when
+  a game is started from the Jira issue panel (OPP-120). Host only.
+  """
+  createTicketForIssue(input: CreateTicketForIssueInput!): CreateTicketForIssuePayload! @cost(weight: "10")
   "Updates a ticket's name and description. Host and co-hosts."
   updateTicket(input: UpdateTicketInput!): UpdateTicketPayload! @cost(weight: "10")
   "Puts the game's tickets in the given order (first id first). Host and co-hosts."
@@ -677,6 +687,8 @@ union CreateTeamError = ApplicationError
 
 union CreateTicketError = ApplicationError
 
+union CreateTicketForIssueError = ApplicationError
+
 union DeleteGameError = ApplicationError
 
 union DeleteTicketError = ApplicationError
@@ -799,6 +811,13 @@ input CreateSettingsInput {
 input CreateTeamInput {
   name: String!
   description: String
+}
+
+input CreateTicketForIssueInput {
+  gameId: UUID!
+  key: String!
+  title: String!
+  url: String!
 }
 
 input CreateTicketInput {
