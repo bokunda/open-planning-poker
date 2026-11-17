@@ -31,6 +31,13 @@ public sealed record JiraConnectionResult(List<JiraSiteInfo> Sites, string Retur
 public sealed record JiraImportSummary(int Imported, int Skipped);
 public sealed record JiraEstimateSaved(string IssueKey, string Value, string Url);
 
+// Query results are object types: with query conventions an error result becomes a union, and a union
+// can only hold object types (not a string or a list).
+public sealed record JiraAuthorizeLink(string Url);
+public sealed record JiraSiteList(List<JiraSiteInfo> Items);
+public sealed record JiraBoardList(List<JiraBoardInfo> Items);
+public sealed record JiraSprintList(List<JiraSprintInfo> Items);
+
 [QueryType]
 public class JiraQueries
 {
@@ -44,37 +51,37 @@ public class JiraQueries
             : JiraConnectionStatus.From(await jira.GetStatusAsync(gameAccess.CurrentUserId, cancellationToken));
 
     /// <summary>The Atlassian consent page to open; it returns to the app's Jira callback, then to returnPath.</summary>
-    public FieldResult<string, ApplicationError> GetJiraAuthorizeUrl(
+    public FieldResult<JiraAuthorizeLink, ApplicationError> GetJiraAuthorizeUrl(
         [Service] JiraService jira,
         [Service] IGameAccessService gameAccess,
         [Required] string returnPath)
     {
         if (gameAccess.EnsureAuthenticated() is { } accessError) return accessError;
         var result = jira.CreateAuthorizeUrl(gameAccess.CurrentUserId, returnPath);
-        return result.IsSuccess ? result.Value! : result.Error!;
+        return result.IsSuccess ? new JiraAuthorizeLink(result.Value!) : result.Error!;
     }
 
-    public async Task<FieldResult<List<JiraSiteInfo>, ApplicationError>> GetJiraSitesAsync(
+    public async Task<FieldResult<JiraSiteList, ApplicationError>> GetJiraSitesAsync(
         [Service] JiraService jira,
         [Service] IGameAccessService gameAccess,
         CancellationToken cancellationToken = default)
     {
         if (gameAccess.EnsureAuthenticated() is { } accessError) return accessError;
         var result = await jira.GetSitesAsync(gameAccess.CurrentUserId, cancellationToken);
-        return result.IsSuccess ? result.Value!.Select(s => new JiraSiteInfo(s.CloudId, s.Name, s.Url)).ToList() : result.Error!;
+        return result.IsSuccess ? new JiraSiteList([.. result.Value!.Select(s => new JiraSiteInfo(s.CloudId, s.Name, s.Url))]) : result.Error!;
     }
 
-    public async Task<FieldResult<List<JiraBoardInfo>, ApplicationError>> GetJiraBoardsAsync(
+    public async Task<FieldResult<JiraBoardList, ApplicationError>> GetJiraBoardsAsync(
         [Service] JiraService jira,
         [Service] IGameAccessService gameAccess,
         CancellationToken cancellationToken = default)
     {
         if (gameAccess.EnsureAuthenticated() is { } accessError) return accessError;
         var result = await jira.GetBoardsAsync(gameAccess.CurrentUserId, cancellationToken);
-        return result.IsSuccess ? result.Value!.Select(b => new JiraBoardInfo(b.Id, b.Name, b.Type)).ToList() : result.Error!;
+        return result.IsSuccess ? new JiraBoardList([.. result.Value!.Select(b => new JiraBoardInfo(b.Id, b.Name, b.Type))]) : result.Error!;
     }
 
-    public async Task<FieldResult<List<JiraSprintInfo>, ApplicationError>> GetJiraSprintsAsync(
+    public async Task<FieldResult<JiraSprintList, ApplicationError>> GetJiraSprintsAsync(
         [Service] JiraService jira,
         [Service] IGameAccessService gameAccess,
         long boardId,
@@ -82,7 +89,7 @@ public class JiraQueries
     {
         if (gameAccess.EnsureAuthenticated() is { } accessError) return accessError;
         var result = await jira.GetSprintsAsync(gameAccess.CurrentUserId, boardId, cancellationToken);
-        return result.IsSuccess ? result.Value!.Select(s => new JiraSprintInfo(s.Id, s.Name, s.State)).ToList() : result.Error!;
+        return result.IsSuccess ? new JiraSprintList([.. result.Value!.Select(s => new JiraSprintInfo(s.Id, s.Name, s.State))]) : result.Error!;
     }
 
     /// <summary>

@@ -90,10 +90,18 @@ type Info {
   contact: String!
 }
 
+type JiraAuthorizeLink {
+  url: String!
+}
+
 type JiraBoardInfo {
   id: Long!
   name: String!
   type: String!
+}
+
+type JiraBoardList {
+  items: [JiraBoardInfo!]!
 }
 
 type JiraConnectionResult {
@@ -143,10 +151,18 @@ type JiraSiteInfo {
   url: String!
 }
 
+type JiraSiteList {
+  items: [JiraSiteInfo!]!
+}
+
 type JiraSprintInfo {
   id: Long!
   name: String!
   state: String!
+}
+
+type JiraSprintList {
+  items: [JiraSprintInfo!]!
 }
 
 "Base Game Engine mutation."
@@ -255,10 +271,10 @@ type Query {
   "Whether the integration is available and the caller has connected Jira."
   jiraConnection: JiraConnectionStatus!
   "The Atlassian consent page to open; it returns to the app's Jira callback, then to returnPath."
-  jiraAuthorizeUrl(returnPath: String!): String!
-  jiraSites: [JiraSiteInfo!]!
-  jiraBoards: [JiraBoardInfo!]!
-  jiraSprints(boardId: Long!): [JiraSprintInfo!]!
+  jiraAuthorizeUrl(returnPath: String!): JiraAuthorizeLink!
+  jiraSites: JiraSiteList!
+  jiraBoards: JiraBoardList!
+  jiraSprints(boardId: Long!): JiraSprintList!
   """
   Import preview: a sprint's issues, a board's open issues, or a JQL query, with the issues that are already
   tickets of the game marked. Host or co-host only.
