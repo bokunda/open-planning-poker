@@ -84,3 +84,9 @@ export interface JiraIssue {
   alreadyInGame: boolean;
 }
 export interface AppError { code: string; message: string; }
+
+/** Becomes the host of a game started from Slack or Teams, with the one-time link (OPP-22, OPP-23). */
+export const CLAIM_GAME_HOST = gql`
+  mutation ClaimGameHost($input: ClaimGameHostInput!) {
+    claimGameHost(input: $input) { boolean ${ERRORS} }
+  }`;

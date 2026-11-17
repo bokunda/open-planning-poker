@@ -49,7 +49,7 @@ import {
   SET_PLAYER_ROLE, TRANSFER_HOST, UPDATE_GAME_OPTIONS, UPDATE_TICKET
 } from './gql/room.graphql';
 import { GameChanged, isAsyncVotingOpen, PlayerAction, RoomPlayer, RoomSettings, RoomTicket } from './room-types';
-import { SAVE_ESTIMATE_TO_JIRA } from './gql/jira.graphql';
+import { CLAIM_GAME_HOST, SAVE_ESTIMATE_TO_JIRA } from './gql/jira.graphql';
 import { ticketsToCsv } from './export/tickets-csv';
 import type { ConfirmDialogData } from '../../../shared/dialogs/confirm/confirm-dialog.component';
 import type { EditTicketResult } from './ticket/edit-ticket/edit-ticket-dialog.component';
@@ -433,12 +433,24 @@ export class GameComponent implements OnInit {
       next: () => {
         this.chatGameId = gameId;
         this.getGamePlayers(gameId);
+        this.claimHostFromLink(gameId);
       },
       error: (err) => {
         this.joinedGameId = undefined;
         console.error('Join game error:', err);
       }
     });
+  }
+
+  /**
+   * Games started from Slack or Teams have no host until someone opens the one-time host link
+   * (?claim=…, OPP-22, OPP-23). The token leaves the address bar right away, so it is not shared further.
+   */
+  private claimHostFromLink(gameId: string): void {
+    const token = this.route.snapshot.queryParamMap.get('claim');
+    if (!token) return;
+    this.location.replaceState(this.location.path().split('?')[0]);
+    this.runMutation(CLAIM_GAME_HOST, 'claimGameHost', { gameId, token }, () => this.refreshGame(gameId));
   }
 
   private async openCreateGameDialog(): Promise<void> {
