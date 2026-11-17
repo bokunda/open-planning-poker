@@ -1,0 +1,8 @@
+node_modules/
+out/
+capture/tmp-video/
+capture/frames/
+capture/shots/
+public/music.wav
+capture/explore*.mjs
+capture/probe.mjs

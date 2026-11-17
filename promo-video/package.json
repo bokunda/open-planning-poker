@@ -1,0 +1,27 @@
+{
+  "name": "promo-video",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render YouTube out/opp-promo-youtube.mp4 && remotion render Reels out/opp-promo-reels.mp4",
+    "record": "node capture/record.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@remotion/cli": "4.0.544",
+    "@remotion/google-fonts": "4.0.544",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.544"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0",
+    "@types/react": "18.3.12",
+    "typescript": "5.6.3"
+  }
+}

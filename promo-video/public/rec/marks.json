@@ -1,0 +1,33 @@
+{
+  "host": {
+    "landing": 1253,
+    "createDialog": 4866,
+    "room": 8364,
+    "importDialog": 11253,
+    "tickets": 15496,
+    "ticketList": 17250,
+    "invite": 21888,
+    "joinStart": 28943,
+    "joined": 40218,
+    "timer": 162948,
+    "votesStart": 165458,
+    "hostVoted": 169773,
+    "reveal": 174445,
+    "chat": 178055,
+    "results": 180793,
+    "final": 184180,
+    "roomOptions": 189035,
+    "menu": 193645,
+    "dark": 196750,
+    "team": 200065,
+    "end": 203076
+  },
+  "mobile": {
+    "joined": 2247,
+    "timer": 134005,
+    "voteTap": 137666,
+    "reveal": 145502,
+    "chat": 149112,
+    "end": 174134
+  }
+}
