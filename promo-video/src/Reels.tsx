@@ -11,7 +11,7 @@ const MO = M.mobile;
 const TEXT = narration as Record<string, string>;
 type Scene = { id: string; vo: string; pad: number; render: () => React.ReactNode };
 
-const Title: React.FC<{ text: string; accent?: string; top?: number; size?: number }> = ({ text, accent, top = 170, size = 92 }) => {
+export const Title: React.FC<{ text: string; accent?: string; top?: number; size?: number }> = ({ text, accent, top = 170, size = 92 }) => {
   const e = useEnter(0, 14);
   return (
     <div style={{ position: 'absolute', top, left: 70, right: 70, textAlign: 'center', opacity: e, transform: `translateY(${(1 - e) * 40}px)` }}>
@@ -73,7 +73,7 @@ const CreateScene: React.FC = () => {
   );
 };
 
-const PhoneScene: React.FC<{ title: string; accent: string; fromMs: number; rate?: number }> = ({ title, accent, fromMs, rate = 1 }) => {
+export const PhoneScene: React.FC<{ title: string; accent: string; fromMs: number; rate?: number }> = ({ title, accent, fromMs, rate = 1 }) => {
   const e = useEnter(2, 15);
   return (
     <SceneFade>
@@ -86,7 +86,7 @@ const PhoneScene: React.FC<{ title: string; accent: string; fromMs: number; rate
   );
 };
 
-const RevealScene: React.FC = () => {
+export const RevealScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const e = useEnter(2, 16);
@@ -107,7 +107,7 @@ const RevealScene: React.FC = () => {
   );
 };
 
-const OutroR: React.FC = () => {
+export const OutroR: React.FC = () => {
   const e = useEnter(2, 12);
   const e2 = useEnter(14, 14);
   return (

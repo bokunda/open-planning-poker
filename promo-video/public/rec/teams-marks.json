@@ -1,0 +1,22 @@
+{
+  "cfg": {
+    "open": 1332,
+    "named": 4711,
+    "deckOpen": 6336,
+    "save": 10222,
+    "saved": 10570,
+    "end": 11214
+  },
+  "stageOffset": 356,
+  "panel": {
+    "open": 2241,
+    "joined": 13549,
+    "timer": 16010,
+    "votesStart": 17514,
+    "anaVoted": 19455,
+    "hostVoted": 22201,
+    "reveal": 26411,
+    "results": 30604,
+    "end": 34118
+  }
+}

@@ -87,7 +87,7 @@ export const Backdrop: React.FC<{ dark?: boolean; cards?: boolean }> = ({ dark =
 // Playwright records the page at CSS size into the top-left of a larger frame (the rest is grey padding),
 // so the video is drawn oversized and anchored top-left: only the page area shows.
 type ClipProps = { fromMs: number; rate?: number };
-const Clip: React.FC<ClipProps & { src: string; fw: number; fh: number }> = ({ fromMs, rate = 1, src, fw, fh }) => (
+export const Clip: React.FC<ClipProps & { src: string; fw: number; fh: number }> = ({ fromMs, rate = 1, src, fw, fh }) => (
   <OffthreadVideo src={staticFile(src)} trimBefore={Math.max(0, sec(fromMs / 1000))} playbackRate={rate} muted
     style={{ position: 'absolute', left: 0, top: 0, width: `${100 / fw}%`, height: `${100 / fh}%`, objectFit: 'fill' }} />
 );
