@@ -4,6 +4,12 @@ run-name: "Deploying Redis to server"
 # container keeps usernames, chat and timers. Order without downtime is in docs/deployment.md.
 on:
   workflow_dispatch:
+    inputs:
+      step:
+        description: "set-password-live: put the password on the running Redis (no restart; run before Deploy OPP). recreate: new container with the password and the data volume."
+        type: choice
+        options: [recreate, set-password-live]
+        default: recreate
 jobs:
   deploy-redis:
     runs-on: ubuntu-24.04
@@ -15,7 +21,31 @@ jobs:
           if [ ${#REDIS_PASSWORD} -lt 32 ]; then echo "::error::REDIS_PASSWORD must be set and at least 32 characters"; exit 1; fi
           case "$REDIS_PASSWORD" in *[!A-Za-z0-9]*) echo "::error::REDIS_PASSWORD may only contain letters and digits (it goes into a connection string)"; exit 1;; esac
 
+      # Connections that are already open stay authenticated, so the running services keep working while
+      # Deploy OPP brings them back with the password.
+      - name: Set the password on the running Redis
+        if: inputs.step == 'set-password-live'
+        uses: appleboy/ssh-action@v1
+        env:
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+        with:
+          host: ${{ vars.OPP_DB_HOST }}
+          username: ${{ vars.SSH_PRIVATE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_DEPLOY_KEY }}
+          proxy_host: ${{ vars.SSH_HOST }}
+          proxy_username: ${{ vars.SSH_USER }}
+          proxy_key: ${{ secrets.SSH_DEPLOY_KEY }}
+          envs: REDIS_PASSWORD
+          script: |
+            set -e
+            # Without a password yet, CONFIG SET works unauthenticated; with one, it needs it.
+            docker exec OpenPlanningPoker.Cache redis-cli -a "$REDIS_PASSWORD" --no-auth-warning CONFIG SET requirepass "$REDIS_PASSWORD" \
+              || docker exec OpenPlanningPoker.Cache redis-cli CONFIG SET requirepass "$REDIS_PASSWORD"
+            docker exec OpenPlanningPoker.Cache redis-cli -a "$REDIS_PASSWORD" --no-auth-warning PING
+            docker exec OpenPlanningPoker.Cache redis-cli PING 2>&1 | grep -q NOAUTH
+
       - name: Deploy using SSH
+        if: inputs.step != 'set-password-live'
         uses: appleboy/ssh-action@v1
         env:
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}

@@ -164,10 +164,10 @@ Redis requires a password; the services get it in their connection string (`host
 To turn it on, or to change it, without downtime:
 
 1. Set the `REDIS_PASSWORD` secret (letters and digits, 32+ characters).
-2. On the private server, set it on the running Redis: `docker exec OpenPlanningPoker.Cache redis-cli CONFIG SET requirepass <password>`.
+2. Run **Deploy Redis** with the step `set-password-live`: it sets the password on the running Redis (`CONFIG SET`).
    Connections that are already open stay authenticated, so the services keep working.
 3. Run **Deploy OPP**: User Management and the Game Engine reconnect with the password.
-4. Run **Deploy Redis**: the container is recreated with `--requirepass` and its data on the `opp-redis-data`
+4. Run **Deploy Redis** with the step `recreate`: the container is recreated with `--requirepass` and its data on the `opp-redis-data`
    volume (the current data is copied over the first time).
 
 The Redis and PostgreSQL workflows reach the private server through the public server (`proxy_host`), because
