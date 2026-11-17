@@ -70,3 +70,53 @@ export interface TeamDetails extends TeamSummary {
   members: { id: string; name: string | null }[];
   sprints: Sprint[];
 }
+
+/* Reference stories from past sprints (OPP-115). */
+const TEAM_TICKET = `ticketId gameId sprintName sprintDate name externalKey externalUrl estimate spread`;
+
+export const TEAM_ANCHORS = gql`
+  query TeamAnchors($id: UUID!) {
+    team(id: $id) { ... on Team { id anchors { id value note ticket { ${TEAM_TICKET} } } } }
+  }`;
+
+export const TEAM_HISTORY = gql`
+  query TeamHistory($id: UUID!, $search: String, $value: String, $skip: Int!, $take: Int!) {
+    team(id: $id) { ... on Team { id history(search: $search, value: $value, skip: $skip, take: $take) { totalCount items { ${TEAM_TICKET} } } } }
+  }`;
+
+export const PIN_TEAM_ANCHOR = gql`
+  mutation PinTeamAnchor($input: PinTeamAnchorInput!) {
+    pinTeamAnchor(input: $input) { teamAnchor { id } ${ERRORS} }
+  }`;
+
+export const UNPIN_TEAM_ANCHOR = gql`
+  mutation UnpinTeamAnchor($input: UnpinTeamAnchorInput!) {
+    unpinTeamAnchor(input: $input) { boolean ${ERRORS} }
+  }`;
+
+export const TICKET_REFERENCE = gql`
+  query TicketReference($ticketId: UUID!) {
+    ticketReference(ticketId: $ticketId) {
+      ... on TicketReference { teamId anchors { id value note ticket { ${TEAM_TICKET} } } similar { ${TEAM_TICKET} } }
+      ... on ApplicationError { code message }
+    }
+  }`;
+
+export interface TeamTicket {
+  ticketId: string;
+  gameId: string;
+  sprintName: string;
+  sprintDate: string;
+  name: string;
+  externalKey: string | null;
+  externalUrl: string | null;
+  estimate: string;
+  spread: string;
+}
+
+export interface TeamAnchor {
+  id: string;
+  value: string;
+  note: string | null;
+  ticket: TeamTicket;
+}
