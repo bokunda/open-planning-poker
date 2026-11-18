@@ -56,6 +56,12 @@ type FacilitationSettings {
   confidenceCheck: Boolean!
   "Players can send emoji reactions."
   reactions: Boolean!
+  "A short confetti moment when everyone voted the same card (OPP-172)."
+  celebrations: Boolean!
+  "Look of the table and the card backs: classic, forest, ocean, sunset, midnight or paper (OPP-173)."
+  theme: String!
+  "Card backs follow the season."
+  seasonalCards: Boolean!
 }
 
 type Game {
@@ -90,6 +96,24 @@ type GamePlayer {
   role: PlayerRole!
   "Co-hosts can run the game next to the host."
   isCoHost: Boolean!
+  "Emoji avatar the player picked in this room; null shows their initials."
+  avatar: String
+}
+
+"Public, read-only recap of a session: numbers and ticket titles only."
+type GameRecap {
+  gameName: String!
+  playedOn: DateTime!
+  tickets: [RecapTicket!]!
+  ticketsEstimated: Int!
+  ticketsOpen: Int!
+  totalPoints: Float!
+  "Share (0–1) of tickets with at least two votes where everyone agreed; null when none."
+  consensusRate: Float
+  durationMinutes: Float
+  playerCount: Int!
+  "Who took part; empty unless the host chose to show names."
+  players: [String!]!
 }
 
 type GameReport {
@@ -216,8 +240,11 @@ type Mutation {
   setConfidence(ticketId: UUID! value: Int): TicketFacilitationInfo!
   "Marks a ticket as \"needs more information\" (or clears it). Host and co-hosts."
   setTicketNeedsInfo(ticketId: UUID! needsInfo: Boolean!): TicketFacilitationInfo!
-  "Discussion options of the room. Host and co-hosts."
-  updateFacilitationOptions(gameId: UUID! outlierNotes: Boolean! discussionMinutes: Int! confidenceCheck: Boolean! reactions: Boolean!): FacilitationSettings!
+  """
+  Discussion and look options of the room. Host and co-hosts. Celebrations, theme and seasonal cards keep
+  their current value when left out.
+  """
+  updateFacilitationOptions(gameId: UUID! outlierNotes: Boolean! discussionMinutes: Int! confidenceCheck: Boolean! reactions: Boolean! celebrations: Boolean theme: String seasonalCards: Boolean): FacilitationSettings!
   "Sends an emoji reaction to everyone in the room. Not stored."
   sendReaction(gameId: UUID! emoji: String!): Boolean!
   "Join Game. Requires a valid user token."
@@ -229,6 +256,8 @@ type Mutation {
   the host and co-hosts can change anyone's. Leave playerId empty for yourself.
   """
   setPlayerRole(gameId: UUID! role: PlayerRole! playerId: UUID): Boolean!
+  "Picks your emoji avatar in this game from the fixed list, or clears it with null."
+  setPlayerAvatar(gameId: UUID! avatar: String): Boolean!
   "Makes a player co-host, or a regular player again. Host only."
   setCoHost(gameId: UUID! playerId: UUID! isCoHost: Boolean!): Boolean!
   """
@@ -271,6 +300,11 @@ type Mutation {
   saveEstimateToTracker(ticketId: UUID!): TrackerEstimateSaved!
   "Dummy health-check mutation."
   ping: String!
+  """
+  Shares the recap of a game as a read-only link, or stops sharing it (the link stops working). Sharing again
+  keeps the same link. Host and co-hosts.
+  """
+  setRecapSharing(gameId: UUID! shared: Boolean! showNames: Boolean! = false): RecapSharing!
   "Creates Game Settings. Host only."
   createSettings(gameId: UUID! deckSetup: String): Settings!
   "Updates Game Settings. Host only."
@@ -416,6 +450,10 @@ type Query {
   trackerIssues(provider: String! gameId: UUID! sourceId: String! query: String): TrackerIssueList!
   "Dummy health-check query."
   ping: String!
+  "The shared recap behind a recap link. No sign-in needed; RecapNotFound once the host stops sharing."
+  gameRecap(token: String!): GameRecap!
+  "Whether the recap of a game is shared. Host and co-hosts."
+  recapSharing(gameId: UUID!): RecapSharing!
   "Gets Game Settings."
   settings(gameId: UUID!): Settings!
   "The sorting board of a game. Players of the game only."
@@ -450,6 +488,26 @@ type Reaction {
   gameId: UUID!
   playerId: UUID!
   emoji: String!
+}
+
+"Whether the recap of a game is shared (OPP-170). The link is app.openplanningpoker.com\/recap\/{token}."
+type RecapSharing {
+  shared: Boolean!
+  token: String
+  "The recap lists who took part."
+  showNames: Boolean!
+}
+
+type RecapTicket {
+  name: String!
+  "Key of the tracker issue (e.g. \"OPP-118\"); no link or description is shared."
+  externalKey: String
+  estimate: String
+  "CONSENSUS, CLOSE, WIDE, NO_VOTES or NOT_REVEALED (estimated on the sorting board)."
+  spread: VoteSpread!
+  voteRounds: Int!
+  "Minutes from turning the cards over to choosing the estimate."
+  discussionMinutes: Float
 }
 
 type SessionSummaryInfo {
@@ -755,6 +813,14 @@ enum GameChangeKind {
 enum PlayerRole {
   PLAYER
   OBSERVER
+}
+
+enum VoteSpread {
+  NOT_REVEALED
+  NO_VOTES
+  CONSENSUS
+  CLOSE
+  WIDE
 }
 
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."

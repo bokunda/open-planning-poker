@@ -12,8 +12,36 @@ public sealed record RemovePlayerCommand(Guid GameId, Guid PlayerId) : IRequest<
 /// <summary>Hands the game over to another player. The previous host stays in the game as a player.</summary>
 public sealed record TransferHostCommand(Guid GameId, Guid PlayerId) : IRequest<Result<bool, ApplicationError>>;
 
+/// <summary>Sets the emoji avatar of a player in a game, or clears it with null (OPP-173).</summary>
+public sealed record SetPlayerAvatarCommand(Guid GameId, Guid PlayerId, string? Avatar) : IRequest<Result<bool, ApplicationError>>;
+
 public static class ManagePlayers
 {
+    public static ApplicationError UnknownAvatar => new("UnknownAvatar", "Choose one of the avatars.");
+
+    public sealed class SetPlayerAvatarHandler(IGamePlayerRepository players, IUnitOfWork unitOfWork)
+        : IRequestHandler<SetPlayerAvatarCommand, Result<bool, ApplicationError>>
+    {
+        public async Task<Result<bool, ApplicationError>> Handle(SetPlayerAvatarCommand request, CancellationToken cancellationToken)
+        {
+            var avatar = string.IsNullOrWhiteSpace(request.Avatar) ? null : request.Avatar.Trim();
+            if (avatar is not null && !Domain.GamePlayer.GamePlayer.Avatars.Contains(avatar))
+            {
+                return UnknownAvatar;
+            }
+
+            var player = await FindAsync(players, request.GameId, request.PlayerId, cancellationToken);
+            if (player is null)
+            {
+                return GameAccessErrors.PlayerNotFound;
+            }
+
+            player.SetAvatar(avatar);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+            return true;
+        }
+    }
+
     public sealed class SetPlayerRoleValidator : AbstractValidator<SetPlayerRoleCommand>
     {
         public SetPlayerRoleValidator()

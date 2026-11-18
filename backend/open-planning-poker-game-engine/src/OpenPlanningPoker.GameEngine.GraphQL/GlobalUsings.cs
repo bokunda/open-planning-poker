@@ -38,3 +38,4 @@ global using OpenPlanningPoker.GameEngine.GraphQL.RateLimiting;
 global using HotChocolate.AspNetCore;
 global using OpenPlanningPoker.GameEngine.Application.Features.Teams;
 global using OpenPlanningPoker.GameEngine.GraphQL.Features.Integrations;
+global using OpenPlanningPoker.GameEngine.GraphQL.Features.Recaps;

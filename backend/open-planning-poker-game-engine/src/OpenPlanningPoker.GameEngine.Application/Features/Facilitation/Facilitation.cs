@@ -1,10 +1,21 @@
 namespace OpenPlanningPoker.GameEngine.Application.Features.Facilitation;
 
 /// <summary>Room options for running the discussion (OPP-114).</summary>
-public sealed record FacilitationOptions(bool OutlierNotes = true, int DiscussionMinutes = 0, bool ConfidenceCheck = false, bool Reactions = true)
+/// <param name="Celebrations">Confetti when everyone agrees (OPP-172).</param>
+/// <param name="Theme">Table and card-back look of the room (OPP-173).</param>
+/// <param name="SeasonalCards">Card backs follow the season.</param>
+public sealed record FacilitationOptions(
+    bool OutlierNotes = true,
+    int DiscussionMinutes = 0,
+    bool ConfidenceCheck = false,
+    bool Reactions = true,
+    bool Celebrations = true,
+    string Theme = Domain.GameSettings.GameSettings.DefaultTheme,
+    bool SeasonalCards = true)
 {
     public static FacilitationOptions From(Domain.GameSettings.GameSettings settings) =>
-        new(settings.OutlierNotes, settings.DiscussionMinutes, settings.ConfidenceCheck, settings.Reactions);
+        new(settings.OutlierNotes, settings.DiscussionMinutes, settings.ConfidenceCheck, settings.Reactions,
+            settings.Celebrations, settings.Theme, settings.SeasonalCards);
 }
 
 public sealed record VoteNoteItem(Guid PlayerId, string Note);
@@ -37,6 +48,7 @@ public static class FacilitationErrors
     public static ApplicationError InvalidConfidence => new("InvalidConfidence", "Confidence must be between 1 and 5.");
     public static ApplicationError InvalidDiscussionTime => new("InvalidDiscussionTime", "Choose 0, 2, 3 or 5 minutes.");
     public static ApplicationError NotRevealed => new("CardsNotRevealed", "Reveal the cards first.");
+    public static ApplicationError UnknownTheme => new("UnknownTheme", "Choose one of the room themes.");
 }
 
 public static class TicketFacilitation
@@ -173,6 +185,11 @@ public static class TicketFacilitation
                 return FacilitationErrors.InvalidDiscussionTime;
             }
 
+            if (!Domain.GameSettings.GameSettings.Themes.Contains(o.Theme))
+            {
+                return FacilitationErrors.UnknownTheme;
+            }
+
             var settings = await settingsRepository.GetByGame(request.GameId, cancellationToken);
             if (settings is null)
             {
@@ -180,6 +197,7 @@ public static class TicketFacilitation
             }
 
             settings.UpdateFacilitation(o.OutlierNotes, o.DiscussionMinutes, o.ConfidenceCheck, o.Reactions);
+            settings.UpdateLook(o.Celebrations, o.Theme, o.SeasonalCards);
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return FacilitationOptions.From(settings);
         }

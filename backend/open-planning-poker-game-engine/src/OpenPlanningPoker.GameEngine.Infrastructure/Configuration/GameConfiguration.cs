@@ -20,6 +20,10 @@ internal sealed class GameConfiguration : IEntityTypeConfiguration<Game>
         // One-time host link of games started from Slack or Teams (hex SHA-256).
         builder.Property(game => game.HostClaimHash).HasMaxLength(64);
 
+        // Public recap link (OPP-170): looked up by token, so it is unique and indexed.
+        builder.Property(game => game.RecapToken).HasMaxLength(32);
+        builder.HasIndex(game => game.RecapToken).IsUnique().HasFilter("recap_token IS NOT NULL");
+
         builder.HasOne(game => game.GameSettings)
             .WithOne(gameSettings => gameSettings.Game);
 

@@ -19,6 +19,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddRedisConnection(builder.Configuration);
 builder.Services.AddClientRateLimiting(builder.Configuration);
 builder.Services.AddSingleton<ActionRateLimiter>();
+// Link preview images of shared recaps (OPP-171) are cached for a few minutes; at most 200 at a time.
+builder.Services.AddMemoryCache(options => options.SizeLimit = 200);
 // Slack and Teams apps (OPP-22, OPP-23): endpoints and the queue that posts reveal results.
 builder.Services.AddChatIntegrations();
 
@@ -90,6 +92,7 @@ app.UseRequestLocalization(options =>
 app.UseRateLimiter();
 app.UseWebSockets();
 app.MapChatIntegrations();
+app.MapRecapEndpoints();
 app.MapGraphQL().WithOptions(new GraphQLServerOptions
 {
     // The Nitro IDE is for local development only.

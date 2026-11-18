@@ -20,12 +20,24 @@ public sealed class FacilitationSettings
     /// <summary>Players can send emoji reactions.</summary>
     public bool Reactions { get; set; } = true;
 
+    /// <summary>A short confetti moment when everyone voted the same card (OPP-172).</summary>
+    public bool Celebrations { get; set; } = true;
+
+    /// <summary>Look of the table and the card backs: classic, forest, ocean, sunset, midnight or paper (OPP-173).</summary>
+    public string Theme { get; set; } = Domain.GameSettings.GameSettings.DefaultTheme;
+
+    /// <summary>Card backs follow the season.</summary>
+    public bool SeasonalCards { get; set; } = true;
+
     public static FacilitationSettings From(FacilitationOptions o) => new()
     {
         OutlierNotes = o.OutlierNotes,
         DiscussionMinutes = o.DiscussionMinutes,
         ConfidenceCheck = o.ConfidenceCheck,
         Reactions = o.Reactions,
+        Celebrations = o.Celebrations,
+        Theme = o.Theme,
+        SeasonalCards = o.SeasonalCards,
     };
 }
 
@@ -167,7 +179,10 @@ public class FacilitationMutations
         return await Publish(eventSender, gameId, ticketId, await sender.Send(new SetNeedsInfoCommand(ticketId, needsInfo), cancellationToken), cancellationToken);
     }
 
-    /// <summary>Discussion options of the room. Host and co-hosts.</summary>
+    /// <summary>
+    /// Discussion and look options of the room. Host and co-hosts. Celebrations, theme and seasonal cards keep
+    /// their current value when left out.
+    /// </summary>
     public async Task<FieldResult<FacilitationSettings, ApplicationError>> UpdateFacilitationOptionsAsync(
         [Service] ISender sender,
         [Service] ITopicEventSender eventSender,
@@ -177,6 +192,9 @@ public class FacilitationMutations
         [Required] int discussionMinutes,
         [Required] bool confidenceCheck,
         [Required] bool reactions,
+        bool? celebrations = null,
+        string? theme = null,
+        bool? seasonalCards = null,
         CancellationToken cancellationToken = default)
     {
         if (await gameAccess.EnsureHostAsync(gameId, cancellationToken) is { } accessError)
@@ -184,8 +202,10 @@ public class FacilitationMutations
             return accessError;
         }
 
+        var current = await sender.Send(new GetFacilitationOptionsQuery(gameId), cancellationToken);
         var result = await sender.Send(new UpdateFacilitationOptionsCommand(gameId,
-            new FacilitationOptions(outlierNotes, discussionMinutes, confidenceCheck, reactions)), cancellationToken);
+            new FacilitationOptions(outlierNotes, discussionMinutes, confidenceCheck, reactions,
+                celebrations ?? current.Celebrations, theme ?? current.Theme, seasonalCards ?? current.SeasonalCards)), cancellationToken);
         if (!result.IsSuccess)
         {
             return result.Error!;
