@@ -4,7 +4,7 @@ import { gql } from 'apollo-angular';
 
 const ERRORS = `errors { ... on ApplicationError { code message } }`;
 const INFO = `ticketId revealedAt estimatedAt voteRounds needsInfo notes { playerId note } confidenceAverage confidenceCount myConfidence`;
-export const FACILITATION_SETTINGS = `outlierNotes discussionMinutes confidenceCheck reactions`;
+export const FACILITATION_SETTINGS = `outlierNotes discussionMinutes confidenceCheck reactions celebrations theme seasonalCards`;
 
 export const TICKET_FACILITATION = gql`
   query TicketFacilitation($ticketId: UUID!) {

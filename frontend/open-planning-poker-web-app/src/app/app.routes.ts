@@ -41,6 +41,12 @@ export const routes: Routes = [
     title: 'Team Room — Open Planning Poker'
   },
   {
+    // Public, read-only recap of a session (OPP-170).
+    path: 'recap/:token',
+    loadComponent: () => import('./features/recap/recap.component').then(m => m.RecapComponent),
+    title: 'Session recap — Open Planning Poker'
+  },
+  {
     // Atlassian OAuth callback (OPP-10).
     path: 'integrations/jira/callback',
     loadComponent: () => import('./features/integrations/jira-callback.component').then(m => m.JiraCallbackComponent),

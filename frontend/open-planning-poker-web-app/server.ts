@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import bootstrap from './src/main.server';
 import { negotiateLanguage, SERVER_LANGUAGE } from './src/app/i18n/language';
+import { fetchGameName, withInvitePreview } from './src/app/shared/link-preview';
+import { environment } from './src/environments/environment';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
@@ -37,12 +39,18 @@ export function app(): express.Express {
   // Paths the app has (see app.routes.ts). Anything else renders the not-found page with a real 404,
   // so search engines do not index it as a duplicate of the home page.
   const uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
-  const knownRoute = new RegExp(`^/((game(/${uuid}(/ticket/${uuid})?)?)|(team(/${uuid})?)|(integrations/(jira|slack)/callback)|(integrations/tracker/(github|linear|azure-devops)/callback)|(teams/config)|(estimate))?/?$`, 'i');
+  const knownRoute = new RegExp(`^/((game(/${uuid}(/ticket/${uuid})?)?)|(team(/${uuid})?)|(integrations/(jira|slack)/callback)|(integrations/tracker/(github|linear|azure-devops)/callback)|(teams/config)|(estimate)|(recap/[A-Za-z0-9_-]{22}))?/?$`, 'i');
+  // Game invite links get the room name in their link preview (OPP-171).
+  const gameRoute = new RegExp(`^/game/(${uuid})(/ticket/${uuid})?/?$`, 'i');
 
   // All regular routes use the Angular engine
   server.get('/{*path}', (req, res, next) => {
     const { protocol, originalUrl, baseUrl, headers } = req;
     if (!knownRoute.test(req.path)) res.status(404);
+    const language = negotiateLanguage(headers.cookie, headers['accept-language']);
+    const gameId = gameRoute.exec(req.path)?.[1];
+    // Looked up while the page renders, so the preview costs no extra time in most cases.
+    const gameName = gameId ? fetchGameName(environment.gqlGateway, gameId) : Promise.resolve(null);
 
     commonEngine
       .render({
@@ -53,10 +61,12 @@ export function app(): express.Express {
         providers: [
           { provide: APP_BASE_HREF, useValue: baseUrl },
           // The page is rendered in the remembered language or the browser's (OPP-24).
-          { provide: SERVER_LANGUAGE, useValue: negotiateLanguage(headers.cookie, headers['accept-language']) },
+          { provide: SERVER_LANGUAGE, useValue: language },
         ],
       })
-      .then((html) => {
+      .then(async (html) => {
+        const name = await gameName;
+        if (name) html = withInvitePreview(html, name, language);
         // The same URL renders in different languages.
         res.setHeader('Vary', 'Accept-Language, Cookie');
         res.send(html);

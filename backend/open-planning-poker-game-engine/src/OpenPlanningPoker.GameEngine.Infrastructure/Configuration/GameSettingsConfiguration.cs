@@ -14,5 +14,9 @@ internal sealed class GameSettingsConfiguration : IEntityTypeConfiguration<GameS
 
         builder.Property(gamesettings => gamesettings.DeckSetup)
             .IsRequired();
+
+        builder.Property(gamesettings => gamesettings.Theme)
+            .IsRequired()
+            .HasMaxLength(16);
     }
 }

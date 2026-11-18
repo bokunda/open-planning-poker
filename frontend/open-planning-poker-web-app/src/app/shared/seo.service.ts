@@ -23,6 +23,9 @@ function seoFor(path: string): PageSeo {
   if (path.startsWith('/game/')) return { index: false, description: 'A planning poker room on Open Planning Poker. Join with the link from your host.' };
   // Team rooms are private too; "/team" only lists the visitor's own teams.
   if (path === '/team' || path.startsWith('/team/')) return { index: false, description: 'A team room on Open Planning Poker: sprint history and velocity of one team.' };
+  // Shared recaps are public links, but private to the team that shares them: not indexed. The recap page sets its
+  // own description and preview image once it has loaded.
+  if (path.startsWith('/recap/')) return { index: false };
   return { index: false };
 }
 

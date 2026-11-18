@@ -10,5 +10,7 @@ internal sealed class GamePlayerConfiguration : IEntityTypeConfiguration<GamePla
         builder.HasIndex(gameplayer => new { gameplayer.PlayerId });
 
         builder.HasKey(gameplayer => new { gameplayer.Id });
+
+        builder.Property(gameplayer => gameplayer.Avatar).HasMaxLength(16);
     }
 }

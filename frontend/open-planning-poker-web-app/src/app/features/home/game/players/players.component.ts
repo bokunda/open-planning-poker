@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ApiCollectionOfGamePlayer, Vote } from '../../../../graphql/graphql-gateway.service';
-import { PlayerAction, RoomPlayer } from '../room-types';
+import { AVATARS, PlayerAction, RoomPlayer } from '../room-types';
 import { PokerCardComponent } from '../../../../shared/poker-card/poker-card.component';
 import { TranslocoPipe } from '@jsverse/transloco';
 
@@ -70,6 +70,8 @@ export class PlayersComponent implements OnInit {
   }
 
   /** Who gets the "⋮" menu: yourself (watch / play), and everyone but the host for hosts and co-hosts. */
+  readonly avatars = AVATARS;
+
   canManage(player: RoomPlayer): boolean {
     return player.id === this.currentUserId || (this.isHost && player.id !== this.hostId);
   }

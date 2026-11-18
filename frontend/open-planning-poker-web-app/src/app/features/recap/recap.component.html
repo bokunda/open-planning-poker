@@ -1,0 +1,79 @@
+<main class="recap" id="main-content">
+  @if (loading) {
+    <p class="recap-muted">{{ 'common.loading' | transloco }}</p>
+  } @else if (notFound || !recap) {
+    <section class="recap-missing">
+      <h1 class="recap-title">{{ 'recap.notFoundTitle' | transloco }}</h1>
+      <p class="recap-lead">{{ 'recap.notFoundText' | transloco }}</p>
+      <a mat-flat-button color="primary" routerLink="/game" (click)="onStartRoom()">
+        <mat-icon>add</mat-icon> {{ 'recap.startRoom' | transloco }}
+      </a>
+    </section>
+  } @else {
+    <header class="recap-head">
+      <span class="recap-eyebrow">{{ 'recap.eyebrow' | transloco }}</span>
+      <h1 class="recap-title">{{ recap.gameName }}</h1>
+      <p class="recap-lead">
+        {{ recap.playedOn | oppDate:'longDate' }}
+        @if (recap.durationMinutes) { · {{ 'recap.duration' | transloco: { count: recap.durationMinutes } }} }
+        @if (recap.playerCount) { · {{ 'recap.players' | transloco: { count: recap.playerCount } }} }
+      </p>
+    </header>
+
+    <section class="recap-stats" [attr.aria-label]="'recap.summary' | transloco">
+      <div class="recap-stat">
+        <span class="recap-stat-value">{{ recap.ticketsEstimated }}</span>
+        <span class="recap-stat-label">{{ 'recap.ticketsEstimated' | transloco: { count: recap.ticketsEstimated } }}</span>
+      </div>
+      <div class="recap-stat">
+        <span class="recap-stat-value">{{ points }}</span>
+        <span class="recap-stat-label">{{ 'recap.totalPoints' | transloco }}</span>
+      </div>
+      <div class="recap-stat">
+        <span class="recap-stat-value">{{ consensusPercent === null ? '—' : consensusPercent + '%' }}</span>
+        <span class="recap-stat-label">{{ 'recap.consensus' | transloco }}</span>
+      </div>
+    </section>
+
+    @if (recap.tickets.length) {
+      <section class="recap-tickets">
+        <h2 class="recap-section-title">{{ 'recap.tickets' | transloco }}</h2>
+        <ol class="recap-list">
+          @for (ticket of recap.tickets; track $index) {
+            <li class="recap-row">
+              <app-poker-card class="recap-card" size="sm" [value]="ticket.estimate ?? '—'"></app-poker-card>
+              <span class="recap-row-main">
+                <span class="recap-row-name">
+                  @if (ticket.externalKey) { <strong class="recap-key">{{ ticket.externalKey }}</strong> }
+                  {{ ticket.name }}
+                </span>
+                <span class="recap-row-meta">
+                  <span class="recap-spread" [class]="'recap-spread recap-spread--' + ticket.spread.toLowerCase()">{{ spreadKey(ticket.spread) | transloco }}</span>
+                  @if (ticket.voteRounds > 1) { · {{ 'recap.rounds' | transloco: { count: ticket.voteRounds } }} }
+                  @if (ticket.discussionMinutes) { · {{ 'recap.discussion' | transloco: { count: ticket.discussionMinutes } }} }
+                </span>
+              </span>
+            </li>
+          }
+        </ol>
+        @if (recap.ticketsOpen) {
+          <p class="recap-muted">{{ 'recap.ticketsOpen' | transloco: { count: recap.ticketsOpen } }}</p>
+        }
+      </section>
+    }
+
+    @if (recap.players.length) {
+      <section class="recap-people">
+        <h2 class="recap-section-title">{{ 'recap.whoTookPart' | transloco }}</h2>
+        <p>{{ recap.players.join(', ') }}</p>
+      </section>
+    }
+
+    <footer class="recap-cta">
+      <p>{{ 'recap.footer' | transloco }}</p>
+      <a mat-flat-button color="primary" routerLink="/game" (click)="onStartRoom()">
+        <mat-icon>add</mat-icon> {{ 'recap.startRoom' | transloco }}
+      </a>
+    </footer>
+  }
+</main>

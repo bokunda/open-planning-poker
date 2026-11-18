@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -11,6 +11,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CreateGameDialogComponent } from './dialog/create-game-dialog.component';
 import { DECK_PRESETS, DEFAULT_DECK } from '../../../../shared/deck-presets';
 import { TranslocoPipe } from '@jsverse/transloco';
+
+/** Optional start values, e.g. the deck of the room a guest just played in (OPP-174). */
+export interface CreateGameDialogData {
+  deckSetup?: string;
+}
 
 export interface CreateGameResult {
   name: string;
@@ -67,6 +72,12 @@ export class CreateGameComponent {
     this.createGameForm.get('customDeck')?.valueChanges.subscribe(() => {
       this.onCustomDeckChange();
     });
+
+    const deck = inject<CreateGameDialogData | null>(MAT_DIALOG_DATA, { optional: true })?.deckSetup;
+    if (deck) {
+      const preset = DECK_PRESETS.some(p => p.value === deck);
+      this.createGameForm.patchValue(preset ? { deckSetup: deck } : { deckSetup: '__custom__', customDeck: deck });
+    }
   }
 
   onCustomDeckChange(): void {

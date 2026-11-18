@@ -9,6 +9,7 @@ const GET_GAME_PLAYERS = gql `
           name
           role
           isCoHost
+          avatar
         }
         totalCount
       }

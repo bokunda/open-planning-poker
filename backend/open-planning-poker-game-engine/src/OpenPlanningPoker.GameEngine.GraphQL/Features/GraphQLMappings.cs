@@ -39,7 +39,7 @@ public static class GraphQLMappings
         TeamId = game.TeamId
     };
 
-    public static GamePlayerType ToGraphQL(this ListPlayersItem player) => new() { Id = player.Id, Role = player.Role, IsCoHost = player.IsCoHost };
+    public static GamePlayerType ToGraphQL(this ListPlayersItem player) => new() { Id = player.Id, Role = player.Role, IsCoHost = player.IsCoHost, Avatar = player.Avatar };
 
     public static InfoType ToGraphQL(this GetInfoResponse info) => new()
     {

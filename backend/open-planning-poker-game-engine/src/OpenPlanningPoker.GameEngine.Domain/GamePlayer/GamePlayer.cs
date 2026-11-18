@@ -27,6 +27,15 @@ public sealed class GamePlayer : Entity<Guid>
     /// <summary>Co-hosts can run the game (tickets, reveal, timer) next to the host.</summary>
     public bool IsCoHost { get; private set; }
 
+    /// <summary>Emoji the player picked as their avatar in this room (OPP-173); null shows their initials.</summary>
+    public string? Avatar { get; private set; }
+
+    public void SetAvatar(string? avatar) => Avatar = avatar;
+
+    /// <summary>Avatars a player can pick. A fixed list keeps the table readable and free of abuse.</summary>
+    public static readonly string[] Avatars =
+        ["🦊", "🐼", "🐸", "🦉", "🐙", "🦄", "🐝", "🐢", "🦁", "🐧", "🐳", "🦖", "🚀", "🌵", "🍕", "⚡", "🎸", "🎯"];
+
     public Game Game { get; set; } = null!;
 
     public static GamePlayer Create(Guid gameId, Guid playerId, PlayerRole role = PlayerRole.Player) =>

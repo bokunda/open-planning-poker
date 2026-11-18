@@ -102,6 +102,24 @@ public class GamePlayerMutations
         return await PublishPlayersAsync(eventSender, gameId, result, cancellationToken);
     }
 
+    /// <summary>Picks your emoji avatar in this game from the fixed list, or clears it with null.</summary>
+    public async Task<FieldResult<bool, ApplicationError>> SetPlayerAvatarAsync(
+        [Service] ISender sender,
+        [Service] ITopicEventSender eventSender,
+        [Service] IGameAccessService gameAccess,
+        [Required] Guid gameId,
+        string? avatar,
+        CancellationToken cancellationToken = default)
+    {
+        if (await gameAccess.EnsureMemberAsync(gameId, cancellationToken) is { } accessError)
+        {
+            return accessError;
+        }
+
+        var result = await sender.Send(new SetPlayerAvatarCommand(gameId, gameAccess.CurrentUserId, avatar), cancellationToken);
+        return await PublishPlayersAsync(eventSender, gameId, result, cancellationToken);
+    }
+
     /// <summary>Makes a player co-host, or a regular player again. Host only.</summary>
     public async Task<FieldResult<bool, ApplicationError>> SetCoHostAsync(
         [Service] ISender sender,

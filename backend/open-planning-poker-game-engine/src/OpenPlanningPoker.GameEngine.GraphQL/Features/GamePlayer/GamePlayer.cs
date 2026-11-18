@@ -10,6 +10,9 @@ public class GamePlayer
     /// <summary>Co-hosts can run the game next to the host.</summary>
     public bool IsCoHost { get; set; }
 
+    /// <summary>Emoji avatar the player picked in this room; null shows their initials.</summary>
+    public string? Avatar { get; set; }
+
     public async Task<string?> GetNameAsync([Service] IUserService userSerivce, CancellationToken cancellationToken = default) => 
         (await userSerivce.GetAsync(Id.ToString(), cancellationToken))?.UserName;
 }

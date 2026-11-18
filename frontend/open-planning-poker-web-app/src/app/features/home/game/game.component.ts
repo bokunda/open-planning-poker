@@ -41,6 +41,10 @@ import { PlayersComponent } from './players/players.component';
 import { ChatComponent } from './chat/chat.component';
 import { AsyncVotingComponent } from './async-voting/async-voting.component';
 import { SortingBoardComponent } from './sorting/sorting-board.component';
+import { CelebrationComponent, isConsensus } from './facilitation/celebration.component';
+import { InviteCardComponent, inviteCardAllowed, markInviteCardShown } from './invite/invite-card.component';
+import { trackEvent } from '../../../shared/analytics';
+import { NgClass } from '@angular/common';
 import { APPLY_SORTED_ESTIMATES, CLEAR_SORT_CONTESTED, MOVE_SORTED_TICKET, SET_SORTING_OPEN, SORTING_BOARD, SortedEstimatesApplied, SortingBoard } from './gql/sorting.graphql';
 import { finalize, map } from 'rxjs';
 import type { DocumentNode } from 'graphql';
@@ -48,12 +52,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '../../../shared/constants';
 import {
   DELETE_TICKET, ON_GAME_CHANGED, REMOVE_PLAYER, REORDER_TICKETS, SET_CO_HOST, SET_FINAL_ESTIMATE,
-  SET_PLAYER_ROLE, TRANSFER_HOST, UPDATE_GAME_OPTIONS, UPDATE_TICKET
+  SET_PLAYER_ROLE, SET_PLAYER_AVATAR, TRANSFER_HOST, UPDATE_GAME_OPTIONS, UPDATE_TICKET
 } from './gql/room.graphql';
 import { UPDATE_FACILITATION_OPTIONS } from './gql/facilitation.graphql';
 import { SAVE_ESTIMATE_TO_TRACKER, trackerOfUrl } from './gql/trackers.graphql';
 import { POST_SESSION_SUMMARY, SESSION_SUMMARY } from './gql/summary.graphql';
-import { FacilitationSettings, GameChanged, isAsyncVotingOpen, PlayerAction, RoomPlayer, RoomSettings, RoomTicket } from './room-types';
+import { FacilitationSettings, GameChanged, isAsyncVotingOpen, isWinterSeason, PlayerAction, RoomPlayer, RoomSettings, RoomTicket } from './room-types';
 import { CLAIM_GAME_HOST, SAVE_ESTIMATE_TO_JIRA } from './gql/jira.graphql';
 import { ticketsToCsv } from './export/tickets-csv';
 import type { ConfirmDialogData } from '../../../shared/dialogs/confirm/confirm-dialog.component';
@@ -66,7 +70,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent, AsyncVotingComponent, SortingBoardComponent],
+  imports: [TranslocoPipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent, AsyncVotingComponent, SortingBoardComponent, CelebrationComponent, InviteCardComponent, NgClass],
   animations: [
     trigger('fadeSlide', [
       transition(':enter', [
@@ -170,6 +174,52 @@ export class GameComponent implements OnInit {
     return this.game?.settingsDetails as unknown as RoomSettings | undefined;
   }
 
+  /** Consensus confetti (OPP-172): each increase plays it once. */
+  celebrationBurst = 0;
+  consensusStreak = 0;
+  private pendingCelebrationTicketId: string | null = null;
+
+  /** "Run this with your team" for guests (OPP-174), in the room after the last ticket or on the landing after leaving. */
+  showInviteCard = false;
+  private inviteDeck = '';
+  private inviteShownInSession = false;
+
+  /** Table theme and seasonal card backs of the room (OPP-173). */
+  get roomLookClasses(): string[] {
+    const look = this.settings?.facilitation;
+    const classes = [`room-theme-${look?.theme || 'classic'}`];
+    if (look?.seasonalCards !== false && isWinterSeason(new Date())) classes.push('room-season-winter');
+    return classes;
+  }
+
+  private afterReveal(values: (string | null | undefined)[]): void {
+    if (!isConsensus(values)) {
+      this.consensusStreak = 0;
+      return;
+    }
+    this.consensusStreak++;
+    if (this.settings?.facilitation?.celebrations !== false) this.celebrationBurst++;
+  }
+
+  private maybeShowInvite(trigger: 'session_end' | 'leave'): void {
+    if (this.isHost || this.inviteShownInSession || !isPlatformBrowser(this.platformId) || !inviteCardAllowed()) return;
+    this.inviteDeck = this.settings?.deckSetup ?? '';
+    this.inviteShownInSession = true;
+    this.showInviteCard = true;
+    markInviteCardShown();
+    trackEvent('invite_card_shown', { trigger });
+  }
+
+  handleInviteStart(): void {
+    trackEvent('invite_card_click');
+    this.showInviteCard = false;
+    this.openCreateGameDialog(this.inviteDeck || undefined);
+  }
+
+  handleInviteDismiss(): void {
+    this.showInviteCard = false;
+  }
+
   private deckSource = '';
   private deckCache: string[] = [];
 
@@ -259,6 +309,7 @@ export class GameComponent implements OnInit {
   }
 
   handleLeaveGame() {
+    this.maybeShowInvite('leave');
     this.game = undefined;
     this.gameNotFound = false;
     this.joinedGameId = undefined;
@@ -298,6 +349,8 @@ export class GameComponent implements OnInit {
 
   /** Votes stay hidden on the server until reveal; the reveal event carries their values. */
   private applyRevealedVotes(reveal: VotesRevealed): void {
+    // The same reveal arrives twice (own mutation and the subscription); a re-vote removes the ticket again.
+    const firstReveal = !this.revealedTicketIds.has(reveal.ticketId);
     this.revealedTicketIds.add(reveal.ticketId);
     if (this.game?.id) {
       this.getTickets(this.game.id);
@@ -306,8 +359,10 @@ export class GameComponent implements OnInit {
     this.votesRevealed = true;
     if (reveal.votes?.length) {
       this.votes = reveal.votes;
+      if (firstReveal) this.afterReveal(reveal.votes.map(v => v.value));
     } else {
       // Payload without votes: load the (now revealed) values from the server.
+      if (firstReveal) this.pendingCelebrationTicketId = reveal.ticketId;
       this.getVotes(reveal.ticketId);
     }
   }
@@ -481,10 +536,11 @@ export class GameComponent implements OnInit {
     this.runMutation(CLAIM_GAME_HOST, 'claimGameHost', { gameId, token }, () => this.refreshGame(gameId));
   }
 
-  private async openCreateGameDialog(): Promise<void> {
+  private async openCreateGameDialog(deckSetup?: string): Promise<void> {
     // Loaded on first open, so the dialog is not in the initial bundle.
     const { CreateGameDialogComponent } = await import('./create/dialog/create-game-dialog.component');
     const dialogRef = this.dialog.open(CreateGameDialogComponent, {
+      data: deckSetup ? { deckSetup } : null,
       width: '540px',
       maxWidth: '95vw',
       enterAnimationDuration: '150ms',
@@ -743,6 +799,11 @@ export class GameComponent implements OnInit {
         if (dataState !== 'complete') return;
         if (data?.votes?.items) {
           this.votes = data.votes.items;
+          // A cached result from before the reveal has empty values; wait for the revealed ones.
+          if (this.pendingCelebrationTicketId === ticketId && this.votes.length && this.votes.every(v => !!v.value)) {
+            this.pendingCelebrationTicketId = null;
+            this.afterReveal(this.votes.map(v => v.value));
+          }
         }
       }
     });
@@ -822,6 +883,10 @@ export class GameComponent implements OnInit {
       next: ({ data }) => {
         if (data) {
           this.tickets = data?.tickets?.items ?? [];
+          // The session is over for a guest once every ticket has an estimate.
+          if (this.tickets.length && this.tickets.every(t => this.isRevealed(t) || !!(t as RoomTicket).finalEstimate)) {
+            this.maybeShowInvite('session_end');
+          }
 
           // Keep the active ticket in sync: edited (name, final estimate) or deleted by the host.
           if (this.ticket) {
@@ -932,6 +997,9 @@ export class GameComponent implements OnInit {
         this.runMutation(SET_PLAYER_ROLE, 'setPlayerRole', {
           gameId, role: action.role, playerId: action.playerId === this.currentUserId ? null : action.playerId
         }, () => this.refreshPlayers(gameId));
+        break;
+      case 'avatar':
+        this.runMutation(SET_PLAYER_AVATAR, 'setPlayerAvatar', { gameId, avatar: action.avatar }, () => this.refreshPlayers(gameId));
         break;
       case 'coHost':
         this.runMutation(SET_CO_HOST, 'setCoHost', { gameId, playerId: action.playerId, isCoHost: action.isCoHost },
@@ -1059,7 +1127,10 @@ export class GameComponent implements OnInit {
   handleUpdateFacilitation(options: FacilitationSettings): void {
     const gameId = this.game?.id;
     if (!gameId) return;
-    this.runMutation(UPDATE_FACILITATION_OPTIONS, 'updateFacilitationOptions', { gameId, ...options }, () => this.refreshGame(gameId));
+    // Only the input fields: the settings come from the Apollo cache and also carry __typename.
+    const { outlierNotes, discussionMinutes, confidenceCheck, reactions, celebrations, theme, seasonalCards } = options;
+    this.runMutation(UPDATE_FACILITATION_OPTIONS, 'updateFacilitationOptions',
+      { gameId, outlierNotes, discussionMinutes, confidenceCheck, reactions, celebrations, theme, seasonalCards }, () => this.refreshGame(gameId));
   }
 
   /** Async mode: a vote on any ticket, then the list reloads with our own values. */

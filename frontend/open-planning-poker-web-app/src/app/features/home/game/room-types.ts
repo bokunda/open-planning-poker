@@ -19,7 +19,16 @@ export interface GameChanged {
 export type RoomPlayer = GamePlayer & {
   role?: PlayerRole;
   isCoHost?: boolean;
+  /** Emoji avatar picked in this room (OPP-173); null shows initials. */
+  avatar?: string | null;
 };
+
+/** Avatars a player can pick; the game engine accepts only these. */
+export const AVATARS = ['🦊', '🐼', '🐸', '🦉', '🐙', '🦄', '🐝', '🐢', '🦁', '🐧', '🐳', '🦖', '🚀', '🌵', '🍕', '⚡', '🎸', '🎯'] as const;
+
+/** Room themes (OPP-173): table colour and card back, the same for everyone. */
+export const THEMES = ['classic', 'forest', 'ocean', 'sunset', 'midnight', 'paper'] as const;
+export type RoomTheme = typeof THEMES[number];
 
 /** Discussion options of a room (OPP-114). */
 export interface FacilitationSettings {
@@ -28,9 +37,17 @@ export interface FacilitationSettings {
   discussionMinutes: number;
   confidenceCheck: boolean;
   reactions: boolean;
+  /** Confetti when everyone agrees (OPP-172). */
+  celebrations: boolean;
+  theme: string;
+  /** Card backs follow the season. */
+  seasonalCards: boolean;
 }
 
-export const DEFAULT_FACILITATION: FacilitationSettings = { outlierNotes: true, discussionMinutes: 0, confidenceCheck: false, reactions: true };
+export const DEFAULT_FACILITATION: FacilitationSettings = {
+  outlierNotes: true, discussionMinutes: 0, confidenceCheck: false, reactions: true,
+  celebrations: true, theme: 'classic', seasonalCards: true,
+};
 
 /** Discussion data of a ticket (OPP-114). */
 export interface TicketFacilitation {
@@ -79,10 +96,17 @@ export type PlayerAction =
   | { kind: 'role'; playerId: string; role: PlayerRole }
   | { kind: 'coHost'; playerId: string; isCoHost: boolean }
   | { kind: 'transferHost'; playerId: string }
-  | { kind: 'remove'; playerId: string };
+  | { kind: 'remove'; playerId: string }
+  | { kind: 'avatar'; playerId: string; avatar: string | null };
 
 /** True while the async voting window is open (players vote on their own before the meeting). */
 export function isAsyncVotingOpen(settings: RoomSettings | undefined | null, now = Date.now()): boolean {
   const endsAt = settings?.asyncVotingEndsAt;
   return !!endsAt && new Date(endsAt).getTime() > now;
+}
+
+/** Winter holidays card backs: 1 December – 6 January. */
+export function isWinterSeason(date: Date): boolean {
+  const month = date.getMonth();
+  return month === 11 || (month === 0 && date.getDate() <= 6);
 }

@@ -4,4 +4,5 @@ export const environment = {
   production: true,
   gqlGateway: 'http://localhost:10010/graphql',
   gqlGatewayWss: 'ws://localhost:9091/graphql',
+  recapImageBase: 'http://localhost:9091',
 };

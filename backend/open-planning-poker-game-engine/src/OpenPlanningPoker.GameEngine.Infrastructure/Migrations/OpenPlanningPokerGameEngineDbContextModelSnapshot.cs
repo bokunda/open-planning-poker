@@ -110,6 +110,11 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("Avatar")
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("avatar");
+
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid")
                         .HasColumnName("created_by");
@@ -165,6 +170,10 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("auto_reveal");
 
+                    b.Property<bool>("Celebrations")
+                        .HasColumnType("boolean")
+                        .HasColumnName("celebrations");
+
                     b.Property<bool>("ConfidenceCheck")
                         .HasColumnType("boolean")
                         .HasColumnName("confidence_check");
@@ -202,9 +211,19 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("reactions");
 
+                    b.Property<bool>("SeasonalCards")
+                        .HasColumnType("boolean")
+                        .HasColumnName("seasonal_cards");
+
                     b.Property<bool>("SortingOpen")
                         .HasColumnType("boolean")
                         .HasColumnName("sorting_open");
+
+                    b.Property<string>("Theme")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("theme");
 
                     b.HasKey("Id")
                         .HasName("pk_gamesettings");
@@ -260,6 +279,15 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("name");
 
+                    b.Property<bool>("RecapShowNames")
+                        .HasColumnType("boolean")
+                        .HasColumnName("recap_show_names");
+
+                    b.Property<string>("RecapToken")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("recap_token");
+
                     b.Property<int?>("SprintDays")
                         .HasColumnType("integer")
                         .HasColumnName("sprint_days");
@@ -270,6 +298,11 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_games");
+
+                    b.HasIndex("RecapToken")
+                        .IsUnique()
+                        .HasDatabaseName("ix_games_recap_token")
+                        .HasFilter("recap_token IS NOT NULL");
 
                     b.HasIndex("TeamId")
                         .HasDatabaseName("ix_games_team_id");

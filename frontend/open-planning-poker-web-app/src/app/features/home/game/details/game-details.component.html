@@ -65,6 +65,20 @@
               <span>{{ 'facilitation.optionDiscussion' | transloco }}: {{ facilitation.discussionMinutes ? (('facilitation.minutes' | transloco: { count: facilitation.discussionMinutes })) : ('facilitation.off' | transloco) }}</span>
             </button>
             <mat-divider></mat-divider>
+            <span class="menu-caption">{{ 'look.caption' | transloco }}</span>
+            <button mat-menu-item [matMenuTriggerFor]="themeMenu">
+              <span class="theme-swatch" [ngClass]="'room-theme-' + facilitation.theme" aria-hidden="true"></span>
+              <span>{{ 'look.theme' | transloco }}: {{ ('look.themes.' + facilitation.theme) | transloco }}</span>
+            </button>
+            <button mat-menu-item (click)="setFacilitation({ celebrations: !facilitation.celebrations })" role="menuitemcheckbox" [attr.aria-checked]="facilitation.celebrations">
+              <mat-icon svgIcon="opp-check" [class.menu-check--off]="!facilitation.celebrations"></mat-icon>
+              <span>{{ 'look.celebrations' | transloco }}</span>
+            </button>
+            <button mat-menu-item (click)="setFacilitation({ seasonalCards: !facilitation.seasonalCards })" role="menuitemcheckbox" [attr.aria-checked]="facilitation.seasonalCards">
+              <mat-icon svgIcon="opp-check" [class.menu-check--off]="!facilitation.seasonalCards"></mat-icon>
+              <span>{{ 'look.seasonal' | transloco }}</span>
+            </button>
+            <mat-divider></mat-divider>
             @if (!asyncOpen) {
               <span class="menu-caption">{{ 'room.asyncCaption' | transloco }}</span>
               @for (window of asyncWindows; track window) {
@@ -88,6 +102,10 @@
             <mat-divider></mat-divider>
           }
           @if (isHost) {
+            <button mat-menu-item (click)="openRecapShare()">
+              <mat-icon>ios_share</mat-icon>
+              <span>{{ 'recap.menu' | transloco }}</span>
+            </button>
             <button mat-menu-item (click)="onPostSummary.emit()">
               <mat-icon>send</mat-icon>
               <span>{{ 'insights.postSummary' | transloco }}</span>
@@ -108,6 +126,14 @@
               <mat-icon svgIcon="opp-team"></mat-icon>
               <span>{{ 'room.openTeamRoom' | transloco }}</span>
             </a>
+          }
+        </mat-menu>
+        <mat-menu #themeMenu="matMenu">
+          @for (theme of themes; track theme) {
+            <button mat-menu-item role="menuitemradio" [attr.aria-checked]="facilitation.theme === theme" (click)="setFacilitation({ theme })">
+              <span class="theme-swatch" [ngClass]="'room-theme-' + theme" aria-hidden="true"></span>
+              <span>{{ ('look.themes.' + theme) | transloco }}</span>
+            </button>
           }
         </mat-menu>
         <mat-menu #discussionMenu="matMenu">

@@ -10,7 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { RouterLink } from '@angular/router';
 import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '../../../../shared/constants';
-import { DEFAULT_FACILITATION, FacilitationSettings, isAsyncVotingOpen, RoomSettings } from '../room-types';
+import { DEFAULT_FACILITATION, FacilitationSettings, isAsyncVotingOpen, RoomSettings, THEMES } from '../room-types';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { OppDatePipe } from '../../../../i18n/opp-date.pipe';
 
@@ -57,9 +57,10 @@ export class GameDetailsComponent {
   @Output() onSaveAllToTracker = new EventEmitter<void>();
 
   readonly discussionMinutes = [0, 2, 3, 5];
+  readonly themes = THEMES;
 
   get facilitation(): FacilitationSettings {
-    return this.settings?.facilitation ?? DEFAULT_FACILITATION;
+    return { ...DEFAULT_FACILITATION, ...this.settings?.facilitation };
   }
 
   setFacilitation(change: Partial<FacilitationSettings>): void {
@@ -109,6 +110,13 @@ export class GameDetailsComponent {
       maxWidth: '95vw',
       data: { url: window.location.href, gameName: this.game?.name ?? this.i18n.translate('room.gameFallbackName') }
     });
+  }
+
+  /** Shares a read-only recap of the session (OPP-170). */
+  async openRecapShare(): Promise<void> {
+    if (!this.game?.id) return;
+    const { RecapShareDialogComponent } = await import('../../../recap/recap-share-dialog.component');
+    this.dialog.open(RecapShareDialogComponent, { width: '480px', maxWidth: '95vw', data: { gameId: this.game.id } });
   }
 
   copyToClipboard(): void {

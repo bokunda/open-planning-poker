@@ -42,6 +42,30 @@ public sealed class Game : Entity<Guid>
 
     public void SetSprintDays(int? days) => SprintDays = days;
 
+    public const int RecapTokenLength = 22;
+
+    /// <summary>
+    /// Unguessable id of the public, read-only recap of the session (OPP-170); null while the host does not share it.
+    /// </summary>
+    public string? RecapToken { get; private set; }
+
+    /// <summary>The recap lists who took part. Off by default: only numbers are shared.</summary>
+    public bool RecapShowNames { get; private set; }
+
+    /// <summary>Shares the recap. Keeps an existing token, so links already sent keep working.</summary>
+    public void ShareRecap(string newToken, bool showNames)
+    {
+        RecapToken ??= newToken;
+        RecapShowNames = showNames;
+    }
+
+    /// <summary>Stops sharing: the old link stops working, a later share gets a new one.</summary>
+    public void StopSharingRecap()
+    {
+        RecapToken = null;
+        RecapShowNames = false;
+    }
+
     /// <summary>
     /// SHA-256 of the one-time link that makes its opener the host, for games started from Slack or Teams
     /// (OPP-22, OPP-23), which have no host until then. Null otherwise.

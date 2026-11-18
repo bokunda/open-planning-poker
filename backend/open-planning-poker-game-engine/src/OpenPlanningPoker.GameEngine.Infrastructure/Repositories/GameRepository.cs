@@ -8,4 +8,7 @@ public sealed class GameRepository(OpenPlanningPokerGameEngineDbContext dbContex
             .Where(game => game.TeamId == teamId)
             .OrderByDescending(game => game.CreatedOn)
             .ToListAsync(cancellationToken);
+
+    public Task<Game?> GetByRecapTokenAsync(string token, CancellationToken cancellationToken = default) =>
+        DbContext.Set<Game>().FirstOrDefaultAsync(game => game.RecapToken == token, cancellationToken);
 }

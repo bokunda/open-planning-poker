@@ -37,6 +37,25 @@ public sealed class GameSettings : Entity<Guid>
 
     public void SetSortingOpen(bool open) => SortingOpen = open;
 
+    /// <summary>A short confetti moment when everyone voted the same card (OPP-172).</summary>
+    public bool Celebrations { get; private set; } = true;
+
+    /// <summary>Look of the table and the card backs, the same for everyone in the room (OPP-173).</summary>
+    public string Theme { get; private set; } = DefaultTheme;
+
+    /// <summary>Card backs follow the season (for example winter holidays) unless the host turns it off.</summary>
+    public bool SeasonalCards { get; private set; } = true;
+
+    public const string DefaultTheme = "classic";
+    public static readonly string[] Themes = ["classic", "forest", "ocean", "sunset", "midnight", "paper"];
+
+    public void UpdateLook(bool celebrations, string theme, bool seasonalCards)
+    {
+        Celebrations = celebrations;
+        Theme = theme;
+        SeasonalCards = seasonalCards;
+    }
+
     public static readonly int[] DiscussionMinuteOptions = [0, 2, 3, 5];
 
     public Game Game { get; set; } = null!;

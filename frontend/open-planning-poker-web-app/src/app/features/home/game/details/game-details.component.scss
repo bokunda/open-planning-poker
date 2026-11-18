@@ -94,3 +94,15 @@
 }
 
 .menu-check--off { opacity: 0; }
+
+/* Room theme preview in the menu (OPP-173): the theme class sets the table tokens on the swatch itself. */
+.theme-swatch {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 16px;
+  vertical-align: middle;
+  border-radius: 50%;
+  background: var(--opp-felt);
+  box-shadow: inset 0 0 0 4px var(--opp-card-back);
+}

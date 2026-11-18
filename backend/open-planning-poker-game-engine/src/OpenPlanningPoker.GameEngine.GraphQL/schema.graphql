@@ -140,6 +140,12 @@ type FacilitationSettings {
   confidenceCheck: Boolean!
   "Players can send emoji reactions."
   reactions: Boolean!
+  "A short confetti moment when everyone voted the same card (OPP-172)."
+  celebrations: Boolean!
+  "Look of the table and the card backs: classic, forest, ocean, sunset, midnight or paper (OPP-173)."
+  theme: String!
+  "Card backs follow the season."
+  seasonalCards: Boolean!
 }
 
 type Game {
@@ -174,6 +180,24 @@ type GamePlayer {
   role: PlayerRole!
   "Co-hosts can run the game next to the host."
   isCoHost: Boolean!
+  "Emoji avatar the player picked in this room; null shows their initials."
+  avatar: String
+}
+
+"Public, read-only recap of a session: numbers and ticket titles only."
+type GameRecap {
+  gameName: String!
+  playedOn: DateTime!
+  tickets: [RecapTicket!]!
+  ticketsEstimated: Int!
+  ticketsOpen: Int!
+  totalPoints: Float!
+  "Share (0–1) of tickets with at least two votes where everyone agreed; null when none."
+  consensusRate: Float
+  durationMinutes: Float
+  playerCount: Int!
+  "Who took part; empty unless the host chose to show names."
+  players: [String!]!
 }
 
 type GameReport {
@@ -345,7 +369,10 @@ type Mutation {
   setConfidence(input: SetConfidenceInput!): SetConfidencePayload! @cost(weight: "10")
   "Marks a ticket as \"needs more information\" (or clears it). Host and co-hosts."
   setTicketNeedsInfo(input: SetTicketNeedsInfoInput!): SetTicketNeedsInfoPayload! @cost(weight: "10")
-  "Discussion options of the room. Host and co-hosts."
+  """
+  Discussion and look options of the room. Host and co-hosts. Celebrations, theme and seasonal cards keep
+  their current value when left out.
+  """
   updateFacilitationOptions(input: UpdateFacilitationOptionsInput!): UpdateFacilitationOptionsPayload! @cost(weight: "10")
   "Sends an emoji reaction to everyone in the room. Not stored."
   sendReaction(input: SendReactionInput!): SendReactionPayload! @cost(weight: "10")
@@ -358,6 +385,8 @@ type Mutation {
   the host and co-hosts can change anyone's. Leave playerId empty for yourself.
   """
   setPlayerRole(input: SetPlayerRoleInput!): SetPlayerRolePayload! @cost(weight: "10")
+  "Picks your emoji avatar in this game from the fixed list, or clears it with null."
+  setPlayerAvatar(input: SetPlayerAvatarInput!): SetPlayerAvatarPayload! @cost(weight: "10")
   "Makes a player co-host, or a regular player again. Host only."
   setCoHost(input: SetCoHostInput!): SetCoHostPayload! @cost(weight: "10")
   """
@@ -400,6 +429,11 @@ type Mutation {
   saveEstimateToTracker(input: SaveEstimateToTrackerInput!): SaveEstimateToTrackerPayload! @cost(weight: "10")
   "Dummy health-check mutation."
   ping: PingPayload! @cost(weight: "10")
+  """
+  Shares the recap of a game as a read-only link, or stops sharing it (the link stops working). Sharing again
+  keeps the same link. Host and co-hosts.
+  """
+  setRecapSharing(input: SetRecapSharingInput!): SetRecapSharingPayload! @cost(weight: "10")
   "Creates Game Settings. Host only."
   createSettings(input: CreateSettingsInput!): CreateSettingsPayload! @cost(weight: "10")
   "Updates Game Settings. Host only."
@@ -559,6 +593,10 @@ type Query {
   trackerIssues(provider: String! gameId: UUID! sourceId: String! query: String): TrackerIssuesResult! @cost(weight: "10")
   "Dummy health-check query."
   ping: String! @cost(weight: "10")
+  "The shared recap behind a recap link. No sign-in needed; RecapNotFound once the host stops sharing."
+  gameRecap(token: String!): GameRecapResult! @cost(weight: "10")
+  "Whether the recap of a game is shared. Host and co-hosts."
+  recapSharing(gameId: UUID!): RecapSharingResult! @cost(weight: "10")
   "Gets Game Settings."
   settings(gameId: UUID!): SettingsResult! @cost(weight: "10")
   "The sorting board of a game. Players of the game only."
@@ -598,6 +636,26 @@ type Reaction {
   gameId: UUID!
   playerId: UUID!
   emoji: String!
+}
+
+"Whether the recap of a game is shared (OPP-170). The link is app.openplanningpoker.com\/recap\/{token}."
+type RecapSharing {
+  shared: Boolean!
+  token: String
+  "The recap lists who took part."
+  showNames: Boolean!
+}
+
+type RecapTicket {
+  name: String!
+  "Key of the tracker issue (e.g. \"OPP-118\"); no link or description is shared."
+  externalKey: String
+  estimate: String
+  "CONSENSUS, CLOSE, WIDE, NO_VOTES or NOT_REVEALED (estimated on the sorting board)."
+  spread: VoteSpread!
+  voteRounds: Int!
+  "Minutes from turning the cards over to choosing the estimate."
+  discussionMinutes: Float
 }
 
 type RemovePlayerPayload {
@@ -665,9 +723,19 @@ type SetMemberCapacityPayload {
   errors: [SetMemberCapacityError!]
 }
 
+type SetPlayerAvatarPayload {
+  boolean: Boolean
+  errors: [SetPlayerAvatarError!]
+}
+
 type SetPlayerRolePayload {
   boolean: Boolean
   errors: [SetPlayerRoleError!]
+}
+
+type SetRecapSharingPayload {
+  recapSharing: RecapSharing
+  errors: [SetRecapSharingError!]
 }
 
 type SetSortingOpenPayload {
@@ -1058,6 +1126,8 @@ union DisconnectTrackerError = ApplicationError
 
 union GamePlayersResult = ApiCollectionOfGamePlayer | ApplicationError
 
+union GameRecapResult = GameRecap | ApplicationError
+
 union GameResult = Game | ApplicationError
 
 union GenerateGameReportError = ApplicationError
@@ -1096,6 +1166,8 @@ union PostSessionSummaryError = ApplicationError
 
 union ReVoteTicketError = ApplicationError
 
+union RecapSharingResult = RecapSharing | ApplicationError
+
 union RemovePlayerError = ApplicationError
 
 union ReorderTicketsError = ApplicationError
@@ -1122,7 +1194,11 @@ union SetFinalEstimateError = ApplicationError
 
 union SetMemberCapacityError = ApplicationError
 
+union SetPlayerAvatarError = ApplicationError
+
 union SetPlayerRoleError = ApplicationError
+
+union SetRecapSharingError = ApplicationError
 
 union SetSortingOpenError = ApplicationError
 
@@ -1372,10 +1448,21 @@ input SetMemberCapacityInput {
   days: Float!
 }
 
+input SetPlayerAvatarInput {
+  gameId: UUID!
+  avatar: String
+}
+
 input SetPlayerRoleInput {
   gameId: UUID!
   role: PlayerRole!
   playerId: UUID
+}
+
+input SetRecapSharingInput {
+  gameId: UUID!
+  shared: Boolean!
+  showNames: Boolean! = false
 }
 
 input SetSortingOpenInput {
@@ -1435,6 +1522,9 @@ input UpdateFacilitationOptionsInput {
   discussionMinutes: Int!
   confidenceCheck: Boolean!
   reactions: Boolean!
+  celebrations: Boolean
+  theme: String
+  seasonalCards: Boolean
 }
 
 input UpdateGameOptionsInput {
@@ -1478,6 +1568,14 @@ enum GameChangeKind {
 enum PlayerRole {
   PLAYER
   OBSERVER
+}
+
+enum VoteSpread {
+  NOT_REVEALED
+  NO_VOTES
+  CONSENSUS
+  CLOSE
+  WIDE
 }
 
 "The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
