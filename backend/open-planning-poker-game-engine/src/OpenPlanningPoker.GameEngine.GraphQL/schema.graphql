@@ -290,6 +290,13 @@ type JiraSprintList {
   items: [JiraSprintInfo!]!
 }
 
+"Result of moving the planned tickets into a Jira sprint (OPP-149)."
+type JiraSprintMoved {
+  moved: Int!
+  "Planned tickets that are not Jira issues."
+  skipped: Int!
+}
+
 type JoinGamePayload {
   boolean: Boolean
   errors: [JoinGameError!]
@@ -308,6 +315,19 @@ type LeaveGamePayload {
 type LeaveTeamPayload {
   boolean: Boolean
   errors: [LeaveTeamError!]
+}
+
+"Days one member is available in the sprint (OPP-146)."
+type MemberCapacityInfo {
+  playerId: UUID!
+  days: Float!
+  "Nobody entered days for this member, so the whole sprint is assumed."
+  isDefault: Boolean!
+}
+
+type MovePlanToJiraSprintPayload {
+  jiraSprintMoved: JiraSprintMoved
+  errors: [MovePlanToJiraSprintError!]
 }
 
 type MoveSortedTicketPayload {
@@ -404,6 +424,17 @@ type Mutation {
   postSessionSummary(input: PostSessionSummaryInput!): PostSessionSummaryPayload! @cost(weight: "10")
   "Sets (or clears, with null) the Slack or Teams incoming webhook for session summaries. Team owner."
   setTeamSummaryWebhook(input: SetTeamSummaryWebhookInput!): SetTeamSummaryWebhookPayload! @cost(weight: "10")
+  "Sets the working days of the sprint (1–30). Team owner only."
+  setSprintDays(input: SetSprintDaysInput!): SetSprintDaysPayload! @cost(weight: "10")
+  "Sets how many days a member is available (in half days). The owner for anyone, members for themselves."
+  setMemberCapacity(input: SetMemberCapacityInput!): SetMemberCapacityPayload! @cost(weight: "10")
+  "Puts a ticket into the sprint plan or takes it out. Team owner only."
+  setTicketPlanned(input: SetTicketPlannedInput!): SetTicketPlannedPayload! @cost(weight: "10")
+  """
+  Moves the planned Jira tickets into a Jira sprint with the caller's Jira connection. Other tickets are skipped.
+  Team owner only.
+  """
+  movePlanToJiraSprint(input: MovePlanToJiraSprintInput!): MovePlanToJiraSprintPayload! @cost(weight: "10")
   "Pins an estimated ticket of the team's sprints as the reference for its card (two per card). Team members."
   pinTeamAnchor(input: PinTeamAnchorInput!): PinTeamAnchorPayload! @cost(weight: "10")
   "Removes a reference ticket. Team members."
@@ -461,6 +492,31 @@ type PingPayload {
   string: String
 }
 
+type PlanTicketInfo {
+  ticketId: UUID!
+  name: String!
+  externalKey: String
+  externalUrl: String
+  "Final estimate, or the most common card; null while not estimated."
+  estimate: String
+  "The estimate as a number; null for non-numeric cards."
+  points: Float
+  planned: Boolean!
+}
+
+"Suggested points for the sprint (OPP-147). A planning aid, not a target."
+type PointBudgetInfo {
+  "False with fewer than two past sprints: no suggestion yet."
+  enoughHistory: Boolean!
+  "Computed from points per person-day of past sprints with capacity; otherwise their average points."
+  basedOnCapacity: Boolean!
+  sprintsUsed: Int!
+  suggested: Int
+  low: Int
+  high: Int
+  pointsPerPersonDay: Float
+}
+
 type PostSessionSummaryPayload {
   sessionSummaryInfo: SessionSummaryInfo
   errors: [PostSessionSummaryError!]
@@ -511,6 +567,8 @@ type Query {
   teamAccuracy(teamId: UUID!): TeamAccuracyResult! @cost(weight: "10")
   "Preview of the session summary and where it would go. Host and co-hosts."
   sessionSummary(gameId: UUID!): SessionSummaryResult! @cost(weight: "10")
+  "Capacity, budget and plan of one sprint of a team. Members only."
+  sprintPlan(teamId: UUID! gameId: UUID!): SprintPlanResult! @cost(weight: "10")
   "The team's anchors and up to three similar past tickets for a ticket. Players of the game only."
   ticketReference(ticketId: UUID!): TicketReferenceResult! @cost(weight: "10")
   "A team room by id. Members-only fields are empty for others."
@@ -602,6 +660,11 @@ type SetFinalEstimatePayload {
   errors: [SetFinalEstimateError!]
 }
 
+type SetMemberCapacityPayload {
+  sprintPlan: SprintPlan
+  errors: [SetMemberCapacityError!]
+}
+
 type SetPlayerRolePayload {
   boolean: Boolean
   errors: [SetPlayerRoleError!]
@@ -612,6 +675,11 @@ type SetSortingOpenPayload {
   errors: [SetSortingOpenError!]
 }
 
+type SetSprintDaysPayload {
+  sprintPlan: SprintPlan
+  errors: [SetSprintDaysError!]
+}
+
 type SetTeamSummaryWebhookPayload {
   boolean: Boolean
   errors: [SetTeamSummaryWebhookError!]
@@ -620,6 +688,11 @@ type SetTeamSummaryWebhookPayload {
 type SetTicketNeedsInfoPayload {
   ticketFacilitationInfo: TicketFacilitationInfo
   errors: [SetTicketNeedsInfoError!]
+}
+
+type SetTicketPlannedPayload {
+  sprintPlan: SprintPlan
+  errors: [SetTicketPlannedError!]
 }
 
 type SetVoteNotePayload {
@@ -678,6 +751,19 @@ type Sprint {
   points: Float!
   "Consensus, re-votes, discussion time and needs-info tickets of the session."
   stats: SprintStats
+}
+
+"Capacity, budget and the chosen tickets of one team sprint (OPP-138)."
+type SprintPlan {
+  gameId: UUID!
+  sprintDays: Int!
+  "The team entered the sprint length (otherwise the default of 10 days)."
+  sprintDaysSet: Boolean!
+  members: [MemberCapacityInfo!]!
+  personDays: Float!
+  budget: PointBudgetInfo!
+  plannedPoints: Float!
+  tickets: [PlanTicketInfo!]!
 }
 
 "How one planning session went (OPP-134). Team numbers only."
@@ -1000,6 +1086,8 @@ union LeaveGameError = ApplicationError
 
 union LeaveTeamError = ApplicationError
 
+union MovePlanToJiraSprintError = ApplicationError
+
 union MoveSortedTicketError = ApplicationError
 
 union PinTeamAnchorError = ApplicationError
@@ -1032,13 +1120,19 @@ union SetConfidenceError = ApplicationError
 
 union SetFinalEstimateError = ApplicationError
 
+union SetMemberCapacityError = ApplicationError
+
 union SetPlayerRoleError = ApplicationError
 
 union SetSortingOpenError = ApplicationError
 
+union SetSprintDaysError = ApplicationError
+
 union SetTeamSummaryWebhookError = ApplicationError
 
 union SetTicketNeedsInfoError = ApplicationError
+
+union SetTicketPlannedError = ApplicationError
 
 union SetVoteNoteError = ApplicationError
 
@@ -1047,6 +1141,8 @@ union SettingsDetailsResult = Settings | ApplicationError
 union SettingsResult = Settings | ApplicationError
 
 union SortingBoardResult = SortingBoardInfo | ApplicationError
+
+union SprintPlanResult = SprintPlan | ApplicationError
 
 union StartTimerError = ApplicationError
 
@@ -1190,6 +1286,12 @@ input LeaveTeamInput {
   teamId: UUID!
 }
 
+input MovePlanToJiraSprintInput {
+  teamId: UUID!
+  gameId: UUID!
+  sprintId: Long!
+}
+
 input MoveSortedTicketInput {
   ticketId: UUID!
   column: String
@@ -1263,6 +1365,13 @@ input SetFinalEstimateInput {
   value: String
 }
 
+input SetMemberCapacityInput {
+  teamId: UUID!
+  gameId: UUID!
+  playerId: UUID!
+  days: Float!
+}
+
 input SetPlayerRoleInput {
   gameId: UUID!
   role: PlayerRole!
@@ -1274,6 +1383,12 @@ input SetSortingOpenInput {
   open: Boolean!
 }
 
+input SetSprintDaysInput {
+  teamId: UUID!
+  gameId: UUID!
+  days: Int!
+}
+
 input SetTeamSummaryWebhookInput {
   teamId: UUID!
   url: String
@@ -1282,6 +1397,12 @@ input SetTeamSummaryWebhookInput {
 input SetTicketNeedsInfoInput {
   ticketId: UUID!
   needsInfo: Boolean!
+}
+
+input SetTicketPlannedInput {
+  teamId: UUID!
+  ticketId: UUID!
+  planned: Boolean!
 }
 
 input SetVoteNoteInput {

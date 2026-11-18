@@ -255,6 +255,20 @@ public sealed class JiraService(
         return new JiraSaveResult(key, estimate, ticket.ExternalUrl ?? string.Empty);
     }
 
+    /// <summary>Jira accepts at most this many issues per "move to sprint" call.</summary>
+    public const int MaxIssuesPerSprintMove = 50;
+
+    /// <summary>Moves issues into a Jira sprint with the caller's connection, in batches (OPP-149).</summary>
+    public Task<Result<int, ApplicationError>> MoveToSprintAsync(Guid playerId, long sprintId, IReadOnlyList<string> issueKeys, CancellationToken cancellationToken) =>
+        CallAsync(playerId, requireSite: true, async (token, c) =>
+        {
+            foreach (var batch in issueKeys.Chunk(MaxIssuesPerSprintMove))
+            {
+                await api.MoveIssuesToSprintAsync(token, c.CloudId!, sprintId, batch, cancellationToken);
+            }
+            return issueKeys.Count;
+        }, cancellationToken);
+
     /// <summary>Start and resolution times of issues (OPP-135), with the caller's Jira connection.</summary>
     public async Task<Result<IReadOnlyDictionary<string, (DateTimeOffset? Started, DateTimeOffset? Done)>, ApplicationError>> GetIssueTimesAsync(
         Guid playerId, IReadOnlyCollection<string> keys, CancellationToken cancellationToken)

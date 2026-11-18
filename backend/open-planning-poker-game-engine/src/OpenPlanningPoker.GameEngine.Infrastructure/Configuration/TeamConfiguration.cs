@@ -65,3 +65,20 @@ internal sealed class TeamAnchorConfiguration : IEntityTypeConfiguration<TeamAnc
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
+
+internal sealed class SprintCapacityConfiguration : IEntityTypeConfiguration<SprintCapacity>
+{
+    public void Configure(EntityTypeBuilder<SprintCapacity> builder)
+    {
+        builder.ToTable("sprint_capacities");
+
+        builder.HasKey(capacity => capacity.Id);
+
+        builder.HasIndex(capacity => new { capacity.GameId, capacity.PlayerId }).IsUnique();
+
+        builder.HasOne<Game>()
+            .WithMany()
+            .HasForeignKey(capacity => capacity.GameId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+}
