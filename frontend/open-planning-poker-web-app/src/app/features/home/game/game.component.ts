@@ -1127,7 +1127,10 @@ export class GameComponent implements OnInit {
   handleUpdateFacilitation(options: FacilitationSettings): void {
     const gameId = this.game?.id;
     if (!gameId) return;
-    this.runMutation(UPDATE_FACILITATION_OPTIONS, 'updateFacilitationOptions', { gameId, ...options }, () => this.refreshGame(gameId));
+    // Only the input fields: the settings come from the Apollo cache and also carry __typename.
+    const { outlierNotes, discussionMinutes, confidenceCheck, reactions, celebrations, theme, seasonalCards } = options;
+    this.runMutation(UPDATE_FACILITATION_OPTIONS, 'updateFacilitationOptions',
+      { gameId, outlierNotes, discussionMinutes, confidenceCheck, reactions, celebrations, theme, seasonalCards }, () => this.refreshGame(gameId));
   }
 
   /** Async mode: a vote on any ticket, then the list reloads with our own values. */
