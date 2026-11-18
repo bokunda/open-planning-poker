@@ -115,9 +115,9 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit(): void {
-    const settings = this.gameSettings as Settings;
-    if (!settings) { return; }
-    this.voteOptions = settings.deckSetup.split(',');
+    // Right after createGame the settings only carry their id; the deck arrives with the next change.
+    const deck = (this.gameSettings as Settings | undefined)?.deckSetup;
+    if (deck) this.voteOptions = deck.split(',');
   }
 
   ngOnChanges(changes: SimpleChanges): void {
