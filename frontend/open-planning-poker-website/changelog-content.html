@@ -1,4 +1,19 @@
-<div class="changelog-content"><h2>[3.4.0] — 2026-11-18</h2>
+<div class="changelog-content"><h2>[3.5.0] — 2026-11-18</h2>
+<p>Sort a long backlog in minutes, and plan what fits in the sprint from the team&#39;s own numbers.</p>
+<h3>Added</h3>
+<ul>
+<li><strong>Sort the backlog</strong>: a board with one column per card. Players drag tickets to the card they think fits, without talking; on a phone the ⋮ menu of a ticket moves it. Everyone sees each move at once</li>
+<li><strong>Discuss</strong>: a ticket moved three times, or moved by another player to a different card, is marked for a talk. The host can send it to a normal vote or clear the mark</li>
+<li><strong>Apply estimates</strong>: the host turns the columns into final estimates in one step. Marked tickets are skipped. The estimates count in velocity, the PDF, the CSV and the reference history like voted ones</li>
+<li><strong>Save all estimates to the tracker</strong>: every linked ticket with a final estimate is saved to Jira, GitHub, Linear or Azure DevOps one after another, with progress and a retry for the ones that failed</li>
+<li><strong>Plan the sprint</strong> in the team room: the sprint length and each member&#39;s available days, a point budget from the last sprints (points per person-day when the days are known), the tickets chosen for the sprint with a fill bar, and a plain-text copy of the plan</li>
+<li><strong>Move into a Jira sprint</strong>: the planned Jira issues go into an active or future sprint of a board, with the owner&#39;s Jira connection</li>
+</ul>
+<h3>Developers</h3>
+<ul>
+<li>Migrations <code>AddSortingBoard</code> and <code>AddSprintPlan</code></li>
+</ul>
+<h2>[3.4.0] — 2026-11-18</h2>
 <p>Better discussions after the reveal, reference stories for team rooms, three more issue trackers, estimation insights, and everything the store listings need.</p>
 <h3>Added</h3>
 <ul>

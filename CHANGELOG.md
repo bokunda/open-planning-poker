@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.0] — 2026-11-18
+
+Sort a long backlog in minutes, and plan what fits in the sprint from the team's own numbers.
+
+### Added
+- **Sort the backlog**: a board with one column per card. Players drag tickets to the card they think fits, without talking; on a phone the ⋮ menu of a ticket moves it. Everyone sees each move at once
+- **Discuss**: a ticket moved three times, or moved by another player to a different card, is marked for a talk. The host can send it to a normal vote or clear the mark
+- **Apply estimates**: the host turns the columns into final estimates in one step. Marked tickets are skipped. The estimates count in velocity, the PDF, the CSV and the reference history like voted ones
+- **Save all estimates to the tracker**: every linked ticket with a final estimate is saved to Jira, GitHub, Linear or Azure DevOps one after another, with progress and a retry for the ones that failed
+- **Plan the sprint** in the team room: the sprint length and each member's available days, a point budget from the last sprints (points per person-day when the days are known), the tickets chosen for the sprint with a fill bar, and a plain-text copy of the plan
+- **Move into a Jira sprint**: the planned Jira issues go into an active or future sprint of a board, with the owner's Jira connection
+
+### Developers
+- Migrations `AddSortingBoard` and `AddSprintPlan`
+
 ## [3.4.0] — 2026-11-18
 
 Better discussions after the reveal, reference stories for team rooms, three more issue trackers, estimation insights, and everything the store listings need.

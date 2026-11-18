@@ -6,6 +6,21 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+## [3.5.0] — 2026-11-18
+
+Ein langes Backlog in Minuten sortieren und mit den eigenen Zahlen des Teams planen, was in den Sprint passt.
+
+### Hinzugefügt
+- **Backlog sortieren**: ein Board mit einer Spalte pro Karte. Die Spieler ziehen Tickets ohne Absprache auf die Karte, die sie für passend halten; am Handy verschiebt das ⋮-Menü eines Tickets es. Alle sehen jeden Zug sofort
+- **Besprechen**: Ein Ticket, das dreimal verschoben wurde oder das ein anderer Spieler auf eine andere Karte gezogen hat, wird für ein Gespräch markiert. Der Host kann darüber normal abstimmen lassen oder die Markierung entfernen
+- **Schätzungen übernehmen**: Der Host macht die Spalten in einem Schritt zu endgültigen Schätzungen. Markierte Tickets werden übersprungen. Die Schätzungen zählen in Velocity, PDF, CSV und Referenz-Historie wie abgestimmte
+- **Alle Schätzungen im Tracker speichern**: Jedes verknüpfte Ticket mit endgültiger Schätzung wird nacheinander in Jira, GitHub, Linear oder Azure DevOps gespeichert, mit Fortschritt und erneutem Versuch für fehlgeschlagene
+- **Sprint planen** im Team-Raum: Sprint-Länge und verfügbare Tage jedes Mitglieds, ein Punkte-Budget aus den letzten Sprints (Punkte pro Personentag, wenn die Tage bekannt sind), die für den Sprint gewählten Tickets mit Füllbalken und eine Kopie des Plans als Text
+- **In einen Jira-Sprint verschieben**: Die geplanten Jira-Issues kommen in einen aktiven oder zukünftigen Sprint eines Boards, über die Jira-Verbindung des Inhabers
+
+### Für Entwickler
+- Migrationen `AddSortingBoard` und `AddSprintPlan`
+
 
 ## [3.4.0] — 2026-11-18
 
