@@ -6,6 +6,21 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+## [3.5.0] — 2026-11-19
+
+Rasporedi dugačak backlog za nekoliko minuta i isplaniraj šta staje u sprint na osnovu brojki svog tima.
+
+### Dodato
+- **Sortiraj backlog**: tabla sa po jednom kolonom za svaku kartu. Igrači bez razgovora prevlače tikete na kartu za koju misle da odgovara; na telefonu tiket se premešta preko njegovog ⋮ menija. Svi odmah vide svaki potez
+- **Diskusija**: tiket pomeren tri puta, ili koji je drugi igrač premestio na drugu kartu, dobija oznaku za razgovor. Host može da pokrene glasanje o njemu ili da ukloni oznaku
+- **Primeni procene**: host jednim potezom pretvara kolone u konačne procene. Tiketi sa oznakom se preskaču. Procene se računaju u velocity, PDF, CSV i istoriju referenci kao i one iz glasanja
+- **Sačuvaj sve procene u alat**: svaki povezani tiket sa konačnom procenom čuva se redom u Jiru, GitHub, Linear ili Azure DevOps, uz prikaz napretka i ponovni pokušaj za neuspešne
+- **Planiraj sprint** u timskoj sobi: dužina sprinta i dostupni dani svakog člana, budžet poena iz poslednjih sprintova (poeni po čovek-danu kada su dani poznati), tiketi izabrani za sprint sa trakom popunjenosti i kopija plana kao tekst
+- **Premesti u Jira sprint**: planirani Jira issue-i idu u aktivan ili budući sprint table, preko Jira veze vlasnika
+
+### Za programere
+- Migracije `AddSortingBoard` i `AddSprintPlan`
+
 ## [3.4.0] — 2026-11-18
 
 Bolje diskusije posle otkrivanja karata, referentni tiketi za timske sobe, još tri alata za tikete, statistika procena i sve što treba za objavljivanje u prodavnicama.

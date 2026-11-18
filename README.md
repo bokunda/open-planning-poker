@@ -22,6 +22,8 @@
 - **Async Voting** — Everyone votes on the tickets before the meeting; votes stay hidden until the reveal
 - **Team Rooms** — Keep every sprint planning of a team, with the sprint history and a velocity chart
 - **Run the Discussion** — Notes from the lowest and highest voters, a discussion timer, a confidence check, reactions and a "needs more information" flag
+- **Sort a Long Backlog** — Players drag tickets onto card columns in silence; tickets they disagree on are marked for a talk
+- **Plan the Sprint** — Available days per member, a point budget from past sprints, the chosen tickets, and a move into a Jira sprint
 - **Reference Tickets and Insights** — Pin example tickets per card, search the estimate history, and see how sessions went and how long each card really took in Jira
 - **Export Results** — Download game reports as PDF or CSV
 - **Integrations** — Slack (/poker), a Microsoft Teams tab, Jira (import, save back, issue panel), GitHub, Linear and Azure DevOps
@@ -114,6 +116,7 @@ Full setup guide: [docs/setup-and-development.md](docs/setup-and-development.md)
 - [x] Slack app and a Microsoft Teams tab
 - [x] GitHub, Linear and Azure DevOps import and save-back
 - [x] Facilitation tools, reference tickets and estimation insights
+- [x] Backlog sorting board, sprint capacity and plan
 - [ ] Listings in the Slack App Directory, the Teams Store and the Atlassian Marketplace
 - [x] English, Serbian and German, installable app (PWA)
 - [x] Integration, end-to-end and Lighthouse checks on every pull request
