@@ -202,6 +202,10 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("reactions");
 
+                    b.Property<bool>("SortingOpen")
+                        .HasColumnType("boolean")
+                        .HasColumnName("sorting_open");
+
                     b.HasKey("Id")
                         .HasName("pk_gamesettings");
 
@@ -705,6 +709,23 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("RevealedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("revealed_at");
+
+                    b.Property<string>("SortColumn")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("sort_column");
+
+                    b.Property<bool>("SortContested")
+                        .HasColumnType("boolean")
+                        .HasColumnName("sort_contested");
+
+                    b.Property<Guid?>("SortLastMovedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("sort_last_moved_by");
+
+                    b.Property<int>("SortMoves")
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_moves");
 
                     b.Property<int>("VoteRounds")
                         .HasColumnType("integer")
