@@ -227,7 +227,7 @@ public sealed class TrackerService(
             return TrackerErrors.NotLinked;
         }
 
-        if (!ticket.VotesRevealed) return TrackerErrors.NoEstimate;
+        if (!ticket.IsEstimated) return TrackerErrors.NoEstimate;
         var values = (await votes.GetByTicket(ticketId, null, cancellationToken)).Select(v => v.Value).ToList();
         var estimate = ticket.FinalEstimate ?? TicketStats.From(true, values).Estimate;
         if (string.IsNullOrWhiteSpace(estimate)) return TrackerErrors.NoEstimate;
