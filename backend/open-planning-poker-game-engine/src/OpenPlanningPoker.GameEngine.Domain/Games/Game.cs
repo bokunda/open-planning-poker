@@ -34,6 +34,14 @@ public sealed class Game : Entity<Guid>
 
     public void TransferHost(Guid playerId) => HostId = playerId;
 
+    public const int DefaultSprintDays = 10;
+    public const int MaxSprintDays = 30;
+
+    /// <summary>Working days of the sprint planned in this session (OPP-146); null until the team sets it.</summary>
+    public int? SprintDays { get; private set; }
+
+    public void SetSprintDays(int? days) => SprintDays = days;
+
     /// <summary>
     /// SHA-256 of the one-time link that makes its opener the host, for games started from Slack or Teams
     /// (OPP-22, OPP-23), which have no host until then. Null otherwise.

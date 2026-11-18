@@ -111,6 +111,8 @@
                 </ol>
               }
             </section>
+            <!-- Capacity, budget and the sprint plan (OPP-138) -->
+            <app-team-plan [teamId]="t.id" [sprints]="t.sprints" [members]="t.members" [isOwner]="isOwner" [currentUserId]="currentUserId"></app-team-plan>
             <!-- Session numbers, accuracy and the summary webhook (OPP-117) -->
             <app-team-insights [teamId]="t.id" [sprints]="t.sprints" [isOwner]="isOwner" [webhook]="t.summaryWebhook ?? null"></app-team-insights>
             <!-- Reference tickets and history search (OPP-115) -->

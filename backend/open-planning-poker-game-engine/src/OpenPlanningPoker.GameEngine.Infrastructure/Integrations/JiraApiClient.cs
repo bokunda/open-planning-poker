@@ -144,6 +144,12 @@ public sealed class JiraApiClient(HttpClient http, IOptions<JiraOptions> options
             new { body = AtlassianDocument.FromText(text) }, cancellationToken);
     }
 
+    public async Task MoveIssuesToSprintAsync(string accessToken, string cloudId, long sprintId, IReadOnlyList<string> issueKeys, CancellationToken cancellationToken)
+    {
+        using var _ = await SendAsync(accessToken, HttpMethod.Post,
+            $"{Jira(cloudId)}/rest/agile/1.0/sprint/{sprintId}/issue", new { issues = issueKeys }, cancellationToken);
+    }
+
     private static JiraIssuePage ToPage(JsonElement issues, string siteUrl, IReadOnlyList<JiraField> storyPointFields, int max, bool more)
     {
         var all = issues.EnumerateArray().Select(issue =>

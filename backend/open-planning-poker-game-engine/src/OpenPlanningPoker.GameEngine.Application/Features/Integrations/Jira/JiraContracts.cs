@@ -52,6 +52,9 @@ public interface IJiraApi
     Task SetFieldAsync(string accessToken, string cloudId, string issueKey, string fieldId, double value, CancellationToken cancellationToken);
     Task AddCommentAsync(string accessToken, string cloudId, string issueKey, string text, CancellationToken cancellationToken);
 
+    /// <summary>Moves issues (at most 50) into a sprint (OPP-149).</summary>
+    Task MoveIssuesToSprintAsync(string accessToken, string cloudId, long sprintId, IReadOnlyList<string> issueKeys, CancellationToken cancellationToken);
+
     /// <summary>When work on the issue started (first status change) and when it was resolved (OPP-135).</summary>
     Task<(DateTimeOffset? Started, DateTimeOffset? Done)> GetIssueTimesAsync(string accessToken, string cloudId, string issueKey, CancellationToken cancellationToken);
 }

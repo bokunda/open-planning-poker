@@ -25,6 +25,13 @@ public sealed class TeamRepository(OpenPlanningPokerGameEngineDbContext dbContex
 
     public void RemoveAnchor(TeamAnchor anchor) => DbContext.Set<TeamAnchor>().Remove(anchor);
 
+    public async Task<IReadOnlyList<SprintCapacity>> GetCapacitiesAsync(IReadOnlyCollection<Guid> gameIds, CancellationToken cancellationToken = default) =>
+        await DbContext.Set<SprintCapacity>()
+            .Where(capacity => gameIds.Contains(capacity.GameId))
+            .ToListAsync(cancellationToken);
+
+    public void AddCapacity(SprintCapacity capacity) => DbContext.Set<SprintCapacity>().Add(capacity);
+
     public void AddMember(TeamMember member) => DbContext.Set<TeamMember>().Add(member);
 
     public void RemoveMember(TeamMember member) => DbContext.Set<TeamMember>().Remove(member);
