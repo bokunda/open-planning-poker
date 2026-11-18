@@ -31,6 +31,8 @@ public class RecapTokenTests
 
 public class RecapCardTests
 {
+    public RecapCardTests() => QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
     [Fact]
     public void Card_IsA1200x630Png()
     {
