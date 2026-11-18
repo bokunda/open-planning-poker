@@ -31,6 +31,22 @@ public class JiraServiceTests
     }
 
     [Fact]
+    public async Task MovingToASprint_SendsTheIssuesInBatchesOfFifty()
+    {
+        var service = Service();
+        (await service.MoveToSprintAsync(Player, 7, ["OPP-1"], default)).Error!.Code.ShouldBe("JiraNotConnected");
+
+        await ConnectAsync(service);
+        var keys = Enumerable.Range(1, 120).Select(i => $"OPP-{i}").ToList();
+
+        var moved = await service.MoveToSprintAsync(Player, 7, keys, default);
+
+        moved.Value.ShouldBe(120);
+        _api.SprintMoves.Select(m => m.Keys.Length).ShouldBe([50, 50, 20]);
+        _api.SprintMoves.ShouldAllBe(m => m.SprintId == 7);
+    }
+
+    [Fact]
     public async Task WithoutAnApp_TheIntegrationIsOff()
     {
         var service = Service(configured: false);
@@ -267,6 +283,14 @@ public class JiraServiceTests
         public Task AddCommentAsync(string accessToken, string cloudId, string issueKey, string text, CancellationToken cancellationToken)
         {
             Comment = text;
+            return Task.CompletedTask;
+        }
+
+        public List<(long SprintId, string[] Keys)> SprintMoves = [];
+
+        public Task MoveIssuesToSprintAsync(string accessToken, string cloudId, long sprintId, IReadOnlyList<string> issueKeys, CancellationToken cancellationToken)
+        {
+            SprintMoves.Add((sprintId, [.. issueKeys]));
             return Task.CompletedTask;
         }
 

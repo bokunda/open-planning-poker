@@ -14,6 +14,7 @@ public static class DependencyInjection
         services.AddRedis(configuration);
         CacheExtensions.AddHybridCache(services, true);
         services.AddScoped<IGameAccessService, GameAccessService>();
+        services.AddScoped<Features.Teams.Planning.Loader>();
 
         return services;
     }

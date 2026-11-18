@@ -260,6 +260,10 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("name");
 
+                    b.Property<int?>("SprintDays")
+                        .HasColumnType("integer")
+                        .HasColumnName("sprint_days");
+
                     b.Property<Guid?>("TeamId")
                         .HasColumnType("uuid")
                         .HasColumnName("team_id");
@@ -507,6 +511,47 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                     b.ToTable("tracker_connections", (string)null);
                 });
 
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.SprintCapacity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<double>("Days")
+                        .HasColumnType("double precision")
+                        .HasColumnName("days");
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("game_id");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_sprint_capacities");
+
+                    b.HasIndex("GameId", "PlayerId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_sprint_capacities_game_id_player_id");
+
+                    b.ToTable("sprint_capacities", (string)null);
+                });
+
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.Team", b =>
                 {
                     b.Property<Guid>("Id")
@@ -702,6 +747,10 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("needs_info");
 
+                    b.Property<bool>("Planned")
+                        .HasColumnType("boolean")
+                        .HasColumnName("planned");
+
                     b.Property<int>("Position")
                         .HasColumnType("integer")
                         .HasColumnName("position");
@@ -841,6 +890,16 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasConstraintName("fk_gamesettings_games_game_id");
 
                     b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.SprintCapacity", b =>
+                {
+                    b.HasOne("OpenPlanningPoker.GameEngine.Domain.Games.Game", null)
+                        .WithMany()
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_sprint_capacities_games_game_id");
                 });
 
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.TeamAnchor", b =>

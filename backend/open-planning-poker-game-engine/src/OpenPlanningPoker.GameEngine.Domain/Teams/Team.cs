@@ -81,8 +81,33 @@ public sealed class TeamAnchor : Entity<Guid>
         new(SequentialGuidGenerator.Generate(), teamId, ticketId, value, string.IsNullOrWhiteSpace(note) ? null : note.Trim());
 }
 
+/// <summary>
+/// Days one member is available in the sprint of a planning session (OPP-146). Members without a row are available for
+/// the whole sprint.
+/// </summary>
+public sealed class SprintCapacity : Entity<Guid>
+{
+    private SprintCapacity(Guid id, Guid gameId, Guid playerId, double days) : base(id)
+    {
+        GameId = gameId;
+        PlayerId = playerId;
+        Days = days;
+    }
+
+    public Guid GameId { get; private set; }
+    public Guid PlayerId { get; private set; }
+    public double Days { get; private set; }
+
+    public static SprintCapacity Create(Guid gameId, Guid playerId, double days) =>
+        new(SequentialGuidGenerator.Generate(), gameId, playerId, days);
+
+    public void SetDays(double days) => Days = days;
+}
+
 public interface ITeamRepository : IRepository<Team, Guid>
 {
+    Task<IReadOnlyList<SprintCapacity>> GetCapacitiesAsync(IReadOnlyCollection<Guid> gameIds, CancellationToken cancellationToken = default);
+    void AddCapacity(SprintCapacity capacity);
     Task<IReadOnlyList<TeamAnchor>> GetAnchorsAsync(Guid teamId, CancellationToken cancellationToken = default);
     void AddAnchor(TeamAnchor anchor);
     void RemoveAnchor(TeamAnchor anchor);
