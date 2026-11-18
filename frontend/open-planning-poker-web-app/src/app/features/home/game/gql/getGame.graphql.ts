@@ -16,7 +16,7 @@ const GET_GAME = gql `
             deckSetup
             autoReveal
             asyncVotingEndsAt
-            facilitation { outlierNotes discussionMinutes confidenceCheck reactions }
+            facilitation { outlierNotes discussionMinutes confidenceCheck reactions celebrations theme seasonalCards }
           }
           ... on ApplicationError {
             code

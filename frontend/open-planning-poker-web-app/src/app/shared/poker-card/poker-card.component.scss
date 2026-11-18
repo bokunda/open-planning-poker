@@ -74,9 +74,11 @@
 
 .card-back {
   transform: rotateY(180deg);
+  /* Room themes and seasons (OPP-173) can swap the pattern; the colour comes from --opp-card-back. */
   background:
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.16) 0 4px, transparent 4px 9px),
+    var(--opp-card-back-pattern, repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.16) 0 4px, transparent 4px 9px)),
     var(--opp-card-back);
+  background-size: var(--opp-card-back-pattern-size, auto), auto;
   border: 2px solid rgba(255, 255, 255, 0.55);
   box-shadow: var(--opp-shadow-card);
 }

@@ -17,6 +17,12 @@ export const SET_PLAYER_ROLE = gql`
     setPlayerRole(input: $input) { boolean ${ERRORS} }
   }`;
 
+/** Emoji avatar of the current player (OPP-173); null clears it. */
+export const SET_PLAYER_AVATAR = gql`
+  mutation SetPlayerAvatar($input: SetPlayerAvatarInput!) {
+    setPlayerAvatar(input: $input) { boolean ${ERRORS} }
+  }`;
+
 export const SET_CO_HOST = gql`
   mutation SetCoHost($input: SetCoHostInput!) {
     setCoHost(input: $input) { boolean ${ERRORS} }

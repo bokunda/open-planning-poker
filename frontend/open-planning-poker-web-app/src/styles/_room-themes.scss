@@ -1,0 +1,56 @@
+/*
+  Room themes (OPP-173): the host picks the table colour and card back; everyone in the room sees it.
+  Only the table tokens change, so the rest of the app keeps its look. Table text (--opp-felt-ink) stays at
+  WCAG AA (4.5:1 or more) on every felt, in light and dark mode. "classic" uses the defaults in _variables.scss.
+*/
+
+.room-theme-forest {
+  --opp-felt: #13322a;
+  --opp-felt-edge: #1d4a3d;
+  --opp-felt-ink: #e3f6ee;
+  --opp-card-back: #1f7a5a;
+}
+
+.room-theme-ocean {
+  --opp-felt: #0f2a40;
+  --opp-felt-edge: #18405f;
+  --opp-felt-ink: #e2f1fc;
+  --opp-card-back: #1d6fa8;
+}
+
+.room-theme-sunset {
+  --opp-felt: #3a1a22;
+  --opp-felt-edge: #562632;
+  --opp-felt-ink: #ffe9e2;
+  --opp-card-back: #c4512f;
+}
+
+.room-theme-midnight {
+  --opp-felt: #0c0d14;
+  --opp-felt-edge: #1d1f2c;
+  --opp-felt-ink: #eceefa;
+  --opp-card-back: #3b4263;
+}
+
+.room-theme-paper {
+  --opp-felt: #efe9dc;
+  --opp-felt-edge: #ddd3bf;
+  --opp-felt-ink: #2b2418;
+  --opp-card-back: #8a5a2b;
+}
+
+.dark-theme .room-theme-paper {
+  --opp-felt: #2a261f;
+  --opp-felt-edge: #3b352b;
+  --opp-felt-ink: #f3ecdf;
+  --opp-card-back: #a8743f;
+}
+
+/* Seasonal card backs (winter holidays: 1 December – 6 January), on unless the host turns them off. */
+.room-season-winter {
+  --opp-card-back-pattern:
+    radial-gradient(circle at 25% 30%, rgba(255, 255, 255, 0.55) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.45) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 45% 85%, rgba(255, 255, 255, 0.35) 0 1px, transparent 1.5px);
+  --opp-card-back-pattern-size: 18px 18px;
+}

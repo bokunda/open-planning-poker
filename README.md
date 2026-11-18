@@ -26,6 +26,7 @@
 - **Plan the Sprint** — Available days per member, a point budget from past sprints, the chosen tickets, and a move into a Jira sprint
 - **Reference Tickets and Insights** — Pin example tickets per card, search the estimate history, and see how sessions went and how long each card really took in Jira
 - **Export Results** — Download game reports as PDF or CSV
+- **Share the Recap** — A read-only recap link with a rich preview in Slack, Teams and email; confetti on consensus, room themes and emoji avatars
 - **Integrations** — Slack (/poker), a Microsoft Teams tab, Jira (import, save back, issue panel), GitHub, Linear and Azure DevOps
 - **No Registration Required** — Anonymous usernames, no passwords, no personal data
 - **English, Serbian and German** — The app follows the browser language and can be switched in the menu; the website, its guides and the changelog are translated too
@@ -117,6 +118,7 @@ Full setup guide: [docs/setup-and-development.md](docs/setup-and-development.md)
 - [x] GitHub, Linear and Azure DevOps import and save-back
 - [x] Facilitation tools, reference tickets and estimation insights
 - [x] Backlog sorting board, sprint capacity and plan
+- [x] Shareable session recaps, room themes and celebrations
 - [ ] Listings in the Slack App Directory, the Teams Store and the Atlassian Marketplace
 - [x] English, Serbian and German, installable app (PWA)
 - [x] Integration, end-to-end and Lighthouse checks on every pull request
@@ -128,7 +130,11 @@ Open Planning Poker is free, with no ads and no paid plan. If it saves your team
 - [Sponsor on GitHub](https://github.com/sponsors/bokunda) (no fee)
 - [Buy me a coffee on Ko-fi](https://ko-fi.com/bpiskulic) (one-off, no account needed)
 
-Stars, bug reports and pull requests help just as much.
+Stars, bug reports and pull requests help just as much. If your team uses it, you can add the badge to a README or wiki:
+
+[![We estimate with Open Planning Poker](https://openplanningpoker.com/images/badge-light.svg)](https://openplanningpoker.com/?utm_source=badge)
+
+The Markdown and HTML snippets (light and dark) are on the [support page](https://openplanningpoker.com/support/#badge).
 
 ## About the creator
 

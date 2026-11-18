@@ -6,6 +6,9 @@
   <!-- Landing (no game) -->
   @if (!game && !isLoading) {
     <div class="game-landing" @fadeSlide>
+      @if (showInviteCard) {
+        <app-invite-card (start)="handleInviteStart()" (dismiss)="handleInviteDismiss()"></app-invite-card>
+      }
       <div class="landing-grid">
         <div class="landing-copy">
           @if (gameNotFound) {
@@ -55,7 +58,8 @@
   so the landing page does not download it. -->
   @if (game) {
     @defer (on immediate) {
-    <div class="game-dashboard" @fadeSlide>
+    <div class="game-dashboard" [ngClass]="roomLookClasses" @fadeSlide>
+      <app-celebration [burst]="celebrationBurst" [streak]="consensusStreak"></app-celebration>
       <!-- Main column -->
       <div class="game-main">
         <app-game-details
@@ -138,6 +142,10 @@
             (onDeleteTicket)="handleDeleteTicket($event)"
             (onReorder)="handleReorderTickets($event)"
           ></app-voting-history>
+        }
+
+        @if (showInviteCard) {
+          <app-invite-card (start)="handleInviteStart()" (dismiss)="handleInviteDismiss()"></app-invite-card>
         }
       </div>
 

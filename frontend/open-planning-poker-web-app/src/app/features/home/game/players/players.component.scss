@@ -156,3 +156,29 @@
 }
 
 ::ng-deep .player-menu-danger { color: var(--opp-danger); }
+
+/* Emoji avatars (OPP-173). */
+.player-avatar--emoji {
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+.menu-emoji {
+  display: inline-block;
+  width: 24px;
+  margin-right: 16px;
+  text-align: center;
+  font-size: 1.15rem;
+}
+
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 40px);
+  gap: 2px;
+  padding: var(--opp-space-2);
+}
+
+.avatar-choice {
+  font-size: 1.25rem;
+  line-height: 1;
+}

@@ -19,8 +19,8 @@
         @for (player of players?.items; track trackByPlayerId(i, player); let i = $index) {
           <div class="player-row"
             [class.player-row--me]="player.id === currentUserId">
-            <div class="player-avatar" [class.player-avatar--voted]="getVoteData(player.id)">
-              {{ player.name?.charAt(0) || '?' }}
+            <div class="player-avatar" [class.player-avatar--voted]="getVoteData(player.id)" [class.player-avatar--emoji]="!!asRoomPlayer(player).avatar">
+              {{ asRoomPlayer(player).avatar || player.name?.charAt(0) || '?' }}
             </div>
             <span class="player-name">
               {{ player.name }}
@@ -55,6 +55,12 @@
     <mat-menu #playerMenu="matMenu" xPosition="before">
       <ng-template matMenuContent let-player="player">
         @if (asRoomPlayer(player); as p) {
+          @if (p.id === currentUserId) {
+            <button mat-menu-item [matMenuTriggerFor]="avatarMenu">
+              <span class="menu-emoji" aria-hidden="true">{{ p.avatar || '🙂' }}</span>
+              <span>{{ 'players.pickAvatar' | transloco }}</span>
+            </button>
+          }
           @if (!isObserver(p)) {
             <button mat-menu-item (click)="onPlayerAction.emit({ kind: 'role', playerId: p.id, role: 'OBSERVER' })">
               <mat-icon svgIcon="opp-observe"></mat-icon>
@@ -86,6 +92,17 @@
           }
         }
       </ng-template>
+    </mat-menu>
+    <mat-menu #avatarMenu="matMenu" class="avatar-menu">
+      <div class="avatar-grid" role="group" [attr.aria-label]="'players.pickAvatar' | transloco">
+        @for (emoji of avatars; track emoji) {
+          <button mat-icon-button class="avatar-choice" (click)="onPlayerAction.emit({ kind: 'avatar', playerId: currentUserId, avatar: emoji })"
+            [attr.aria-label]="emoji">{{ emoji }}</button>
+        }
+      </div>
+      <button mat-menu-item (click)="onPlayerAction.emit({ kind: 'avatar', playerId: currentUserId, avatar: null })">
+        <span>{{ 'players.initials' | transloco }}</span>
+      </button>
     </mat-menu>
     @if (!players?.items?.length) {
       <div class="players-empty">
