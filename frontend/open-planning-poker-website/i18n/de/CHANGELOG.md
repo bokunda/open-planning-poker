@@ -6,6 +6,25 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+## [3.6.0] — 2026-11-18
+
+Teilen, wie eine Sitzung gelaufen ist, und dem Raum den Look des eigenen Teams geben.
+
+### Hinzugefügt
+- **Rückblick teilen**: Der Host schaltet im Raum-Menü einen schreibgeschützten Link ein. Er zeigt die Tickets, die endgültigen Schätzungen, die Summe der Punkte, die Konsens-Quote und die Dauer der Diskussion. Keine Beschreibungen, Notizen oder einzelnen Stimmen; Namen nur, wenn der Host sie erlaubt. Wird das Teilen beendet, funktioniert der Link nicht mehr
+- **Link-Vorschau**: Ein Rückblick-Link in Slack, Teams oder E-Mail zeigt eine Karte mit dem Raumnamen und drei Zahlen. Ein Einladungslink zeigt „„Raumname” beitreten — Planning Poker” in der Sprache des Besuchers
+- **Konfetti bei Konsens**, wenn alle dieselbe Karte wählen, ab dem dritten Mal mit „3 in Folge!”. Beachtet reduzierte Bewegung; der Host kann es ausschalten
+- **Raum-Look**: sechs Tisch-Themes, die alle im Raum sehen, Winter-Kartenrücken vom 1. Dezember bis 6. Januar und ein Emoji-Avatar, den jeder Spieler wählt
+- **Mit dem eigenen Team spielen**: Nach einer Sitzung sieht ein Gast höchstens einmal pro Woche eine Karte, die einen neuen Raum mit demselben Deck öffnet
+- **Badge** für README oder Website, hell und dunkel, mit Markdown und HTML auf der Support-Seite
+
+### Behoben
+- Das Ändern einer Diskussionsoption im Raum-Menü (Notizen, Reaktionen, Timer) schlug auf dem Server fehl
+
+### Für Entwickler
+- Migration `AddRecapsAndRoomLook`
+- `GET /recap/{token}/card.png` in der Game Engine
+
 ## [3.5.0] — 2026-11-18
 
 Ein langes Backlog in Minuten sortieren und mit den eigenen Zahlen des Teams planen, was in den Sprint passt.

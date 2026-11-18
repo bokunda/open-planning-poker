@@ -1,4 +1,24 @@
-<div class="changelog-content"><h2>[3.5.0] — 2026-11-18</h2>
+<div class="changelog-content"><h2>[3.6.0] — 2026-11-18</h2>
+<p>Share how a session went, and make the room feel like the team&#39;s own.</p>
+<h3>Added</h3>
+<ul>
+<li><strong>Share the recap</strong>: the host turns on a read-only link from the room menu. It shows the tickets, final estimates, total points, the consensus rate and how long the talk took. No descriptions, notes or single votes; names only if the host allows them. Turning sharing off stops the link</li>
+<li><strong>Link previews</strong>: a recap link in Slack, Teams or email shows a card with the room name and three numbers. A game invite link shows "Join „room name” — planning poker" in the visitor&#39;s language</li>
+<li><strong>Confetti on consensus</strong> when everyone picks the same card, with a "3 in a row!" note from the third one. Respects reduced motion; the host can turn it off</li>
+<li><strong>Room look</strong>: six table themes everyone in the room sees, winter card backs from 1 December to 6 January, and an emoji avatar each player picks</li>
+<li><strong>Run this with your team</strong>: after a session a guest sees a card, at most once a week, that opens a new room with the same deck</li>
+<li><strong>Badge</strong> for a README or website, light and dark, with Markdown and HTML on the support page</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Changing a discussion option in the room menu (notes, reactions, timer) failed on the server</li>
+</ul>
+<h3>Developers</h3>
+<ul>
+<li>Migration <code>AddRecapsAndRoomLook</code></li>
+<li><code>GET /recap/{token}/card.png</code> on the game engine</li>
+</ul>
+<h2>[3.5.0] — 2026-11-18</h2>
 <p>Sort a long backlog in minutes, and plan what fits in the sprint from the team&#39;s own numbers.</p>
 <h3>Added</h3>
 <ul>

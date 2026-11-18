@@ -6,6 +6,25 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+## [3.6.0] — 2026-11-18
+
+Podeli kako je sesija prošla i učini sobu da izgleda kao soba tvog tima.
+
+### Dodato
+- **Podeli rezime**: host iz menija sobe uključuje link koji može samo da se čita. Prikazuje tikete, konačne procene, ukupno poena, procenat konsenzusa i trajanje diskusije. Bez opisa, beleški i pojedinačnih glasova; imena samo ako ih host dozvoli. Kad se deljenje isključi, link prestaje da radi
+- **Pregled linka**: link do rezimea u Slacku, Teams-u ili mailu prikazuje karticu sa imenom sobe i tri broja. Link poziva u igru prikazuje „Pridruži se „ime sobe” — planning poker” na jeziku posetioca
+- **Konfete na konsenzus** kad svi izaberu istu kartu, uz „3 zaredom!” od trećeg puta. Poštuje smanjene animacije; host može da ih isključi
+- **Izgled sobe**: šest tema stola koje svi u sobi vide, zimske poleđine karata od 1. decembra do 6. januara i emoji avatar koji svaki igrač bira
+- **Pokreni ovo sa svojim timom**: posle sesije gost vidi karticu, najviše jednom nedeljno, koja otvara novu sobu sa istim špilom
+- **Bedž** za README ili sajt, svetli i tamni, sa Markdown i HTML kodom na stranici za podršku
+
+### Ispravljeno
+- Promena opcije diskusije u meniju sobe (beleške, reakcije, tajmer) nije uspevala na serveru
+
+### Za programere
+- Migracija `AddRecapsAndRoomLook`
+- `GET /recap/{token}/card.png` na game engine-u
+
 ## [3.5.0] — 2026-11-18
 
 Rasporedi dugačak backlog za nekoliko minuta i isplaniraj šta staje u sprint na osnovu brojki svog tima.
