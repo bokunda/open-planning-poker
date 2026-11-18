@@ -15,6 +15,7 @@ public sealed class ActionRateLimiter : IDisposable
     public const string Vote = nameof(Vote);
     public const string JoinGame = nameof(JoinGame);
     public const string Reaction = nameof(Reaction);
+    public const string SortMove = nameof(SortMove);
 
     private static readonly Dictionary<string, (int Permits, TimeSpan Window)> Policies = new()
     {
@@ -27,6 +28,8 @@ public sealed class ActionRateLimiter : IDisposable
         [JoinGame] = (60, TimeSpan.FromMinutes(1)),
         // A burst of reactions is fine; a stream of them is noise.
         [Reaction] = (20, TimeSpan.FromMinutes(1)),
+        // Sorting a long backlog moves many tickets quickly (OPP-142).
+        [SortMove] = (240, TimeSpan.FromMinutes(1)),
     };
 
     public static ApplicationError RateLimited => new("RateLimited", "Too many requests. Please wait a moment and try again.");

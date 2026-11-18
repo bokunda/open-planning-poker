@@ -14,6 +14,9 @@ public enum GameChangeKind
 
     /// <summary>A player was removed; <see cref="GameChanged.PlayerId"/> says who.</summary>
     PlayerRemoved,
+
+    /// <summary>The sorting board was opened, closed or a ticket moved on it (OPP-142): reload the board.</summary>
+    Sorting,
 }
 
 /// <summary>

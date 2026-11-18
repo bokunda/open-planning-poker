@@ -43,6 +43,24 @@ public sealed class Ticket : Entity<Guid>
     /// <summary>The team needs more information before it can estimate this ticket (OPP-126).</summary>
     public bool NeedsInfo { get; private set; }
 
+    /// <summary>Card column of the ticket on the sorting board; null while it is unsorted (OPP-142).</summary>
+    public string? SortColumn { get; private set; }
+
+    /// <summary>How many times the ticket was moved on the sorting board since the mark was last cleared.</summary>
+    public int SortMoves { get; private set; }
+
+    /// <summary>The team keeps moving this ticket, so it needs a talk (OPP-143).</summary>
+    public bool SortContested { get; private set; }
+
+    /// <summary>Player who moved the ticket last; a different player moving it again means disagreement.</summary>
+    public Guid? SortLastMovedBy { get; private set; }
+
+    /// <summary>Has an estimate: the cards were turned over, or a final estimate was set (also from the sorting board).</summary>
+    public bool IsEstimated => VotesRevealed || FinalEstimate is not null;
+
+    /// <summary>A ticket moved this many times is contested.</summary>
+    public const int ContestedAfterMoves = 3;
+
     public ICollection<Vote>? Votes;
 
     public Game Game { get; set; } = null!;
@@ -92,7 +110,60 @@ public sealed class Ticket : Entity<Guid>
         if (FinalEstimate is not null)
         {
             NeedsInfo = false;
+            // A ticket sent from the sorting board to a vote lands in the column of the agreed card.
+            if (SortColumn is not null || SortContested)
+            {
+                SortColumn = FinalEstimate;
+                SortContested = false;
+            }
         }
+    }
+
+    /// <summary>
+    /// Moves the ticket to a card column of the sorting board (null = back to unsorted). Returns false when it is
+    /// already there. The ticket becomes contested after <see cref="ContestedAfterMoves"/> moves, or when another
+    /// player moves it out of a column someone else chose.
+    /// </summary>
+    public bool MoveOnBoard(string? column, Guid playerId)
+    {
+        column = string.IsNullOrWhiteSpace(column) ? null : column.Trim();
+        if (column == SortColumn)
+        {
+            return false;
+        }
+
+        var disagrees = SortColumn is not null && SortLastMovedBy is { } last && last != playerId;
+        SortColumn = column;
+        SortMoves++;
+        SortLastMovedBy = playerId;
+        if (disagrees || SortMoves >= ContestedAfterMoves)
+        {
+            SortContested = true;
+        }
+
+        return true;
+    }
+
+    /// <summary>The team agreed on the column: clears the mark and starts counting moves again.</summary>
+    public void ClearContested()
+    {
+        SortContested = false;
+        SortMoves = 0;
+        SortLastMovedBy = null;
+    }
+
+    /// <summary>Turns the board column into the final estimate (OPP-144). False when there is nothing to apply.</summary>
+    public bool ApplySortedEstimate()
+    {
+        if (SortColumn is null || SortContested || FinalEstimate is not null)
+        {
+            return false;
+        }
+
+        FinalEstimate = SortColumn;
+        EstimatedAt = DateTimeOffset.UtcNow;
+        NeedsInfo = false;
+        return true;
     }
 
     public void MarkNeedsInfo(bool needsInfo) => NeedsInfo = needsInfo;

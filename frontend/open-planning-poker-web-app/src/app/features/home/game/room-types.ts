@@ -7,7 +7,7 @@ import { GamePlayer, Ticket } from '../../../graphql/graphql-gateway.service';
 
 export type PlayerRole = 'PLAYER' | 'OBSERVER';
 
-export type GameChangeKind = 'GAME' | 'PLAYERS' | 'TICKETS' | 'PLAYER_REMOVED';
+export type GameChangeKind = 'GAME' | 'PLAYERS' | 'TICKETS' | 'PLAYER_REMOVED' | 'SORTING';
 
 export interface GameChanged {
   gameId: string;

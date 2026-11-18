@@ -175,7 +175,7 @@ public static class Teams
                 var gameTickets = (await tickets.GetByGame(game.Id, cancellationToken)).ToList();
                 var gameVotes = await votes.GetByGame(game.Id, null, cancellationToken);
                 var estimates = gameTickets
-                    .Where(ticket => ticket.VotesRevealed)
+                    .Where(ticket => ticket.IsEstimated)
                     .Select(ticket => EstimateOf(ticket, gameVotes.Where(vote => vote.TicketId == ticket.Id).Select(vote => vote.Value).ToList()))
                     .Where(estimate => estimate is not null)
                     .ToList();

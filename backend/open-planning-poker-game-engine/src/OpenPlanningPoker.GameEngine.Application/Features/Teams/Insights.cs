@@ -76,7 +76,7 @@ public sealed class InsightsService(
 
         var estimated = 0;
         var points = 0d;
-        foreach (var ticket in gameTickets.Where(t => t.VotesRevealed))
+        foreach (var ticket in gameTickets.Where(t => t.IsEstimated))
         {
             var estimate = Teams.EstimateOf(ticket, [.. gameVotes.Where(v => v.TicketId == ticket.Id).Select(v => v.Value)]);
             if (estimate is null) continue;

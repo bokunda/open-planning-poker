@@ -40,6 +40,8 @@ import { VotingHistoryComponent } from './voting-history/voting-history.componen
 import { PlayersComponent } from './players/players.component';
 import { ChatComponent } from './chat/chat.component';
 import { AsyncVotingComponent } from './async-voting/async-voting.component';
+import { SortingBoardComponent } from './sorting/sorting-board.component';
+import { APPLY_SORTED_ESTIMATES, CLEAR_SORT_CONTESTED, MOVE_SORTED_TICKET, SET_SORTING_OPEN, SORTING_BOARD, SortedEstimatesApplied, SortingBoard } from './gql/sorting.graphql';
 import { finalize, map } from 'rxjs';
 import type { DocumentNode } from 'graphql';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -64,7 +66,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent, AsyncVotingComponent],
+  imports: [TranslocoPipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent, AsyncVotingComponent, SortingBoardComponent],
   animations: [
     trigger('fadeSlide', [
       transition(':enter', [
@@ -179,6 +181,13 @@ export class GameComponent implements OnInit {
       this.deckCache = source ? source.split(',') : [];
     }
     return this.deckCache;
+  }
+
+  /** Sorting board for long backlogs (OPP-137); null until loaded. */
+  sortingBoard: SortingBoard | null = null;
+
+  get sortingOpen(): boolean {
+    return !!this.sortingBoard?.open;
   }
 
   /** Players vote on all tickets on their own until the window ends (async estimation). */
@@ -451,6 +460,7 @@ export class GameComponent implements OnInit {
       next: () => {
         this.chatGameId = gameId;
         this.getGamePlayers(gameId);
+        this.loadSortingBoard(gameId);
         this.claimHostFromLink(gameId);
       },
       error: (err) => {
@@ -876,6 +886,9 @@ export class GameComponent implements OnInit {
           case 'TICKETS':
             this.getTickets(gameId);
             break;
+          case 'SORTING':
+            this.loadSortingBoard(gameId);
+            break;
           case 'PLAYER_REMOVED':
             if (change.playerId === this.currentUserId) {
               this.notify(this.i18n.translate('room.removedYou'));
@@ -1071,6 +1084,88 @@ export class GameComponent implements OnInit {
     a.download = `opp_${this.game.name.replace(/[^\p{L}\p{N}]+/gu, '_')}_${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  // --- Sorting board (OPP-137) ---
+
+  private loadSortingBoard(gameId: string): void {
+    this.apollo.query<{ sortingBoard: SortingBoard & { code?: string } }>({
+      query: SORTING_BOARD, variables: { gameId }, fetchPolicy: 'network-only',
+    }).subscribe({
+      next: ({ data }) => {
+        const board = data?.sortingBoard;
+        if (board && Array.isArray(board.columns) && gameId === this.game?.id) {
+          this.sortingBoard = board;
+        }
+      },
+      error: (err) => console.error('Sorting board error:', err),
+    });
+  }
+
+  handleToggleSorting(open: boolean): void {
+    const gameId = this.game?.id;
+    if (!gameId) return;
+    this.runMutation(SET_SORTING_OPEN, 'setSortingOpen', { gameId, open }, () => this.loadSortingBoard(gameId));
+  }
+
+  handleSortMove(move: { ticketId: string; column: string | null }): void {
+    const gameId = this.game?.id;
+    if (!gameId) return;
+    // On failure the board reloads, so the card goes back to where the server has it.
+    this.runMutation(MOVE_SORTED_TICKET, 'moveSortedTicket', { ticketId: move.ticketId, column: move.column },
+      undefined, () => this.loadSortingBoard(gameId));
+  }
+
+  handleClearContested(ticketId: string): void {
+    const gameId = this.game?.id;
+    if (!gameId) return;
+    this.runMutation(CLEAR_SORT_CONTESTED, 'clearSortContested', { ticketId }, () => this.loadSortingBoard(gameId));
+  }
+
+  /** A contested ticket goes to a normal vote: the board closes and the ticket becomes the current one. */
+  handleVoteOnSorted(ticketId: string): void {
+    const gameId = this.game?.id;
+    if (!gameId) return;
+    this.runMutation(SET_SORTING_OPEN, 'setSortingOpen', { gameId, open: false }, () => {
+      this.loadSortingBoard(gameId);
+      this.handleReVoteTicket(ticketId);
+    });
+  }
+
+  handleApplySorted(): void {
+    const gameId = this.game?.id;
+    if (!gameId) return;
+    const contested = this.sortingBoard?.tickets.filter(t => t.contested && !this.tickets.find(x => x.id === t.ticketId && (x as RoomTicket).finalEstimate)).length ?? 0;
+    const sorted = this.sortingBoard?.tickets.filter(t => t.column && !t.contested && !this.tickets.find(x => x.id === t.ticketId && (x as RoomTicket).finalEstimate)).length ?? 0;
+    this.confirm({
+      title: this.i18n.translate('sorting.applyTitle'),
+      message: this.i18n.translate('sorting.applyMessage', { count: sorted }) + (contested ? ' ' + this.i18n.translate('sorting.applyContested', { count: contested }) : ''),
+      confirmLabel: this.i18n.translate('sorting.apply'),
+    }, () => {
+      this.apollo.mutate<{ applySortedEstimates: { sortedEstimatesApplied?: SortedEstimatesApplied; errors?: { message: string }[] } }>({
+        mutation: APPLY_SORTED_ESTIMATES, variables: { input: { gameId } },
+      }).subscribe({
+        next: ({ data }) => {
+          const payload = data?.applySortedEstimates;
+          if (payload?.errors?.length) {
+            this.notify(payload.errors[0].message);
+            return;
+          }
+          this.notify(this.i18n.translate('sorting.applied', { count: payload?.sortedEstimatesApplied?.applied ?? 0 }));
+          this.getTickets(gameId);
+          this.loadSortingBoard(gameId);
+        },
+        error: () => this.notify(this.i18n.translate('common.tryAgainNetwork')),
+      });
+    });
+  }
+
+  /** Saves every final estimate of the game to its tracker (OPP-145). */
+  async handleSaveAllToTracker(): Promise<void> {
+    const { SaveAllDialogComponent } = await import('./sorting/save-all-dialog.component');
+    this.dialog.open(SaveAllDialogComponent, {
+      width: '520px', maxWidth: '95vw', data: { tickets: this.tickets as RoomTicket[] },
+    });
   }
 
   /** Runs a room mutation; shows the server's error message (e.g. not allowed) as a snackbar. */

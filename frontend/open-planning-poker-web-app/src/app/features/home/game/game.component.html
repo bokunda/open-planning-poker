@@ -68,7 +68,24 @@
           (onExportCsv)="handleExportCsv()"
         (onUpdateOptions)="handleUpdateOptions($event)"
         (onUpdateFacilitation)="handleUpdateFacilitation($event)"
-        (onPostSummary)="handlePostSummary()"></app-game-details>
+        (onPostSummary)="handlePostSummary()"
+        [sortingOpen]="sortingOpen"
+        (onToggleSorting)="handleToggleSorting($event)"
+        (onSaveAllToTracker)="handleSaveAllToTracker()"></app-game-details>
+
+        <!-- Sorting board for long backlogs (OPP-137): replaces the table while it is open. -->
+        @if (sortingOpen && !asyncVotingOpen) {
+          <app-sorting-board
+            [tickets]="$any(tickets)"
+            [board]="sortingBoard"
+            [isHost]="isHost"
+            [isObserver]="isObserver"
+            (move)="handleSortMove($event)"
+            (clearContested)="handleClearContested($event)"
+            (voteOn)="handleVoteOnSorted($event)"
+            (apply)="handleApplySorted()"
+            (close)="handleToggleSorting(false)"></app-sorting-board>
+        }
 
         <!-- Async estimation: everyone votes on the tickets on their own until the window ends. -->
         @if (asyncVotingOpen) {
@@ -85,7 +102,7 @@
           (importTickets)="handleImportTickets()"></app-async-voting>
         }
 
-        @if (!asyncVotingOpen) {
+        @if (!asyncVotingOpen && !sortingOpen) {
           <app-voting
             [gameId]="game.id"
             [players]="players"
@@ -110,7 +127,7 @@
           ></app-voting>
         }
 
-        @if (!asyncVotingOpen) {
+        @if (!asyncVotingOpen && !sortingOpen) {
           <app-voting-history
             [tickets]="tickets"
             [votesRevealed]="votesRevealed"

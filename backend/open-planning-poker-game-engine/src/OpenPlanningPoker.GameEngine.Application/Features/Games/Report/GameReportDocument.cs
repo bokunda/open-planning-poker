@@ -164,7 +164,8 @@ public sealed class GameReportDocument(ReportModel model) : IDocument
                 column.Item().Text(ticket.Description).FontSize(8.5f).FontColor(TextSecondary);
             }
 
-            if (stats.Spread is VoteSpread.NotRevealed or VoteSpread.NoVotes)
+            // A ticket estimated on the sorting board has a final estimate but no revealed votes (OPP-144).
+            if (ticket.FinalEstimate is null && stats.Spread is VoteSpread.NotRevealed or VoteSpread.NoVotes)
             {
                 column.Item().Text(stats.Spread == VoteSpread.NotRevealed ? T("report.notRevealed") : T("report.nobodyVoted"))
                     .FontSize(9).FontColor(TextMuted);

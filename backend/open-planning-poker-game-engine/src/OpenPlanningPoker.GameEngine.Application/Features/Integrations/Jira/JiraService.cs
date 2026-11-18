@@ -220,7 +220,7 @@ public sealed class JiraService(
     {
         var ticket = await tickets.GetByIdAsync(ticketId, cancellationToken);
         if (ticket?.ExternalKey is null) return JiraErrors.NotLinked;
-        if (!ticket.VotesRevealed) return JiraErrors.NoEstimate;
+        if (!ticket.IsEstimated) return JiraErrors.NoEstimate;
 
         var ticketVotes = await votes.GetByTicket(ticketId, null, cancellationToken);
         var values = ticketVotes.Select(vote => vote.Value).ToList();

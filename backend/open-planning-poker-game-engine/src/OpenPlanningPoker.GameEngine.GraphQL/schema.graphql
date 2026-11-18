@@ -34,6 +34,11 @@ type ApplicationError implements Error {
   message: String!
 }
 
+type ApplySortedEstimatesPayload {
+  sortedEstimatesApplied: SortedEstimatesApplied
+  errors: [ApplySortedEstimatesError!]
+}
+
 type BaseUserProfile {
   id: UUID!
   userName: String!
@@ -58,6 +63,11 @@ type ChatMessage {
 type ClaimGameHostPayload {
   boolean: Boolean
   errors: [ClaimGameHostError!]
+}
+
+type ClearSortContestedPayload {
+  sortedTicket: SortedTicket
+  errors: [ClearSortContestedError!]
 }
 
 type CompleteJiraConnectionPayload {
@@ -300,6 +310,11 @@ type LeaveTeamPayload {
   errors: [LeaveTeamError!]
 }
 
+type MoveSortedTicketPayload {
+  sortedTicket: SortedTicket
+  errors: [MoveSortedTicketError!]
+}
+
 "Base Game Engine mutation."
 type Mutation {
   "Sends a chat message to a game. Only players of the game can send messages."
@@ -374,6 +389,17 @@ type Mutation {
   until asyncVotingEndsAt; null or a past time switches to meeting mode). Host and co-hosts.
   """
   updateGameOptions(input: UpdateGameOptionsInput!): UpdateGameOptionsPayload! @cost(weight: "10")
+  "Opens or closes the sorting board for everyone in the room. Host and co-hosts."
+  setSortingOpen(input: SetSortingOpenInput!): SetSortingOpenPayload! @cost(weight: "10")
+  "Moves a ticket to a card column (an empty column moves it back to unsorted). Players, not observers."
+  moveSortedTicket(input: MoveSortedTicketInput!): MoveSortedTicketPayload! @cost(weight: "10")
+  "Clears the \"discuss\" mark of a ticket once the team agrees. Host and co-hosts."
+  clearSortContested(input: ClearSortContestedInput!): ClearSortContestedPayload! @cost(weight: "10")
+  """
+  Sets the final estimate of every sorted ticket without one to its column's card. Contested and unsorted tickets
+  are left as they are. Host and co-hosts.
+  """
+  applySortedEstimates(input: ApplySortedEstimatesInput!): ApplySortedEstimatesPayload! @cost(weight: "10")
   "Posts the session summary to the game's Slack thread or the team's webhook. Host and co-hosts."
   postSessionSummary(input: PostSessionSummaryInput!): PostSessionSummaryPayload! @cost(weight: "10")
   "Sets (or clears, with null) the Slack or Teams incoming webhook for session summaries. Team owner."
@@ -479,6 +505,8 @@ type Query {
   ping: String! @cost(weight: "10")
   "Gets Game Settings."
   settings(gameId: UUID!): SettingsResult! @cost(weight: "10")
+  "The sorting board of a game. Players of the game only."
+  sortingBoard(gameId: UUID!): SortingBoardResult! @cost(weight: "10")
   "Cycle times per card from Jira, with the caller's Jira connection. Team members."
   teamAccuracy(teamId: UUID!): TeamAccuracyResult! @cost(weight: "10")
   "Preview of the session summary and where it would go. Host and co-hosts."
@@ -579,6 +607,11 @@ type SetPlayerRolePayload {
   errors: [SetPlayerRoleError!]
 }
 
+type SetSortingOpenPayload {
+  sortingBoardInfo: SortingBoardInfo
+  errors: [SetSortingOpenError!]
+}
+
 type SetTeamSummaryWebhookPayload {
   boolean: Boolean
   errors: [SetTeamSummaryWebhookError!]
@@ -604,6 +637,34 @@ type Settings {
   autoReveal: Boolean!
   "End of the async voting window; null when the room is in meeting mode."
   asyncVotingEndsAt: DateTime
+}
+
+"How many tickets got a final estimate from the board (OPP-144)."
+type SortedEstimatesApplied {
+  applied: Int!
+  "Contested tickets, skipped until the team settles them."
+  contested: Int!
+  "Tickets still in the unsorted column."
+  unsorted: Int!
+}
+
+"Place of one ticket on the sorting board (OPP-142)."
+type SortedTicket {
+  ticketId: UUID!
+  "Card column; null while the ticket is unsorted."
+  column: String
+  "Moves since the \"discuss\" mark was last cleared."
+  moves: Int!
+  "The team keeps moving the ticket, so it needs a talk (OPP-143)."
+  contested: Boolean!
+}
+
+"The sorting board of a game. Tickets that were never moved are not listed (they are unsorted)."
+type SortingBoardInfo {
+  open: Boolean!
+  "Card columns in deck order: every card except \"?\" and the break cards."
+  columns: [String!]!
+  tickets: [SortedTicket!]!
 }
 
 "One planning session of a team. Points add up the estimates of its revealed tickets."
@@ -879,7 +940,11 @@ type VotesRevealed {
   votes: [Vote!]!
 }
 
+union ApplySortedEstimatesError = ApplicationError
+
 union ClaimGameHostError = ApplicationError
+
+union ClearSortContestedError = ApplicationError
 
 union CompleteJiraConnectionError = ApplicationError
 
@@ -935,6 +1000,8 @@ union LeaveGameError = ApplicationError
 
 union LeaveTeamError = ApplicationError
 
+union MoveSortedTicketError = ApplicationError
+
 union PinTeamAnchorError = ApplicationError
 
 union PostSessionSummaryError = ApplicationError
@@ -967,6 +1034,8 @@ union SetFinalEstimateError = ApplicationError
 
 union SetPlayerRoleError = ApplicationError
 
+union SetSortingOpenError = ApplicationError
+
 union SetTeamSummaryWebhookError = ApplicationError
 
 union SetTicketNeedsInfoError = ApplicationError
@@ -976,6 +1045,8 @@ union SetVoteNoteError = ApplicationError
 union SettingsDetailsResult = Settings | ApplicationError
 
 union SettingsResult = Settings | ApplicationError
+
+union SortingBoardResult = SortingBoardInfo | ApplicationError
 
 union StartTimerError = ApplicationError
 
@@ -1015,9 +1086,17 @@ union UpdateTicketError = ApplicationError
 
 union VotesResult = ApiCollectionOfVote | ApplicationError
 
+input ApplySortedEstimatesInput {
+  gameId: UUID!
+}
+
 input ClaimGameHostInput {
   gameId: UUID!
   token: String!
+}
+
+input ClearSortContestedInput {
+  ticketId: UUID!
 }
 
 input CompleteJiraConnectionInput {
@@ -1111,6 +1190,11 @@ input LeaveTeamInput {
   teamId: UUID!
 }
 
+input MoveSortedTicketInput {
+  ticketId: UUID!
+  column: String
+}
+
 input PinTeamAnchorInput {
   teamId: UUID!
   ticketId: UUID!
@@ -1183,6 +1267,11 @@ input SetPlayerRoleInput {
   gameId: UUID!
   role: PlayerRole!
   playerId: UUID
+}
+
+input SetSortingOpenInput {
+  gameId: UUID!
+  open: Boolean!
 }
 
 input SetTeamSummaryWebhookInput {
@@ -1261,6 +1350,8 @@ enum GameChangeKind {
   TICKETS
   "A player was removed; PlayerId says who."
   PLAYER_REMOVED
+  "The sorting board was opened, closed or a ticket moved on it (OPP-142): reload the board."
+  SORTING
 }
 
 enum PlayerRole {

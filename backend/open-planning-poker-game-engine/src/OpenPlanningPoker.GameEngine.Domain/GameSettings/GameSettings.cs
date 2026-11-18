@@ -32,6 +32,11 @@ public sealed class GameSettings : Entity<Guid>
     /// <summary>Players can send short emoji reactions (OPP-125).</summary>
     public bool Reactions { get; private set; } = true;
 
+    /// <summary>The room sorts tickets into card columns instead of voting on each (OPP-142).</summary>
+    public bool SortingOpen { get; private set; }
+
+    public void SetSortingOpen(bool open) => SortingOpen = open;
+
     public static readonly int[] DiscussionMinuteOptions = [0, 2, 3, 5];
 
     public Game Game { get; set; } = null!;

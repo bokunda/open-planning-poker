@@ -50,6 +50,11 @@ export class GameDetailsComponent {
   @Output() onUpdateFacilitation = new EventEmitter<FacilitationSettings>();
   /** Posts the session summary to Slack or the team's webhook (OPP-136). */
   @Output() onPostSummary = new EventEmitter<void>();
+  /** The sorting board for long backlogs is open (OPP-142). */
+  @Input() sortingOpen = false;
+  @Output() onToggleSorting = new EventEmitter<boolean>();
+  /** Saves every final estimate to its tracker (OPP-145). */
+  @Output() onSaveAllToTracker = new EventEmitter<void>();
 
   readonly discussionMinutes = [0, 2, 3, 5];
 

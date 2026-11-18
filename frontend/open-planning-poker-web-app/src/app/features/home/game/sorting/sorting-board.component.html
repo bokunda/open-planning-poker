@@ -1,0 +1,109 @@
+<section class="sort" aria-labelledby="sort-title">
+  <header class="sort-head">
+    <div class="sort-intro">
+      <h2 class="sort-title" id="sort-title">
+        <mat-icon svgIcon="opp-sort" aria-hidden="true"></mat-icon> {{ 'sorting.title' | transloco }}
+      </h2>
+      <p class="sort-lead">{{ (isObserver ? 'sorting.leadObserver' : 'sorting.lead') | transloco }}</p>
+    </div>
+    <dl class="sort-stats" aria-live="polite">
+      <div>
+        <dt>{{ 'sorting.sorted' | transloco }}</dt>
+        <dd class="opp-tabular">{{ sortedCount }}/{{ openCount }}</dd>
+      </div>
+      <div [class.sort-stats--warn]="contestedCount > 0">
+        <dt>{{ 'sorting.toDiscuss' | transloco }}</dt>
+        <dd class="opp-tabular">{{ contestedCount }}</dd>
+      </div>
+    </dl>
+  </header>
+
+  @if (isHost) {
+    <div class="sort-host">
+      <button mat-flat-button color="primary" (click)="apply.emit()" [disabled]="!sortedCount">
+        <mat-icon svgIcon="opp-check"></mat-icon> {{ 'sorting.apply' | transloco }}
+      </button>
+      <button mat-stroked-button (click)="close.emit()">
+        <mat-icon svgIcon="opp-table"></mat-icon> {{ 'sorting.close' | transloco }}
+      </button>
+    </div>
+  }
+
+  @if (!tickets.length) {
+    <p class="sort-empty">{{ 'sorting.empty' | transloco }}</p>
+  }
+
+  <div class="sort-board" cdkDropListGroup>
+    @for (column of columns; track trackColumn($index, column)) {
+      <section class="sort-col" [class.sort-col--unsorted]="column.value === null"
+        [attr.aria-label]="column.value === null ? ('sorting.unsorted' | transloco) : ('sorting.columnLabel' | transloco: { card: column.value })">
+        <header class="sort-col-head">
+          <span class="sort-col-card opp-tabular" [class.sort-col-card--unsorted]="column.value === null">
+            {{ column.value === null ? ('sorting.unsorted' | transloco) : column.value }}
+          </span>
+          <span class="sort-col-count opp-tabular">{{ column.cards.length }}</span>
+        </header>
+        <ul class="sort-list"
+          cdkDropList
+          [id]="column.id"
+          [cdkDropListData]="column"
+          [cdkDropListConnectedTo]="connectedIds"
+          [cdkDropListDisabled]="!canMove"
+          (cdkDropListDropped)="drop($event)">
+          @for (card of column.cards; track trackCard($index, card)) {
+            <li class="sort-card"
+              cdkDrag
+              [cdkDragData]="card"
+              [cdkDragDisabled]="!canMove || card.done"
+              [class.sort-card--done]="card.done"
+              [class.sort-card--contested]="card.contested">
+              <div class="sort-card-main">
+                @if (card.ticket.externalKey) {
+                  <span class="sort-key">{{ card.ticket.externalKey }}</span>
+                }
+                <span class="sort-name">{{ card.ticket.name }}</span>
+                @if (card.contested) {
+                  <span class="sort-flag">{{ 'sorting.discuss' | transloco }}</span>
+                }
+                @if (card.done) {
+                  <span class="sort-done">
+                    <mat-icon svgIcon="opp-check" aria-hidden="true"></mat-icon>
+                    {{ 'sorting.estimated' | transloco: { value: card.ticket.finalEstimate } }}
+                  </span>
+                }
+              </div>
+              @if (!card.done && (canMove || (isHost && card.contested))) {
+                <button mat-icon-button class="sort-card-menu" [matMenuTriggerFor]="cardMenu"
+                  [attr.aria-label]="'sorting.actionsFor' | transloco: { name: card.ticket.name }">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #cardMenu="matMenu" xPosition="before">
+                  @if (isHost && card.contested) {
+                    <button mat-menu-item (click)="voteOn.emit(card.ticket.id)">
+                      <mat-icon svgIcon="opp-table"></mat-icon>
+                      <span>{{ 'sorting.voteOn' | transloco }}</span>
+                    </button>
+                    <button mat-menu-item (click)="clearContested.emit(card.ticket.id)">
+                      <mat-icon svgIcon="opp-check"></mat-icon>
+                      <span>{{ 'sorting.agreed' | transloco }}</span>
+                    </button>
+                  }
+                  @if (canMove) {
+                    <span class="menu-caption">{{ 'sorting.moveTo' | transloco }}</span>
+                    @for (target of targets(card); track target) {
+                      <button mat-menu-item (click)="moveTo(card, target)">
+                        <span class="opp-tabular">{{ target === null ? ('sorting.unsorted' | transloco) : target }}</span>
+                      </button>
+                    }
+                  }
+                </mat-menu>
+              }
+            </li>
+          } @empty {
+            <li class="sort-placeholder" aria-hidden="true"></li>
+          }
+        </ul>
+      </section>
+    }
+  </div>
+</section>
