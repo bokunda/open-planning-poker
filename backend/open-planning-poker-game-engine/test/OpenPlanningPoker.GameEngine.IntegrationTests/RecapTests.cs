@@ -137,8 +137,8 @@ public sealed class RecapTests(GameEngineFactory factory)
         var ok = await player.RunAsync(Avatar, new { input = new { gameId, avatar = "🦊" } });
         GraphQLClient.ErrorCode(ok.GetProperty("setPlayerAvatar")).ShouldBeNull();
 
-        var players = await host.RunAsync("query($gameId: UUID!) { players(gameId: $gameId) { ... on ApiCollectionOfGamePlayer { items { id avatar } } } }", new { gameId });
-        players.GetProperty("players").GetProperty("items").EnumerateArray()
+        var players = await host.RunAsync("query($gameId: UUID!) { gamePlayers(gameId: $gameId) { ... on ApiCollectionOfGamePlayer { items { id avatar } } } }", new { gameId });
+        players.GetProperty("gamePlayers").GetProperty("items").EnumerateArray()
             .Single(p => p.GetProperty("id").GetGuid() == player.UserId).GetProperty("avatar").GetString().ShouldBe("🦊");
     }
 }

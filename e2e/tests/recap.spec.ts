@@ -11,7 +11,7 @@ test.describe('Shareable recaps and the room look', () => {
     await vote(player, '5');
     await page.getByRole('button', { name: 'Reveal cards' }).click();
     for (const p of [page, player]) {
-      await expect(p.getByText('Consensus! Everyone picked the same card.')).toBeAttached();
+      await expect(p.locator('app-celebration')).toContainText('Consensus! Everyone picked the same card.');
     }
 
     // The host picks a table theme; the other player sees it too.

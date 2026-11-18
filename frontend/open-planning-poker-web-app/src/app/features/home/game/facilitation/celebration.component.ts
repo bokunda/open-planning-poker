@@ -41,7 +41,8 @@ const DURATION_MS = 1800;
         <div class="streak">{{ 'celebration.streak' | transloco: { count: streak } }}</div>
       }
     }
-    <span class="sr-only" aria-live="polite">{{ active ? ((streak >= 3 ? 'celebration.streak' : 'celebration.consensus') | transloco: { count: streak }) : '' }}</span>
+    <!-- Stays until the next consensus, so the announcement is not cut off by the end of the animation. -->
+    <span class="sr-only" aria-live="polite">{{ announced ? ((streak >= 3 ? 'celebration.streak' : 'celebration.consensus') | transloco: { count: streak }) : '' }}</span>
   `,
   styles: [`
     :host { position: fixed; inset: 0; pointer-events: none; z-index: var(--opp-z-overlay, 900); overflow: hidden; }
@@ -70,6 +71,7 @@ export class CelebrationComponent implements OnChanges, OnDestroy {
   @Input() streak = 1;
 
   active = false;
+  announced = false;
   pieces: Piece[] = [];
   readonly reducedMotion = typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
@@ -88,6 +90,7 @@ export class CelebrationComponent implements OnChanges, OnDestroy {
       wide: i % 3 === 0,
     }));
     this.active = true;
+    this.announced = true;
     clearTimeout(this.timer);
     this.timer = setTimeout(() => {
       this.active = false;

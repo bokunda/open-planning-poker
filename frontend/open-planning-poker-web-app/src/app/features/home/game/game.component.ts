@@ -349,13 +349,13 @@ export class GameComponent implements OnInit {
 
   /** Votes stay hidden on the server until reveal; the reveal event carries their values. */
   private applyRevealedVotes(reveal: VotesRevealed): void {
+    // The same reveal arrives twice (own mutation and the subscription); a re-vote removes the ticket again.
+    const firstReveal = !this.revealedTicketIds.has(reveal.ticketId);
     this.revealedTicketIds.add(reveal.ticketId);
     if (this.game?.id) {
       this.getTickets(this.game.id);
     }
     if (reveal.ticketId !== this.ticket?.id) return;
-    // The same reveal can arrive twice (own mutation and the subscription); celebrate once.
-    const firstReveal = !this.votesRevealed;
     this.votesRevealed = true;
     if (reveal.votes?.length) {
       this.votes = reveal.votes;
@@ -799,7 +799,8 @@ export class GameComponent implements OnInit {
         if (dataState !== 'complete') return;
         if (data?.votes?.items) {
           this.votes = data.votes.items;
-          if (this.pendingCelebrationTicketId === ticketId) {
+          // A cached result from before the reveal has empty values; wait for the revealed ones.
+          if (this.pendingCelebrationTicketId === ticketId && this.votes.length && this.votes.every(v => !!v.value)) {
             this.pendingCelebrationTicketId = null;
             this.afterReveal(this.votes.map(v => v.value));
           }
