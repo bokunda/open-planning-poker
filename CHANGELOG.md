@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.6.0] — 2026-11-18
+
+Share how a session went, and make the room feel like the team's own.
+
+### Added
+- **Share the recap**: the host turns on a read-only link from the room menu. It shows the tickets, final estimates, total points, the consensus rate and how long the talk took. No descriptions, notes or single votes; names only if the host allows them. Turning sharing off stops the link
+- **Link previews**: a recap link in Slack, Teams or email shows a card with the room name and three numbers. A game invite link shows "Join „room name” — planning poker" in the visitor's language
+- **Confetti on consensus** when everyone picks the same card, with a "3 in a row!" note from the third one. Respects reduced motion; the host can turn it off
+- **Room look**: six table themes everyone in the room sees, winter card backs from 1 December to 6 January, and an emoji avatar each player picks
+- **Run this with your team**: after a session a guest sees a card, at most once a week, that opens a new room with the same deck
+- **Badge** for a README or website, light and dark, with Markdown and HTML on the support page
+
+### Fixed
+- Changing a discussion option in the room menu (notes, reactions, timer) failed on the server
+
+### Developers
+- Migration `AddRecapsAndRoomLook`
+- `GET /recap/{token}/card.png` on the game engine
+
 ## [3.5.0] — 2026-11-18
 
 Sort a long backlog in minutes, and plan what fits in the sprint from the team's own numbers.
