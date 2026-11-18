@@ -6,7 +6,7 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
-## [3.5.0] — 2026-11-19
+## [3.5.0] — 2026-11-18
 
 Rasporedi dugačak backlog za nekoliko minuta i isplaniraj šta staje u sprint na osnovu brojki svog tima.
 

@@ -6,7 +6,7 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
-## [3.5.0] — 2026-11-19
+## [3.5.0] — 2026-11-18
 
 Ein langes Backlog in Minuten sortieren und mit den eigenen Zahlen des Teams planen, was in den Sprint passt.
 

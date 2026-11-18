@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.5.0] — 2026-11-19
+## [3.5.0] — 2026-11-18
 
 Sort a long backlog in minutes, and plan what fits in the sprint from the team's own numbers.
 
