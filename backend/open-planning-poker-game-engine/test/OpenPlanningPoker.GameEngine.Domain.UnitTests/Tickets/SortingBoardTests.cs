@@ -88,6 +88,9 @@ public class SortingBoardTests
 
         settled.FinalEstimate.ShouldBe("5");
         settled.EstimatedAt.ShouldNotBeNull();
+        // Counts in velocity and the history although the cards were never turned over.
+        settled.IsEstimated.ShouldBeTrue();
+        unsorted.IsEstimated.ShouldBeFalse();
         contested.FinalEstimate.ShouldBeNull();
     }
 

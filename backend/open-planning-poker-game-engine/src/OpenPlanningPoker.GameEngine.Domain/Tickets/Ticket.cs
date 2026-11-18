@@ -55,6 +55,9 @@ public sealed class Ticket : Entity<Guid>
     /// <summary>Player who moved the ticket last; a different player moving it again means disagreement.</summary>
     public Guid? SortLastMovedBy { get; private set; }
 
+    /// <summary>Has an estimate: the cards were turned over, or a final estimate was set (also from the sorting board).</summary>
+    public bool IsEstimated => VotesRevealed || FinalEstimate is not null;
+
     /// <summary>A ticket moved this many times is contested.</summary>
     public const int ContestedAfterMoves = 3;
 

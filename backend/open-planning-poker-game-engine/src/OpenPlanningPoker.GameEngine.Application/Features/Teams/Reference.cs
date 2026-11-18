@@ -74,7 +74,7 @@ public static partial class TeamReference
             var gameVotes = await votes.GetByGame(game.Id, null, cancellationToken);
             foreach (var ticket in await tickets.GetByGame(game.Id, cancellationToken))
             {
-                if (!ticket.VotesRevealed) continue;
+                if (!ticket.IsEstimated) continue;
                 var values = gameVotes.Where(v => v.TicketId == ticket.Id).Select(v => v.Value).ToList();
                 var stats = TicketStats.From(true, values);
                 var estimate = ticket.FinalEstimate ?? stats.Estimate;
