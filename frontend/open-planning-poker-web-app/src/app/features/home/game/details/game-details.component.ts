@@ -50,6 +50,10 @@ export class GameDetailsComponent {
   @Output() onUpdateFacilitation = new EventEmitter<FacilitationSettings>();
   /** Posts the session summary to Slack or the team's webhook (OPP-136). */
   @Output() onPostSummary = new EventEmitter<void>();
+  /** The game has a Slack thread or its team a webhook; otherwise the summary item is hidden. */
+  @Input() canPostSummary = false;
+  /** Some linked ticket has a final estimate; otherwise the save-all item is hidden. */
+  @Input() canSaveAllToTracker = false;
   /** The sorting board for long backlogs is open (OPP-142). */
   @Input() sortingOpen = false;
   @Output() onToggleSorting = new EventEmitter<boolean>();

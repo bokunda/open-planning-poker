@@ -73,6 +73,8 @@
         (onUpdateOptions)="handleUpdateOptions($event)"
         (onUpdateFacilitation)="handleUpdateFacilitation($event)"
         (onPostSummary)="handlePostSummary()"
+        [canPostSummary]="!!summaryDestination"
+        [canSaveAllToTracker]="canSaveAllToTracker"
         [sortingOpen]="sortingOpen"
         (onToggleSorting)="handleToggleSorting($event)"
         (onSaveAllToTracker)="handleSaveAllToTracker()"></app-game-details>
