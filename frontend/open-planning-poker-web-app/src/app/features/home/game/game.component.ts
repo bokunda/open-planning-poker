@@ -95,6 +95,9 @@ export class GameComponent implements OnInit {
   ticket: Ticket | undefined;
   tickets: Ticket[] = [];
   players: ApiCollectionOfGamePlayer | undefined;
+  /** Where the session summary would go ("slack" or "webhook"); null when nowhere, so the menu hides it. */
+  summaryDestination: string | null = null;
+  private summaryCheckedFor: string | undefined;
   votes: Vote[] = [];
   votesRevealed = false;
   /**
@@ -496,6 +499,7 @@ export class GameComponent implements OnInit {
             items: [...existing, ...newItems],
             totalCount: existing.length + newItems.length
           };
+          this.checkSummaryDestination();
         }
       }
     });
@@ -982,6 +986,7 @@ export class GameComponent implements OnInit {
       next: ({ data }) => {
         if (data?.gamePlayers?.items) {
           this.players = { ...data.gamePlayers };
+          this.checkSummaryDestination();
         }
       }
     });
@@ -1097,6 +1102,24 @@ export class GameComponent implements OnInit {
     this.runMutation(UPDATE_GAME_OPTIONS, 'updateGameOptions', {
       gameId, autoReveal: options.autoReveal, asyncVotingEndsAt: options.asyncVotingEndsAt
     }, () => this.refreshGame(gameId));
+  }
+
+  /** Final estimates on linked tickets: only then can they be saved to the tracker. */
+  get canSaveAllToTracker(): boolean {
+    return (this.tickets as RoomTicket[]).some(t => !!t.externalKey && !!t.finalEstimate);
+  }
+
+  /** Once per game, for hosts: is there a Slack thread or a team webhook to post the summary to? */
+  private checkSummaryDestination(): void {
+    const gameId = this.game?.id;
+    if (!gameId || !this.isHost || this.summaryCheckedFor === gameId) return;
+    this.summaryCheckedFor = gameId;
+    this.apollo.query<{ sessionSummary: { destination?: string | null } }>({
+      query: SESSION_SUMMARY, variables: { gameId }, fetchPolicy: 'no-cache',
+    }).subscribe({
+      next: ({ data }) => { if (this.game?.id === gameId) this.summaryDestination = data?.sessionSummary?.destination ?? null; },
+      error: () => { this.summaryCheckedFor = undefined; },
+    });
   }
 
   /** Preview the session summary, then post it to the game's Slack thread or the team's webhook (OPP-136). */
