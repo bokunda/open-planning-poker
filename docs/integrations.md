@@ -20,7 +20,11 @@ in the database (`data_protection_keys`). Only the SHA-256 hash of a chat game's
 
 1. In the [Atlassian developer console](https://developer.atlassian.com/console/myapps/), create an
    **OAuth 2.0 (3LO) integration** with **Resource-level** access.
-2. **Permissions → Jira API**: add `read:jira-work`, `write:jira-work` and `read:jira-user`.
+2. **Permissions → Jira API**: add the classic scopes `read:jira-work`, `write:jira-work` and `read:jira-user`, and
+   the granular scopes `read:board-scope:jira-software`, `read:project:jira`, `read:sprint:jira-software`,
+   `read:issue-details:jira` and `write:sprint:jira-software`. Boards, sprints and the move into a sprint use the
+   Jira Software API, which has no classic scopes: without these it answers 401 and the app asks to reconnect.
+   After adding scopes, every connected player has to connect Jira again to grant them.
 3. **Authorization → OAuth 2.0 (3LO)**: set the callback URL to `https://app.openplanningpoker.com/integrations/jira/callback`.
 4. **Settings**: copy the Client ID and Secret into `JIRA_CLIENT_ID` and `JIRA_CLIENT_SECRET`.
 
