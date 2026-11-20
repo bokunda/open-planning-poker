@@ -12,7 +12,14 @@ public sealed class JiraOptions
     public string ClientId { get; set; } = string.Empty;
     public string ClientSecret { get; set; } = string.Empty;
     public string RedirectUri { get; set; } = "https://app.openplanningpoker.com/integrations/jira/callback";
-    public string Scopes { get; set; } = "read:jira-work write:jira-work read:jira-user offline_access";
+    /// <summary>
+    /// Classic scopes for the platform API (issues, fields, comments) plus the granular ones the Jira Software
+    /// (agile) API needs for boards, sprints and moving issues into a sprint: it accepts no classic scopes and answers
+    /// 401 without them, even with a fresh token. Every scope must also be added to the app in the developer console.
+    /// </summary>
+    public string Scopes { get; set; } =
+        "read:jira-work write:jira-work read:jira-user offline_access " +
+        "read:board-scope:jira-software read:project:jira read:sprint:jira-software read:issue-details:jira write:sprint:jira-software";
     public bool Enabled => !string.IsNullOrWhiteSpace(ClientId) && !string.IsNullOrWhiteSpace(ClientSecret);
 }
 

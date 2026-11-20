@@ -61,6 +61,12 @@ public class JiraServiceTests
         var url = service.CreateAuthorizeUrl(Player, "/game/abc").Value!;
         url.ShouldStartWith("https://auth.atlassian.com/authorize?");
         url.ShouldContain("offline_access");
+        // Boards, sprints and the sprint move use the Jira Software API, which accepts granular scopes only.
+        var scopes = Uri.UnescapeDataString(url.Split("scope=")[1].Split('&')[0]).Replace('+', ' ').Split(' ');
+        scopes.ShouldContain("read:board-scope:jira-software");
+        scopes.ShouldContain("read:sprint:jira-software");
+        scopes.ShouldContain("write:sprint:jira-software");
+        scopes.ShouldContain("read:issue-details:jira");
 
         await ConnectAsync(service);
 
