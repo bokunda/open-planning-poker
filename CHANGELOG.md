@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.7.0] — 2026-11-21
+
+Run the sprint retro in the same team room, starting from the team's own numbers.
+
+### Added
+- **Sprint retros**: the team owner starts a retro for a sprint from the team room, with Went well / To improve / Ideas, Start / Stop / Continue, Mad / Sad / Glad or 4Ls. Everyone in the sprint's room joins with the link, guests too, and every change reaches everyone at once
+- **Write in silence**: each person sees only their own cards and a count per column until the host reveals them. Names stay hidden unless the host shows them
+- **Group and vote**: drag similar cards onto each other (or use the card menu on a phone) and name the group, then place dots (3 each by default). Dots stay hidden until the results, then the cards sort by dots
+- **Action items** with an owner, per card or for the whole retro. Open items come back at the next retro and stay in the team room until they are done
+- **Sprint in numbers**: estimated and planned points, the velocity of the last sprints, tickets that took much longer or shorter than their card, and tickets the team was unsure about. Any fact becomes a card in one click
+- **Retro download** as Markdown or PDF, and a short summary to the team's Slack or Teams webhook
+
+### Fixed
+- The PDF report and the recap preview image failed when a game or ticket name held an emoji
+- Jira boards and sprints asked to reconnect right after connecting: the app now asks Jira for the board and sprint permissions. Connected players connect Jira once more
+- "Post the session summary" and "Save all estimates to the tracker" show only when they can do something
+
+### Developers
+- Migration `AddRetros`
+
 ## [3.6.0] — 2026-11-18
 
 Share how a session went, and make the room feel like the team's own.

@@ -27,6 +27,7 @@
 - **Reference Tickets and Insights** — Pin example tickets per card, search the estimate history, and see how sessions went and how long each card really took in Jira
 - **Export Results** — Download game reports as PDF or CSV
 - **Share the Recap** — A read-only recap link with a rich preview in Slack, Teams and email; confetti on consensus, room themes and emoji avatars
+- **Sprint Retros** — Write in silence, group, vote with dots and carry action items over to the next sprint, with the sprint's numbers on the board
 - **Integrations** — Slack (/poker), a Microsoft Teams tab, Jira (import, save back, issue panel), GitHub, Linear and Azure DevOps
 - **No Registration Required** — Anonymous usernames, no passwords, no personal data
 - **English, Serbian and German** — The app follows the browser language and can be switched in the menu; the website, its guides and the changelog are translated too
@@ -119,6 +120,7 @@ Full setup guide: [docs/setup-and-development.md](docs/setup-and-development.md)
 - [x] Facilitation tools, reference tickets and estimation insights
 - [x] Backlog sorting board, sprint capacity and plan
 - [x] Shareable session recaps, room themes and celebrations
+- [x] Sprint retrospectives in the team room
 - [ ] Listings in the Slack App Directory, the Teams Store and the Atlassian Marketplace
 - [x] English, Serbian and German, installable app (PWA)
 - [x] Integration, end-to-end and Lighthouse checks on every pull request
