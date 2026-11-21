@@ -544,6 +544,221 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                     b.ToTable("tracker_connections", (string)null);
                 });
 
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.Retro", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<int>("DotsPerPerson")
+                        .HasColumnType("integer")
+                        .HasColumnName("dots_per_person");
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("game_id");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("Phase")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("phase");
+
+                    b.Property<bool>("ShowAuthors")
+                        .HasColumnType("boolean")
+                        .HasColumnName("show_authors");
+
+                    b.Property<Guid>("TeamId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("team_id");
+
+                    b.Property<string>("Template")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("template");
+
+                    b.HasKey("Id")
+                        .HasName("pk_retros");
+
+                    b.HasIndex("GameId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_retros_game_id");
+
+                    b.HasIndex("TeamId")
+                        .HasDatabaseName("ix_retros_team_id");
+
+                    b.ToTable("retros", (string)null);
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.RetroActionItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid?>("CardId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("card_id");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<bool>("Done")
+                        .HasColumnType("boolean")
+                        .HasColumnName("done");
+
+                    b.Property<DateTimeOffset?>("DoneOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("done_on");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<Guid?>("OwnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("owner_id");
+
+                    b.Property<Guid>("RetroId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("retro_id");
+
+                    b.Property<Guid>("TeamId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("team_id");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("text");
+
+                    b.HasKey("Id")
+                        .HasName("pk_retro_action_items");
+
+                    b.HasIndex("CardId")
+                        .HasDatabaseName("ix_retro_action_items_card_id");
+
+                    b.HasIndex("TeamId", "Done")
+                        .HasDatabaseName("ix_retro_action_items_team_id_done");
+
+                    b.ToTable("retro_action_items", (string)null);
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.RetroCard", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("Column")
+                        .HasColumnType("integer")
+                        .HasColumnName("column");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<Guid?>("GroupId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("group_id");
+
+                    b.Property<string>("GroupTitle")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("group_title");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<Guid>("RetroId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("retro_id");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("text");
+
+                    b.HasKey("Id")
+                        .HasName("pk_retro_cards");
+
+                    b.HasIndex("RetroId")
+                        .HasDatabaseName("ix_retro_cards_retro_id");
+
+                    b.ToTable("retro_cards", (string)null);
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.RetroVote", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("CardId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("card_id");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.Property<Guid>("RetroId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("retro_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_retro_votes");
+
+                    b.HasIndex("CardId")
+                        .HasDatabaseName("ix_retro_votes_card_id");
+
+                    b.HasIndex("RetroId", "PlayerId")
+                        .HasDatabaseName("ix_retro_votes_retro_id_player_id");
+
+                    b.ToTable("retro_votes", (string)null);
+                });
+
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.SprintCapacity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -923,6 +1138,66 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasConstraintName("fk_gamesettings_games_game_id");
 
                     b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.Retro", b =>
+                {
+                    b.HasOne("OpenPlanningPoker.GameEngine.Domain.Games.Game", null)
+                        .WithMany()
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_retros_games_game_id");
+
+                    b.HasOne("OpenPlanningPoker.GameEngine.Domain.Teams.Team", null)
+                        .WithMany()
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_retros_team_team_id");
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.RetroActionItem", b =>
+                {
+                    b.HasOne("OpenPlanningPoker.GameEngine.Domain.Teams.RetroCard", null)
+                        .WithMany()
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_retro_action_items_retro_card_card_id");
+
+                    b.HasOne("OpenPlanningPoker.GameEngine.Domain.Teams.Team", null)
+                        .WithMany()
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_retro_action_items_team_team_id");
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.RetroCard", b =>
+                {
+                    b.HasOne("OpenPlanningPoker.GameEngine.Domain.Teams.Retro", null)
+                        .WithMany()
+                        .HasForeignKey("RetroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_retro_cards_retro_retro_id");
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.RetroVote", b =>
+                {
+                    b.HasOne("OpenPlanningPoker.GameEngine.Domain.Teams.RetroCard", null)
+                        .WithMany()
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_retro_votes_retro_cards_card_id");
+
+                    b.HasOne("OpenPlanningPoker.GameEngine.Domain.Teams.Retro", null)
+                        .WithMany()
+                        .HasForeignKey("RetroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_retro_votes_retros_retro_id");
                 });
 
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.SprintCapacity", b =>

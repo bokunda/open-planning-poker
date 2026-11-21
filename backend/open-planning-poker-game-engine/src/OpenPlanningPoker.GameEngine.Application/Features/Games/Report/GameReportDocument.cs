@@ -26,8 +26,29 @@ public sealed record ReportModel(
 /// The game report PDF, styled like the app and the website: brand violet, Figtree for text,
 /// Bricolage Grotesque for headings, summary tiles and one card per ticket.
 /// </summary>
-public sealed class GameReportDocument(ReportModel model) : IDocument
+public sealed class GameReportDocument(ReportModel source) : IDocument
 {
+    private readonly ReportModel model = Clean(source);
+
+    /// <summary>Every text people typed, without glyphs the fonts lack (see <see cref="PdfText"/>).</summary>
+    private static ReportModel Clean(ReportModel m) => m with
+    {
+        GameName = PdfText.Clean(m.GameName),
+        Description = PdfText.Clean(m.Description),
+        Tickets = [.. m.Tickets.Select(t => t with
+        {
+            Name = PdfText.Clean(t.Name),
+            Description = PdfText.Clean(t.Description),
+            FinalEstimate = t.FinalEstimate is null ? null : PdfText.Clean(t.FinalEstimate),
+            Votes = [.. t.Votes.Select(v => v with
+            {
+                Player = PdfText.Clean(v.Player),
+                Value = PdfText.Clean(v.Value),
+                Note = v.Note is null ? null : PdfText.Clean(v.Note),
+            })],
+        })],
+    };
+
     // Colors from the app's design tokens (styles/_variables.scss, light theme).
     private const string Primary = "#6a3ae8";
     private const string PrimarySoft = "#f1ecff";

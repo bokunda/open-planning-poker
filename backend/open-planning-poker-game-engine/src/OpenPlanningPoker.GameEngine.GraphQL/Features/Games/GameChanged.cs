@@ -17,6 +17,9 @@ public enum GameChangeKind
 
     /// <summary>The sorting board was opened, closed or a ticket moved on it (OPP-142): reload the board.</summary>
     Sorting,
+
+    /// <summary>The sprint's retro changed (OPP-162): reload the board.</summary>
+    Retro,
 }
 
 /// <summary>

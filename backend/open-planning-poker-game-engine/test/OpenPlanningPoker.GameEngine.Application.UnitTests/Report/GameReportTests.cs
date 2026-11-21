@@ -101,6 +101,17 @@ public class GameReportDocumentTests
     }
 
     [Fact]
+    public void GeneratesPdf_WhenPeopleWriteEmojiAndSymbols()
+    {
+        var model = Sample() with
+        {
+            GameName = "Sprint 🚀 planning ✅",
+            Tickets = [new("Fix login 🐛 → faster ☕", "Description with ⭐ and 日本", true, [new("Ana 😀", "5", "Looks ok 👍")])],
+        };
+        new GameReportDocument(model).GeneratePdf().Length.ShouldBeGreaterThan(5_000);
+    }
+
+    [Fact]
     public void GeneratesPdf_ForEmptyGame()
     {
         var empty = Sample() with { Tickets = [], Description = "" };
