@@ -1,0 +1,88 @@
+:host { display: block; }
+
+.retro-panel {
+  display: grid;
+  gap: var(--opp-space-3);
+  padding: var(--opp-space-4) var(--opp-space-5);
+  border: 1px solid var(--opp-border);
+  border-radius: var(--opp-radius-lg);
+  background: var(--opp-surface);
+}
+
+.retro-hint { margin: 0; color: var(--opp-text-muted); font-size: var(--opp-font-size-sm); }
+
+.retro-facts-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--opp-space-2);
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--opp-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  mat-icon { color: var(--opp-primary); }
+  &:focus-visible { outline: 2px solid var(--opp-primary); outline-offset: 2px; }
+}
+
+.retro-facts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--opp-space-4);
+}
+
+.retro-fact { display: grid; gap: var(--opp-space-1); align-content: start; justify-items: start; }
+
+.retro-fact-num {
+  font-family: var(--opp-font-display);
+  font-size: var(--opp-font-size-2xl);
+  font-weight: 800;
+  color: var(--opp-primary);
+}
+
+.retro-fact-label { font-weight: 600; }
+
+.retro-velocity {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--opp-space-2);
+  height: 96px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    justify-items: center;
+    height: 100%;
+    font-size: var(--opp-font-size-xs);
+    color: var(--opp-text-muted);
+  }
+}
+
+.retro-velocity-bar {
+  align-self: end;
+  width: 22px;
+  border-radius: 4px 4px 0 0;
+  background: var(--opp-border);
+}
+
+.retro-velocity--now { color: var(--opp-text) !important; font-weight: 700; }
+.retro-velocity--now .retro-velocity-bar { background: var(--opp-primary); }
+
+.retro-facts-sub { margin: var(--opp-space-2) 0 0; font-size: var(--opp-font-size-md); }
+
+.retro-fact-list {
+  display: grid;
+  gap: var(--opp-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--opp-space-2); }
+}
+

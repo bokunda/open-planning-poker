@@ -15,6 +15,7 @@ public static class DependencyInjection
         CacheExtensions.AddHybridCache(services, true);
         services.AddScoped<IGameAccessService, GameAccessService>();
         services.AddScoped<Features.Teams.Planning.Loader>();
+        services.AddScoped<Features.Teams.RetroService>();
 
         return services;
     }

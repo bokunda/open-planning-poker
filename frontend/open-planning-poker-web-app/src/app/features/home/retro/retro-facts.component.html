@@ -1,0 +1,56 @@
+<section class="retro-panel retro-facts">
+  <button class="retro-facts-toggle" type="button" (click)="toggle()" [attr.aria-expanded]="open">
+    <mat-icon>{{ open ? 'expand_less' : 'insights' }}</mat-icon> {{ 'retro.facts.title' | transloco }}
+  </button>
+  @if (open) {
+    @if (!facts) {
+      <p class="retro-hint">{{ 'retro.loading' | transloco }}</p>
+    } @else if (!facts.hasData) {
+      <p class="retro-hint">{{ 'retro.facts.none' | transloco }}</p>
+    } @else {
+      <div class="retro-facts-grid">
+        <div class="retro-fact">
+          <span class="retro-fact-num opp-tabular">{{ facts.estimatedPoints }}</span>
+          <span>{{ 'retro.facts.points' | transloco: { count: facts.estimatedTickets, total: facts.ticketCount } }}</span>
+          @if (facts.plannedPoints != null) {
+            <span class="retro-hint">{{ 'retro.facts.planned' | transloco: { points: facts.plannedPoints } }}</span>
+          }
+          @if (canWrite) { <button mat-button (click)="addCard.emit(pointsCard())">{{ 'retro.facts.toCard' | transloco }}</button> }
+        </div>
+        <div class="retro-fact">
+          <span class="retro-fact-label">{{ 'retro.facts.velocity' | transloco }}</span>
+          <ol class="retro-velocity">
+            @for (v of facts.velocity; track v.gameId) {
+              <li [class.retro-velocity--now]="v.current" [attr.aria-label]="v.name + ': ' + v.points">
+                <span class="retro-velocity-bar" [style.height.%]="velocityHeight(v.points)"></span>
+                <span class="opp-tabular">{{ v.points }}</span>
+              </li>
+            }
+          </ol>
+        </div>
+      </div>
+      @if (facts.outliers.length) {
+        <h3 class="retro-facts-sub">{{ 'retro.facts.outliers' | transloco }}</h3>
+        <ul class="retro-fact-list">
+          @for (t of facts.outliers; track t.ticketId) {
+            <li>
+              <span>{{ factText('outlier', t) }}</span>
+              @if (canWrite) { <button mat-button (click)="addCard.emit(factText('outlier', t))">{{ 'retro.facts.toCard' | transloco }}</button> }
+            </li>
+          }
+        </ul>
+      }
+      @if (facts.lowConfidence.length) {
+        <h3 class="retro-facts-sub">{{ 'retro.facts.lowConfidence' | transloco }}</h3>
+        <ul class="retro-fact-list">
+          @for (t of facts.lowConfidence; track t.ticketId) {
+            <li>
+              <span>{{ factText('confidence', t) }}</span>
+              @if (canWrite) { <button mat-button (click)="addCard.emit(factText('confidence', t))">{{ 'retro.facts.toCard' | transloco }}</button> }
+            </li>
+          }
+        </ul>
+      }
+    }
+  }
+</section>

@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '../../../shared/constants';
 import { CREATE_SPRINT, CREATE_TEAM, GET_TEAM, JOIN_TEAM, LEAVE_TEAM, MY_TEAMS, TeamDetails, TeamSummary } from './team.graphql';
+import { SET_RETRO_ACTION_ITEM_DONE } from '../retro/retro.graphql';
 import { VelocityChartComponent } from './velocity-chart.component';
 import { TeamReferenceComponent } from './team-reference.component';
 import { TeamInsightsComponent } from './team-insights.component';
@@ -65,6 +66,29 @@ export class TeamComponent implements OnInit {
       this.team = null;
       this.notFound = false;
       if (this.currentUserId) this.load();
+    });
+  }
+
+  /** The step of a sprint's retro, or null without one. */
+  retroPhase(gameId: string): string | null {
+    return this.team?.retros?.find(r => r.gameId === gameId)?.phase ?? null;
+  }
+
+  memberName(id: string | null): string {
+    return id ? this.team?.members.find(m => m.id === id)?.name ?? '' : '';
+  }
+
+  /** Done from the team room: it leaves the list and the next retro shows it as closed (OPP-166). */
+  setActionItemDone(itemId: string): void {
+    this.apollo.mutate<{ setRetroActionItemDone: Errors }>({
+      mutation: SET_RETRO_ACTION_ITEM_DONE, variables: { input: { actionItemId: itemId, done: true } },
+    }).subscribe({
+      next: ({ data }) => {
+        if (this.failed(data?.setRetroActionItemDone) || !this.team) return;
+        this.team = { ...this.team, openActionItems: this.team.openActionItems?.filter(i => i.id !== itemId) };
+        this.cdr.markForCheck();
+      },
+      error: () => this.notify(this.i18n.translate('common.tryAgainNetwork')),
     });
   }
 

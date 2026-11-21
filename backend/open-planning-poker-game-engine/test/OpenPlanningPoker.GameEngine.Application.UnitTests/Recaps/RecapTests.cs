@@ -36,7 +36,7 @@ public class RecapCardTests
     [Fact]
     public void Card_IsA1200x630Png()
     {
-        var recap = new RecapResponse("Sprint 7 — a rather long planning session name that needs two lines", DateTimeOffset.UtcNow,
+        var recap = new RecapResponse("Sprint 7 🚀 — a rather long planning session name that needs two lines", DateTimeOffset.UtcNow,
             [new RecapTicketItem("Login", "OPP-1", "5", VoteSpread.Consensus, 1, 2.5)], 1, 0, 5, 1, 12, 4, []);
 
         var png = RecapCard.Render(recap);

@@ -41,6 +41,14 @@ export const routes: Routes = [
     title: 'Team Room — Open Planning Poker'
   },
   {
+    // The retro of a team sprint (OPP-162); people join it like the sprint's game.
+    path: 'retro/:gameId',
+    component: HomeComponent,
+    pathMatch: 'full',
+    data: { view: 'retro' },
+    title: 'Sprint Retro — Open Planning Poker'
+  },
+  {
     // Public, read-only recap of a session (OPP-170).
     path: 'recap/:token',
     loadComponent: () => import('./features/recap/recap.component').then(m => m.RecapComponent),

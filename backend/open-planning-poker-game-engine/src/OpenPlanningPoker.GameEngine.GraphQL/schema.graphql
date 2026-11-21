@@ -14,6 +14,16 @@ type AccuracyOutlierInfo {
   cardMedianDays: Float!
 }
 
+type AddRetroActionItemPayload {
+  retroActionItemInfo: RetroActionItemInfo
+  errors: [AddRetroActionItemError!]
+}
+
+type AddRetroCardPayload {
+  retroCardInfo: RetroCardInfo
+  errors: [AddRetroCardError!]
+}
+
 type ApiCollectionOfGamePlayer {
   items: [GamePlayer!]!
   totalCount: Int!
@@ -115,6 +125,16 @@ type DeleteGamePayload {
   errors: [DeleteGameError!]
 }
 
+type DeleteRetroActionItemPayload {
+  boolean: Boolean
+  errors: [DeleteRetroActionItemError!]
+}
+
+type DeleteRetroCardPayload {
+  boolean: Boolean
+  errors: [DeleteRetroCardError!]
+}
+
 type DeleteTicketPayload {
   boolean: Boolean
   errors: [DeleteTicketError!]
@@ -128,6 +148,11 @@ type DisconnectJiraPayload {
 type DisconnectTrackerPayload {
   boolean: Boolean
   errors: [DisconnectTrackerError!]
+}
+
+type EditRetroCardPayload {
+  boolean: Boolean
+  errors: [EditRetroCardError!]
 }
 
 "Room options for running the discussion (OPP-114)."
@@ -221,6 +246,11 @@ type GameTimer {
 type GenerateGameReportPayload {
   gameReport: GameReport
   errors: [GenerateGameReportError!]
+}
+
+type GroupRetroCardPayload {
+  boolean: Boolean
+  errors: [GroupRetroCardError!]
 }
 
 type ImportJiraIssuesPayload {
@@ -473,6 +503,33 @@ type Mutation {
   pinTeamAnchor(input: PinTeamAnchorInput!): PinTeamAnchorPayload! @cost(weight: "10")
   "Removes a reference ticket. Team members."
   unpinTeamAnchor(input: UnpinTeamAnchorInput!): UnpinTeamAnchorPayload! @cost(weight: "10")
+  "Starts the retro of a team sprint from a template (OPP-163). Team owner or the sprint's host."
+  startRetro(input: StartRetroInput!): StartRetroPayload! @cost(weight: "10")
+  "Names on cards and dots per person; only while writing (OPP-164, OPP-165). Host."
+  updateRetroSettings(input: UpdateRetroSettingsInput!): UpdateRetroSettingsPayload! @cost(weight: "10")
+  "Moves the retro to the next step: reveal, voting, results (OPP-164, OPP-165). Host."
+  setRetroPhase(input: SetRetroPhaseInput!): SetRetroPhasePayload! @cost(weight: "10")
+  "Writes a card in a column. Players of the sprint."
+  addRetroCard(input: AddRetroCardInput!): AddRetroCardPayload! @cost(weight: "10")
+  "Changes the text of one's own card."
+  editRetroCard(input: EditRetroCardInput!): EditRetroCardPayload! @cost(weight: "10")
+  "Deletes a card: its author, or the host."
+  deleteRetroCard(input: DeleteRetroCardInput!): DeleteRetroCardPayload! @cost(weight: "10")
+  "Drops a card onto another to group them; without a target it leaves its group (OPP-165). Players."
+  groupRetroCard(input: GroupRetroCardInput!): GroupRetroCardPayload! @cost(weight: "10")
+  "Names a group (the card that heads it). Players."
+  setRetroGroupTitle(input: SetRetroGroupTitleInput!): SetRetroGroupTitlePayload! @cost(weight: "10")
+  "Puts one dot on a card (or takes one back). Returns the dots left. Dots stay hidden until the results."
+  voteRetroCard(input: VoteRetroCardInput!): VoteRetroCardPayload! @cost(weight: "10")
+  "Adds an action item, optionally for a card and with an owner (OPP-166). Players."
+  addRetroActionItem(input: AddRetroActionItemInput!): AddRetroActionItemPayload! @cost(weight: "10")
+  "Changes the text or owner of an action item. Players of the team's sprint, or team members."
+  updateRetroActionItem(input: UpdateRetroActionItemInput!): UpdateRetroActionItemPayload! @cost(weight: "10")
+  "Marks an action item done or open again. Team members, from the retro or the team room."
+  setRetroActionItemDone(input: SetRetroActionItemDoneInput!): SetRetroActionItemDonePayload! @cost(weight: "10")
+  deleteRetroActionItem(input: DeleteRetroActionItemInput!): DeleteRetroActionItemPayload! @cost(weight: "10")
+  "Posts a short summary to the team's Slack or Teams webhook (OPP-168). Host."
+  postRetroSummary(input: PostRetroSummaryInput!): PostRetroSummaryPayload! @cost(weight: "10")
   "Creates a team room; the caller becomes its owner and first member."
   createTeam(input: CreateTeamInput!): CreateTeamPayload! @cost(weight: "10")
   "Renames a team room. Owner only."
@@ -551,6 +608,11 @@ type PointBudgetInfo {
   pointsPerPersonDay: Float
 }
 
+type PostRetroSummaryPayload {
+  boolean: Boolean
+  errors: [PostRetroSummaryError!]
+}
+
 type PostSessionSummaryPayload {
   sessionSummaryInfo: SessionSummaryInfo
   errors: [PostSessionSummaryError!]
@@ -609,6 +671,12 @@ type Query {
   sprintPlan(teamId: UUID! gameId: UUID!): SprintPlanResult! @cost(weight: "10")
   "The team's anchors and up to three similar past tickets for a ticket. Players of the game only."
   ticketReference(ticketId: UUID!): TicketReferenceResult! @cost(weight: "10")
+  "The retro of a sprint (game). Players of the game only; RetroNotFound when it has none yet."
+  retro(gameId: UUID!): RetroResult! @cost(weight: "10")
+  "\"Sprint in numbers\" for the retro (OPP-167). Players of the game."
+  retroFacts(retroId: UUID!): RetroFactsResult! @cost(weight: "10")
+  "The retro as Markdown or PDF (OPP-168). Players of the game."
+  retroExport(retroId: UUID! pdf: Boolean! = false): RetroExportResult! @cost(weight: "10")
   "A team room by id. Members-only fields are empty for others."
   team(id: UUID!): TeamResult! @cost(weight: "10")
   "Team rooms the caller belongs to."
@@ -666,6 +734,63 @@ type RemovePlayerPayload {
 type ReorderTicketsPayload {
   boolean: Boolean
   errors: [ReorderTicketsError!]
+}
+
+type RetroActionItemInfo {
+  id: UUID!
+  retroId: UUID!
+  cardId: UUID
+  text: String!
+  ownerId: UUID
+  done: Boolean!
+  createdOn: DateTime!
+}
+
+"A card on the retro board as the caller may see it (OPP-163)."
+type RetroCardInfo {
+  id: UUID!
+  column: Int!
+  text: String!
+  "The caller wrote it."
+  mine: Boolean!
+  "The author, only when the host shows names."
+  authorId: UUID
+  "The card this one was merged into (OPP-165); null for a card on its own or a group head."
+  groupId: UUID
+  groupTitle: String
+  "The caller's own dots on it."
+  myVotes: Int!
+  "All dots on it, once voting has ended; null before."
+  votes: Int
+}
+
+type RetroExportFile {
+  fileName: String!
+  contentType: String!
+  data: [Byte!]!
+}
+
+"The retro of a sprint as the caller sees it (OPP-162)."
+type RetroInfo {
+  id: UUID!
+  teamId: UUID!
+  gameId: UUID!
+  "went-well, start-stop-continue, mad-sad-glad or 4ls; the app translates the column titles."
+  template: String!
+  columns: Int!
+  phase: RetroPhase!
+  showAuthors: Boolean!
+  dotsPerPerson: Int!
+  dotsLeft: Int!
+  "Cards per column, everyone's; while writing the only thing others see."
+  countPerColumn: [Int!]!
+  cards: [RetroCardInfo!]!
+  "Action items agreed in this retro."
+  actionItems: [RetroActionItemInfo!]!
+  "Open items of earlier retros of the team, and the ones closed during this retro."
+  carriedOver: [RetroActionItemInfo!]!
+  "The caller runs the retro: host or co-host of the sprint, or the team owner."
+  canFacilitate: Boolean!
 }
 
 type RevealVotesPayload {
@@ -736,6 +861,21 @@ type SetPlayerRolePayload {
 type SetRecapSharingPayload {
   recapSharing: RecapSharing
   errors: [SetRecapSharingError!]
+}
+
+type SetRetroActionItemDonePayload {
+  retroActionItemInfo: RetroActionItemInfo
+  errors: [SetRetroActionItemDoneError!]
+}
+
+type SetRetroGroupTitlePayload {
+  boolean: Boolean
+  errors: [SetRetroGroupTitleError!]
+}
+
+type SetRetroPhasePayload {
+  retroInfo: RetroInfo
+  errors: [SetRetroPhaseError!]
 }
 
 type SetSortingOpenPayload {
@@ -821,6 +961,27 @@ type Sprint {
   stats: SprintStats
 }
 
+type SprintFactTicket {
+  ticketId: UUID!
+  name: String!
+  externalKey: String
+  estimate: String
+  days: Float
+  cardMedianDays: Float
+  confidence: Float
+}
+
+type SprintFactsInfo {
+  hasData: Boolean!
+  estimatedPoints: Float!
+  estimatedTickets: Int!
+  ticketCount: Int!
+  plannedPoints: Float
+  velocity: [VelocityPoint!]!
+  outliers: [SprintFactTicket!]!
+  lowConfidence: [SprintFactTicket!]!
+}
+
 "Capacity, budget and the chosen tickets of one team sprint (OPP-138)."
 type SprintPlan {
   gameId: UUID!
@@ -834,6 +995,12 @@ type SprintPlan {
   tickets: [PlanTicketInfo!]!
 }
 
+"Where a sprint's retro stands, for the team room."
+type SprintRetro {
+  gameId: UUID!
+  phase: RetroPhase!
+}
+
 "How one planning session went (OPP-134). Team numbers only."
 type SprintStats {
   revealed: Int!
@@ -844,6 +1011,11 @@ type SprintStats {
   "Average seconds from the reveal to the final estimate."
   averageDiscussionSeconds: Float
   needsInfo: Int!
+}
+
+type StartRetroPayload {
+  retroInfo: RetroInfo
+  errors: [StartRetroError!]
 }
 
 type StartTimerPayload {
@@ -900,6 +1072,10 @@ type Team {
   anchors: [TeamAnchor!]! @cost(weight: "10")
   "Estimated tickets of all sprints, newest first, filtered by text and card value. Empty for non-members."
   history(search: String value: String skip: Int! = 0 take: Int! = 20): TeamHistory! @cost(weight: "10")
+  "Sprints that have a retro and its step. Empty for non-members."
+  retros: [SprintRetro!]! @cost(weight: "10")
+  "Open action items of the team's retros (OPP-166). Empty for non-members."
+  openActionItems: [RetroActionItemInfo!]! @cost(weight: "10")
 }
 
 "Estimate accuracy from Jira cycle times (OPP-135)."
@@ -1060,6 +1236,16 @@ type UpdateGameOptionsPayload {
   errors: [UpdateGameOptionsError!]
 }
 
+type UpdateRetroActionItemPayload {
+  retroActionItemInfo: RetroActionItemInfo
+  errors: [UpdateRetroActionItemError!]
+}
+
+type UpdateRetroSettingsPayload {
+  retroInfo: RetroInfo
+  errors: [UpdateRetroSettingsError!]
+}
+
 type UpdateSettingsPayload {
   settings: Settings
   errors: [UpdateSettingsError!]
@@ -1075,6 +1261,13 @@ type UpdateTicketPayload {
   errors: [UpdateTicketError!]
 }
 
+type VelocityPoint {
+  gameId: UUID!
+  name: String!
+  points: Float!
+  current: Boolean!
+}
+
 type Vote {
   playerName: String! @cost(weight: "10")
   id: UUID!
@@ -1087,12 +1280,21 @@ type VoteNote {
   note: String!
 }
 
+type VoteRetroCardPayload {
+  int: Int
+  errors: [VoteRetroCardError!]
+}
+
 type VotesRevealed {
   ticketId: UUID!
   revealedBy: String!
   "All votes of the ticket with their values, sent once the host reveals them."
   votes: [Vote!]!
 }
+
+union AddRetroActionItemError = ApplicationError
+
+union AddRetroCardError = ApplicationError
 
 union ApplySortedEstimatesError = ApplicationError
 
@@ -1118,11 +1320,17 @@ union CreateTicketForIssueError = ApplicationError
 
 union DeleteGameError = ApplicationError
 
+union DeleteRetroActionItemError = ApplicationError
+
+union DeleteRetroCardError = ApplicationError
+
 union DeleteTicketError = ApplicationError
 
 union DisconnectJiraError = ApplicationError
 
 union DisconnectTrackerError = ApplicationError
+
+union EditRetroCardError = ApplicationError
 
 union GamePlayersResult = ApiCollectionOfGamePlayer | ApplicationError
 
@@ -1131,6 +1339,8 @@ union GameRecapResult = GameRecap | ApplicationError
 union GameResult = Game | ApplicationError
 
 union GenerateGameReportError = ApplicationError
+
+union GroupRetroCardError = ApplicationError
 
 union ImportJiraIssuesError = ApplicationError
 
@@ -1162,6 +1372,8 @@ union MoveSortedTicketError = ApplicationError
 
 union PinTeamAnchorError = ApplicationError
 
+union PostRetroSummaryError = ApplicationError
+
 union PostSessionSummaryError = ApplicationError
 
 union ReVoteTicketError = ApplicationError
@@ -1171,6 +1383,12 @@ union RecapSharingResult = RecapSharing | ApplicationError
 union RemovePlayerError = ApplicationError
 
 union ReorderTicketsError = ApplicationError
+
+union RetroExportResult = RetroExportFile | ApplicationError
+
+union RetroFactsResult = SprintFactsInfo | ApplicationError
+
+union RetroResult = RetroInfo | ApplicationError
 
 union RevealVotesError = ApplicationError
 
@@ -1200,6 +1418,12 @@ union SetPlayerRoleError = ApplicationError
 
 union SetRecapSharingError = ApplicationError
 
+union SetRetroActionItemDoneError = ApplicationError
+
+union SetRetroGroupTitleError = ApplicationError
+
+union SetRetroPhaseError = ApplicationError
+
 union SetSortingOpenError = ApplicationError
 
 union SetSprintDaysError = ApplicationError
@@ -1219,6 +1443,8 @@ union SettingsResult = Settings | ApplicationError
 union SortingBoardResult = SortingBoardInfo | ApplicationError
 
 union SprintPlanResult = SprintPlan | ApplicationError
+
+union StartRetroError = ApplicationError
 
 union StartTimerError = ApplicationError
 
@@ -1250,13 +1476,32 @@ union UpdateFacilitationOptionsError = ApplicationError
 
 union UpdateGameOptionsError = ApplicationError
 
+union UpdateRetroActionItemError = ApplicationError
+
+union UpdateRetroSettingsError = ApplicationError
+
 union UpdateSettingsError = ApplicationError
 
 union UpdateTeamError = ApplicationError
 
 union UpdateTicketError = ApplicationError
 
+union VoteRetroCardError = ApplicationError
+
 union VotesResult = ApiCollectionOfVote | ApplicationError
+
+input AddRetroActionItemInput {
+  retroId: UUID!
+  text: String!
+  cardId: UUID
+  ownerId: UUID
+}
+
+input AddRetroCardInput {
+  retroId: UUID!
+  column: Int!
+  text: String!
+}
 
 input ApplySortedEstimatesInput {
   gameId: UUID!
@@ -1321,6 +1566,14 @@ input DeleteGameInput {
   gameId: UUID!
 }
 
+input DeleteRetroActionItemInput {
+  actionItemId: UUID!
+}
+
+input DeleteRetroCardInput {
+  cardId: UUID!
+}
+
 input DeleteTicketInput {
   id: UUID!
 }
@@ -1329,8 +1582,18 @@ input DisconnectTrackerInput {
   provider: String!
 }
 
+input EditRetroCardInput {
+  cardId: UUID!
+  text: String!
+}
+
 input GenerateGameReportInput {
   gameId: UUID!
+}
+
+input GroupRetroCardInput {
+  cardId: UUID!
+  targetCardId: UUID
 }
 
 input ImportJiraIssuesInput {
@@ -1377,6 +1640,10 @@ input PinTeamAnchorInput {
   teamId: UUID!
   ticketId: UUID!
   note: String
+}
+
+input PostRetroSummaryInput {
+  retroId: UUID!
 }
 
 input PostSessionSummaryInput {
@@ -1465,6 +1732,21 @@ input SetRecapSharingInput {
   showNames: Boolean! = false
 }
 
+input SetRetroActionItemDoneInput {
+  actionItemId: UUID!
+  done: Boolean!
+}
+
+input SetRetroGroupTitleInput {
+  cardId: UUID!
+  title: String
+}
+
+input SetRetroPhaseInput {
+  retroId: UUID!
+  phase: RetroPhase!
+}
+
 input SetSortingOpenInput {
   gameId: UUID!
   open: Boolean!
@@ -1495,6 +1777,12 @@ input SetTicketPlannedInput {
 input SetVoteNoteInput {
   ticketId: UUID!
   note: String
+}
+
+input StartRetroInput {
+  teamId: UUID!
+  gameId: UUID!
+  template: String!
 }
 
 input StartTimerInput {
@@ -1533,6 +1821,18 @@ input UpdateGameOptionsInput {
   asyncVotingEndsAt: DateTime
 }
 
+input UpdateRetroActionItemInput {
+  actionItemId: UUID!
+  text: String!
+  ownerId: UUID
+}
+
+input UpdateRetroSettingsInput {
+  retroId: UUID!
+  showAuthors: Boolean!
+  dotsPerPerson: Int!
+}
+
 input UpdateSettingsInput {
   id: UUID!
   gameId: UUID!
@@ -1551,6 +1851,11 @@ input UpdateTicketInput {
   description: String!
 }
 
+input VoteRetroCardInput {
+  cardId: UUID!
+  add: Boolean!
+}
+
 "What changed in a game. Clients reload that part (players, tickets or the game and its settings)."
 enum GameChangeKind {
   "Host, settings or options changed: reload the game."
@@ -1563,11 +1868,20 @@ enum GameChangeKind {
   PLAYER_REMOVED
   "The sorting board was opened, closed or a ticket moved on it (OPP-142): reload the board."
   SORTING
+  "The sprint's retro changed (OPP-162): reload the board."
+  RETRO
 }
 
 enum PlayerRole {
   PLAYER
   OBSERVER
+}
+
+enum RetroPhase {
+  WRITING
+  GROUPING
+  VOTING
+  DISCUSSING
 }
 
 enum VoteSpread {

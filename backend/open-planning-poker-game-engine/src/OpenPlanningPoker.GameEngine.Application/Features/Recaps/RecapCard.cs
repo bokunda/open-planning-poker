@@ -36,7 +36,7 @@ public static class RecapCard
                     text.Span("  ·  session recap").FontSize(11).FontColor(OnPrimarySoft);
                 });
 
-                column.Item().PaddingTop(22).Height(92).Text(recap.GameName)
+                column.Item().PaddingTop(22).Height(92).Text(PdfText.Clean(recap.GameName))
                     .FontFamily(GameReportDocument.DisplayFont).ExtraBold().FontSize(34).LineHeight(1.1f).ClampLines(2);
 
                 column.Item().PaddingTop(16).Row(row =>
