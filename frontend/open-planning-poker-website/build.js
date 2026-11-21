@@ -51,8 +51,11 @@ console.log(`  ✓ GitHub stars: ${stars || 'unknown'}`);
 const partial = name => fs.readFileSync(path.resolve(__dirname, 'partials', name), 'utf-8');
 const sitePartials = { head: partial('head.html'), header: partial('header.html'), footer: partial('footer.html') };
 
+// Serbian text uses č, ć, š, ž and đ from the latin-ext font files: preload them too, or the headline waits for them.
+const latinExtPreload = ['figtree', 'bricolage-grotesque']
+  .map(f => `<link rel="preload" href="/fonts/${f}-latin-ext.woff2" as="font" type="font/woff2" crossorigin>`).join('\n    ');
 const fillRelease = (html, lang = 'en') => html
-  .replace('<!-- SITE_HEAD -->', sitePartials.head)
+  .replace('<!-- SITE_HEAD -->', lang === 'sr' ? sitePartials.head.replace(/(<link rel="preload" href="\/fonts\/bricolage-grotesque-latin\.woff2"[^>]*>)/, `$1\n    ${latinExtPreload}`) : sitePartials.head)
   .replace('<!-- SITE_HEADER -->', sitePartials.header)
   .replace('<!-- SITE_FOOTER -->', sitePartials.footer)
   .replace('<!-- LATEST_RELEASE -->', latestRelease[lang])

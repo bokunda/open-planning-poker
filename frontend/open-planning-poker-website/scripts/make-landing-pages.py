@@ -626,7 +626,7 @@ def compare_table(lang):
     import html as h
     c = COMPARE[lang]
     head = "".join(f'<th scope="col">{h.escape(TOOL_NAMES[t])}</th>' for t in TOOLS)
-    na = f'<span class="text-gray-400">{h.escape(c["na"])}</span>'
+    na = f'<em>{h.escape(c["na"])}</em>'
     rows = "\n".join(
         f'    <tr><th scope="row">{h.escape(label)}</th>' + "".join(
             f'<td>{h.escape(v) if v else na}</td>' for v in values) + "</tr>"
