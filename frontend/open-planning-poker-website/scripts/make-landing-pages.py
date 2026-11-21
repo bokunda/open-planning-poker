@@ -11,6 +11,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from landing_render import APP, picture, render  # noqa: E402
 from landing_tools import SCALES_SCRIPT, VELOCITY_SCRIPT, scales_tool, velocity_tool  # noqa: E402
+from landing_api import api_page  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATE = "2026-11-21"
@@ -676,6 +677,10 @@ PAGES["planning-poker-tools-compared"] = {
     },
 }
 
+# --- Public API documentation (OPP-161)
+
+PAGES["public-api"] = {"kind": "Article", **{lang: api_page(lang) for lang in ("en", "sr", "de")}}
+
 # ------------------------------------------------------------------------------------------------ tools and related pages
 
 PAGES["velocity-calculator"]["tool"] = velocity_tool
@@ -696,6 +701,7 @@ RELATED = {
     "magic-estimation": ["sprint-planning-tool", "planning-poker-for-jira", "story-point-scales"],
     "sprint-planning-tool": ["velocity-calculator", "magic-estimation", "planning-poker-for-jira"],
     "planning-poker-tools-compared": ["remote-planning-poker", "sprint-planning-tool", "velocity-calculator"],
+    "public-api": ["planning-poker-for-jira", "sprint-planning-tool", "magic-estimation"],
 }
 
 

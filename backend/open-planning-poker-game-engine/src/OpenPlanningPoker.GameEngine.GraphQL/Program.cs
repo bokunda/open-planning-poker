@@ -36,6 +36,14 @@ builder.Services.AddOpenTelemetry(builder.Configuration);
 // Website visits and rooms per website page (OPP-181).
 builder.Services.ConfigureOpenTelemetryMeterProvider(metrics => metrics.AddMeter(OpenPlanningPoker.GameEngine.GraphQL.Features.Info.SiteMetrics.MeterName));
 
+// Public API and outgoing webhooks (OPP-141).
+builder.Services.AddSingleton<OpenPlanningPoker.GameEngine.GraphQL.Features.Teams.WebhookQueue>();
+builder.Services.AddSingleton<OpenPlanningPoker.GameEngine.Application.Features.Teams.IWebhookQueue>(sp =>
+    sp.GetRequiredService<OpenPlanningPoker.GameEngine.GraphQL.Features.Teams.WebhookQueue>());
+builder.Services.AddHttpClient(OpenPlanningPoker.GameEngine.GraphQL.Features.Teams.WebhookDispatcher.HttpClientName, client => client.Timeout = TimeSpan.FromSeconds(10))
+    .ConfigurePrimaryHttpMessageHandler(OpenPlanningPoker.GameEngine.GraphQL.Features.Teams.WebhookDispatcher.CreateHandler);
+if (!isSchemaExport) builder.Services.AddHostedService<OpenPlanningPoker.GameEngine.GraphQL.Features.Teams.WebhookDispatcher>();
+
 var app = builder.Build();
 
 if (isSchemaExport)
@@ -96,6 +104,7 @@ app.UseRateLimiter();
 app.UseWebSockets();
 app.MapChatIntegrations();
 app.MapRecapEndpoints();
+OpenPlanningPoker.GameEngine.GraphQL.Features.Teams.PublicApiEndpoints.MapPublicApi(app);
 OpenPlanningPoker.GameEngine.GraphQL.Features.Info.SiteMetrics.MapSiteMetrics(app);
 app.MapGraphQL().WithOptions(new GraphQLServerOptions
 {

@@ -16,6 +16,7 @@ public static class DependencyInjection
         services.AddScoped<IGameAccessService, GameAccessService>();
         services.AddScoped<Features.Teams.Planning.Loader>();
         services.AddScoped<Features.Teams.RetroService>();
+        services.AddScoped<Features.Teams.TeamApiService>();
 
         return services;
     }

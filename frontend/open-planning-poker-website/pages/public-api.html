@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public API and webhooks | Open Planning Poker</title>
+    <meta name="description" content="Read your team&#x27;s planning poker sessions, tickets and estimates with a token, and get signed webhooks when a ticket is estimated or a session finishes. Free, for scripts, Zapier and n8n.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://openplanningpoker.com/public-api/">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://openplanningpoker.com/public-api/">
+    <meta property="og:title" content="Public API and webhooks">
+    <meta property="og:description" content="Read your team&#x27;s planning poker sessions, tickets and estimates with a token, and get signed webhooks when a ticket is estimated or a session finishes. Free, for scripts, Zapier and n8n.">
+    <meta property="og:image" content="https://openplanningpoker.com/images/og-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Open Planning Poker">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Public API and webhooks">
+    <meta name="twitter:description" content="Read your team&#x27;s planning poker sessions, tickets and estimates with a token, and get signed webhooks when a ticket is estimated or a session finishes. Free, for scripts, Zapier and n8n.">
+    <meta name="twitter:image" content="https://openplanningpoker.com/images/og-card.png">
+    <!-- SITE_HEAD -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://openplanningpoker.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Public API",
+          "item": "https://openplanningpoker.com/public-api/"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "Public API and webhooks",
+      "description": "Read your team's planning poker sessions, tickets and estimates with a token, and get signed webhooks when a ticket is estimated or a session finishes. Free, for scripts, Zapier and n8n.",
+      "url": "https://openplanningpoker.com/public-api/",
+      "dateModified": "2026-11-21",
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://openplanningpoker.com/#org"
+      },
+      "datePublished": "2026-11-21",
+      "image": "https://openplanningpoker.com/images/og-card.png",
+      "author": {
+        "@type": "Organization",
+        "name": "Open Planning Poker",
+        "url": "https://openplanningpoker.com"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is the API free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The API and webhooks are part of every team room, without a paid plan."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I write data through the API?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not yet: the public API is read-only. Estimates are written by the app itself, which can save them to Jira, GitHub, Linear or Azure DevOps."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+</head>
+<body class="bg-white text-gray-600 font-sans antialiased dark:bg-gray-900 dark:text-gray-400">
+    <!-- SITE_HEADER -->
+
+    <main id="main">
+      <article class="max-w-3xl px-4 pt-28 pb-16 mx-auto lg:pt-36">
+        <nav aria-label="Breadcrumb" class="text-sm">
+          <ol class="flex gap-2">
+            <li><a href="/" class="link">Home</a></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">Public API</li>
+          </ol>
+        </nav>
+        <h1 class="mt-6 font-display text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl dark:text-white">Public API and webhooks</h1>
+        <p class="mt-5 text-lg leading-relaxed">Every team room has a small read-only API and outgoing webhooks. Use them to build your own reports, connect a tool we do not support yet, or practise integrations against a real API.</p>
+
+        <div class="guide mt-10">
+<h2>Authentication</h2>
+<p>The team owner creates a token in the team room under <strong>API and webhooks</strong>. It is shown once; we store only its hash. Send it as a bearer token. A token reads only its own team, and the owner can revoke it at any time.</p>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>curl -H &quot;Authorization: Bearer opp_…&quot; https://ge.openplanningpoker.com/api/v1/sessions?take=10</code></pre>
+<h2>Limits</h2>
+<p>60 requests a minute per token, and the usual limit per address. Above it the API answers <code>429</code> with <code>Retry-After: 60</code>. Lists are paged with <code>skip</code> and <code>take</code> (up to 100).</p>
+<h2>Endpoints</h2>
+<ul>
+  <li><code>GET /api/v1/team</code>: The team&#x27;s name and description.</li>
+  <li><code>GET /api/v1/sessions</code>: The planning sessions (sprints), newest first, with points and how each session went.</li>
+  <li><code>GET /api/v1/sessions/{id}/tickets</code>: The tickets of a session with the agreed estimate and the link to the tracker.</li>
+</ul>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>{
+  &quot;items&quot;: [
+    { &quot;id&quot;: &quot;01a1f644-…&quot;, &quot;name&quot;: &quot;Sprint 12&quot;, &quot;createdOn&quot;: &quot;2026-11-20T09:00:00Z&quot;,
+      &quot;ticketCount&quot;: 14, &quot;estimatedCount&quot;: 12, &quot;points&quot;: 41,
+      &quot;firstRoundConsensusShare&quot;: 0.58, &quot;reVotesPerTicket&quot;: 0.3, &quot;averageDiscussionSeconds&quot;: 95, &quot;needsInfo&quot;: 1 }
+  ],
+  &quot;total&quot;: 8, &quot;skip&quot;: 0, &quot;take&quot;: 10
+}</code></pre>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>curl -H &quot;Authorization: Bearer opp_…&quot; https://ge.openplanningpoker.com/api/v1/sessions/01a1f644-…/tickets
+
+{
+  &quot;items&quot;: [
+    { &quot;id&quot;: &quot;…&quot;, &quot;sessionId&quot;: &quot;01a1f644-…&quot;, &quot;name&quot;: &quot;Login with SSO&quot;, &quot;externalKey&quot;: &quot;PAY-42&quot;,
+      &quot;externalUrl&quot;: &quot;https://acme.atlassian.net/browse/PAY-42&quot;, &quot;provider&quot;: &quot;jira&quot;,
+      &quot;estimate&quot;: &quot;5&quot;, &quot;estimated&quot;: true, &quot;needsInfo&quot;: false, &quot;estimatedAt&quot;: &quot;2026-11-20T09:14:03Z&quot; }
+  ],
+  &quot;total&quot;: 14, &quot;skip&quot;: 0, &quot;take&quot;: 50
+}</code></pre>
+<p>The API never returns single votes or player names: only the numbers the team room already shows.</p>
+<p>Errors are JSON: <code>{"error": {"code": "unauthorized", "message": "…"}}</code> with status 401, 404 or 429.</p>
+<h2>Webhooks</h2>
+<p>Add an https address and pick the events. <code>ticket.estimated</code> fires when a ticket gets a final estimate (<code>changed</code> is true when an estimate was changed). <code>session.finished</code> fires when the last open ticket of a session gets one.</p>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>POST https://your-endpoint.example.com/opp
+X-OPP-Event: ticket.estimated
+X-OPP-Delivery: 5f0c…            (the same on every retry of this event)
+X-OPP-Signature: t=1795291800,v1=9c1d…
+
+{
+  &quot;id&quot;: &quot;5f0c…&quot;, &quot;type&quot;: &quot;ticket.estimated&quot;, &quot;createdAt&quot;: &quot;2026-11-21T20:10:00Z&quot;, &quot;teamId&quot;: &quot;…&quot;,
+  &quot;data&quot;: {
+    &quot;sessionId&quot;: &quot;…&quot;, &quot;sessionName&quot;: &quot;Sprint 12&quot;,
+    &quot;ticket&quot;: { &quot;id&quot;: &quot;…&quot;, &quot;name&quot;: &quot;Login with SSO&quot;, &quot;externalKey&quot;: &quot;PAY-42&quot;, &quot;externalUrl&quot;: &quot;…&quot;, &quot;estimate&quot;: &quot;5&quot; },
+    &quot;changed&quot;: false
+  }
+}</code></pre>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>{ &quot;type&quot;: &quot;session.finished&quot;, &quot;data&quot;: { &quot;sessionId&quot;: &quot;…&quot;, &quot;sessionName&quot;: &quot;Sprint 12&quot;, &quot;ticketCount&quot;: 14, &quot;points&quot;: 41 } }</code></pre>
+<p>Answer with any 2xx within 10 seconds. Failed deliveries are retried after 1, 5 and 30 minutes; the last 20 deliveries are listed in the team room. Use <code>X-OPP-Delivery</code> to drop duplicates. Internal addresses are refused.</p>
+<h2>Check the signature</h2>
+<p><code>X-OPP-Signature</code> is <code>t=&lt;unix time&gt;,v1=&lt;HMAC-SHA256 of "t.body"&gt;</code> with your webhook secret. Reject requests whose time is more than five minutes off.</p>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>import crypto from &#x27;node:crypto&#x27;;
+
+// body: the raw request body as a string, header: the X-OPP-Signature value
+export function verify(secret, header, body, toleranceSeconds = 300) {
+  const parts = Object.fromEntries(header.split(&#x27;,&#x27;).map((p) =&gt; p.split(&#x27;=&#x27;)));
+  if (Math.abs(Date.now() / 1000 - Number(parts.t)) &gt; toleranceSeconds) return false;
+  const expected = crypto.createHmac(&#x27;sha256&#x27;, secret).update(`${parts.t}.${body}`).digest(&#x27;hex&#x27;);
+  return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(parts.v1 ?? &#x27;&#x27;));
+}</code></pre>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>import hashlib, hmac, time
+
+def verify(secret: str, header: str, body: str, tolerance: int = 300) -&gt; bool:
+    parts = dict(p.split(&quot;=&quot;, 1) for p in header.split(&quot;,&quot;))
+    if abs(time.time() - int(parts[&quot;t&quot;])) &gt; tolerance:
+        return False
+    expected = hmac.new(secret.encode(), f&quot;{parts[&#x27;t&#x27;]}.{body}&quot;.encode(), hashlib.sha256).hexdigest()
+    return hmac.compare_digest(expected, parts.get(&quot;v1&quot;, &quot;&quot;))</code></pre>
+<h2>Zapier and n8n</h2>
+<p><strong>n8n</strong>: add a <em>Webhook</em> node (POST), copy its production URL into the team room, then a <em>Code</em> node with the check above, and send the estimate on to Slack, a sheet or your tracker. <strong>Zapier</strong>: use <em>Webhooks by Zapier → Catch Raw Hook</em> as the trigger so the body stays as sent, then a <em>Code by Zapier</em> step for the check. To read data on a schedule, use an HTTP request node or <em>Webhooks by Zapier → GET</em> with the <code>Authorization</code> header.</p>
+<h2 id="faq">Questions</h2>
+<h3>Is the API free?</h3>
+<p>Yes. The API and webhooks are part of every team room, without a paid plan.</p>
+<h3>Can I write data through the API?</h3>
+<p>Not yet: the public API is read-only. Estimates are written by the app itself, which can save them to Jira, GitHub, Linear or Azure DevOps.</p>
+<p class="mt-10 text-sm">Last updated: <time datetime="2026-11-21">2026-11-21</time></p>
+        </div>
+
+        <aside class="mt-12 p-6 border border-gray-200 rounded-2xl dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50" aria-labelledby="more-pages">
+          <h2 id="more-pages" class="font-display text-lg font-extrabold text-gray-900 dark:text-white">Related pages</h2>
+          <ul class="mt-3 space-y-2">
+          <li><a href="/planning-poker-for-jira/" class="link">Planning poker for Jira</a></li>
+          <li><a href="/sprint-planning-tool/" class="link">Sprint planning</a></li>
+          <li><a href="/magic-estimation/" class="link">Magic estimation</a></li>
+          </ul>
+        </aside>
+      </article>
+
+      <section class="px-4 pb-16 lg:pb-24">
+        <div class="cta-band max-w-(--breakpoint-lg) mx-auto">
+          <h2 class="font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Try it with your team.</h2>
+          <p class="mt-3 text-lg text-purple-100">Free, no sign-up. Share one link and you are playing.</p>
+          <a href="https://app.openplanningpoker.com" class="inline-flex items-center justify-center mt-8 px-6 py-3.5 font-bold rounded-full bg-white text-purple-700 shadow-lg hover:bg-purple-50 focus:outline-hidden focus-visible:ring-4 focus-visible:ring-white/60 transition">Start a game</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- SITE_FOOTER -->
+</body>
+</html>

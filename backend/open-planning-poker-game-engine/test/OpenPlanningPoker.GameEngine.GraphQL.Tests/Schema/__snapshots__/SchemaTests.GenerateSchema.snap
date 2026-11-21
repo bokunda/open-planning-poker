@@ -46,6 +46,18 @@ type ChatMessage {
   timestamp: String!
 }
 
+type CreatedTeamApiToken {
+  info: TeamApiTokenInfo!
+  "Shown once: copy it now."
+  token: String!
+}
+
+type CreatedTeamWebhook {
+  info: TeamWebhookInfo!
+  "The signing secret, shown once: store it with the receiver."
+  secret: String!
+}
+
 "Room options for running the discussion (OPP-114)."
 type FacilitationSettings {
   "After a wide spread, the lowest and highest voters are asked to explain their card."
@@ -340,6 +352,17 @@ type Mutation {
   Team owner only.
   """
   movePlanToJiraSprint(teamId: UUID! gameId: UUID! sprintId: Long!): JiraSprintMoved!
+  "Creates an API token for the team; the token is in the answer only (OPP-158). Team owner."
+  createTeamApiToken(teamId: UUID! name: String!): CreatedTeamApiToken!
+  "Revokes an API token at once. Team owner."
+  revokeTeamApiToken(teamId: UUID! tokenId: UUID!): Boolean!
+  "Adds an outgoing webhook; the signing secret is in the answer only (OPP-160). Team owner."
+  createTeamWebhook(teamId: UUID! url: String! events: [String!]!): CreatedTeamWebhook!
+  "Changes the address, the events or pauses a webhook. Team owner."
+  updateTeamWebhook(teamId: UUID! webhookId: UUID! url: String! events: [String!]! enabled: Boolean!): TeamWebhookInfo!
+  "Makes a new signing secret; the old one stops working at once. Team owner."
+  rotateTeamWebhookSecret(teamId: UUID! webhookId: UUID!): CreatedTeamWebhook!
+  deleteTeamWebhook(teamId: UUID! webhookId: UUID!): Boolean!
   "Pins an estimated ticket of the team's sprints as the reference for its card (two per card). Team members."
   pinTeamAnchor(teamId: UUID! ticketId: UUID! note: String): TeamAnchor!
   "Removes a reference ticket. Team members."
@@ -491,6 +514,8 @@ type Query {
   sessionSummary(gameId: UUID!): SessionSummaryInfo!
   "Capacity, budget and plan of one sprint of a team. Members only."
   sprintPlan(teamId: UUID! gameId: UUID!): SprintPlan!
+  "The last 20 deliveries of a webhook, newest first (OPP-160). Team owner."
+  teamWebhookDeliveries(teamId: UUID! webhookId: UUID!): TeamWebhookDeliveries!
   "The team's anchors and up to three similar past tickets for a ticket. Players of the game only."
   ticketReference(ticketId: UUID!): TicketReference!
   "The retro of a sprint (game). Players of the game only; RetroNotFound when it has none yet."
@@ -750,6 +775,10 @@ type Team {
   createdOn: DateTime!
   "The incoming webhook for session summaries. Owner only; null for others."
   summaryWebhook: String
+  "API tokens of the team, newest first. Owner only; empty for others."
+  apiTokens: [TeamApiTokenInfo!]!
+  "Outgoing webhooks of the team. Owner only; empty for others."
+  webhooks: [TeamWebhookInfo!]!
   "Reference tickets, by card value. Empty for non-members."
   anchors: [TeamAnchor!]!
   "Estimated tickets of all sprints, newest first, filtered by text and card value. Empty for non-members."
@@ -776,6 +805,17 @@ type TeamAnchor {
   ticket: TeamTicket!
 }
 
+"An API token of the team; the token itself is never shown again after it was created (OPP-158)."
+type TeamApiTokenInfo {
+  id: UUID!
+  name: String!
+  "The first characters of the token, to tell tokens apart."
+  prefix: String!
+  createdOn: DateTime!
+  lastUsedOn: DateTime
+  active: Boolean!
+}
+
 type TeamHistory {
   items: [TeamTicket!]!
   totalCount: Int!
@@ -800,6 +840,31 @@ type TeamTicket {
   estimate: String!
   "Consensus, Close or Wide (as in the report)."
   spread: String!
+}
+
+"The last deliveries of a webhook, newest first."
+type TeamWebhookDeliveries {
+  items: [TeamWebhookDeliveryInfo!]!
+}
+
+type TeamWebhookDeliveryInfo {
+  id: UUID!
+  event: String!
+  eventId: UUID!
+  attempt: Int!
+  statusCode: Int
+  success: Boolean!
+  error: String
+  durationMs: Float!
+  createdOn: DateTime!
+}
+
+type TeamWebhookInfo {
+  id: UUID!
+  url: String!
+  events: [String!]!
+  enabled: Boolean!
+  createdOn: DateTime!
 }
 
 type Ticket {

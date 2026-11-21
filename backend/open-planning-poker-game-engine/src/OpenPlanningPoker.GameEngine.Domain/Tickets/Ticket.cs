@@ -1,3 +1,4 @@
+using OpenPlanningPoker.GameEngine.Domain.Tickets.Events;
 namespace OpenPlanningPoker.GameEngine.Domain.Tickets;
 
 public sealed class Ticket : Entity<Guid>
@@ -110,7 +111,12 @@ public sealed class Ticket : Entity<Guid>
 
     public void SetFinalEstimate(string? value)
     {
+        var before = FinalEstimate;
         FinalEstimate = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+        if (FinalEstimate is not null && FinalEstimate != before)
+        {
+            RaiseDomainEvent(new TicketEstimatedDomainEvent(Id, GameId, before is null));
+        }
         EstimatedAt = FinalEstimate is null ? null : DateTimeOffset.UtcNow;
         if (FinalEstimate is not null)
         {
@@ -168,6 +174,7 @@ public sealed class Ticket : Entity<Guid>
         FinalEstimate = SortColumn;
         EstimatedAt = DateTimeOffset.UtcNow;
         NeedsInfo = false;
+        RaiseDomainEvent(new TicketEstimatedDomainEvent(Id, GameId, true));
         return true;
     }
 

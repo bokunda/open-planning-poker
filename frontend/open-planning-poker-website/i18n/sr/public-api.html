@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="sr-Latn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Javni API i webhookovi | Open Planning Poker</title>
+    <meta name="description" content="Čitaj planning poker sesije, tikete i procene svog tima pomoću tokena i primaj potpisane webhookove kad je tiket procenjen ili se sesija završi. Besplatno, za skripte, Zapier i n8n.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://openplanningpoker.com/sr/public-api/">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://openplanningpoker.com/sr/public-api/">
+    <meta property="og:locale" content="sr_RS">
+    <meta property="og:title" content="Javni API i webhookovi">
+    <meta property="og:description" content="Čitaj planning poker sesije, tikete i procene svog tima pomoću tokena i primaj potpisane webhookove kad je tiket procenjen ili se sesija završi. Besplatno, za skripte, Zapier i n8n.">
+    <meta property="og:image" content="https://openplanningpoker.com/images/og-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Open Planning Poker">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Javni API i webhookovi">
+    <meta name="twitter:description" content="Čitaj planning poker sesije, tikete i procene svog tima pomoću tokena i primaj potpisane webhookove kad je tiket procenjen ili se sesija završi. Besplatno, za skripte, Zapier i n8n.">
+    <meta name="twitter:image" content="https://openplanningpoker.com/images/og-card.png">
+    <!-- SITE_HEAD -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Početna",
+          "item": "https://openplanningpoker.com/sr/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Javni API",
+          "item": "https://openplanningpoker.com/sr/public-api/"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "Javni API i webhookovi",
+      "description": "Čitaj planning poker sesije, tikete i procene svog tima pomoću tokena i primaj potpisane webhookove kad je tiket procenjen ili se sesija završi. Besplatno, za skripte, Zapier i n8n.",
+      "url": "https://openplanningpoker.com/sr/public-api/",
+      "dateModified": "2026-11-21",
+      "inLanguage": "sr-Latn",
+      "publisher": {
+        "@id": "https://openplanningpoker.com/#org"
+      },
+      "datePublished": "2026-11-21",
+      "image": "https://openplanningpoker.com/images/og-card.png",
+      "author": {
+        "@type": "Organization",
+        "name": "Open Planning Poker",
+        "url": "https://openplanningpoker.com"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Da li je API besplatan?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Da. API i webhookovi su deo svake timske sobe, bez plaćenog plana."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Mogu li da upisujem podatke preko API-ja?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Još ne: javni API je samo za čitanje. Procene upisuje sama aplikacija, koja može da ih sačuva u Jiru, GitHub, Linear ili Azure DevOps."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+</head>
+<body class="bg-white text-gray-600 font-sans antialiased dark:bg-gray-900 dark:text-gray-400">
+    <!-- SITE_HEADER -->
+
+    <main id="main">
+      <article class="max-w-3xl px-4 pt-28 pb-16 mx-auto lg:pt-36">
+        <nav aria-label="Breadcrumb" class="text-sm">
+          <ol class="flex gap-2">
+            <li><a href="/sr/" class="link">Početna</a></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">Javni API</li>
+          </ol>
+        </nav>
+        <h1 class="mt-6 font-display text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl dark:text-white">Javni API i webhookovi</h1>
+        <p class="mt-5 text-lg leading-relaxed">Svaka timska soba ima mali API samo za čitanje i odlazne webhookove. Iskoristi ih za svoje izveštaje, za povezivanje alata koji još ne podržavamo ili za vežbanje integracija na pravom API-ju.</p>
+
+        <div class="guide mt-10">
+<h2>Autentikacija</h2>
+<p>Vlasnik tima pravi token u timskoj sobi pod <strong>API i webhookovi</strong>. Prikazuje se jednom; čuvamo samo njegov hash. Šalji ga kao bearer token. Token čita samo svoj tim, a vlasnik može da ga opozove u bilo kom trenutku.</p>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>curl -H &quot;Authorization: Bearer opp_…&quot; https://ge.openplanningpoker.com/api/v1/sessions?take=10</code></pre>
+<h2>Ograničenja</h2>
+<p>60 zahteva u minuti po tokenu, uz uobičajeno ograničenje po adresi. Iznad toga API odgovara sa <code>429</code> i <code>Retry-After: 60</code>. Liste se straniče sa <code>skip</code> i <code>take</code> (najviše 100).</p>
+<h2>Endpointi</h2>
+<ul>
+  <li><code>GET /api/v1/team</code>: Naziv i opis tima.</li>
+  <li><code>GET /api/v1/sessions</code>: Sesije planiranja (sprintovi), najnovije prve, sa poenima i tokom svake sesije.</li>
+  <li><code>GET /api/v1/sessions/{id}/tickets</code>: Tiketi sesije sa dogovorenom procenom i linkom ka alatu za tikete.</li>
+</ul>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>{
+  &quot;items&quot;: [
+    { &quot;id&quot;: &quot;01a1f644-…&quot;, &quot;name&quot;: &quot;Sprint 12&quot;, &quot;createdOn&quot;: &quot;2026-11-20T09:00:00Z&quot;,
+      &quot;ticketCount&quot;: 14, &quot;estimatedCount&quot;: 12, &quot;points&quot;: 41,
+      &quot;firstRoundConsensusShare&quot;: 0.58, &quot;reVotesPerTicket&quot;: 0.3, &quot;averageDiscussionSeconds&quot;: 95, &quot;needsInfo&quot;: 1 }
+  ],
+  &quot;total&quot;: 8, &quot;skip&quot;: 0, &quot;take&quot;: 10
+}</code></pre>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>curl -H &quot;Authorization: Bearer opp_…&quot; https://ge.openplanningpoker.com/api/v1/sessions/01a1f644-…/tickets
+
+{
+  &quot;items&quot;: [
+    { &quot;id&quot;: &quot;…&quot;, &quot;sessionId&quot;: &quot;01a1f644-…&quot;, &quot;name&quot;: &quot;Login with SSO&quot;, &quot;externalKey&quot;: &quot;PAY-42&quot;,
+      &quot;externalUrl&quot;: &quot;https://acme.atlassian.net/browse/PAY-42&quot;, &quot;provider&quot;: &quot;jira&quot;,
+      &quot;estimate&quot;: &quot;5&quot;, &quot;estimated&quot;: true, &quot;needsInfo&quot;: false, &quot;estimatedAt&quot;: &quot;2026-11-20T09:14:03Z&quot; }
+  ],
+  &quot;total&quot;: 14, &quot;skip&quot;: 0, &quot;take&quot;: 50
+}</code></pre>
+<p>API nikad ne vraća pojedinačne glasove ni imena igrača: samo brojke koje timska soba već prikazuje.</p>
+<p>Greške su JSON: <code>{"error": {"code": "unauthorized", "message": "…"}}</code> sa statusom 401, 404 ili 429.</p>
+<h2>Webhookovi</h2>
+<p>Dodaj https adresu i izaberi događaje. <code>ticket.estimated</code> stiže kad tiket dobije konačnu procenu (<code>changed</code> je true kad je procena izmenjena). <code>session.finished</code> stiže kad poslednji otvoreni tiket sesije dobije procenu.</p>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>POST https://your-endpoint.example.com/opp
+X-OPP-Event: ticket.estimated
+X-OPP-Delivery: 5f0c…            (the same on every retry of this event)
+X-OPP-Signature: t=1795291800,v1=9c1d…
+
+{
+  &quot;id&quot;: &quot;5f0c…&quot;, &quot;type&quot;: &quot;ticket.estimated&quot;, &quot;createdAt&quot;: &quot;2026-11-21T20:10:00Z&quot;, &quot;teamId&quot;: &quot;…&quot;,
+  &quot;data&quot;: {
+    &quot;sessionId&quot;: &quot;…&quot;, &quot;sessionName&quot;: &quot;Sprint 12&quot;,
+    &quot;ticket&quot;: { &quot;id&quot;: &quot;…&quot;, &quot;name&quot;: &quot;Login with SSO&quot;, &quot;externalKey&quot;: &quot;PAY-42&quot;, &quot;externalUrl&quot;: &quot;…&quot;, &quot;estimate&quot;: &quot;5&quot; },
+    &quot;changed&quot;: false
+  }
+}</code></pre>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>{ &quot;type&quot;: &quot;session.finished&quot;, &quot;data&quot;: { &quot;sessionId&quot;: &quot;…&quot;, &quot;sessionName&quot;: &quot;Sprint 12&quot;, &quot;ticketCount&quot;: 14, &quot;points&quot;: 41 } }</code></pre>
+<p>Odgovori bilo kojim 2xx u roku od 10 sekundi. Neuspele isporuke se ponavljaju posle 1, 5 i 30 minuta; poslednjih 20 isporuka se vidi u timskoj sobi. Koristi <code>X-OPP-Delivery</code> da odbaciš duplikate. Interne adrese se odbijaju.</p>
+<h2>Proveri potpis</h2>
+<p><code>X-OPP-Signature</code> je <code>t=&lt;unix vreme&gt;,v1=&lt;HMAC-SHA256 od "t.body"&gt;</code> sa tajnom tvog webhooka. Odbaci zahteve čije vreme odstupa više od pet minuta.</p>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>import crypto from &#x27;node:crypto&#x27;;
+
+// body: the raw request body as a string, header: the X-OPP-Signature value
+export function verify(secret, header, body, toleranceSeconds = 300) {
+  const parts = Object.fromEntries(header.split(&#x27;,&#x27;).map((p) =&gt; p.split(&#x27;=&#x27;)));
+  if (Math.abs(Date.now() / 1000 - Number(parts.t)) &gt; toleranceSeconds) return false;
+  const expected = crypto.createHmac(&#x27;sha256&#x27;, secret).update(`${parts.t}.${body}`).digest(&#x27;hex&#x27;);
+  return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(parts.v1 ?? &#x27;&#x27;));
+}</code></pre>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>import hashlib, hmac, time
+
+def verify(secret: str, header: str, body: str, tolerance: int = 300) -&gt; bool:
+    parts = dict(p.split(&quot;=&quot;, 1) for p in header.split(&quot;,&quot;))
+    if abs(time.time() - int(parts[&quot;t&quot;])) &gt; tolerance:
+        return False
+    expected = hmac.new(secret.encode(), f&quot;{parts[&#x27;t&#x27;]}.{body}&quot;.encode(), hashlib.sha256).hexdigest()
+    return hmac.compare_digest(expected, parts.get(&quot;v1&quot;, &quot;&quot;))</code></pre>
+<h2>Zapier i n8n</h2>
+<p><strong>n8n</strong>: dodaj <em>Webhook</em> čvor (POST), kopiraj njegov produkcioni URL u timsku sobu, zatim <em>Code</em> čvor sa gornjom proverom, i prosledi procenu u Slack, tabelu ili alat za tikete. <strong>Zapier</strong>: koristi <em>Webhooks by Zapier → Catch Raw Hook</em> kao okidač da telo ostane kakvo je poslato, pa korak <em>Code by Zapier</em> za proveru. Za periodično čitanje podataka koristi HTTP čvor ili <em>Webhooks by Zapier → GET</em> sa zaglavljem <code>Authorization</code>.</p>
+<h2 id="faq">Pitanja</h2>
+<h3>Da li je API besplatan?</h3>
+<p>Da. API i webhookovi su deo svake timske sobe, bez plaćenog plana.</p>
+<h3>Mogu li da upisujem podatke preko API-ja?</h3>
+<p>Još ne: javni API je samo za čitanje. Procene upisuje sama aplikacija, koja može da ih sačuva u Jiru, GitHub, Linear ili Azure DevOps.</p>
+<p class="mt-10 text-sm">Poslednja izmena: <time datetime="2026-11-21">2026-11-21</time></p>
+        </div>
+
+        <aside class="mt-12 p-6 border border-gray-200 rounded-2xl dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50" aria-labelledby="more-pages">
+          <h2 id="more-pages" class="font-display text-lg font-extrabold text-gray-900 dark:text-white">Povezane stranice</h2>
+          <ul class="mt-3 space-y-2">
+          <li><a href="/sr/planning-poker-for-jira/" class="link">Planning poker za Jira</a></li>
+          <li><a href="/sr/sprint-planning-tool/" class="link">Planiranje sprinta</a></li>
+          <li><a href="/sr/magic-estimation/" class="link">Magična procena</a></li>
+          </ul>
+        </aside>
+      </article>
+
+      <section class="px-4 pb-16 lg:pb-24">
+        <div class="cta-band max-w-(--breakpoint-lg) mx-auto">
+          <h2 class="font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Probaj sa svojim timom.</h2>
+          <p class="mt-3 text-lg text-purple-100">Besplatno, bez registracije. Podeli jedan link i igra počinje.</p>
+          <a href="https://app.openplanningpoker.com" class="inline-flex items-center justify-center mt-8 px-6 py-3.5 font-bold rounded-full bg-white text-purple-700 shadow-lg hover:bg-purple-50 focus:outline-hidden focus-visible:ring-4 focus-visible:ring-white/60 transition">Pokreni igru</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- SITE_FOOTER -->
+</body>
+</html>

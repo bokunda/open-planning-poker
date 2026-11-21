@@ -14,6 +14,18 @@ public static class ClientRateLimiting
     public const string ClientIpHeader = "X-Real-IP";
     private const string ForwardedForHeader = "X-Forwarded-For";
 
+    public const string PublicApiPolicy = "public-api";
+    public const string SiteVisitPolicy = "site-visit";
+
+    /// <summary>The token of a public API request, hashed so it is never kept in memory as is; the address without one.</summary>
+    private static string TokenKey(HttpContext context)
+    {
+        var header = context.Request.Headers.Authorization.ToString();
+        return header.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase) && header.Length > 7
+            ? Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(header[7..])))[..16]
+            : GetClientIp(context);
+    }
+
     public static string GetClientIp(HttpContext? context) =>
         context?.Request.Headers[ClientIpHeader].FirstOrDefault()
         ?? context?.Connection.RemoteIpAddress?.ToString()
@@ -38,6 +50,22 @@ public static class ClientRateLimiting
                         AutoReplenishment = true,
                         QueueLimit = 0
                     }));
+
+            // Public API (OPP-159): 60 requests a minute per token, on top of the limit per address.
+            options.AddPolicy(PublicApiPolicy, context => RateLimitPartition.GetFixedWindowLimiter(
+                "token:" + TokenKey(context),
+                _ => new FixedWindowRateLimiterOptions { PermitLimit = 60, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
+
+            // Website page views (OPP-181): a visitor opens a few pages a minute.
+            options.AddPolicy(SiteVisitPolicy, context => RateLimitPartition.GetFixedWindowLimiter(
+                "visit:" + GetClientIp(context),
+                _ => new FixedWindowRateLimiterOptions { PermitLimit = 30, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
+
+            options.OnRejected = (context, _) =>
+            {
+                context.HttpContext.Response.Headers.RetryAfter = "60";
+                return ValueTask.CompletedTask;
+            };
         });
 
         return services;

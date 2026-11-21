@@ -69,6 +69,7 @@ public static class DependencyInjection
         services.AddHttpClient<Application.Features.Teams.IWebhookPoster, Integrations.WebhookPoster>(client => client.Timeout = TimeSpan.FromSeconds(10));
         services.AddScoped<Application.Features.Teams.InsightsService>();
         services.AddScoped<IRetroRepository, RetroRepository>();
+        services.AddScoped<ITeamApiRepository, TeamApiRepository>();
 
         // Slack and Teams (OPP-22, OPP-23).
         services.Configure<Application.Features.Integrations.Chat.ChatOptions>(configuration.GetSection(Application.Features.Integrations.Chat.ChatOptions.Section));
