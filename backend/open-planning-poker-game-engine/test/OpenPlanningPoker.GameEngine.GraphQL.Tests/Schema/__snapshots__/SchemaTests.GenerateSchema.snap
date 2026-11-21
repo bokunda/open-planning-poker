@@ -268,7 +268,7 @@ type Mutation {
   "Hands the game over to another player in it. Host only; the old host stays as a player."
   transferHost(gameId: UUID! playerId: UUID!): Boolean!
   "Creates a game, returns game details. The caller becomes the game host."
-  createGame(name: String! description: String! deckSetup: String teamId: UUID): Game!
+  createGame(name: String! description: String! deckSetup: String teamId: UUID source: String): Game!
   "Deletes a game with its tickets, votes and players. Host only (not co-hosts)."
   deleteGame(gameId: UUID!): Boolean!
   "Generates a PDF report of the game. Only players of the game can generate it."

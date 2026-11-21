@@ -15,6 +15,7 @@ import { TeamComponent } from './team/team.component';
 import { RetroComponent } from './retro/retro.component';
 import { TranslocoService } from '@jsverse/transloco';
 import { isEmbedded } from '../../shared/embed';
+import { rememberRef } from '../../shared/site-ref';
 
 @Component({
   selector: 'app-home',
@@ -52,6 +53,8 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.isTeamView = this.route.snapshot.data['view'] === 'team';
     this.isRetroView = this.route.snapshot.data['view'] === 'retro';
+    // A website link to a team room or a retro still counts the room it leads to (OPP-181).
+    if (isPlatformBrowser(this.platformId)) rememberRef(this.route.snapshot.queryParamMap.get('ref'));
     this.updatePageMeta();
     // Titles and descriptions follow the language.
     this.i18n.langChanges$.subscribe(() => this.updatePageMeta());

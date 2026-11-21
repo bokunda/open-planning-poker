@@ -142,6 +142,8 @@ jobs:
             | jq -r '.data.createGame.game.id')
           echo "Game room: $GAME"
           LHCI_GAME_URL="http://localhost:4000/game/$GAME" npx lhci autorun --config=lighthouserc.cjs
+          # Every website page on a phone (OPP-181).
+          npx lhci autorun --config=lighthouserc.website-mobile.cjs
 
       - name: Lighthouse findings
         if: failure()
@@ -161,6 +163,7 @@ jobs:
             e2e/playwright-report/
             e2e/test-results/
             e2e/lighthouse-report/
+            e2e/lighthouse-report-website/
           retention-days: 14
           if-no-files-found: ignore
 

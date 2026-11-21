@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprint velocity and capacity calculator | Open Planning Poker</title>
+    <meta name="description" content="Free sprint velocity calculator: enter the points of your last sprints and who is available, and get how many story points fit in the next sprint. Runs in your browser.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://openplanningpoker.com/velocity-calculator/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://openplanningpoker.com/velocity-calculator/">
+    <meta property="og:title" content="Sprint velocity and capacity calculator">
+    <meta property="og:description" content="Free sprint velocity calculator: enter the points of your last sprints and who is available, and get how many story points fit in the next sprint. Runs in your browser.">
+    <meta property="og:image" content="https://openplanningpoker.com/images/og-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Open Planning Poker">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sprint velocity and capacity calculator">
+    <meta name="twitter:description" content="Free sprint velocity calculator: enter the points of your last sprints and who is available, and get how many story points fit in the next sprint. Runs in your browser.">
+    <meta name="twitter:image" content="https://openplanningpoker.com/images/og-card.png">
+    <!-- SITE_HEAD -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://openplanningpoker.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Velocity calculator",
+          "item": "https://openplanningpoker.com/velocity-calculator/"
+        }
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "name": "Sprint velocity and capacity calculator",
+      "description": "Free sprint velocity calculator: enter the points of your last sprints and who is available, and get how many story points fit in the next sprint. Runs in your browser.",
+      "url": "https://openplanningpoker.com/velocity-calculator/",
+      "dateModified": "2026-11-21",
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://openplanningpoker.com/#org"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is sprint velocity?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Velocity is the number of story points a team finishes in a sprint. The average of the last few sprints is a good guess for the next one."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are person-days?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The sum of the working days each member is available in the sprint. Four people for ten days, with one person away for two, is 38 person-days."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my data sent anywhere?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The calculator runs in your browser and sends nothing to a server."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Sprint velocity and capacity calculator",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web browser",
+      "url": "https://openplanningpoker.com/velocity-calculator/",
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      },
+      "publisher": {
+        "@id": "https://openplanningpoker.com/#org"
+      }
+    }
+  ]
+}
+    </script>
+</head>
+<body class="bg-white text-gray-600 font-sans antialiased dark:bg-gray-900 dark:text-gray-400">
+    <!-- SITE_HEADER -->
+
+    <main id="main">
+      <article class="max-w-3xl px-4 pt-28 pb-16 mx-auto lg:pt-36">
+        <nav aria-label="Breadcrumb" class="text-sm">
+          <ol class="flex gap-2">
+            <li><a href="/" class="link">Home</a></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">Velocity calculator</li>
+          </ol>
+        </nav>
+        <h1 class="mt-6 font-display text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl dark:text-white">Sprint velocity and capacity calculator</h1>
+        <p class="mt-5 text-lg leading-relaxed">How many points fit in the next sprint? Enter what your team finished in the last sprints and how many days each person has. Nothing leaves your browser.</p>
+
+        <section class="mt-10 p-5 sm:p-6 border border-gray-200 rounded-2xl bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50" aria-labelledby="calc-title" id="velocity-calculator" data-text='{&quot;title&quot;: &quot;Your last sprints&quot;, &quot;sprint&quot;: &quot;Sprint&quot;, &quot;points&quot;: &quot;Points done&quot;, &quot;personDays&quot;: &quot;Person-days (optional)&quot;, &quot;addSprint&quot;: &quot;Add a sprint&quot;, &quot;next&quot;: &quot;The next sprint&quot;, &quot;length&quot;: &quot;Sprint length (working days)&quot;, &quot;member&quot;: &quot;Team member&quot;, &quot;days&quot;: &quot;Days available&quot;, &quot;addMember&quot;: &quot;Add a member&quot;, &quot;remove&quot;: &quot;Remove&quot;, &quot;result&quot;: &quot;Suggested for the next sprint&quot;, &quot;points_unit&quot;: &quot;points&quot;, &quot;range&quot;: &quot;Range from your sprints: {low}–{high} points.&quot;, &quot;byCapacity&quot;: &quot;Based on {rate} points per person-day of {count} sprints and {days} person-days now.&quot;, &quot;byAverage&quot;: &quot;Based on the average of your last {count} sprints. Add person-days to plan with this sprint&#x27;s capacity.&quot;, &quot;needMore&quot;: &quot;Enter the points of at least two sprints.&quot;, &quot;memberName&quot;: &quot;Member {n}&quot;}'>
+          <h2 id="calc-title" class="font-display text-xl font-extrabold text-gray-900 dark:text-white">Your last sprints</h2>
+          <div class="mt-4 overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead><tr class="text-left"><th class="py-1 pr-2">Sprint</th><th class="py-1 pr-2">Points done</th><th class="py-1 pr-2">Person-days (optional)</th><th class="py-1"><span class="sr-only">Remove</span></th></tr></thead>
+              <tbody data-rows="sprints"></tbody>
+            </table>
+          </div>
+          <button type="button" class="inline-flex items-center justify-center px-4 py-2 font-semibold rounded-full border border-gray-300 text-gray-800 hover:bg-gray-50 focus-ring dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-800 mt-3" data-add="sprints">+ Add a sprint</button>
+
+          <h2 class="mt-8 font-display text-xl font-extrabold text-gray-900 dark:text-white">The next sprint</h2>
+          <label class="mt-4 block text-sm font-semibold text-gray-800 dark:text-gray-200" for="sprint-length">Sprint length (working days)</label>
+          <input id="sprint-length" type="number" min="1" max="30" value="10" inputmode="numeric" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-purple-600 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-600/40 dark:border-gray-700 dark:bg-gray-900 dark:text-white mt-1 max-w-40">
+          <div class="mt-4 overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead><tr class="text-left"><th class="py-1 pr-2">Team member</th><th class="py-1 pr-2">Days available</th><th class="py-1"><span class="sr-only">Remove</span></th></tr></thead>
+              <tbody data-rows="members"></tbody>
+            </table>
+          </div>
+          <button type="button" class="inline-flex items-center justify-center px-4 py-2 font-semibold rounded-full border border-gray-300 text-gray-800 hover:bg-gray-50 focus-ring dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-800 mt-3" data-add="members">+ Add a member</button>
+
+          <div class="mt-8 p-5 rounded-xl bg-white dark:bg-gray-900 border border-purple-200 dark:border-purple-900" aria-live="polite">
+            <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">Suggested for the next sprint</p>
+            <p class="mt-1 font-display text-4xl font-extrabold text-purple-700 dark:text-purple-300" data-out="suggested">–</p>
+            <p class="mt-2 text-sm" data-out="range"></p>
+            <p class="mt-1 text-sm" data-out="method"></p>
+          </div>
+        </section>
+
+        <div class="guide mt-10">
+<h2>How the suggestion is made</h2>
+<p>When at least two past sprints have <strong>person-days</strong> (the sum of the days every member was available), the calculator divides the points by the person-days of each sprint. The suggestion is that rate times the person-days of the next sprint. The range uses the slowest and the fastest of those sprints.</p>
+<p>Without person-days it takes the <strong>average of the last three sprints</strong>, and the range is their lowest and highest result. Both use the last three sprints only, because older sprints say less about the team as it is now.</p>
+
+<h2>Use it as a guide, not a target</h2>
+<p>Velocity describes the past. A new member, a holiday or a sprint full of unknown work changes it. Plan a little under the suggestion when the work is new, and talk about the range rather than the single number.</p>
+
+<h2>Let the app keep the numbers</h2>
+<p>A <a class="link" href="https://app.openplanningpoker.com/team">team room</a> in Open Planning Poker keeps every sprint's points, asks for each member's days and suggests the budget with this same rule. You choose the tickets that fit and can move them into a Jira sprint.</p>
+<h2 id="faq">Questions</h2>
+<h3>What is sprint velocity?</h3>
+<p>Velocity is the number of story points a team finishes in a sprint. The average of the last few sprints is a good guess for the next one.</p>
+<h3>What are person-days?</h3>
+<p>The sum of the working days each member is available in the sprint. Four people for ten days, with one person away for two, is 38 person-days.</p>
+<h3>Is my data sent anywhere?</h3>
+<p>No. The calculator runs in your browser and sends nothing to a server.</p>
+<p class="mt-10 text-sm">Last updated: <time datetime="2026-11-21">2026-11-21</time></p>
+        </div>
+
+        <aside class="mt-12 p-6 border border-gray-200 rounded-2xl dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50" aria-labelledby="more-pages">
+          <h2 id="more-pages" class="font-display text-lg font-extrabold text-gray-900 dark:text-white">Related pages</h2>
+          <ul class="mt-3 space-y-2">
+          <li><a href="/sprint-planning-tool/" class="link">Sprint planning</a></li>
+          <li><a href="/story-point-scales/" class="link">Story point scales</a></li>
+          <li><a href="/planning-poker-for-jira/" class="link">Planning poker for Jira</a></li>
+          </ul>
+        </aside>
+      </article>
+
+      <section class="px-4 pb-16 lg:pb-24">
+        <div class="cta-band max-w-(--breakpoint-lg) mx-auto">
+          <h2 class="font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Track this automatically in a team room.</h2>
+          <p class="mt-3 text-lg text-purple-100">Free, no sign-up. The team room keeps your sprints and suggests the budget.</p>
+          <a href="https://app.openplanningpoker.com/team" class="inline-flex items-center justify-center mt-8 px-6 py-3.5 font-bold rounded-full bg-white text-purple-700 shadow-lg hover:bg-purple-50 focus:outline-hidden focus-visible:ring-4 focus-visible:ring-white/60 transition">Open a team room</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- SITE_FOOTER -->
+    <script>
+(function () {
+  var root = document.getElementById('velocity-calculator');
+  if (!root) return;
+  var t = JSON.parse(root.dataset.text);
+  var inputClass = 'w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-purple-600 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-600/40 dark:border-gray-700 dark:bg-gray-900 dark:text-white';
+  var fmt = function (s, v) { return s.replace(/\{(\w+)\}/g, function (_, k) { return v[k]; }); };
+  var num = function (el) { var n = parseFloat(String(el.value).replace(',', '.')); return isFinite(n) && n >= 0 ? n : null; };
+
+  function cell(type, value, label) {
+    var td = document.createElement('td'); td.className = 'py-1 pr-2';
+    var input = document.createElement('input');
+    input.type = type; input.value = value; input.className = inputClass; input.setAttribute('aria-label', label);
+    if (type === 'number') { input.min = '0'; input.step = '0.5'; input.inputMode = 'decimal'; }
+    input.addEventListener('input', compute);
+    td.appendChild(input); return td;
+  }
+  function removeCell(tr) {
+    var td = document.createElement('td'); td.className = 'py-1';
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = '×'; b.className = 'px-2 text-lg leading-none focus-ring rounded-sm';
+    b.setAttribute('aria-label', t.remove);
+    b.addEventListener('click', function () { tr.remove(); compute(); });
+    td.appendChild(b); return td;
+  }
+  function addSprint(points, days) {
+    var body = root.querySelector('[data-rows="sprints"]'); var n = body.children.length + 1;
+    var tr = document.createElement('tr');
+    var name = document.createElement('td'); name.className = 'py-1 pr-2 whitespace-nowrap'; name.textContent = t.sprint + ' ' + n;
+    tr.append(name, cell('number', points, t.points + ' ' + n), cell('number', days, t.personDays + ' ' + n), removeCell(tr));
+    body.appendChild(tr);
+  }
+  function addMember(days) {
+    var body = root.querySelector('[data-rows="members"]'); var n = body.children.length + 1;
+    var tr = document.createElement('tr');
+    tr.append(cell('text', fmt(t.memberName, { n: n }), t.member + ' ' + n), cell('number', days, t.days + ' ' + n), removeCell(tr));
+    body.appendChild(tr);
+  }
+  function compute() {
+    var length = num(document.getElementById('sprint-length')) || 10;
+    var past = Array.prototype.map.call(root.querySelectorAll('[data-rows="sprints"] tr'), function (tr) {
+      var inputs = tr.querySelectorAll('input'); return { points: num(inputs[0]), days: num(inputs[1]) };
+    }).filter(function (s) { return s.points !== null; }).reverse();
+    var personDays = Array.prototype.reduce.call(root.querySelectorAll('[data-rows="members"] tr'), function (sum, tr) {
+      var d = num(tr.querySelectorAll('input')[1]); return sum + Math.min(length, d === null ? length : d);
+    }, 0);
+    var out = function (k) { return root.querySelector('[data-out="' + k + '"]'); };
+    // The same rule as the team plan in the app: points per person-day when at least two sprints have it,
+    // otherwise the average of the last three sprints.
+    var withDays = past.filter(function (s) { return s.days > 0; }).slice(0, 3);
+    var suggested, low, high, method;
+    if (withDays.length >= 2 && personDays > 0) {
+      var rate = withDays.reduce(function (a, s) { return a + s.points; }, 0) / withDays.reduce(function (a, s) { return a + s.days; }, 0);
+      var rates = withDays.map(function (s) { return s.points / s.days; });
+      suggested = Math.floor(rate * personDays);
+      low = Math.floor(Math.min.apply(null, rates) * personDays); high = Math.floor(Math.max.apply(null, rates) * personDays);
+      method = fmt(t.byCapacity, { rate: rate.toFixed(2), count: withDays.length, days: personDays });
+    } else {
+      var recent = past.slice(0, 3);
+      if (recent.length < 2) { out('suggested').textContent = '–'; out('range').textContent = ''; out('method').textContent = t.needMore; return; }
+      var pts = recent.map(function (s) { return s.points; });
+      suggested = Math.floor(pts.reduce(function (a, b) { return a + b; }, 0) / pts.length);
+      low = Math.floor(Math.min.apply(null, pts)); high = Math.floor(Math.max.apply(null, pts));
+      method = fmt(t.byAverage, { count: recent.length });
+    }
+    out('suggested').textContent = suggested + ' ' + t.points_unit;
+    out('range').textContent = fmt(t.range, { low: low, high: high });
+    out('method').textContent = method;
+  }
+  root.querySelector('[data-add="sprints"]').addEventListener('click', function () { addSprint('', ''); compute(); });
+  root.querySelector('[data-add="members"]').addEventListener('click', function () { addMember(''); compute(); });
+  document.getElementById('sprint-length').addEventListener('input', compute);
+  [[21, 38], [26, 40], [24, 36]].forEach(function (s) { addSprint(s[0], s[1]); });
+  [10, 10, 8, 10].forEach(function (d) { addMember(d); });
+  compute();
+})();
+    </script>
+</body>
+</html>

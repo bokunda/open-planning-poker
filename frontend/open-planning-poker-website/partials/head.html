@@ -26,6 +26,12 @@
     window.addEventListener('load', function () {
       ('requestIdleCallback' in window) ? requestIdleCallback(loadAnalytics, { timeout: 4000 }) : setTimeout(loadAnalytics, 2000);
     });
+    // Page views counted on our own server without cookies (OPP-181): only the page name, e.g. "velocity-calculator".
+    (function () {
+      if (navigator.doNotTrack === '1' || navigator.globalPrivacyControl || !navigator.sendBeacon) return;
+      var page = location.pathname.replace(/^\/(sr|de)(\/|$)/, '/').replace(/^\/+|\/+$/g, '').replace(/\//g, '-') || 'home';
+      if (/^[a-z0-9-]{1,40}$/.test(page)) navigator.sendBeacon('https://ge.openplanningpoker.com/site/visit?page=' + page);
+    })();
     // Donation links carry data-donate="ko_fi|github_sponsors" and data-placement; one listener counts them.
     document.addEventListener('click', function (e) {
       var a = e.target.closest && e.target.closest('a[data-donate]');

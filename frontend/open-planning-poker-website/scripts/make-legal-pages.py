@@ -9,7 +9,7 @@ import pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://openplanningpoker.com"
-DATE = "2026-11-18"
+DATE = "2026-11-21"
 SLACK_INSTALL = "https://ge.openplanningpoker.com/integrations/slack/install"
 TEAMS_PACKAGE = "https://github.com/bokunda/open-planning-poker/releases/latest"
 GITHUB = "https://github.com/bokunda/open-planning-poker"
@@ -40,6 +40,9 @@ PAGES = {
 <h2>Jira Cloud</h2>
 <p>Connect your Jira site once from the import dialog. <strong>From Jira</strong> imports the issues of a sprint, a board or a JQL query, with their story points. After the reveal, <strong>Save to KEY</strong> writes the agreed estimate to the issue, optionally with a comment showing the votes and the notes of the lowest and highest voters.</p>
 
+<h2>GitHub, Linear and Azure DevOps</h2>
+<p>The same import and save-back works for GitHub Issues, Linear and Azure DevOps Boards. Step-by-step pages: <a class="link" href="/planning-poker-for-jira/">Jira</a>, <a class="link" href="/planning-poker-for-github/">GitHub</a>, <a class="link" href="/planning-poker-for-linear/">Linear</a> and <a class="link" href="/planning-poker-for-azure-devops/">Azure DevOps</a>.</p>
+
 <h2>What is stored</h2>
 <ul>
   <li>Slack and Jira tokens are stored encrypted on the server and never reach the browser. Disconnecting Jira deletes its tokens.</li>
@@ -65,6 +68,9 @@ PAGES = {
 <h2>Jira Cloud</h2>
 <p>Poveži svoj Jira sajt jednom iz dijaloga za uvoz. <strong>From Jira</strong> uvozi issue-e iz sprinta, table ili JQL upita, zajedno sa story points. Posle otkrivanja karata, <strong>Save to KEY</strong> upisuje dogovorenu procenu u issue, po želji sa komentarom koji prikazuje glasove i beleške najnižeg i najvišeg glasa.</p>
 
+<h2>GitHub, Linear i Azure DevOps</h2>
+<p>Isti uvoz i čuvanje nazad rade i za GitHub Issues, Linear i Azure DevOps Boards. Stranice korak po korak: <a class="link" href="/sr/planning-poker-for-jira/">Jira</a>, <a class="link" href="/sr/planning-poker-for-github/">GitHub</a>, <a class="link" href="/sr/planning-poker-for-linear/">Linear</a> i <a class="link" href="/sr/planning-poker-for-azure-devops/">Azure DevOps</a>.</p>
+
 <h2>Šta se čuva</h2>
 <ul>
   <li>Slack i Jira tokeni se čuvaju šifrovani na serveru i nikad ne stižu do browsera. Prekid veze sa Jirom briše njene tokene.</li>
@@ -89,6 +95,9 @@ PAGES = {
 
 <h2>Jira Cloud</h2>
 <p>Verbinde deine Jira-Site einmal im Import-Dialog. <strong>From Jira</strong> importiert die Issues eines Sprints, Boards oder einer JQL-Abfrage mit ihren Story Points. Nach dem Aufdecken schreibt <strong>Save to KEY</strong> die vereinbarte Schätzung in das Issue, auf Wunsch mit einem Kommentar mit den Stimmen und den Notizen der niedrigsten und höchsten Stimme.</p>
+
+<h2>GitHub, Linear und Azure DevOps</h2>
+<p>Derselbe Import und das Zurückspeichern funktionieren auch für GitHub Issues, Linear und Azure DevOps Boards. Schritt-für-Schritt-Seiten: <a class="link" href="/de/planning-poker-for-jira/">Jira</a>, <a class="link" href="/de/planning-poker-for-github/">GitHub</a>, <a class="link" href="/de/planning-poker-for-linear/">Linear</a> und <a class="link" href="/de/planning-poker-for-azure-devops/">Azure DevOps</a>.</p>
 
 <h2>Was gespeichert wird</h2>
 <ul>
@@ -127,6 +136,7 @@ PAGES = {
 
 <h2>Analytics</h2>
 <p>We use Google Analytics and Microsoft Clarity on the website and the app to see which pages and features are used. They do not see ticket names, votes or chat.</p>
+<p>Our own server also counts, without cookies, how often each website page is opened and how many rooms are created from it. Only the name of the page is counted: no IP address, no user id.</p>
 
 <h2>Where the data is</h2>
 <p>Our servers are at Hetzner in Germany (EU). Backups are encrypted and kept for 14 days.</p>
@@ -162,6 +172,7 @@ PAGES = {
 
 <h2>Analitika</h2>
 <p>Na sajtu i u aplikaciji koristimo Google Analytics i Microsoft Clarity da vidimo koje stranice i funkcije se koriste. Oni ne vide nazive tiketa, glasove ni chat.</p>
+<p>Naš server takođe broji, bez kolačića, koliko puta je otvorena svaka stranica sajta i koliko je soba napravljeno sa nje. Broji se samo naziv stranice: bez IP adrese i bez ID-ja korisnika.</p>
 
 <h2>Gde su podaci</h2>
 <p>Naši serveri su kod Hetznera u Nemačkoj (EU). Rezervne kopije su šifrovane i čuvaju se 14 dana.</p>
@@ -197,6 +208,7 @@ PAGES = {
 
 <h2>Analyse</h2>
 <p>Auf der Website und in der App nutzen wir Google Analytics und Microsoft Clarity, um zu sehen, welche Seiten und Funktionen genutzt werden. Sie sehen keine Ticketnamen, Stimmen oder Chats.</p>
+<p>Unser eigener Server zählt außerdem ohne Cookies, wie oft jede Seite der Website geöffnet wird und wie viele Räume von ihr aus erstellt werden. Gezählt wird nur der Name der Seite: keine IP-Adresse, keine Nutzer-ID.</p>
 
 <h2>Wo die Daten liegen</h2>
 <p>Unsere Server stehen bei Hetzner in Deutschland (EU). Backups sind verschlüsselt und werden 14 Tage aufbewahrt.</p>
@@ -229,6 +241,17 @@ PAGES = {
 
 <h2>Report a problem</h2>
 <p>Open an issue on <a class="link" href="{ISSUES}">GitHub</a> with what you did, what you expected and what happened. Do not post tokens or private data.</p>
+
+<h2 id="badge">Add the badge</h2>
+<p>Using Open Planning Poker in your team? Put the badge in a README or team wiki. There is a light and a dark version; the dark one is <code>badge-dark.svg</code>.</p>
+<p class="not-prose">
+  <img src="/images/badge-light.svg" alt="We estimate with Open Planning Poker" width="236" height="28" class="inline-block dark:hidden">
+  <img src="/images/badge-dark.svg" alt="We estimate with Open Planning Poker" width="236" height="28" class="hidden dark:inline-block">
+</p>
+<p><strong>Markdown</strong></p>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>[![We estimate with Open Planning Poker](https://openplanningpoker.com/images/badge-light.svg)](https://openplanningpoker.com/?utm_source=badge)</code></pre>
+<p><strong>HTML</strong></p>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>&lt;a href="https://openplanningpoker.com/?utm_source=badge"&gt;&lt;img src="https://openplanningpoker.com/images/badge-light.svg" alt="We estimate with Open Planning Poker" width="236" height="28"&gt;&lt;/a&gt;</code></pre>
 """,
         },
         "sr": {
@@ -253,6 +276,17 @@ PAGES = {
 
 <h2>Prijavi problem</h2>
 <p>Otvori issue na <a class="link" href="{ISSUES}">GitHubu</a>: šta si uradio, šta si očekivao i šta se desilo. Ne objavljuj tokene ni privatne podatke.</p>
+
+<h2 id="badge">Dodaj bedž</h2>
+<p>Vaš tim koristi Open Planning Poker? Stavite bedž u README ili timski wiki. Postoji svetla i tamna verzija; tamna je <code>badge-dark.svg</code>.</p>
+<p class="not-prose">
+  <img src="/images/badge-light.svg" alt="We estimate with Open Planning Poker" width="236" height="28" class="inline-block dark:hidden">
+  <img src="/images/badge-dark.svg" alt="We estimate with Open Planning Poker" width="236" height="28" class="hidden dark:inline-block">
+</p>
+<p><strong>Markdown</strong></p>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>[![We estimate with Open Planning Poker](https://openplanningpoker.com/images/badge-light.svg)](https://openplanningpoker.com/?utm_source=badge)</code></pre>
+<p><strong>HTML</strong></p>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>&lt;a href="https://openplanningpoker.com/?utm_source=badge"&gt;&lt;img src="https://openplanningpoker.com/images/badge-light.svg" alt="We estimate with Open Planning Poker" width="236" height="28"&gt;&lt;/a&gt;</code></pre>
 """,
         },
         "de": {
@@ -277,6 +311,17 @@ PAGES = {
 
 <h2>Problem melden</h2>
 <p>Eröffne ein Issue auf <a class="link" href="{ISSUES}">GitHub</a>: was du getan hast, was du erwartet hast und was passiert ist. Poste keine Tokens oder privaten Daten.</p>
+
+<h2 id="badge">Badge einbinden</h2>
+<p>Ihr Team nutzt Open Planning Poker? Setzen Sie das Badge in ein README oder Team-Wiki. Es gibt eine helle und eine dunkle Version; die dunkle ist <code>badge-dark.svg</code>.</p>
+<p class="not-prose">
+  <img src="/images/badge-light.svg" alt="We estimate with Open Planning Poker" width="236" height="28" class="inline-block dark:hidden">
+  <img src="/images/badge-dark.svg" alt="We estimate with Open Planning Poker" width="236" height="28" class="hidden dark:inline-block">
+</p>
+<p><strong>Markdown</strong></p>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>[![We estimate with Open Planning Poker](https://openplanningpoker.com/images/badge-light.svg)](https://openplanningpoker.com/?utm_source=badge)</code></pre>
+<p><strong>HTML</strong></p>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>&lt;a href="https://openplanningpoker.com/?utm_source=badge"&gt;&lt;img src="https://openplanningpoker.com/images/badge-light.svg" alt="We estimate with Open Planning Poker" width="236" height="28"&gt;&lt;/a&gt;</code></pre>
 """,
         },
     },

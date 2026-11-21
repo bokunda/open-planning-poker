@@ -9,6 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { OPP_SNACKBAR_DURATION_DEFAULT, OPP_SNACKBAR_MODAL_LABEL_CLOSE } from '../../../shared/constants';
 import { CREATE_SPRINT, CREATE_TEAM, GET_TEAM, JOIN_TEAM, LEAVE_TEAM, MY_TEAMS, TeamDetails, TeamSummary } from './team.graphql';
 import { SET_RETRO_ACTION_ITEM_DONE } from '../retro/retro.graphql';
+import { clearRef, siteRef } from '../../../shared/site-ref';
 import { VelocityChartComponent } from './velocity-chart.component';
 import { TeamReferenceComponent } from './team-reference.component';
 import { TeamInsightsComponent } from './team-insights.component';
@@ -176,12 +177,13 @@ export class TeamComponent implements OnInit {
     this.busy = true;
     this.apollo.mutate<{ createGame: Errors & { game?: { id: string } } }>({
       mutation: CREATE_SPRINT,
-      variables: { input: { name, description: this.team?.name ?? '', teamId: this.teamId } }
+      variables: { input: { name, description: this.team?.name ?? '', teamId: this.teamId, ...(siteRef() ? { source: siteRef() } : {}) } }
     }).subscribe({
       next: ({ data }) => {
         this.busy = false;
         const game = data?.createGame?.game;
         if (this.failed(data?.createGame) || !game) return;
+        clearRef();
         this.router.navigate(['/game', game.id]);
       },
       error: () => { this.busy = false; this.notify(this.i18n.translate('team.startFailed')); }

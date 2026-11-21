@@ -1,3 +1,4 @@
+using OpenTelemetry.Metrics;
 QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +33,8 @@ builder.Configuration.GetSection("Cors").Bind(corsConfig);
 builder.Services.AddCors(corsConfig.PolicyName, corsConfig.AllowedOrigins);
 
 builder.Services.AddOpenTelemetry(builder.Configuration);
+// Website visits and rooms per website page (OPP-181).
+builder.Services.ConfigureOpenTelemetryMeterProvider(metrics => metrics.AddMeter(OpenPlanningPoker.GameEngine.GraphQL.Features.Info.SiteMetrics.MeterName));
 
 var app = builder.Build();
 
@@ -93,6 +96,7 @@ app.UseRateLimiter();
 app.UseWebSockets();
 app.MapChatIntegrations();
 app.MapRecapEndpoints();
+OpenPlanningPoker.GameEngine.GraphQL.Features.Info.SiteMetrics.MapSiteMetrics(app);
 app.MapGraphQL().WithOptions(new GraphQLServerOptions
 {
     // The Nitro IDE is for local development only.

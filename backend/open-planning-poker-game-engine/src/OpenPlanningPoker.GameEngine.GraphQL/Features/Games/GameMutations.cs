@@ -14,6 +14,7 @@ public class GameMutations
         [Required] string description,
         string? deckSetup,
         Guid? teamId,
+        string? source,
         CancellationToken cancellationToken)
     {
         // The creator becomes the host, so an anonymous game would have no host.
@@ -44,6 +45,8 @@ public class GameMutations
                 result.Value!.Id,
                 deck),
                 cancellationToken);
+            // The website page the creator came from (OPP-181), counted without anything personal.
+            Info.SiteMetrics.RoomCreated(source);
         }
 
         return result.IsSuccess

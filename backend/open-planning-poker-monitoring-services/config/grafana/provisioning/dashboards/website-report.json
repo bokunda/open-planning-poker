@@ -1,0 +1,221 @@
+{
+  "uid": "opp-website-report",
+  "title": "Website report: visits and rooms per page",
+  "tags": [
+    "opp",
+    "website"
+  ],
+  "description": "OPP-181: page views counted without cookies and the rooms each website page brings. Pick a month in the time picker.",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": false,
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "refresh": "1h",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Website visits (range)",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "opp-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "opp-prometheus"
+          },
+          "expr": "sum(increase(opp_site_visits_total[$__range]))",
+          "legendFormat": "visits",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Rooms from the website (range)",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "opp-prometheus"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "opp-prometheus"
+          },
+          "expr": "sum(increase(opp_rooms_created_total{source!=\"app\"}[$__range]))",
+          "legendFormat": "rooms",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "All rooms created (range)",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "opp-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "opp-prometheus"
+          },
+          "expr": "sum(increase(opp_rooms_created_total[$__range]))",
+          "legendFormat": "rooms",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Visits per page (range)",
+      "type": "bargauge",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "opp-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 12
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "opp-prometheus"
+          },
+          "expr": "sort_desc(sum by (page) (increase(opp_site_visits_total[$__range])))",
+          "legendFormat": "{{page}}",
+          "instant": true
+        }
+      ],
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "basic",
+        "showUnfilled": true
+      }
+    },
+    {
+      "id": 5,
+      "title": "Rooms per website page (range)",
+      "type": "bargauge",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "opp-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 12
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "opp-prometheus"
+          },
+          "expr": "sort_desc(sum by (source) (increase(opp_rooms_created_total{source!=\"app\"}[$__range])))",
+          "legendFormat": "{{source}}",
+          "instant": true
+        }
+      ],
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "basic",
+        "showUnfilled": true
+      }
+    },
+    {
+      "id": 6,
+      "title": "Visits per day",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "opp-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "opp-prometheus"
+          },
+          "expr": "sum by (page) (increase(opp_site_visits_total[1d]))",
+          "legendFormat": "{{page}}",
+          "instant": false
+        }
+      ],
+      "interval": "1d"
+    },
+    {
+      "id": 7,
+      "title": "Rooms per day by source",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "opp-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 16,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "opp-prometheus"
+          },
+          "expr": "sum by (source) (increase(opp_rooms_created_total[1d]))",
+          "legendFormat": "{{source}}",
+          "instant": false
+        }
+      ],
+      "interval": "1d"
+    }
+  ]
+}
