@@ -6,6 +6,26 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+## [3.7.0] — 2026-11-21
+
+Die Sprint-Retro im selben Team-Raum, ausgehend von den Zahlen des Teams.
+
+### Hinzugefügt
+- **Sprint-Retros**: Der Inhaber des Teams startet im Team-Raum eine Retro für einen Sprint, mit Lief gut / Verbessern / Ideen, Beginnen / Aufhören / Weitermachen, Wütend / Traurig / Froh oder 4L. Alle aus dem Raum des Sprints machen über den Link mit, auch Gäste, und alle sehen jede Änderung sofort
+- **Still schreiben**: Jede Person sieht nur ihre eigenen Karten und die Anzahl pro Spalte, bis der Host aufdeckt. Namen bleiben verborgen, außer der Host zeigt sie
+- **Gruppieren und abstimmen**: Ähnliche Karten aufeinanderziehen (oder am Handy über das Kartenmenü) und die Gruppe benennen, dann Punkte verteilen (standardmäßig 3). Die Punkte bleiben bis zum Ergebnis verborgen, dann sortieren sich die Karten nach Punkten
+- **Maßnahmen** mit Verantwortlichen, für eine Karte oder die ganze Retro. Offene Maßnahmen kommen in der nächsten Retro wieder und bleiben im Team-Raum, bis sie erledigt sind
+- **Sprint in Zahlen**: geschätzte und geplante Punkte, die Velocity der letzten Sprints, Tickets, die viel länger oder kürzer als ihre Karte dauerten, und Tickets, bei denen das Team unsicher war. Jede Zahl wird mit einem Klick zur Karte
+- **Retro herunterladen** als Markdown oder PDF und eine kurze Zusammenfassung an den Slack- oder Teams-Webhook des Teams
+
+### Behoben
+- PDF-Bericht und Vorschaubild des Rückblicks schlugen fehl, wenn ein Spiel- oder Ticketname ein Emoji enthielt
+- Jira-Boards und -Sprints verlangten gleich nach dem Verbinden ein erneutes Verbinden: Die App fragt Jira jetzt nach den Rechten für Boards und Sprints. Verbundene Spieler verbinden Jira noch einmal
+- „Post the session summary“ und „Save all estimates to the tracker“ erscheinen nur, wenn sie etwas tun können
+
+### Für Entwickler
+- Migration `AddRetros`
+
 ## [3.6.0] — 2026-11-18
 
 Teilen, wie eine Sitzung gelaufen ist, und dem Raum den Look des eigenen Teams geben.

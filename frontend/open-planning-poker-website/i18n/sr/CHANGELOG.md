@@ -6,6 +6,26 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+## [3.7.0] — 2026-11-21
+
+Vodi retrospektivu sprinta u istoj timskoj sobi, uz brojke svog tima.
+
+### Dodato
+- **Retrospektive sprinta**: vlasnik tima pokreće retrospektivu sprinta iz timske sobe, sa šablonom Dobro / Za poboljšanje / Ideje, Počni / Prestani / Nastavi, Ljut / Tužan / Srećan ili 4L. Svi iz sobe sprinta ulaze preko linka, i gosti, i svi odmah vide svaku promenu
+- **Pisanje u tišini**: svako vidi samo svoje kartice i broj kartica po koloni dok ih host ne otkrije. Imena ostaju skrivena osim ako ih host ne prikaže
+- **Grupisanje i glasanje**: prevuci slične kartice jednu na drugu (ili preko menija kartice na telefonu) i imenuj grupu, pa rasporedi tačkice (podrazumevano po 3). Tačkice su skrivene do rezultata, a onda se kartice ređaju po broju tačkica
+- **Akcije** sa zaduženom osobom, za karticu ili celu retrospektivu. Otvorene akcije se vraćaju na sledećoj retrospektivi i ostaju u timskoj sobi dok se ne završe
+- **Sprint u brojkama**: procenjeni i planirani poeni, brzina poslednjih sprintova, tiketi koji su trajali mnogo duže ili kraće od svoje karte i tiketi u koje tim nije bio siguran. Svaka činjenica postaje kartica jednim klikom
+- **Preuzimanje retrospektive** kao Markdown ili PDF i kratak sažetak na Slack ili Teams webhook tima
+
+### Ispravljeno
+- PDF izveštaj i slika za pregled rezimea nisu radili kad naziv igre ili tiketa sadrži emodži
+- Jira table i sprintovi su tražili ponovno povezivanje odmah posle povezivanja: aplikacija sada traži od Jire dozvole za table i sprintove. Povezani igrači još jednom povezuju Jiru
+- „Post the session summary” i „Save all estimates to the tracker” se prikazuju samo kad mogu nešto da urade
+
+### Za programere
+- Migracija `AddRetros`
+
 ## [3.6.0] — 2026-11-18
 
 Podeli kako je sesija prošla i učini sobu da izgleda kao soba tvog tima.
