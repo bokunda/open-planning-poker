@@ -4,7 +4,12 @@
     <app-header [username]="username"></app-header>
     <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
     }
-    @if (isTeamView) {
+    @if (isRetroView) {
+    <!-- Separate chunk: only retro pages download the board. -->
+    @defer (on immediate) {
+    <app-retro class="center" style="width:100%" [currentUserId]="userId"></app-retro>
+    }
+    } @else if (isTeamView) {
     <!-- Separate chunk: the game pages do not download the team rooms. -->
     @defer (on immediate) {
     <app-team class="center" [currentUserId]="userId"></app-team>

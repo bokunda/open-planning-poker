@@ -1,0 +1,290 @@
+<section class="retro" aria-labelledby="retro-title">
+  <header class="retro-head">
+    <div class="retro-intro">
+      <p class="retro-kicker">
+        @if (teamId) {
+          <a [routerLink]="['/team', teamId]">{{ 'retro.backToTeam' | transloco }}</a> ·
+        }
+        <a [routerLink]="['/game', gameId]">{{ 'retro.toPlanning' | transloco }}</a>
+      </p>
+      <h1 class="retro-title" id="retro-title">{{ 'retro.title' | transloco }} — {{ gameName }}</h1>
+      @if (retro) {
+        <p class="retro-lead">{{ ('retro.lead.' + retro.phase) | transloco: { dots: retro.dotsPerPerson } }}</p>
+      }
+    </div>
+    @if (retro) {
+      <div class="retro-tools">
+        <app-game-timer [gameId]="gameId" [isHost]="retro.canFacilitate"></app-game-timer>
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu" [attr.aria-label]="'retro.more' | transloco">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #moreMenu="matMenu">
+          <button mat-menu-item (click)="copyLink()"><mat-icon>link</mat-icon><span>{{ 'retro.copyLink' | transloco }}</span></button>
+          <button mat-menu-item (click)="exportFile(false)"><mat-icon>description</mat-icon><span>{{ 'retro.exportMarkdown' | transloco }}</span></button>
+          <button mat-menu-item (click)="exportFile(true)"><mat-icon>picture_as_pdf</mat-icon><span>{{ 'retro.exportPdf' | transloco }}</span></button>
+          @if (retro.canFacilitate) {
+            <button mat-menu-item (click)="postSummary()"><mat-icon>send</mat-icon><span>{{ 'retro.postSummary' | transloco }}</span></button>
+          }
+        </mat-menu>
+      </div>
+    }
+  </header>
+
+  @if (loading) {
+    <p class="retro-empty" aria-live="polite">{{ 'retro.loading' | transloco }}</p>
+  } @else if (notFound) {
+    <p class="retro-empty">{{ 'retro.notFound' | transloco }}</p>
+  } @else if (!retro) {
+    <!-- No retro yet: the host or the team owner picks a template (OPP-163). -->
+    <div class="retro-start">
+      @if (!teamId) {
+        <p>{{ 'retro.notTeamSprint' | transloco }}</p>
+      } @else {
+        <h2>{{ 'retro.startTitle' | transloco }}</h2>
+        <p class="retro-hint">{{ 'retro.startLead' | transloco }}</p>
+        <div class="retro-templates" role="radiogroup" [attr.aria-label]="'retro.template' | transloco">
+          @for (t of templates; track t) {
+            <label class="retro-template" [class.retro-template--on]="chosenTemplate === t">
+              <input type="radio" name="template" [value]="t" [(ngModel)]="chosenTemplate">
+              <strong>{{ ('retro.templateNames.' + t) | transloco }}</strong>
+              <span>
+                @for (c of templateColumns(t); track c; let last = $last) {
+                  {{ ('retro.templates.' + t + '.' + c) | transloco }}@if (!last) { · }
+                }
+              </span>
+            </label>
+          }
+        </div>
+        <button mat-flat-button color="primary" (click)="startRetro()" [disabled]="busy">
+          <mat-icon>play_arrow</mat-icon> {{ 'retro.start' | transloco }}
+        </button>
+        <p class="retro-hint">{{ 'retro.startWho' | transloco }}</p>
+      }
+    </div>
+  } @else {
+    <!-- Steps -->
+    <ol class="retro-steps" [attr.aria-label]="'retro.steps' | transloco">
+      @for (p of phases; track p; let i = $index) {
+        <li [class.retro-step--done]="i < phaseIndex" [class.retro-step--now]="i === phaseIndex" [attr.aria-current]="i === phaseIndex ? 'step' : null">
+          <span class="retro-step-num opp-tabular">{{ i + 1 }}</span> {{ ('retro.phase.' + p) | transloco }}
+        </li>
+      }
+    </ol>
+
+    @if (retro.canFacilitate) {
+      <div class="retro-host">
+        @if (retro.phase === 'WRITING') {
+          <label class="retro-toggle">
+            <input type="checkbox" [ngModel]="retro.showAuthors" (ngModelChange)="updateSettings($event, retro.dotsPerPerson)">
+            {{ 'retro.showAuthors' | transloco }}
+          </label>
+          <label class="retro-select">
+            {{ 'retro.dotsPerPerson' | transloco }}
+            <select [ngModel]="retro.dotsPerPerson" (ngModelChange)="updateSettings(retro.showAuthors, +$event)">
+              @for (n of dotChoices; track n) { <option [ngValue]="n">{{ n }}</option> }
+            </select>
+          </label>
+        }
+        @if (next) {
+          <button mat-flat-button color="primary" (click)="advance()">
+            <mat-icon>arrow_forward</mat-icon> {{ ('retro.next.' + next) | transloco }}
+          </button>
+        }
+      </div>
+    }
+
+    @if (isVoting) {
+      <p class="retro-dots" aria-live="polite">
+        @for (d of dots(retro.dotsPerPerson); track d) {
+          <span class="retro-dot" [class.retro-dot--used]="d >= retro.dotsLeft" aria-hidden="true"></span>
+        }
+        {{ 'retro.dotsLeft' | transloco: { count: retro.dotsLeft } }}
+      </p>
+    }
+
+    <!-- Carried-over action items open the retro (OPP-166) -->
+    @if (retro.carriedOver.length) {
+      <section class="retro-panel" aria-labelledby="carried-title">
+        <h2 class="retro-panel-title" id="carried-title">{{ 'retro.carriedOver' | transloco }}</h2>
+        <ul class="retro-items">
+          @for (item of retro.carriedOver; track trackItem($index, item)) {
+            <li class="retro-item" [class.retro-item--done]="item.done">
+              <label>
+                <input type="checkbox" [checked]="item.done" (change)="setDone(item, !item.done)">
+                <span>{{ item.text }}</span>
+              </label>
+              @if (item.ownerId) { <span class="retro-owner">{{ nameOf(item.ownerId) || ('retro.someone' | transloco) }}</span> }
+            </li>
+          }
+        </ul>
+        <p class="retro-hint">{{ 'retro.carriedHint' | transloco }}</p>
+      </section>
+    }
+
+    <!-- Sprint in numbers (OPP-167) -->
+    <app-retro-facts [retroId]="retro.id" [canWrite]="canWrite" (addCard)="addFact($event)"></app-retro-facts>
+
+    <!-- The board -->
+    <div class="retro-board" cdkDropListGroup [style.--cols]="retro.columns">
+      @for (col of columnIndexes; track col) {
+        <section class="retro-col" [attr.aria-labelledby]="'retro-col-title-' + col">
+          <header class="retro-col-head">
+            <h2 class="retro-col-title" [id]="'retro-col-title-' + col">{{ columnTitle(col) | transloco }}</h2>
+            <span class="retro-col-count opp-tabular" [attr.aria-label]="'retro.cardCount' | transloco: { count: retro.countPerColumn[col] }">{{ retro.countPerColumn[col] }}</span>
+          </header>
+
+          @if (canWrite) {
+            <form class="retro-add" (ngSubmit)="addCard(col)">
+              <label class="sr-only" [for]="'retro-draft-' + col">{{ 'retro.addCardIn' | transloco: { column: (columnTitle(col) | transloco) } }}</label>
+              <textarea [id]="'retro-draft-' + col" [name]="'draft' + col" rows="2" maxlength="500" [(ngModel)]="drafts[col]"
+                [placeholder]="'retro.addCardPlaceholder' | transloco" (keydown.enter)="$event.preventDefault(); addCard(col)"></textarea>
+              <button mat-stroked-button type="submit" [disabled]="!drafts[col]?.trim()">{{ 'retro.add' | transloco }}</button>
+            </form>
+          }
+
+          <ul class="retro-list" cdkDropList [id]="'retro-col-' + col" [cdkDropListData]="col"
+            [cdkDropListConnectedTo]="dropListIds" [cdkDropListDisabled]="!isGrouping" (cdkDropListDropped)="drop($event)">
+            @for (stack of stacks(col); track trackStack($index, stack)) {
+              <li class="retro-stack" [class.retro-stack--group]="stack.members.length"
+                cdkDropList [id]="dropListId(stack.head.id)" [cdkDropListData]="stack.head"
+                [cdkDropListConnectedTo]="dropListIds" [cdkDropListDisabled]="!isGrouping" (cdkDropListDropped)="drop($event)">
+                @if (stack.members.length) {
+                  <div class="retro-group-title">
+                    @if (isGrouping || isVoting) {
+                      <label class="sr-only" [for]="'title-' + stack.head.id">{{ 'retro.groupTitle' | transloco }}</label>
+                      <input [id]="'title-' + stack.head.id" maxlength="100" [placeholder]="'retro.groupTitlePlaceholder' | transloco"
+                        [ngModel]="titleDraft(stack.head)" (ngModelChange)="titleDrafts[stack.head.id] = $event" (blur)="saveTitle(stack.head)"
+                        (keydown.enter)="saveTitle(stack.head)">
+                    } @else {
+                      <strong>{{ stack.head.groupTitle || stack.head.text }}</strong>
+                    }
+                  </div>
+                }
+                @for (card of [stack.head].concat(stack.members); track card.id) {
+                  <div class="retro-card" cdkDrag [cdkDragData]="card" [cdkDragDisabled]="!isGrouping" [class.retro-card--mine]="card.mine">
+                    @if (editing === card.id) {
+                      <textarea class="retro-edit" rows="2" maxlength="500" [(ngModel)]="editText" (blur)="saveEdit(card)"
+                        (keydown.enter)="$event.preventDefault(); saveEdit(card)" [attr.aria-label]="'retro.editCard' | transloco"></textarea>
+                    } @else {
+                      <p class="retro-card-text">{{ card.text }}</p>
+                    }
+                    <div class="retro-card-foot">
+                      @if (card.authorId) { <span class="retro-author">{{ nameOf(card.authorId) }}</span> }
+                      @if (canWrite && (card.mine || retro.canFacilitate || isGrouping)) {
+                        <button mat-icon-button class="retro-card-menu" [matMenuTriggerFor]="cardMenu" [attr.aria-label]="'retro.cardActions' | transloco">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #cardMenu="matMenu">
+                          @if (card.mine) {
+                            <button mat-menu-item (click)="startEdit(card)"><mat-icon>edit</mat-icon><span>{{ 'retro.edit' | transloco }}</span></button>
+                          }
+                          @if (isGrouping) {
+                            @for (target of targetsFor(card); track target.id) {
+                              <button mat-menu-item (click)="group(card, target)">
+                                <mat-icon>merge</mat-icon><span>{{ 'retro.groupWith' | transloco: { text: target.groupTitle || target.text } }}</span>
+                              </button>
+                            }
+                            @if (card.groupId) {
+                              <button mat-menu-item (click)="group(card, null)"><mat-icon>call_split</mat-icon><span>{{ 'retro.ungroup' | transloco }}</span></button>
+                            }
+                          }
+                          @if (card.mine || retro.canFacilitate) {
+                            <button mat-menu-item (click)="deleteCard(card)"><mat-icon>delete</mat-icon><span>{{ 'retro.delete' | transloco }}</span></button>
+                          }
+                        </mat-menu>
+                      }
+                    </div>
+                  </div>
+                }
+
+                @if (isVoting) {
+                  <div class="retro-vote">
+                    <button mat-icon-button (click)="vote(stack.head, false)" [disabled]="!stack.head.myVotes" [attr.aria-label]="'retro.removeDot' | transloco">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                    <span class="retro-vote-mine opp-tabular" [attr.aria-label]="'retro.myDots' | transloco: { count: stack.head.myVotes }">
+                      @for (d of dots(stack.head.myVotes); track d) { <span class="retro-dot" aria-hidden="true"></span> }
+                      @if (!stack.head.myVotes) { 0 }
+                    </span>
+                    <button mat-icon-button (click)="vote(stack.head, true)" [disabled]="!retro.dotsLeft" [attr.aria-label]="'retro.addDot' | transloco">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </div>
+                }
+
+                @if (isDiscussing) {
+                  <div class="retro-result">
+                    <span class="retro-votes opp-tabular">{{ 'retro.votes' | transloco: { count: stack.head.votes ?? 0 } }}</span>
+                    <span class="retro-votes-bar" aria-hidden="true"><span [style.width.%]="((stack.head.votes ?? 0) / maxVotes()) * 100"></span></span>
+                  </div>
+                  <ul class="retro-items">
+                    @for (item of itemsFor(stack.head.id); track trackItem($index, item)) {
+                      <li class="retro-item" [class.retro-item--done]="item.done">
+                        <label><input type="checkbox" [checked]="item.done" (change)="setDone(item, !item.done)"><span>{{ item.text }}</span></label>
+                        <select class="retro-owner-select" [ngModel]="item.ownerId ?? ''" (ngModelChange)="setOwner(item, $event)" [attr.aria-label]="'retro.owner' | transloco">
+                          <option value="">{{ 'retro.noOwner' | transloco }}</option>
+                          @for (p of players; track p.id) { <option [value]="p.id">{{ p.name }}</option> }
+                        </select>
+                        <button mat-icon-button (click)="deleteItem(item)" [attr.aria-label]="'retro.delete' | transloco"><mat-icon>close</mat-icon></button>
+                      </li>
+                    }
+                  </ul>
+                  <form class="retro-item-add" (ngSubmit)="addItem(stack.head.id)">
+                    <label class="sr-only" [for]="'item-' + stack.head.id">{{ 'retro.addActionItem' | transloco }}</label>
+                    <input [id]="'item-' + stack.head.id" [name]="'item' + stack.head.id" maxlength="300" [(ngModel)]="newItemText[stack.head.id]"
+                      [placeholder]="'retro.actionItemPlaceholder' | transloco">
+                    <select [name]="'owner' + stack.head.id" [(ngModel)]="newItemOwner[stack.head.id]" [attr.aria-label]="'retro.owner' | transloco">
+                      <option value="">{{ 'retro.noOwner' | transloco }}</option>
+                      @for (p of players; track p.id) { <option [value]="p.id">{{ p.name }}</option> }
+                    </select>
+                    <button mat-stroked-button type="submit" [disabled]="!newItemText[stack.head.id]?.trim()">{{ 'retro.add' | transloco }}</button>
+                  </form>
+                }
+              </li>
+            }
+          </ul>
+
+          @if (hiddenCount(col)) {
+            <p class="retro-hidden" aria-live="polite">
+              <mat-icon aria-hidden="true">visibility_off</mat-icon> {{ 'retro.hiddenCards' | transloco: { count: hiddenCount(col) } }}
+            </p>
+          }
+          @if (!retro.countPerColumn[col] && !canWrite) {
+            <p class="retro-hint">{{ 'retro.emptyColumn' | transloco }}</p>
+          }
+        </section>
+      }
+    </div>
+
+    <!-- Action items of this retro (OPP-166) -->
+    @if (isDiscussing) {
+      <section class="retro-panel" aria-labelledby="items-title">
+        <h2 class="retro-panel-title" id="items-title">{{ 'retro.actionItems' | transloco }}</h2>
+        @if (generalItems.length) {
+          <ul class="retro-items">
+            @for (item of generalItems; track trackItem($index, item)) {
+              <li class="retro-item" [class.retro-item--done]="item.done">
+                <label><input type="checkbox" [checked]="item.done" (change)="setDone(item, !item.done)"><span>{{ item.text }}</span></label>
+                <select class="retro-owner-select" [ngModel]="item.ownerId ?? ''" (ngModelChange)="setOwner(item, $event)" [attr.aria-label]="'retro.owner' | transloco">
+                  <option value="">{{ 'retro.noOwner' | transloco }}</option>
+                  @for (p of players; track p.id) { <option [value]="p.id">{{ p.name }}</option> }
+                </select>
+                <button mat-icon-button (click)="deleteItem(item)" [attr.aria-label]="'retro.delete' | transloco"><mat-icon>close</mat-icon></button>
+              </li>
+            }
+          </ul>
+        }
+        <form class="retro-item-add" (ngSubmit)="addItem(null)">
+          <label class="sr-only" for="item-general">{{ 'retro.addActionItem' | transloco }}</label>
+          <input id="item-general" name="itemGeneral" maxlength="300" [(ngModel)]="generalItemText" [placeholder]="'retro.actionItemPlaceholder' | transloco">
+          <select name="ownerGeneral" [(ngModel)]="generalItemOwner" [attr.aria-label]="'retro.owner' | transloco">
+            <option value="">{{ 'retro.noOwner' | transloco }}</option>
+            @for (p of players; track p.id) { <option [value]="p.id">{{ p.name }}</option> }
+          </select>
+          <button mat-stroked-button type="submit" [disabled]="!generalItemText.trim()">{{ 'retro.add' | transloco }}</button>
+        </form>
+        <p class="retro-hint">{{ 'retro.itemsHint' | transloco }}</p>
+      </section>
+    }
+  }
+</section>

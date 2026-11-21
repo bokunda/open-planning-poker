@@ -12,6 +12,7 @@ import { BreadcrumbComponent } from './game/breadcrumb/breadcrumb.component';
 import { GameComponent } from './game/game.component';
 import { FooterComponent } from './footer/footer.component';
 import { TeamComponent } from './team/team.component';
+import { RetroComponent } from './retro/retro.component';
 import { TranslocoService } from '@jsverse/transloco';
 import { isEmbedded } from '../../shared/embed';
 
@@ -20,7 +21,7 @@ import { isEmbedded } from '../../shared/embed';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   standalone: true,
-  imports: [HeaderComponent, BreadcrumbComponent, GameComponent, TeamComponent, FooterComponent]
+  imports: [HeaderComponent, BreadcrumbComponent, GameComponent, TeamComponent, RetroComponent, FooterComponent]
 })
 export class HomeComponent implements OnInit {
 
@@ -29,6 +30,8 @@ export class HomeComponent implements OnInit {
   breadcrumbItems: BreadcrumbItem[] = [];
   /** /team and /team/:teamId show the team rooms instead of the game. */
   isTeamView = false;
+  /** /retro/:gameId is the retro of a team sprint (OPP-162). */
+  isRetroView = false;
   /** Inside the Microsoft Teams tab: no site header, breadcrumb or footer (OPP-23). */
   embedded = false;
 
@@ -48,11 +51,14 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.isTeamView = this.route.snapshot.data['view'] === 'team';
+    this.isRetroView = this.route.snapshot.data['view'] === 'retro';
     this.updatePageMeta();
     // Titles and descriptions follow the language.
     this.i18n.langChanges$.subscribe(() => this.updatePageMeta());
     this.route.paramMap.subscribe(params => {
-      if (this.isTeamView) {
+      if (this.isRetroView) {
+        this.breadcrumbItems = [{ label: 'nav.home', url: '/' }, { label: 'nav.teams', url: '/team' }, { label: 'nav.retro' }];
+      } else if (this.isTeamView) {
         this.updateTeamBreadcrumb(params.get('teamId'));
       } else {
         this.updateBreadcrumb(params.get('id'), params.get('ticketId'));
@@ -80,6 +86,10 @@ export class HomeComponent implements OnInit {
   }
 
   private updatePageMeta(): void {
+    if (this.isRetroView) {
+      this.title.setTitle(this.i18n.translate('meta.retroTitle'));
+      return;
+    }
     if (this.isTeamView) {
       this.title.setTitle(this.i18n.translate(this.route.snapshot.paramMap.get('teamId') ? 'meta.teamRoomTitle' : 'meta.teamRoomsTitle'));
       return;

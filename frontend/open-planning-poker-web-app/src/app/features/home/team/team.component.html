@@ -106,11 +106,38 @@
                         <span class="sprint-meta">{{ s.createdOn | oppDate:'EEE d MMM y' }} · {{ 'team.estimated' | transloco: { count: s.estimatedCount, total: s.ticketCount } }}</span>
                       </a>
                       <span class="sprint-points opp-tabular" [attr.aria-label]="'team.pointsAria' | transloco: { points: s.points }">{{ s.points }}<small>{{ 'team.pts' | transloco }}</small></span>
+                      @if (retroPhase(s.gameId); as phase) {
+                        <a class="sprint-retro" [routerLink]="['/retro', s.gameId]" [attr.aria-label]="'retro.openFor' | transloco: { name: s.name }">
+                          <mat-icon aria-hidden="true">forum</mat-icon> {{ ('retro.phase.' + phase) | transloco }}
+                        </a>
+                      } @else if (isOwner) {
+                        <a class="sprint-retro sprint-retro--new" [routerLink]="['/retro', s.gameId]" [attr.aria-label]="'retro.startFor' | transloco: { name: s.name }">
+                          <mat-icon aria-hidden="true">add_comment</mat-icon> {{ 'retro.retroShort' | transloco }}
+                        </a>
+                      }
                     </li>
                   }
                 </ol>
               }
             </section>
+            @if (t.openActionItems?.length) {
+              <!-- Open action items of the team's retros (OPP-166) -->
+              <section class="team-card" aria-labelledby="actions-title">
+                <h2 class="team-section-title" id="actions-title">{{ 'retro.openItems' | transloco }}</h2>
+                <ul class="team-actions">
+                  @for (item of t.openActionItems; track item.id) {
+                    <li>
+                      <label>
+                        <input type="checkbox" (change)="setActionItemDone(item.id)">
+                        <span>{{ item.text }}</span>
+                      </label>
+                      @if (memberName(item.ownerId); as owner) { <span class="team-hint">{{ owner }}</span> }
+                    </li>
+                  }
+                </ul>
+                <p class="team-hint">{{ 'retro.openItemsHint' | transloco }}</p>
+              </section>
+            }
             <!-- Capacity, budget and the sprint plan (OPP-138) -->
             <app-team-plan [teamId]="t.id" [sprints]="t.sprints" [members]="t.members" [isOwner]="isOwner" [currentUserId]="currentUserId"></app-team-plan>
             <!-- Session numbers, accuracy and the summary webhook (OPP-117) -->

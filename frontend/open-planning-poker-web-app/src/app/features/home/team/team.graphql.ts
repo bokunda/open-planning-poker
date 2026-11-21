@@ -17,6 +17,8 @@ export const GET_TEAM = gql`
         averageVelocity
         members { id name }
         summaryWebhook
+        retros { gameId phase }
+        openActionItems { id retroId text ownerId done }
         sprints { gameId name description createdOn ticketCount estimatedCount points
           stats { revealed firstRoundConsensus firstRoundConsensusShare reVotesPerTicket averageDiscussionSeconds needsInfo } }
       }
@@ -73,6 +75,10 @@ export interface TeamDetails extends TeamSummary {
   sprints: Sprint[];
   /** Owner only (OPP-136). */
   summaryWebhook?: string | null;
+  /** Sprints with a retro and its step (OPP-162). */
+  retros?: { gameId: string; phase: string }[];
+  /** Open action items of the team's retros (OPP-166). */
+  openActionItems?: { id: string; retroId: string; text: string; ownerId: string | null; done: boolean }[];
 }
 
 /* Reference stories from past sprints (OPP-115). */
