@@ -19,7 +19,12 @@ const LANGUAGES = {
 };
 
 /** Guide slugs: pages/<slug>.html in English, i18n/<lang>/<slug>.html translated. */
-const GUIDES = fs.readdirSync(path.resolve(__dirname, 'pages')).filter(f => f.endsWith('.html')).map(f => f.replace(/\.html$/, ''));
+// Nested folders become nested paths: pages/blog/public-api.html → /blog/public-api/ (the blog, OPP-176).
+const GUIDES = fs.readdirSync(path.resolve(__dirname, 'pages'), { recursive: true })
+  .map(f => String(f).split(path.sep).join('/'))
+  .filter(f => f.endsWith('.html'))
+  .map(f => f.replace(/\.html$/, ''))
+  .sort();
 
 /** Pages that exist in every language, relative to the language root ('' is the home page). */
 const PAGES = ['', ...GUIDES.map(slug => `${slug}/`), 'changelog/'];
@@ -95,7 +100,7 @@ function finishPage(html, lang, page) {
     html = html
       .replace(/href="\/#/g, `href="${l.path}#`)
       .replace(/href="\/"/g, `href="${l.path}"`)
-      .replace(/href="\/([a-z-]+\/)"/g, (match, target) => (PAGES.includes(target) ? `href="${l.path}${target}"` : match));
+      .replace(/href="\/((?:[a-z0-9-]+\/)+)"/g, (match, target) => (PAGES.includes(target) ? `href="${l.path}${target}"` : match));
   }
 
   // Language switcher: <a href="…" hreflang="sr-Latn" …> goes to this page in that language.

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eigene Apps auf der Open-Planning-Poker-API bauen | Open Planning Poker</title>
+    <meta name="description" content="Die öffentliche API und die Webhooks von Open Planning Poker sind kostenlos: Bau ein Dashboard, binde ein Tool an, das wir noch nicht unterstützen, oder übe Integrationen an einer echten API mit echten Daten.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://openplanningpoker.com/de/blog/public-api-build-your-own-apps/">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://openplanningpoker.com/de/blog/public-api-build-your-own-apps/">
+    <meta property="og:locale" content="de_DE">
+    <meta property="og:title" content="Eigene Apps auf der Open-Planning-Poker-API bauen">
+    <meta property="og:description" content="Die öffentliche API und die Webhooks von Open Planning Poker sind kostenlos: Bau ein Dashboard, binde ein Tool an, das wir noch nicht unterstützen, oder übe Integrationen an einer echten API mit echten Daten.">
+    <meta property="og:image" content="https://openplanningpoker.com/images/og-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Open Planning Poker">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Eigene Apps auf der Open-Planning-Poker-API bauen">
+    <meta name="twitter:description" content="Die öffentliche API und die Webhooks von Open Planning Poker sind kostenlos: Bau ein Dashboard, binde ein Tool an, das wir noch nicht unterstützen, oder übe Integrationen an einer echten API mit echten Daten.">
+    <meta name="twitter:image" content="https://openplanningpoker.com/images/og-card.png">
+    <!-- SITE_HEAD -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Startseite",
+          "item": "https://openplanningpoker.com/de/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Auf der öffentlichen API bauen",
+          "item": "https://openplanningpoker.com/de/blog/public-api-build-your-own-apps/"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "Eigene Apps auf der Open-Planning-Poker-API bauen",
+      "description": "Die öffentliche API und die Webhooks von Open Planning Poker sind kostenlos: Bau ein Dashboard, binde ein Tool an, das wir noch nicht unterstützen, oder übe Integrationen an einer echten API mit echten Daten.",
+      "url": "https://openplanningpoker.com/de/blog/public-api-build-your-own-apps/",
+      "dateModified": "2026-11-22",
+      "inLanguage": "de",
+      "publisher": {
+        "@id": "https://openplanningpoker.com/#org"
+      },
+      "datePublished": "2026-11-22",
+      "image": "https://openplanningpoker.com/images/og-card.png",
+      "author": {
+        "@type": "Organization",
+        "name": "Open Planning Poker",
+        "url": "https://openplanningpoker.com"
+      }
+    }
+  ]
+}
+    </script>
+</head>
+<body class="bg-white text-gray-600 font-sans antialiased dark:bg-gray-900 dark:text-gray-400">
+    <!-- SITE_HEADER -->
+
+    <main id="main">
+      <article class="max-w-3xl px-4 pt-28 pb-16 mx-auto lg:pt-36">
+        <nav aria-label="Breadcrumb" class="text-sm">
+          <ol class="flex gap-2">
+            <li><a href="/de/" class="link">Startseite</a></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">Auf der öffentlichen API bauen</li>
+          </ol>
+        </nav>
+        <h1 class="mt-6 font-display text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl dark:text-white">Eigene Apps auf der Open-Planning-Poker-API bauen</h1>
+        <p class="mt-5 text-lg leading-relaxed">Jeder Team-Raum hat jetzt eine kleine API zum Lesen und signierte Webhooks. Sie sind kostenlos, dokumentiert und echt und damit ein guter Ort, eigene Tools zu bauen oder Integrationen zu üben.</p>
+
+        <div class="guide mt-10">
+<h2>Was du bauen kannst</h2>
+<ul>
+  <li><strong>Ein eigenes Velocity-Dashboard</strong> in einer Tabelle, in Grafana oder auf einer statischen Seite, aus <code>/api/v1/sessions</code>.</li>
+  <li><strong>Eine Brücke zu einem Tracker, den wir noch nicht unterstützen</strong>: Hör auf <code>ticket.estimated</code> und schreib die Schätzung dorthin, wo dein Team die Arbeit führt.</li>
+  <li><strong>Chat-Benachrichtigungen</strong> in Discord, Mattermost oder Matrix, wenn eine Sitzung endet.</li>
+  <li><strong>Ein Lernprojekt</strong>: Eine API mit Tokens, Seiten, Limits und signierten Webhooks ist eine realistische Übung für Studierende und Junioren.</li>
+</ul>
+
+<h2>In fünf Minuten loslegen</h2>
+<ol>
+  <li>Öffne einen Team-Raum und erstelle als Inhaber unter <strong>API und Webhooks</strong> ein Token.</li>
+  <li>Ruf die API auf:</li>
+</ol>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>curl -H &quot;Authorization: Bearer opp_…&quot; https://ge.openplanningpoker.com/api/v1/sessions?take=5</code></pre>
+<p>Du bekommst die Sitzungen des Teams mit Punkten, Einigkeit beim ersten Abstimmen und Neuabstimmungen, seitenweise mit <code>skip</code> und <code>take</code>. Die Tickets einer Sitzung liefert <code>/api/v1/sessions/{id}/tickets</code> mit vereinbarten Schätzungen und Tracker-Links. Die API liefert nie einzelne Stimmen oder Spielernamen.</p>
+
+<h2>Webhooks richtig üben</h2>
+<p>Füg eine Webhook-Adresse hinzu und du bekommst für jede Schätzung signiertes JSON. Ein kleiner Empfänger in Node zeigt das ganze Muster: den rohen Body lesen, die Signatur prüfen, dann das Ereignis verarbeiten.</p>
+<pre class="overflow-x-auto rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800"><code>import http from &#x27;node:http&#x27;;
+import { verify } from &#x27;./verify.js&#x27;; // the check from the API docs
+
+http.createServer((req, res) =&gt; {
+  let body = &#x27;&#x27;;
+  req.on(&#x27;data&#x27;, (chunk) =&gt; (body += chunk));
+  req.on(&#x27;end&#x27;, () =&gt; {
+    if (!verify(process.env.OPP_WEBHOOK_SECRET, req.headers[&#x27;x-opp-signature&#x27;] ?? &#x27;&#x27;, body)) {
+      res.writeHead(401).end();
+      return;
+    }
+    const event = JSON.parse(body);
+    if (event.type === &#x27;ticket.estimated&#x27;) {
+      console.log(`${event.data.ticket.externalKey ?? event.data.ticket.name}: ${event.data.ticket.estimate}`);
+    }
+    res.writeHead(204).end();
+  });
+}).listen(3000);</code></pre>
+<p>Was sich daran zu üben lohnt: Anfragen mit falscher oder alter Signatur ablehnen, Duplikate mit <code>X-OPP-Delivery</code> verwerfen, schnell antworten und langsame Arbeit später erledigen, und in der Liste der Zustellungen die Wiederholungen beobachten, wenn dein Empfänger einen Fehler liefert.</p>
+
+<h2>Grenzen und faire Nutzung</h2>
+<p>60 Anfragen pro Minute und Token, dazu die übliche Grenze pro Adresse. Darüber kommt <code>429</code> mit <code>Retry-After</code>. Webhooks gehen nur an öffentliche https-Adressen.</p>
+<p>Alles Weitere steht in der <a class="link" href="/public-api/">API-Dokumentation</a>: Endpunkte, Ereignisse, Signaturprüfung in Node und Python sowie Schritte für n8n und Zapier.</p>
+<p class="mt-10 text-sm">Zuletzt geändert: <time datetime="2026-11-22">2026-11-22</time></p>
+        </div>
+
+        <aside class="mt-12 p-6 border border-gray-200 rounded-2xl dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50" aria-labelledby="more-pages">
+          <h2 id="more-pages" class="font-display text-lg font-extrabold text-gray-900 dark:text-white">Verwandte Seiten</h2>
+          <ul class="mt-3 space-y-2">
+          <li><a href="/de/blog/sprint-retros-in-the-team-room/" class="link">Sprint-Retros</a></li>
+          <li><a href="/de/blog/share-a-session-recap/" class="link">Rückblick teilen</a></li>
+          <li><a href="/de/blog/" class="link">Blog</a></li>
+          </ul>
+        </aside>
+      </article>
+
+      <section class="px-4 pb-16 lg:pb-24">
+        <div class="cta-band max-w-(--breakpoint-lg) mx-auto">
+          <h2 class="font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Probier es mit deinem Team aus.</h2>
+          <p class="mt-3 text-lg text-purple-100">Kostenlos, ohne Anmeldung. Teile einen Link und ihr spielt.</p>
+          <a href="https://app.openplanningpoker.com/team" class="inline-flex items-center justify-center mt-8 px-6 py-3.5 font-bold rounded-full bg-white text-purple-700 shadow-lg hover:bg-purple-50 focus:outline-hidden focus-visible:ring-4 focus-visible:ring-white/60 transition">Team-Raum öffnen</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- SITE_FOOTER -->
+</body>
+</html>
