@@ -6,6 +6,10 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+## [3.8.0] — 2026-11-22
+
+Mit der öffentlichen API auf den Schätzungen des Teams aufbauen, Teams in einer Organisation vergleichen und optionale KI-Hilfe nutzen, die nie eine Karte wählt.
+
 ### Hinzugefügt
 - **Öffentliche API und Webhooks**: Team-Inhaber erstellen API-Tokens und lesen Sitzungen, Tickets und Schätzungen des Teams unter `https://ge.openplanningpoker.com/api/v1`. Signierte Webhooks für `ticket.estimated` und `session.finished`, mit Wiederholungen und den letzten 20 Zustellungen im Team-Raum. Dokumentation unter `/public-api/`
 - **KI-Assistent** (optional, aus, bis der Server einen API-Schlüssel hat und der Host ihn einschaltet): eine Klarheitsprüfung vor dem Abstimmen, Ideen zum Aufteilen eines zu großen Tickets und eine Zusammenfassung der Diskussion in einem Satz für den Jira-Kommentar und den PDF-Bericht. Er schlägt nie eine Karte vor

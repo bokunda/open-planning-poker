@@ -1,4 +1,24 @@
-<div class="changelog-content"><h2>[3.7.0] — 2026-11-21</h2>
+<div class="changelog-content"><h2>[3.8.0] — 2026-11-22</h2>
+<p>Build on your team&#39;s estimates with the public API, compare teams in an organization, and get optional AI help that never picks a card.</p>
+<h3>Added</h3>
+<ul>
+<li><strong>Public API and webhooks</strong>: team owners create API tokens and read the team&#39;s sessions, tickets and estimates at <code>https://ge.openplanningpoker.com/api/v1</code>. Signed webhooks for <code>ticket.estimated</code> and <code>session.finished</code>, with retries and the last 20 deliveries in the team room. Docs at <code>/public-api/</code></li>
+<li><strong>AI assistant</strong> (optional, off unless the server has an API key and the host turns it on): a clarity check before voting, ideas to split a ticket the team found too big, and a one-sentence summary of the discussion for the Jira comment and the PDF report. It never suggests a card</li>
+<li><strong>Organizations</strong>: several team rooms of a company in one place, invite link, roles admin and member, and every team&#39;s first-vote agreement, re-votes and velocity side by side with a CSV download</li>
+<li><strong>Website</strong>: a velocity and capacity calculator, story point scales with a T-shirt converter, pages for Jira, GitHub, Linear and Azure DevOps, remote teams, Scrum beginners, magic estimation and sprint planning, a fair comparison of planning poker tools, and a blog</li>
+<li>Page views and rooms per website page, counted without cookies, in a Grafana report</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>The game engine limits public API requests per token and website visit counts per address</li>
+</ul>
+<h3>Developers</h3>
+<ul>
+<li>Migrations <code>AddPublicApi</code>, <code>AddAiAssistant</code>, <code>AddOrganizations</code></li>
+<li>Optional secret <code>ANTHROPIC_API_KEY</code> for the deploy; Prometheus keeps 45 days</li>
+<li>Mobile Lighthouse check over every website page in CI</li>
+</ul>
+<h2>[3.7.0] — 2026-11-21</h2>
 <p>Run the sprint retro in the same team room, starting from the team&#39;s own numbers.</p>
 <h3>Added</h3>
 <ul>
