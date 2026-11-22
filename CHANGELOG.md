@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Public API and webhooks**: team owners create API tokens and read the team's sessions, tickets and estimates at `https://ge.openplanningpoker.com/api/v1`. Signed webhooks for `ticket.estimated` and `session.finished`, with retries and the last 20 deliveries in the team room. Docs at `/public-api/`
+- **AI assistant** (optional, off unless the server has an API key and the host turns it on): a clarity check before voting, ideas to split a ticket the team found too big, and a one-sentence summary of the discussion for the Jira comment and the PDF report. It never suggests a card
+- **Organizations**: several team rooms of a company in one place, invite link, roles admin and member, and every team's first-vote agreement, re-votes and velocity side by side with a CSV download
+- **Website**: a velocity and capacity calculator, story point scales with a T-shirt converter, pages for Jira, GitHub, Linear and Azure DevOps, remote teams, Scrum beginners, magic estimation and sprint planning, a fair comparison of planning poker tools, and a blog
+- Page views and rooms per website page, counted without cookies, in a Grafana report
+
+### Fixed
+- The game engine limits public API requests per token and website visit counts per address
+
+### Developers
+- Migrations `AddPublicApi`, `AddAiAssistant`, `AddOrganizations`
+- Optional secret `ANTHROPIC_API_KEY` for the deploy; Prometheus keeps 45 days
+- Mobile Lighthouse check over every website page in CI
+
 ## [3.7.0] — 2026-11-21
 
 Run the sprint retro in the same team room, starting from the team's own numbers.

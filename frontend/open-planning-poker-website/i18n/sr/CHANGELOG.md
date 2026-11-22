@@ -6,6 +6,21 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+### Dodato
+- **Javni API i webhookovi**: vlasnici timova prave API tokene i čitaju sesije, tikete i procene tima na `https://ge.openplanningpoker.com/api/v1`. Potpisani webhookovi za `ticket.estimated` i `session.finished`, sa ponovnim pokušajima i poslednjih 20 isporuka u timskoj sobi. Dokumentacija na `/public-api/`
+- **AI asistent** (opciono, isključen dok server nema API ključ i host ga ne uključi): provera jasnoće pre glasanja, ideje za podelu tiketa koji je tim ocenio kao prevelik i sažetak diskusije u jednoj rečenici za Jira komentar i PDF izveštaj. Nikad ne predlaže kartu
+- **Organizacije**: više timskih soba jedne kompanije na jednom mestu, link za poziv, uloge administrator i član, i slaganje u prvom glasanju, ponovna glasanja i brzina svih timova jedno pored drugog uz CSV preuzimanje
+- **Sajt**: kalkulator brzine i kapaciteta, skale story pointsa sa konverterom veličina majica, stranice za Jiru, GitHub, Linear i Azure DevOps, timove na daljinu, Scrum početnike, magičnu procenu i planiranje sprinta, pošteno poređenje alata za planning poker i blog
+- Posete i sobe po stranici sajta, brojane bez kolačića, u Grafana izveštaju
+
+### Ispravljeno
+- Game engine ograničava zahteve javnog API-ja po tokenu i brojanje poseta po adresi
+
+### Za programere
+- Migracije `AddPublicApi`, `AddAiAssistant`, `AddOrganizations`
+- Opciona tajna `ANTHROPIC_API_KEY` za deploy; Prometheus čuva 45 dana
+- Mobilna Lighthouse provera svih stranica sajta u CI-ju
+
 ## [3.7.0] — 2026-11-21
 
 Vodi retrospektivu sprinta u istoj timskoj sobi, uz brojke svog tima.
