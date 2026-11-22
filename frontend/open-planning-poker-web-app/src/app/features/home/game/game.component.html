@@ -131,6 +131,17 @@
             (onVoteAgain)="handleVoteAgain()"
             (onNavigateTicket)="handleReVoteTicket($event)"
           ></app-voting>
+          <!-- Optional AI help around the estimate (OPP-139) -->
+          <app-ai-assist
+            [gameId]="game.id"
+            [ticketId]="ticket?.id ?? null"
+            [isHost]="isHost"
+            [votesRevealed]="votesRevealed"
+            [finalEstimate]="$any(ticket)?.finalEstimate ?? null"
+            [voteValues]="voteValues"
+            [deck]="deckCards"
+            [version]="aiVersion"
+            (addTicket)="handleAddSplitTicket($event)"></app-ai-assist>
         }
 
         @if (!asyncVotingOpen && !sortingOpen) {

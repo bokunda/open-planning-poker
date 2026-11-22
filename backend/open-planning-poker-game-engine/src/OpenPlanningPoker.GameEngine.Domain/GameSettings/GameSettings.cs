@@ -32,6 +32,11 @@ public sealed class GameSettings : Entity<Guid>
     /// <summary>Players can send short emoji reactions (OPP-125).</summary>
     public bool Reactions { get; private set; } = true;
 
+    /// <summary>AI help around the estimate (OPP-139): clarity check, split ideas, discussion summary. Off by default.</summary>
+    public bool AiAssistant { get; private set; }
+
+    public void SetAiAssistant(bool enabled) => AiAssistant = enabled;
+
     /// <summary>The room sorts tickets into card columns instead of voting on each (OPP-142).</summary>
     public bool SortingOpen { get; private set; }
 

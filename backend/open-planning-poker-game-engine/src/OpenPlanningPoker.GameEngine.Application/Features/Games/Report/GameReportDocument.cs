@@ -13,7 +13,7 @@ public sealed record ReportVote(string Player, string Value, string? Note = null
 /// <param name="NeedsInfo">The team needs more information (OPP-126).</param>
 /// <param name="Confidence">Average confidence 1–5 in the final estimate (OPP-124); null when not rated.</param>
 public sealed record ReportTicket(string Name, string Description, bool Revealed, IReadOnlyList<ReportVote> Votes, string? FinalEstimate = null,
-    bool NeedsInfo = false, decimal? Confidence = null);
+    bool NeedsInfo = false, decimal? Confidence = null, string? Summary = null);
 
 public sealed record ReportModel(
     string GameName,
@@ -39,6 +39,7 @@ public sealed class GameReportDocument(ReportModel source) : IDocument
         {
             Name = PdfText.Clean(t.Name),
             Description = PdfText.Clean(t.Description),
+            Summary = t.Summary is null ? null : PdfText.Clean(t.Summary),
             FinalEstimate = t.FinalEstimate is null ? null : PdfText.Clean(t.FinalEstimate),
             Votes = [.. t.Votes.Select(v => v with
             {
@@ -251,6 +252,12 @@ public sealed class GameReportDocument(ReportModel source) : IDocument
                         + (confidence < 3 ? " · " + T("report.lowConfidence") : string.Empty));
                 }
                 column.Item().PaddingTop(2).Text(string.Join("   ", flags)).FontSize(8).SemiBold().FontColor(TextSecondary);
+            }
+
+            // The host's one-sentence summary of the discussion (OPP-152).
+            if (!string.IsNullOrWhiteSpace(ticket.Summary))
+            {
+                column.Item().PaddingTop(2).Text(ticket.Summary).FontSize(8.5f).Italic().FontColor(TextSecondary);
             }
 
             foreach (var vote in ticket.Votes.Where(v => v.Note is not null))

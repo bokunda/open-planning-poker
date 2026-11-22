@@ -42,6 +42,7 @@ import { ChatComponent } from './chat/chat.component';
 import { AsyncVotingComponent } from './async-voting/async-voting.component';
 import { SortingBoardComponent } from './sorting/sorting-board.component';
 import { CelebrationComponent, isConsensus } from './facilitation/celebration.component';
+import { AiAssistComponent } from './facilitation/ai-assist.component';
 import { InviteCardComponent, inviteCardAllowed, markInviteCardShown } from './invite/invite-card.component';
 import { trackEvent } from '../../../shared/analytics';
 import { NgClass } from '@angular/common';
@@ -71,7 +72,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent, AsyncVotingComponent, SortingBoardComponent, CelebrationComponent, InviteCardComponent, NgClass],
+  imports: [TranslocoPipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent, AsyncVotingComponent, SortingBoardComponent, CelebrationComponent, InviteCardComponent, AiAssistComponent, NgClass],
   animations: [
     trigger('fadeSlide', [
       transition(':enter', [
@@ -226,6 +227,19 @@ export class GameComponent implements OnInit {
 
   private deckSource = '';
   private deckCache: string[] = [];
+
+  /** Bumped on ticket and room changes so the AI panel reloads (OPP-139). */
+  aiVersion = 0;
+
+  /** Revealed vote values of the current ticket, for the "too big" check of the AI panel. */
+  get voteValues(): string[] {
+    return this.votesRevealed ? this.votes.map(v => v.value ?? '').filter(Boolean) : [];
+  }
+
+  /** An idea from "Ideas to split" becomes a ticket of the game (OPP-151). */
+  handleAddSplitTicket(idea: { name: string; description: string }): void {
+    if (this.game?.id) this.createTicket(this.game.id, idea.name, idea.description);
+  }
 
   /** The game's cards (same array until the deck changes, so inputs do not change on every check). */
   get deckCards(): string[] {
@@ -965,12 +979,14 @@ export class GameComponent implements OnInit {
         switch (change.kind) {
           case 'GAME':
             this.refreshGame(gameId);
+            this.aiVersion++;
             break;
           case 'PLAYERS':
             this.refreshPlayers(gameId);
             break;
           case 'TICKETS':
             this.getTickets(gameId);
+            this.aiVersion++;
             break;
           case 'SORTING':
             this.loadSortingBoard(gameId);

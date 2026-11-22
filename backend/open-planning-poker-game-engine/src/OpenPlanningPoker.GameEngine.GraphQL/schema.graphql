@@ -24,6 +24,14 @@ type AddRetroCardPayload {
   errors: [AddRetroCardError!]
 }
 
+"Whether the AI assistant can be used in a room (OPP-139)."
+type AiAssistantStatus {
+  "The server has an API key."
+  available: Boolean!
+  "The host turned it on for this room."
+  enabled: Boolean!
+}
+
 type ApiCollectionOfGamePlayer {
   items: [GamePlayer!]!
   totalCount: Int!
@@ -68,6 +76,11 @@ type ChatMessage {
   playerName: String!
   content: String!
   timestamp: String!
+}
+
+type CheckTicketClarityPayload {
+  ticketClarity: TicketClarity
+  errors: [CheckTicketClarityError!]
 }
 
 type ClaimGameHostPayload {
@@ -175,6 +188,11 @@ type DisconnectJiraPayload {
 type DisconnectTrackerPayload {
   boolean: Boolean
   errors: [DisconnectTrackerError!]
+}
+
+type DismissTicketClarityPayload {
+  boolean: Boolean
+  errors: [DismissTicketClarityError!]
 }
 
 type EditRetroCardPayload {
@@ -420,6 +438,21 @@ type MoveSortedTicketPayload {
 type Mutation {
   "Sends a chat message to a game. Only players of the game can send messages."
   sendChatMessage(input: SendChatMessageInput!): SendChatMessagePayload! @cost(weight: "10")
+  "Turns the assistant on or off for the room. Host and co-hosts."
+  setAiAssistant(input: SetAiAssistantInput!): SetAiAssistantPayload! @cost(weight: "10")
+  "Up to three points that are unclear in the ticket, shown to everyone in the room (OPP-150). Host and co-hosts."
+  checkTicketClarity(input: CheckTicketClarityInput!): CheckTicketClarityPayload! @cost(weight: "10")
+  "Clears the clarity points of a ticket for everyone. Host and co-hosts."
+  dismissTicketClarity(input: DismissTicketClarityInput!): DismissTicketClarityPayload! @cost(weight: "10")
+  "Two to four smaller tickets for one that is too big (OPP-151). Only the host sees them. Host and co-hosts."
+  suggestTicketSplit(input: SuggestTicketSplitInput!): SuggestTicketSplitPayload! @cost(weight: "10")
+  """
+  A one-sentence summary of the voters' notes and the chat since the reveal (OPP-152), for the host to edit and keep.
+  Player names are replaced before anything is sent. Host and co-hosts.
+  """
+  summarizeTicketDiscussion(input: SummarizeTicketDiscussionInput!): SummarizeTicketDiscussionPayload! @cost(weight: "10")
+  "Keeps (or clears, with an empty text) the summary of a ticket; it goes into the tracker comment and the report. Host and co-hosts."
+  setTicketDiscussionSummary(input: SetTicketDiscussionSummaryInput!): SetTicketDiscussionSummaryPayload! @cost(weight: "10")
   "Explains the current user's card after the reveal (up to 200 characters; empty clears it)."
   setVoteNote(input: SetVoteNoteInput!): SetVoteNotePayload! @cost(weight: "10")
   "Rates the current user's confidence (1–5) in the final estimate; null clears it."
@@ -663,6 +696,8 @@ type Query {
   players of the game.
   """
   chatMessages(gameId: UUID!): [ChatMessage!]! @cost(weight: "10")
+  "Is the assistant available on this server and on in this room? Players of the game."
+  aiAssistant(gameId: UUID!): AiAssistantResult! @cost(weight: "10")
   "Discussion data of a ticket. Players of the game only."
   ticketFacilitation(ticketId: UUID!): TicketFacilitationResult! @cost(weight: "10")
   "Returns game with participants"
@@ -878,6 +913,11 @@ type SessionSummaryInfo {
   destination: String
 }
 
+type SetAiAssistantPayload {
+  aiAssistantStatus: AiAssistantStatus
+  errors: [SetAiAssistantError!]
+}
+
 type SetCoHostPayload {
   boolean: Boolean
   errors: [SetCoHostError!]
@@ -941,6 +981,11 @@ type SetSprintDaysPayload {
 type SetTeamSummaryWebhookPayload {
   boolean: Boolean
   errors: [SetTeamSummaryWebhookError!]
+}
+
+type SetTicketDiscussionSummaryPayload {
+  boolean: Boolean
+  errors: [SetTicketDiscussionSummaryError!]
 }
 
 type SetTicketNeedsInfoPayload {
@@ -1095,6 +1140,16 @@ type Subscription {
   onVotesRevealed(ticketId: UUID!): VotesRevealed!
 }
 
+type SuggestTicketSplitPayload {
+  ticketSplitIdeas: TicketSplitIdeas
+  errors: [SuggestTicketSplitError!]
+}
+
+type SummarizeTicketDiscussionPayload {
+  ticketDiscussionSummary: TicketDiscussionSummary
+  errors: [SummarizeTicketDiscussionError!]
+}
+
 """
 A persistent team room. Anyone with the link sees its name and can join; members also see
 the other members, the sprint history and the velocity.
@@ -1228,6 +1283,21 @@ type Ticket {
   externalKey: String
   "Link to that issue."
   externalUrl: String
+  ai: TicketAiInfo! @cost(weight: "10")
+}
+
+"What the assistant said about a ticket: the clarity points (everyone sees them) and the host's summary."
+type TicketAiInfo {
+  clarity: [String!]!
+  summary: String
+}
+
+type TicketClarity {
+  points: [String!]!
+}
+
+type TicketDiscussionSummary {
+  summary: String!
 }
 
 "Discussion data of a ticket: when the cards were turned over, notes, needs-info flag and confidence."
@@ -1251,6 +1321,15 @@ type TicketReference {
   teamId: UUID
   anchors: [TeamAnchor!]!
   similar: [TeamTicket!]!
+}
+
+type TicketSplitIdea {
+  title: String!
+  line: String!
+}
+
+type TicketSplitIdeas {
+  items: [TicketSplitIdea!]!
 }
 
 type TrackerAuthorizeLink {
@@ -1391,7 +1470,11 @@ union AddRetroActionItemError = ApplicationError
 
 union AddRetroCardError = ApplicationError
 
+union AiAssistantResult = AiAssistantStatus | ApplicationError
+
 union ApplySortedEstimatesError = ApplicationError
+
+union CheckTicketClarityError = ApplicationError
 
 union ClaimGameHostError = ApplicationError
 
@@ -1430,6 +1513,8 @@ union DeleteTicketError = ApplicationError
 union DisconnectJiraError = ApplicationError
 
 union DisconnectTrackerError = ApplicationError
+
+union DismissTicketClarityError = ApplicationError
 
 union EditRetroCardError = ApplicationError
 
@@ -1509,6 +1594,8 @@ union SendReactionError = ApplicationError
 
 union SessionSummaryResult = SessionSummaryInfo | ApplicationError
 
+union SetAiAssistantError = ApplicationError
+
 union SetCoHostError = ApplicationError
 
 union SetConfidenceError = ApplicationError
@@ -1535,6 +1622,8 @@ union SetSprintDaysError = ApplicationError
 
 union SetTeamSummaryWebhookError = ApplicationError
 
+union SetTicketDiscussionSummaryError = ApplicationError
+
 union SetTicketNeedsInfoError = ApplicationError
 
 union SetTicketPlannedError = ApplicationError
@@ -1554,6 +1643,10 @@ union StartRetroError = ApplicationError
 union StartTimerError = ApplicationError
 
 union StopTimerError = ApplicationError
+
+union SuggestTicketSplitError = ApplicationError
+
+union SummarizeTicketDiscussionError = ApplicationError
 
 union TeamAccuracyResult = TeamAccuracyInfo | ApplicationError
 
@@ -1614,6 +1707,10 @@ input AddRetroCardInput {
 
 input ApplySortedEstimatesInput {
   gameId: UUID!
+}
+
+input CheckTicketClarityInput {
+  ticketId: UUID!
 }
 
 input ClaimGameHostInput {
@@ -1706,6 +1803,10 @@ input DeleteTicketInput {
 
 input DisconnectTrackerInput {
   provider: String!
+}
+
+input DismissTicketClarityInput {
+  ticketId: UUID!
 }
 
 input EditRetroCardInput {
@@ -1828,6 +1929,11 @@ input SendReactionInput {
   emoji: String!
 }
 
+input SetAiAssistantInput {
+  gameId: UUID!
+  enabled: Boolean!
+}
+
 input SetCoHostInput {
   gameId: UUID!
   playerId: UUID!
@@ -1899,6 +2005,11 @@ input SetTeamSummaryWebhookInput {
   url: String
 }
 
+input SetTicketDiscussionSummaryInput {
+  ticketId: UUID!
+  summary: String
+}
+
 input SetTicketNeedsInfoInput {
   ticketId: UUID!
   needsInfo: Boolean!
@@ -1928,6 +2039,14 @@ input StartTimerInput {
 
 input StopTimerInput {
   gameId: UUID!
+}
+
+input SuggestTicketSplitInput {
+  ticketId: UUID!
+}
+
+input SummarizeTicketDiscussionInput {
+  ticketId: UUID!
 }
 
 input TransferHostInput {

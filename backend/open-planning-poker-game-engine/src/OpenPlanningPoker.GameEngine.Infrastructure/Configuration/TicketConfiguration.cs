@@ -17,6 +17,12 @@ internal sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         builder.Property(ticket => ticket.Description)
             .HasMaxLength(4080);
 
+        builder.Property(ticket => ticket.ClarityNotes)
+            .HasMaxLength(Ticket.MaxClarityLength);
+
+        builder.Property(ticket => ticket.DiscussionSummary)
+            .HasMaxLength(Ticket.MaxSummaryLength);
+
         builder.Property(ticket => ticket.FinalEstimate)
             .HasMaxLength(Ticket.MaxFinalEstimateLength);
 

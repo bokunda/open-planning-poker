@@ -10,6 +10,14 @@ type AccuracyOutlierInfo {
   cardMedianDays: Float!
 }
 
+"Whether the AI assistant can be used in a room (OPP-139)."
+type AiAssistantStatus {
+  "The server has an API key."
+  available: Boolean!
+  "The host turned it on for this room."
+  enabled: Boolean!
+}
+
 type ApiCollectionOfGamePlayer {
   items: [GamePlayer!]!
   totalCount: Int!
@@ -246,6 +254,21 @@ type MemberCapacityInfo {
 type Mutation {
   "Sends a chat message to a game. Only players of the game can send messages."
   sendChatMessage(gameId: UUID! content: String!): ChatMessage!
+  "Turns the assistant on or off for the room. Host and co-hosts."
+  setAiAssistant(gameId: UUID! enabled: Boolean!): AiAssistantStatus!
+  "Up to three points that are unclear in the ticket, shown to everyone in the room (OPP-150). Host and co-hosts."
+  checkTicketClarity(ticketId: UUID!): TicketClarity!
+  "Clears the clarity points of a ticket for everyone. Host and co-hosts."
+  dismissTicketClarity(ticketId: UUID!): Boolean!
+  "Two to four smaller tickets for one that is too big (OPP-151). Only the host sees them. Host and co-hosts."
+  suggestTicketSplit(ticketId: UUID!): TicketSplitIdeas!
+  """
+  A one-sentence summary of the voters' notes and the chat since the reveal (OPP-152), for the host to edit and keep.
+  Player names are replaced before anything is sent. Host and co-hosts.
+  """
+  summarizeTicketDiscussion(ticketId: UUID!): TicketDiscussionSummary!
+  "Keeps (or clears, with an empty text) the summary of a ticket; it goes into the tracker comment and the report. Host and co-hosts."
+  setTicketDiscussionSummary(ticketId: UUID! summary: String): Boolean!
   "Explains the current user's card after the reveal (up to 200 characters; empty clears it)."
   setVoteNote(ticketId: UUID! note: String): TicketFacilitationInfo!
   "Rates the current user's confidence (1–5) in the final estimate; null clears it."
@@ -470,6 +493,8 @@ type Query {
   players of the game.
   """
   chatMessages(gameId: UUID!): [ChatMessage!]!
+  "Is the assistant available on this server and on in this room? Players of the game."
+  aiAssistant(gameId: UUID!): AiAssistantStatus!
   "Discussion data of a ticket. Players of the game only."
   ticketFacilitation(ticketId: UUID!): TicketFacilitationInfo!
   "Returns game with participants"
@@ -885,6 +910,21 @@ type Ticket {
   externalKey: String
   "Link to that issue."
   externalUrl: String
+  ai: TicketAiInfo!
+}
+
+"What the assistant said about a ticket: the clarity points (everyone sees them) and the host's summary."
+type TicketAiInfo {
+  clarity: [String!]!
+  summary: String
+}
+
+type TicketClarity {
+  points: [String!]!
+}
+
+type TicketDiscussionSummary {
+  summary: String!
 }
 
 "Discussion data of a ticket: when the cards were turned over, notes, needs-info flag and confidence."
@@ -908,6 +948,15 @@ type TicketReference {
   teamId: UUID
   anchors: [TeamAnchor!]!
   similar: [TeamTicket!]!
+}
+
+type TicketSplitIdea {
+  title: String!
+  line: String!
+}
+
+type TicketSplitIdeas {
+  items: [TicketSplitIdea!]!
 }
 
 type TrackerAuthorizeLink {
