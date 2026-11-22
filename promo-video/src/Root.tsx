@@ -4,6 +4,7 @@ import { YouTube, YT_DURATION } from './YouTube';
 import { Reels, R_DURATION } from './Reels';
 import { YouTubeIntegrations, YTI_DURATION } from './YouTubeIntegrations';
 import { ReelsIntegrations, RI_DURATION } from './ReelsIntegrations';
+import { Tour, TOUR_DURATION, TourReels, TOUR_R_DURATION } from './Tour';
 import { FPS } from './shared';
 
 export const RemotionRoot: React.FC = () => (
@@ -12,5 +13,7 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="Reels" component={Reels} durationInFrames={R_DURATION} fps={FPS} width={1080} height={1920} />
     <Composition id="YouTubeIntegrations" component={YouTubeIntegrations} durationInFrames={YTI_DURATION} fps={FPS} width={1920} height={1080} />
     <Composition id="ReelsIntegrations" component={ReelsIntegrations} durationInFrames={RI_DURATION} fps={FPS} width={1080} height={1920} />
+    <Composition id="Tour" component={Tour} durationInFrames={TOUR_DURATION} fps={FPS} width={1920} height={1080} />
+    <Composition id="TourReels" component={TourReels} durationInFrames={TOUR_R_DURATION} fps={FPS} width={1080} height={1920} />
   </>
 );

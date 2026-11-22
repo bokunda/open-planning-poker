@@ -22,7 +22,7 @@ const SideChips: React.FC<{ items: { text: string; at: number; icon?: string }[]
   </>
 );
 
-const JiraImportScene: React.FC = () => {
+export const JiraImportScene: React.FC = () => {
   const { durationInFrames: len } = useVideoConfig();
   const click = len - 62;
   // Dialog at (140, 225); the Import button sits near its bottom-right corner.
@@ -41,7 +41,7 @@ const JiraImportScene: React.FC = () => {
   );
 };
 
-const JiraSaveScene: React.FC = () => {
+export const JiraSaveScene: React.FC = () => {
   const frame = useCurrentFrame();
   const click = 46;
   const pressed = frame >= click && frame < click + 8;
@@ -67,7 +67,7 @@ const JiraSaveScene: React.FC = () => {
   );
 };
 
-const SlackScene: React.FC<{ thread?: boolean }> = ({ thread }) => (
+export const SlackScene: React.FC<{ thread?: boolean }> = ({ thread }) => (
   <SceneFade>
     <Backdrop />
     {thread
@@ -104,7 +104,7 @@ const TeamsConfigScene: React.FC = () => {
   );
 };
 
-const TeamsMeetingScene: React.FC = () => {
+export const TeamsMeetingScene: React.FC = () => {
   const { durationInFrames: len } = useVideoConfig();
   const from = TM.panel.votesStart - 600;
   const rate = (TM.panel.reveal + 2600 - from) / 1000 / (len / 30);

@@ -32,7 +32,7 @@ const Hook: React.FC = () => (
   </SceneFade>
 );
 
-const SlackR: React.FC = () => {
+export const SlackR: React.FC = () => {
   const e = useEnter(2, 16);
   return (
     <SceneFade>
@@ -52,7 +52,7 @@ const Tile: React.FC<{ name: string; color: string }> = ({ name, color }) => (
   </div>
 );
 
-const TeamsR: React.FC = () => {
+export const TeamsR: React.FC = () => {
   const e = useEnter(2, 16);
   const s = 1.4;
   return (
@@ -75,7 +75,7 @@ const TeamsR: React.FC = () => {
   );
 };
 
-const JiraR: React.FC = () => (
+export const JiraR: React.FC = () => (
   <SceneFade>
     <Backdrop />
     <Title text="Pull the sprint" accent="from Jira" top={130} size={88} />

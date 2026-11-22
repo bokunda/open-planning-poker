@@ -52,7 +52,7 @@ const Hook: React.FC = () => {
   );
 };
 
-const CreateScene: React.FC = () => {
+export const CreateScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const e = useEnter(2, 16);
