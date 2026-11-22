@@ -162,6 +162,10 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<bool>("AiAssistant")
+                        .HasColumnType("boolean")
+                        .HasColumnName("ai_assistant");
+
                     b.Property<DateTimeOffset?>("AsyncVotingEndsAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("async_voting_ends_at");
@@ -1119,6 +1123,11 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("ClarityNotes")
+                        .HasMaxLength(600)
+                        .HasColumnType("character varying(600)")
+                        .HasColumnName("clarity_notes");
+
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid")
                         .HasColumnName("created_by");
@@ -1132,6 +1141,11 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasMaxLength(4080)
                         .HasColumnType("character varying(4080)")
                         .HasColumnName("description");
+
+                    b.Property<string>("DiscussionSummary")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("discussion_summary");
 
                     b.Property<DateTimeOffset?>("EstimatedAt")
                         .HasColumnType("timestamp with time zone")

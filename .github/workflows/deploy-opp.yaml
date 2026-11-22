@@ -20,6 +20,7 @@ jobs:
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD  }}
       JIRA_CLIENT_ID: ${{ secrets.JIRA_CLIENT_ID }}
       JIRA_CLIENT_SECRET: ${{ secrets.JIRA_CLIENT_SECRET }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       SLACK_CLIENT_ID: ${{ secrets.SLACK_CLIENT_ID }}
       SLACK_CLIENT_SECRET: ${{ secrets.SLACK_CLIENT_SECRET }}
       SLACK_SIGNING_SECRET: ${{ secrets.SLACK_SIGNING_SECRET }}

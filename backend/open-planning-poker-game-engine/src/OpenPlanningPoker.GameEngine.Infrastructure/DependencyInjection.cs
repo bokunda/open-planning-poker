@@ -71,6 +71,11 @@ public static class DependencyInjection
         services.AddScoped<IRetroRepository, RetroRepository>();
         services.AddScoped<ITeamApiRepository, TeamApiRepository>();
 
+        // AI assistant (OPP-139): off without Ai__ApiKey.
+        services.Configure<Integrations.AiOptions>(configuration.GetSection(Integrations.AiOptions.Section));
+        services.AddSingleton<Application.Features.Facilitation.IAiModel, Integrations.ClaudeAiModel>();
+        services.AddScoped<Application.Features.Facilitation.AiAssistantService>();
+
         // Slack and Teams (OPP-22, OPP-23).
         services.Configure<Application.Features.Integrations.Chat.ChatOptions>(configuration.GetSection(Application.Features.Integrations.Chat.ChatOptions.Section));
         services.AddScoped<Domain.Integrations.IChatIntegrationRepository, ChatIntegrationRepository>();

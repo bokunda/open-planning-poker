@@ -17,6 +17,27 @@ public sealed class Ticket : Entity<Guid>
     /// <summary>The estimate the host settled on after the reveal; null until one is chosen.</summary>
     public string? FinalEstimate { get; private set; }
 
+    public const int MaxClarityLength = 600;
+    public const int MaxSummaryLength = 300;
+
+    /// <summary>Points of the AI clarity check (OPP-150), one per line; null until someone runs it.</summary>
+    public string? ClarityNotes { get; private set; }
+
+    /// <summary>One sentence about the discussion (OPP-152), written or edited by the host; goes to the tracker comment and the report.</summary>
+    public string? DiscussionSummary { get; private set; }
+
+    public void SetClarityNotes(IEnumerable<string>? notes)
+    {
+        var text = notes is null ? null : string.Join('\n', notes.Where(n => !string.IsNullOrWhiteSpace(n)).Select(n => n.Trim()));
+        ClarityNotes = string.IsNullOrEmpty(text) ? null : text.Length > MaxClarityLength ? text[..MaxClarityLength] : text;
+    }
+
+    public void SetDiscussionSummary(string? summary)
+    {
+        var text = summary?.Trim();
+        DiscussionSummary = string.IsNullOrEmpty(text) ? null : text.Length > MaxSummaryLength ? text[..MaxSummaryLength] : text;
+    }
+
     /// <summary>Order of the ticket in the game's list (0 first). Tickets with the same value keep creation order.</summary>
     public int Position { get; private set; }
 

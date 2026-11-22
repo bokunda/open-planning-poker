@@ -36,7 +36,8 @@ public static class CreateGameReport
                     ticket.NeedsInfo,
                     (ticket.Votes ?? []).Any(v => v.Confidence is not null)
                         ? decimal.Round((decimal)(ticket.Votes ?? []).Where(v => v.Confidence is not null).Average(v => v.Confidence!.Value), 1)
-                        : null))]);
+                        : null,
+                    ticket.DiscussionSummary))]);
 
             using var memoryStream = new MemoryStream();
             new GameReportDocument(model).GeneratePdf(memoryStream);

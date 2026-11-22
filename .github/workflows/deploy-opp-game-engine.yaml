@@ -17,6 +17,8 @@ on:
         required: false
       JIRA_CLIENT_SECRET:
         required: false
+      ANTHROPIC_API_KEY:
+        required: false
       SLACK_CLIENT_ID:
         required: false
       SLACK_CLIENT_SECRET:
@@ -94,6 +96,7 @@ jobs:
               -e 'Authentication__Secret=${{ secrets.OPP_JWT_SECRET }}' \
               -e 'Jira__ClientId=${{ secrets.JIRA_CLIENT_ID }}' \
               -e 'Jira__ClientSecret=${{ secrets.JIRA_CLIENT_SECRET }}' \
+              -e 'Ai__ApiKey=${{ secrets.ANTHROPIC_API_KEY }}' \
               -e 'GitHub__ClientId=${{ secrets.GH_TRACKER_CLIENT_ID }}' \
               -e 'GitHub__ClientSecret=${{ secrets.GH_TRACKER_CLIENT_SECRET }}' \
               -e 'Linear__ClientId=${{ secrets.LINEAR_CLIENT_ID }}' \

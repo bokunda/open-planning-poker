@@ -244,7 +244,9 @@ public sealed class JiraService(
             {
                 var distribution = string.Join(", ", stats.Distribution.Select(count => count.Count == 1 ? count.Value : $"{count.Value} ×{count.Count}"));
                 await api.AddCommentAsync(token, c.CloudId!, key,
-                    string.Join("\n", new[] { $"Estimated with Open Planning Poker: {estimate}", $"Votes: {distribution}" }.Concat(noteLines)),
+                    string.Join("\n", new[] { $"Estimated with Open Planning Poker: {estimate}", $"Votes: {distribution}" }
+                        .Concat(ticket.DiscussionSummary is { } summary ? [$"Summary: {summary}"] : Array.Empty<string>())
+                        .Concat(noteLines)),
                     cancellationToken);
             }
             return true;
