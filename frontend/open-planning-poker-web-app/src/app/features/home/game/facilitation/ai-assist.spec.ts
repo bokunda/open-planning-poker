@@ -1,4 +1,4 @@
-import { looksTooBig } from './ai-assist.component';
+import { looksTooBig } from './ai-helpers';
 
 describe('looksTooBig', () => {
   const deck = ['0', '0.5', '1', '2', '3', '5', '8', '13', '❓', '⏸️'];
