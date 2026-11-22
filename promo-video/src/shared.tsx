@@ -5,6 +5,7 @@ import {
 } from 'remotion';
 import marks from '../public/rec/marks.json';
 import durations from '../public/vo/durations.json';
+import tourMarks from '../public/rec/tour-marks.json';
 
 export const FPS = 30;
 export const C = {
@@ -17,6 +18,8 @@ export const FONT_MONO = "'JetBrains Mono', Consolas, monospace";
 
 export const M = marks as { host: Record<string, number>; mobile: Record<string, number> };
 export const VO = durations as Record<string, number>;
+/** Marks of the feature tour, per segment (capture/record-tour.mjs). */
+export const TOUR = tourMarks as Record<string, Record<string, number>>;
 /** Mobile clock = host clock minus this offset (the phone context started later). */
 export const MOBILE_OFFSET = M.host.timer - M.mobile.timer;
 export const sec = (s: number) => Math.round(s * FPS);
@@ -92,6 +95,8 @@ export const Clip: React.FC<ClipProps & { src: string; fw: number; fh: number }>
     style={{ position: 'absolute', left: 0, top: 0, width: `${100 / fw}%`, height: `${100 / fh}%`, objectFit: 'fill' }} />
 );
 export const HostClip: React.FC<ClipProps> = (p) => <Clip {...p} src="rec/host.webm" fw={1440 / 2160} fh={900 / 1350} />;
+/** One segment of the feature tour, recorded like the host. */
+export const TourClip: React.FC<ClipProps & { seg: string }> = ({ seg, ...p }) => <Clip {...p} src={`rec/tour-${seg}.webm`} fw={1440 / 2160} fh={900 / 1350} />;
 /** iPhone 13 in Playwright: a 390x664 CSS viewport recorded into a 780x1688 frame. */
 export const MobileClip: React.FC<ClipProps> = (p) => <Clip {...p} src="rec/mobile.webm" fw={390 / 780} fh={664 / 1688} />;
 
@@ -108,7 +113,7 @@ export const Zoom: React.FC<{ zoom: number; fx: number; fy: number; children: Re
 );
 
 // ---------- Device frames ----------
-export const BrowserFrame: React.FC<{ width: number; children: React.ReactNode; style?: React.CSSProperties; dark?: boolean }> = ({ width, children, style, dark }) => {
+export const BrowserFrame: React.FC<{ width: number; children: React.ReactNode; style?: React.CSSProperties; dark?: boolean; url?: string }> = ({ width, children, style, dark, url = 'app.openplanningpoker.com' }) => {
   const bar = Math.round(width * 0.028);
   const h = Math.round(width / 1.6);
   return (
@@ -123,7 +128,7 @@ export const BrowserFrame: React.FC<{ width: number; children: React.ReactNode; 
           display: 'flex', alignItems: 'center', paddingLeft: bar * 0.45, fontFamily: FONT_BODY, fontSize: bar * 0.36, color: dark ? '#bdb6dd' : '#6b6787', gap: bar * 0.2,
         }}>
           <svg width={bar * 0.3} height={bar * 0.3} viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5Zm-3 8V7a3 3 0 1 1 6 0v3H9Z" /></svg>
-          app.openplanningpoker.com
+          {url}
         </div>
       </div>
       <div style={{ position: 'relative', width, height: h, overflow: 'hidden', background: C.bg }}>{children}</div>

@@ -1,0 +1,49 @@
+{
+  "team": {
+    "teamRoom": 2031,
+    "velocity": 5149,
+    "history": 9253,
+    "plan": 12779,
+    "planned": 20044,
+    "insights": 23378,
+    "api": 27293,
+    "apiToken": 31981,
+    "end": 35191
+  },
+  "game": {
+    "room": 4980,
+    "sorting": 15337,
+    "contested": 27966,
+    "vote": 35440,
+    "reveal": 40353,
+    "notes": 45152,
+    "final": 51013,
+    "confidence": 54982,
+    "consensus": 63130,
+    "recapDialog": 71505,
+    "recap": 80605,
+    "end": 86121
+  },
+  "retro": {
+    "retroStartPage": 2294,
+    "retroStart": 3350,
+    "retroWrite": 7308,
+    "retroReveal": 14922,
+    "retroGroup": 18298,
+    "retroVoting": 22151,
+    "retroResults": 28493,
+    "retroAction": 35277,
+    "retroFacts": 39910,
+    "end": 44794
+  },
+  "org": {
+    "org": 2851,
+    "compare": 3977,
+    "end": 9227
+  },
+  "api": {
+    "docs": 3274,
+    "docsEnd": 8914,
+    "end": 9727
+  }
+}

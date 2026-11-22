@@ -8,6 +8,7 @@
     "render": "remotion render YouTube out/opp-promo-youtube.mp4 && remotion render Reels out/opp-promo-reels.mp4",
     "record": "node capture/record.mjs",
     "render:integrations": "remotion render YouTubeIntegrations out/opp-promo-integrations-youtube.mp4 && remotion render ReelsIntegrations out/opp-promo-integrations-reels.mp4 && node capture/srt.mjs",
+    "render:tour": "remotion render Tour out/opp-tour-youtube.mp4 && remotion render TourReels out/opp-tour-tiktok.mp4 && node capture/srt.mjs tour",
     "tts": "python capture/tts.py"
   },
   "keywords": [],

@@ -27,5 +27,21 @@
   "ir2": "Type slash poker in Slack, and everyone joins with one tap.",
   "ir3": "Or add it as a tab to your Teams meeting.",
   "ir4": "Pull the sprint in from Jira.",
-  "ir5": "The estimate goes back to Jira, and the result lands in the Slack thread."
+  "ir5": "The estimate goes back to Jira, and the result lands in the Slack thread.",
+  "w1": "Meet Open Planning Poker: free, open-source estimation for agile teams, with no sign-up. Here is everything it does, from sprint planning to the retro.",
+  "w2": "Got a long backlog? Open the sorting board. Everyone drags tickets onto card columns in silence, and the tickets the team keeps moving are marked for a talk.",
+  "w3": "After the reveal, the lowest and highest voters explain why in a short note, the room reacts, and everyone says how confident they are.",
+  "w4": "When the whole team agrees, the room celebrates. Then share a read-only recap link with anyone.",
+  "w5": "Keep every sprint in a team room: a velocity chart, the sprint history, and a sprint plan that scales the point budget to who is actually available.",
+  "w6": "See how your sessions went, and build on your own data. Create an API token, read sessions and estimates, and get signed webhooks when a ticket is estimated.",
+  "w7": "The public API is documented on the website, so you can build your own dashboards, bots and integrations, or just practise.",
+  "w8": "Then run the retro in the same place. Write in silence, reveal, group similar cards, vote with dots, and agree on action items that come back next sprint.",
+  "w9": "For bigger companies, organizations put several team rooms side by side, with each team's agreement and velocity, ready to download.",
+  "f2": "Plus async voting, PDF and CSV export, dark mode, three languages, and an app you can install. GitHub, Linear and Azure DevOps are supported too.",
+  "k1": "Your whole sprint, from planning poker to the retro, in one free tool.",
+  "k2": "Sort a long backlog in silence.",
+  "k3": "See your velocity and plan what fits.",
+  "k4": "Run the retro with dots and action items.",
+  "k5": "Compare teams, or build on the public API.",
+  "k6": "And it works with Jira, Slack and Teams."
 }

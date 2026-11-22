@@ -8,3 +8,6 @@ capture/explore*.mjs
 capture/probe.mjs
 capture/tmp-video-int/
 capture/tmp-srt.mjs
+capture/tmp-seed/
+capture/bak/
+capture/tmp-video-tour/
