@@ -26,6 +26,11 @@ public sealed class Team : Entity<Guid>
 
     public void SetSummaryWebhook(string? url) => SummaryWebhookUrl = string.IsNullOrWhiteSpace(url) ? null : url.Trim();
 
+    /// <summary>The organization the team belongs to (OPP-154); null for a team on its own.</summary>
+    public Guid? OrganizationId { get; private set; }
+
+    public void MoveToOrganization(Guid? organizationId) => OrganizationId = organizationId;
+
     public static Team Create(string name, string description) =>
         new(SequentialGuidGenerator.Generate(), name, description);
 

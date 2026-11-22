@@ -13,6 +13,7 @@ import { GameComponent } from './game/game.component';
 import { FooterComponent } from './footer/footer.component';
 import { TeamComponent } from './team/team.component';
 import { RetroComponent } from './retro/retro.component';
+import { OrgComponent } from './org/org.component';
 import { TranslocoService } from '@jsverse/transloco';
 import { isEmbedded } from '../../shared/embed';
 import { rememberRef } from '../../shared/site-ref';
@@ -22,7 +23,7 @@ import { rememberRef } from '../../shared/site-ref';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   standalone: true,
-  imports: [HeaderComponent, BreadcrumbComponent, GameComponent, TeamComponent, RetroComponent, FooterComponent]
+  imports: [HeaderComponent, BreadcrumbComponent, GameComponent, TeamComponent, RetroComponent, OrgComponent, FooterComponent]
 })
 export class HomeComponent implements OnInit {
 
@@ -33,6 +34,8 @@ export class HomeComponent implements OnInit {
   isTeamView = false;
   /** /retro/:gameId is the retro of a team sprint (OPP-162). */
   isRetroView = false;
+  /** /org and /org/:orgId are organizations (OPP-154). */
+  isOrgView = false;
   /** Inside the Microsoft Teams tab: no site header, breadcrumb or footer (OPP-23). */
   embedded = false;
 
@@ -53,13 +56,16 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.isTeamView = this.route.snapshot.data['view'] === 'team';
     this.isRetroView = this.route.snapshot.data['view'] === 'retro';
+    this.isOrgView = this.route.snapshot.data['view'] === 'org';
     // A website link to a team room or a retro still counts the room it leads to (OPP-181).
     if (isPlatformBrowser(this.platformId)) rememberRef(this.route.snapshot.queryParamMap.get('ref'));
     this.updatePageMeta();
     // Titles and descriptions follow the language.
     this.i18n.langChanges$.subscribe(() => this.updatePageMeta());
     this.route.paramMap.subscribe(params => {
-      if (this.isRetroView) {
+      if (this.isOrgView) {
+        this.breadcrumbItems = [{ label: 'nav.home', url: '/' }, { label: 'nav.organizations' }];
+      } else if (this.isRetroView) {
         this.breadcrumbItems = [{ label: 'nav.home', url: '/' }, { label: 'nav.teams', url: '/team' }, { label: 'nav.retro' }];
       } else if (this.isTeamView) {
         this.updateTeamBreadcrumb(params.get('teamId'));
@@ -91,6 +97,10 @@ export class HomeComponent implements OnInit {
   private updatePageMeta(): void {
     if (this.isRetroView) {
       this.title.setTitle(this.i18n.translate('meta.retroTitle'));
+      return;
+    }
+    if (this.isOrgView) {
+      this.title.setTitle(this.i18n.translate('meta.orgTitle'));
       return;
     }
     if (this.isTeamView) {

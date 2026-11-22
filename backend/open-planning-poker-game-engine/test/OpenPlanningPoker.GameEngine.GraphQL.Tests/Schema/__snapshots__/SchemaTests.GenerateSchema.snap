@@ -364,6 +364,19 @@ type Mutation {
   postSessionSummary(gameId: UUID!): SessionSummaryInfo!
   "Sets (or clears, with null) the Slack or Teams incoming webhook for session summaries. Team owner."
   setTeamSummaryWebhook(teamId: UUID! url: String): Boolean!
+  createOrganization(name: String!): OrganizationInfo!
+  renameOrganization(id: UUID! name: String!): Boolean!
+  "Joins with the token from the invite link."
+  joinOrganization(id: UUID! token: String!): Boolean!
+  "A new invite link; the old one stops working. Admins."
+  rotateOrganizationInvite(id: UUID!): OrganizationInfo!
+  setOrganizationRole(id: UUID! playerId: UUID! role: OrganizationRole!): Boolean!
+  "Leaves the organization (your own id) or removes a member (admins)."
+  removeOrganizationMember(id: UUID! playerId: UUID!): Boolean!
+  "Moves your own team into the organization; you keep it."
+  addTeamToOrganization(id: UUID! teamId: UUID!): Boolean!
+  "Takes a team out of the organization: its owner or an admin."
+  removeTeamFromOrganization(id: UUID! teamId: UUID!): Boolean!
   "Sets the working days of the sprint (1–30). Team owner only."
   setSprintDays(teamId: UUID! gameId: UUID! days: Int!): SprintPlan!
   "Sets how many days a member is available (in half days). The owner for anyone, members for themselves."
@@ -461,6 +474,37 @@ type Mutation {
   revealVotes(ticketId: UUID!): VotesRevealed!
 }
 
+"An organization as the caller sees it (OPP-154). Members see the names of its teams; admins also its numbers."
+type OrganizationInfo {
+  members: [OrganizationMemberInfo!]!
+  teams: [OrganizationTeamInfo!]!
+  "First-vote agreement, re-votes and velocity of every team side by side (OPP-157). Admins only."
+  comparison: [TeamComparisonInfo!]!
+  id: UUID!
+  name: String!
+  "The caller's role; null when the caller has not joined."
+  myRole: OrganizationRole
+  "The secret of the invite link. Admins only."
+  inviteToken: String
+}
+
+type OrganizationMemberInfo {
+  name: String
+  id: UUID!
+  role: OrganizationRole!
+}
+
+type OrganizationTeamInfo {
+  id: UUID!
+  name: String!
+  ownerId: UUID!
+}
+
+type OrganizationTeamLink {
+  id: UUID!
+  name: String!
+}
+
 type PlanTicketInfo {
   ticketId: UUID!
   name: String!
@@ -537,6 +581,10 @@ type Query {
   teamAccuracy(teamId: UUID!): TeamAccuracyInfo!
   "Preview of the session summary and where it would go. Host and co-hosts."
   sessionSummary(gameId: UUID!): SessionSummaryInfo!
+  "An organization by id. Anyone with the link sees its name; members see more."
+  organization(id: UUID!): OrganizationInfo!
+  "Organizations the caller belongs to."
+  myOrganizations: [OrganizationInfo!]!
   "Capacity, budget and plan of one sprint of a team. Members only."
   sprintPlan(teamId: UUID! gameId: UUID!): SprintPlan!
   "The last 20 deliveries of a webhook, newest first (OPP-160). Team owner."
@@ -800,6 +848,8 @@ type Team {
   createdOn: DateTime!
   "The incoming webhook for session summaries. Owner only; null for others."
   summaryWebhook: String
+  "The organization the team belongs to (OPP-154); null for a team on its own or for non-members."
+  organization: OrganizationTeamLink
   "API tokens of the team, newest first. Owner only; empty for others."
   apiTokens: [TeamApiTokenInfo!]!
   "Outgoing webhooks of the team. Owner only; empty for others."
@@ -839,6 +889,16 @@ type TeamApiTokenInfo {
   createdOn: DateTime!
   lastUsedOn: DateTime
   active: Boolean!
+}
+
+type TeamComparisonInfo {
+  teamId: UUID!
+  name: String!
+  sprints: Int!
+  firstRoundConsensusShare: Float
+  reVotesPerTicket: Float
+  averageVelocity: Float
+  velocity: [Float!]!
 }
 
 type TeamHistory {
@@ -1052,6 +1112,11 @@ enum GameChangeKind {
   SORTING
   "The sprint's retro changed (OPP-162): reload the board."
   RETRO
+}
+
+enum OrganizationRole {
+  MEMBER
+  ADMIN
 }
 
 enum PlayerRole {

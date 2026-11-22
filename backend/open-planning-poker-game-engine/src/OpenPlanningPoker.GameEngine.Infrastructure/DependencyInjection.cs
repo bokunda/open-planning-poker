@@ -70,6 +70,7 @@ public static class DependencyInjection
         services.AddScoped<Application.Features.Teams.InsightsService>();
         services.AddScoped<IRetroRepository, RetroRepository>();
         services.AddScoped<ITeamApiRepository, TeamApiRepository>();
+        services.AddScoped<IOrganizationRepository, OrganizationRepository>();
 
         // AI assistant (OPP-139): off without Ai__ApiKey.
         services.Configure<Integrations.AiOptions>(configuration.GetSection(Integrations.AiOptions.Section));

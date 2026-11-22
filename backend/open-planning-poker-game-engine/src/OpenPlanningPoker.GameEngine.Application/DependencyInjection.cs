@@ -17,6 +17,7 @@ public static class DependencyInjection
         services.AddScoped<Features.Teams.Planning.Loader>();
         services.AddScoped<Features.Teams.RetroService>();
         services.AddScoped<Features.Teams.TeamApiService>();
+        services.AddScoped<Features.Teams.OrganizationService>();
 
         return services;
     }

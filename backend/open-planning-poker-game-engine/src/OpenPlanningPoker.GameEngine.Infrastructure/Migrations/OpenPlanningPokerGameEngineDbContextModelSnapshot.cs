@@ -548,6 +548,89 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                     b.ToTable("tracker_connections", (string)null);
                 });
 
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.Organization", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<string>("InviteToken")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("invite_token");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_organizations");
+
+                    b.ToTable("organizations", (string)null);
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.OrganizationMember", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("organization_id");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("role");
+
+                    b.HasKey("Id")
+                        .HasName("pk_organization_members");
+
+                    b.HasIndex("PlayerId")
+                        .HasDatabaseName("ix_organization_members_player_id");
+
+                    b.HasIndex("OrganizationId", "PlayerId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_organization_members_organization_id_player_id");
+
+                    b.ToTable("organization_members", (string)null);
+                });
+
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.Retro", b =>
                 {
                     b.Property<Guid>("Id")
@@ -835,6 +918,10 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("name");
 
+                    b.Property<Guid?>("OrganizationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("organization_id");
+
                     b.Property<string>("SummaryWebhookUrl")
                         .HasMaxLength(512)
                         .HasColumnType("character varying(512)")
@@ -842,6 +929,9 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_teams");
+
+                    b.HasIndex("OrganizationId")
+                        .HasDatabaseName("ix_teams_organization_id");
 
                     b.ToTable("teams", (string)null);
                 });
@@ -1333,6 +1423,16 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                     b.Navigation("Game");
                 });
 
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.OrganizationMember", b =>
+                {
+                    b.HasOne("OpenPlanningPoker.GameEngine.Domain.Teams.Organization", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_organization_members_organizations_organization_id");
+                });
+
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.Retro", b =>
                 {
                     b.HasOne("OpenPlanningPoker.GameEngine.Domain.Games.Game", null)
@@ -1401,6 +1501,15 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_sprint_capacities_games_game_id");
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.Team", b =>
+                {
+                    b.HasOne("OpenPlanningPoker.GameEngine.Domain.Teams.Organization", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_teams_organizations_organization_id");
                 });
 
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.TeamAnchor", b =>

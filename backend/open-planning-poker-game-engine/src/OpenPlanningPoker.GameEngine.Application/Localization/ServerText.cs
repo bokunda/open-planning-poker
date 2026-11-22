@@ -155,5 +155,26 @@ public static class ServerText
         ["error.NoDotsLeft"] = ("You have used all your dots.", "Iskoristio si sve tačkice.", "Du hast alle Punkte verteilt."),
         ["error.ActionItemNotFound"] = ("Action item not found.", "Akcija nije pronađena.", "Maßnahme nicht gefunden."),
         ["error.InvalidActionItemOwner"] = ("The owner must be a member of the team.", "Zaduženi mora biti član tima.", "Verantwortlich muss ein Mitglied des Teams sein."),
+        // Public API (OPP-141)
+        ["error.InvalidTokenName"] = ("Give the token a name of 1 to 60 characters.", "Daj tokenu naziv od 1 do 60 znakova.", "Gib dem Token einen Namen mit 1 bis 60 Zeichen."),
+        ["error.TooManyTokens"] = ("A team can have up to 10 active tokens.", "Tim može da ima najviše 10 aktivnih tokena.", "Ein Team kann bis zu 10 aktive Tokens haben."),
+        ["error.TokenNotFound"] = ("Token not found.", "Token nije pronađen.", "Token nicht gefunden."),
+        ["error.InvalidWebhookUrl"] = ("Use a public https address for the webhook.", "Za webhook koristi javnu https adresu.", "Nutze für den Webhook eine öffentliche https-Adresse."),
+        ["error.InvalidWebhookEvents"] = ("Choose ticket.estimated, session.finished or both.", "Izaberi ticket.estimated, session.finished ili oba.", "Wähle ticket.estimated, session.finished oder beide."),
+        ["error.TooManyWebhooks"] = ("A team can have up to 5 webhooks.", "Tim može da ima najviše 5 webhookova.", "Ein Team kann bis zu 5 Webhooks haben."),
+        ["error.WebhookNotFound"] = ("Webhook not found.", "Webhook nije pronađen.", "Webhook nicht gefunden."),
+        // AI assistant (OPP-139)
+        ["error.AiNotAvailable"] = ("The AI assistant is not available on this server.", "AI asistent nije dostupan na ovom serveru.", "Der KI-Assistent ist auf diesem Server nicht verfügbar."),
+        ["error.AiOff"] = ("Turn on the AI assistant in the room first.", "Prvo uključi AI asistenta u sobi.", "Schalte zuerst den KI-Assistenten im Raum ein."),
+        ["error.AiFailed"] = ("The AI assistant did not answer. Try again in a moment.", "AI asistent nije odgovorio. Pokušaj ponovo za trenutak.", "Der KI-Assistent hat nicht geantwortet. Versuch es gleich noch einmal."),
+        ["error.AiNothingToSummarize"] = ("There are no notes or chat messages about this ticket to summarize.", "Nema beleški ni poruka u chatu o ovom tiketu za sažimanje.", "Es gibt zu diesem Ticket keine Notizen oder Chat-Nachrichten zum Zusammenfassen."),
+        // Organizations (OPP-154)
+        ["error.OrganizationNotFound"] = ("Organization not found.", "Organizacija nije pronađena.", "Organisation nicht gefunden."),
+        ["error.InvalidOrganizationName"] = ("Give the organization a name of 1 to 120 characters.", "Daj organizaciji naziv od 1 do 120 znakova.", "Gib der Organisation einen Namen mit 1 bis 120 Zeichen."),
+        ["error.NotOrganizationMember"] = ("Join the organization first.", "Prvo se pridruži organizaciji.", "Tritt zuerst der Organisation bei."),
+        ["error.NotOrganizationAdmin"] = ("Only an admin of the organization can do this.", "Ovo može samo administrator organizacije.", "Das kann nur ein Admin der Organisation."),
+        ["error.InvalidOrganizationInvite"] = ("This invite link is no longer valid. Ask an admin for a new one.", "Ovaj link za poziv više ne važi. Zatraži novi od administratora.", "Dieser Einladungslink gilt nicht mehr. Bitte einen Admin um einen neuen."),
+        ["error.LastOrganizationAdmin"] = ("The organization needs at least one admin.", "Organizaciji treba bar jedan administrator.", "Die Organisation braucht mindestens einen Admin."),
+        ["error.TeamNotInOrganization"] = ("This team is not in the organization.", "Ovaj tim nije u organizaciji.", "Dieses Team ist nicht in der Organisation."),
     };
 }
