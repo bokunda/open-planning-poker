@@ -6,6 +6,21 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+### Hinzugefügt
+- **Öffentliche API und Webhooks**: Team-Inhaber erstellen API-Tokens und lesen Sitzungen, Tickets und Schätzungen des Teams unter `https://ge.openplanningpoker.com/api/v1`. Signierte Webhooks für `ticket.estimated` und `session.finished`, mit Wiederholungen und den letzten 20 Zustellungen im Team-Raum. Dokumentation unter `/public-api/`
+- **KI-Assistent** (optional, aus, bis der Server einen API-Schlüssel hat und der Host ihn einschaltet): eine Klarheitsprüfung vor dem Abstimmen, Ideen zum Aufteilen eines zu großen Tickets und eine Zusammenfassung der Diskussion in einem Satz für den Jira-Kommentar und den PDF-Bericht. Er schlägt nie eine Karte vor
+- **Organisationen**: mehrere Team-Räume eines Unternehmens an einem Ort, Einladungslink, Rollen Admin und Mitglied, und die Einigkeit beim ersten Abstimmen, Neuabstimmungen und Velocity aller Teams nebeneinander mit CSV-Download
+- **Website**: ein Rechner für Velocity und Kapazität, Story-Point-Skalen mit T-Shirt-Umrechner, Seiten zu Jira, GitHub, Linear und Azure DevOps, Remote-Teams, Scrum-Einsteigern, Magic Estimation und Sprint-Planung, ein fairer Vergleich von Planning-Poker-Tools und ein Blog
+- Seitenaufrufe und Räume pro Website-Seite, ohne Cookies gezählt, in einem Grafana-Bericht
+
+### Behoben
+- Die Game Engine begrenzt Anfragen an die öffentliche API pro Token und die Zählung von Besuchen pro Adresse
+
+### Für Entwickler
+- Migrationen `AddPublicApi`, `AddAiAssistant`, `AddOrganizations`
+- Optionales Secret `ANTHROPIC_API_KEY` für das Deployment; Prometheus behält 45 Tage
+- Mobiler Lighthouse-Check über alle Website-Seiten in CI
+
 ## [3.7.0] — 2026-11-21
 
 Die Sprint-Retro im selben Team-Raum, ausgehend von den Zahlen des Teams.
