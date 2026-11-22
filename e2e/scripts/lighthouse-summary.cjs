@@ -2,10 +2,9 @@
 // so a failed budget can be read in the CI log without downloading the artifact.
 const fs = require('fs');
 const path = require('path');
-const dir = path.resolve(__dirname, '..', 'lighthouse-report');
-if (!fs.existsSync(dir)) process.exit(0);
+const dirs = ['lighthouse-report', 'lighthouse-report-website'].map((d) => path.resolve(__dirname, '..', d)).filter((d) => fs.existsSync(d));
 const seen = new Set();
-for (const file of fs.readdirSync(dir).filter((f) => f.endsWith('.json') && f.startsWith('localhost'))) {
+for (const [dir, file] of dirs.flatMap((d) => fs.readdirSync(d).filter((f) => f.endsWith('.json') && f.startsWith('localhost')).map((f) => [d, f]))) {
   const lhr = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf-8'));
   for (const [id, category] of Object.entries(lhr.categories)) {
     for (const ref of category.auditRefs.filter((r) => r.weight > 0)) {

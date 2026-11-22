@@ -40,6 +40,8 @@ services:
       - "127.0.0.1:9050:9090"
     command:
       - '--config.file=/etc/prometheus/prometheus.yaml'
+      # A month of history for the website report (OPP-181), with room to spare.
+      - '--storage.tsdb.retention.time=45d'
     volumes:
       - ./config/prometheus.yaml:/etc/prometheus/prometheus.yaml
       - prometheus-data:/prometheus

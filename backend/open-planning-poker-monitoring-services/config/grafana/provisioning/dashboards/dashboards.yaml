@@ -1,0 +1,11 @@
+# Dashboards kept in this repository (OPP-181), loaded on every start.
+apiVersion: 1
+providers:
+  - name: opp
+    orgId: 1
+    folder: Open Planning Poker
+    type: file
+    disableDeletion: true
+    allowUiUpdates: false
+    options:
+      path: /etc/grafana/provisioning/dashboards

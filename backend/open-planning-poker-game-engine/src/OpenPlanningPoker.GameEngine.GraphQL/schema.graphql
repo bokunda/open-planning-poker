@@ -1532,6 +1532,7 @@ input CreateGameInput {
   description: String!
   deckSetup: String
   teamId: UUID
+  source: String
 }
 
 input CreateOrUpdateVoteInput {

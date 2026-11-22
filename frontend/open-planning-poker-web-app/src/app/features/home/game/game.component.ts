@@ -57,6 +57,7 @@ import {
 import { UPDATE_FACILITATION_OPTIONS } from './gql/facilitation.graphql';
 import { SAVE_ESTIMATE_TO_TRACKER, trackerOfUrl } from './gql/trackers.graphql';
 import { POST_SESSION_SUMMARY, SESSION_SUMMARY } from './gql/summary.graphql';
+import { clearRef, deckFromName, rememberRef, siteRef } from '../../../shared/site-ref';
 import { FacilitationSettings, GameChanged, isAsyncVotingOpen, isWinterSeason, PlayerAction, RoomPlayer, RoomSettings, RoomTicket } from './room-types';
 import { CLAIM_GAME_HOST, SAVE_ESTIMATE_TO_JIRA } from './gql/jira.graphql';
 import { ticketsToCsv } from './export/tickets-csv';
@@ -264,6 +265,7 @@ export class GameComponent implements OnInit {
     if (isPlatformBrowser(this.platformId) && window.matchMedia('(max-width: 767px)').matches) {
       this.chatCollapsed = true;
     }
+    if (isPlatformBrowser(this.platformId)) this.readWebsiteLink();
     this.route.paramMap.subscribe(params => {
       const gameId = params.get('id');
       const ticketId = params.get('ticketId');
@@ -294,6 +296,20 @@ export class GameComponent implements OnInit {
 
   handleCreateGame() {
     this.openCreateGameDialog();
+  }
+
+  /**
+   * Links from the website (OPP-178, OPP-181): ?ref=<page> is remembered for the room this visitor creates, and
+   * ?deck=<name> on the start page opens "Create game" with that deck. Both leave the address bar.
+   */
+  private readWebsiteLink(): void {
+    const query = this.route.snapshot.queryParamMap;
+    const ref = query.get('ref');
+    const deck = deckFromName(query.get('deck'));
+    if (!ref && !query.has('deck')) return;
+    rememberRef(ref);
+    this.location.replaceState(this.location.path().split('?')[0]);
+    if (deck && !this.route.snapshot.paramMap.get('id')) this.openCreateGameDialog(deck);
   }
 
   handleJoinGame() {
@@ -438,10 +454,11 @@ export class GameComponent implements OnInit {
 
     this.apollo.mutate<Mutation, MutationCreateGameArgs>({
       mutation: CREATE_GAME,
-      variables: {input: {name, description}}
+      variables: {input: {name, description, ...(siteRef() ? { source: siteRef() } : {})} as MutationCreateGameArgs['input']}
     }).subscribe({
       next: ({ data }) => {
         if (data?.createGame?.game) {
+          clearRef();
           this.game = data?.createGame?.game;
 
           const gameId = this.game.id;

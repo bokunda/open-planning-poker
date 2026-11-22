@@ -63,8 +63,14 @@ const fillRelease = (html, lang = 'en') => html
 // Every page in English, Serbian and German (localize.js, OPP-24), linked with hreflang.
 const { LANGUAGES, GUIDES, PAGES, localize, localizeChrome, finishPage, pageUrl } = require('./localize');
 const read = (...parts) => fs.readFileSync(path.resolve(__dirname, ...parts), 'utf-8');
+/** Page name of an output file, the same in every language: 'sr/velocity-calculator/index.html' → 'velocity-calculator'. */
+const refOf = file => file.replace(/^(sr|de)\//, '').replace(/\/?index\.html$/, '').replace(/\//g, '-') || 'home';
+// Links into the app carry ?ref=<page>, so the rooms a page brings are counted (OPP-181). Only the page name is sent.
+const withRef = (html, ref) => html.replace(/href="(https:\/\/app\.openplanningpoker\.com)(\/[^"]*)?"/g, (match, origin, rest = '/') =>
+  rest.includes('ref=') ? match : `href="${origin}${rest}${rest.includes('?') ? '&amp;' : '?'}ref=${ref}"`);
 const write = (file, html) => {
   fs.mkdirSync(path.dirname(path.join(dist, file)), { recursive: true });
+  if (file.endsWith('.html')) html = withRef(html, refOf(file));
   fs.writeFileSync(path.join(dist, file), html);
   console.log(`  ✓ ${file}`);
 };
