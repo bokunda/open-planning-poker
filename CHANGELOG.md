@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.8.0] — 2026-11-22
+
+Build on your team's estimates with the public API, compare teams in an organization, and get optional AI help that never picks a card.
+
 ### Added
 - **Public API and webhooks**: team owners create API tokens and read the team's sessions, tickets and estimates at `https://ge.openplanningpoker.com/api/v1`. Signed webhooks for `ticket.estimated` and `session.finished`, with retries and the last 20 deliveries in the team room. Docs at `/public-api/`
 - **AI assistant** (optional, off unless the server has an API key and the host turns it on): a clarity check before voting, ideas to split a ticket the team found too big, and a one-sentence summary of the discussion for the Jira comment and the PDF report. It never suggests a card

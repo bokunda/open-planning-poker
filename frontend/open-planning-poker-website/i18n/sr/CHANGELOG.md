@@ -6,6 +6,10 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+## [3.8.0] — 2026-11-22
+
+Gradi na procenama svog tima uz javni API, uporedi timove u organizaciji i uzmi opcionu AI pomoć koja nikad ne bira kartu.
+
 ### Dodato
 - **Javni API i webhookovi**: vlasnici timova prave API tokene i čitaju sesije, tikete i procene tima na `https://ge.openplanningpoker.com/api/v1`. Potpisani webhookovi za `ticket.estimated` i `session.finished`, sa ponovnim pokušajima i poslednjih 20 isporuka u timskoj sobi. Dokumentacija na `/public-api/`
 - **AI asistent** (opciono, isključen dok server nema API ključ i host ga ne uključi): provera jasnoće pre glasanja, ideje za podelu tiketa koji je tim ocenio kao prevelik i sažetak diskusije u jednoj rečenici za Jira komentar i PDF izveštaj. Nikad ne predlaže kartu
