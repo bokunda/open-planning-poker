@@ -4,7 +4,11 @@
     <app-header [username]="username"></app-header>
     <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
     }
-    @if (isRetroView) {
+    @if (isOrgView) {
+    @defer (on immediate) {
+    <app-org class="center" style="width:100%" [currentUserId]="userId"></app-org>
+    }
+    } @else if (isRetroView) {
     <!-- Separate chunk: only retro pages download the board. -->
     @defer (on immediate) {
     <app-retro class="center" style="width:100%" [currentUserId]="userId"></app-retro>

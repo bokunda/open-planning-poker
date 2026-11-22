@@ -54,6 +54,9 @@
         @if (t.description) {
           <p class="team-lead">{{ t.description }}</p>
         }
+        @if (t.organization; as o) {
+          <p class="team-lead"><a class="sprint-retro" [routerLink]="['/org', o.id]">{{ 'org.partOf' | transloco: { name: o.name } }}</a></p>
+        }
       </header>
       <!-- Not a member yet: join first -->
       @if (!t.isMember) {

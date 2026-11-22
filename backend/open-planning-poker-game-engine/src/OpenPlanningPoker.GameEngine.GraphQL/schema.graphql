@@ -24,6 +24,11 @@ type AddRetroCardPayload {
   errors: [AddRetroCardError!]
 }
 
+type AddTeamToOrganizationPayload {
+  boolean: Boolean
+  errors: [AddTeamToOrganizationError!]
+}
+
 "Whether the AI assistant can be used in a room (OPP-139)."
 type AiAssistantStatus {
   "The server has an API key."
@@ -111,6 +116,11 @@ type CreateGamePayload {
 type CreateOrUpdateVotePayload {
   vote: Vote
   errors: [CreateOrUpdateVoteError!]
+}
+
+type CreateOrganizationPayload {
+  organizationInfo: OrganizationInfo
+  errors: [CreateOrganizationError!]
 }
 
 type CreateSettingsPayload {
@@ -401,6 +411,11 @@ type JoinGamePayload {
   errors: [JoinGameError!]
 }
 
+type JoinOrganizationPayload {
+  boolean: Boolean
+  errors: [JoinOrganizationError!]
+}
+
 type JoinTeamPayload {
   boolean: Boolean
   errors: [JoinTeamError!]
@@ -548,6 +563,19 @@ type Mutation {
   postSessionSummary(input: PostSessionSummaryInput!): PostSessionSummaryPayload! @cost(weight: "10")
   "Sets (or clears, with null) the Slack or Teams incoming webhook for session summaries. Team owner."
   setTeamSummaryWebhook(input: SetTeamSummaryWebhookInput!): SetTeamSummaryWebhookPayload! @cost(weight: "10")
+  createOrganization(input: CreateOrganizationInput!): CreateOrganizationPayload! @cost(weight: "10")
+  renameOrganization(input: RenameOrganizationInput!): RenameOrganizationPayload! @cost(weight: "10")
+  "Joins with the token from the invite link."
+  joinOrganization(input: JoinOrganizationInput!): JoinOrganizationPayload! @cost(weight: "10")
+  "A new invite link; the old one stops working. Admins."
+  rotateOrganizationInvite(input: RotateOrganizationInviteInput!): RotateOrganizationInvitePayload! @cost(weight: "10")
+  setOrganizationRole(input: SetOrganizationRoleInput!): SetOrganizationRolePayload! @cost(weight: "10")
+  "Leaves the organization (your own id) or removes a member (admins)."
+  removeOrganizationMember(input: RemoveOrganizationMemberInput!): RemoveOrganizationMemberPayload! @cost(weight: "10")
+  "Moves your own team into the organization; you keep it."
+  addTeamToOrganization(input: AddTeamToOrganizationInput!): AddTeamToOrganizationPayload! @cost(weight: "10")
+  "Takes a team out of the organization: its owner or an admin."
+  removeTeamFromOrganization(input: RemoveTeamFromOrganizationInput!): RemoveTeamFromOrganizationPayload! @cost(weight: "10")
   "Sets the working days of the sprint (1–30). Team owner only."
   setSprintDays(input: SetSprintDaysInput!): SetSprintDaysPayload! @cost(weight: "10")
   "Sets how many days a member is available (in half days). The owner for anyone, members for themselves."
@@ -645,6 +673,37 @@ type Mutation {
   revealVotes(input: RevealVotesInput!): RevealVotesPayload! @cost(weight: "10")
 }
 
+"An organization as the caller sees it (OPP-154). Members see the names of its teams; admins also its numbers."
+type OrganizationInfo {
+  members: [OrganizationMemberInfo!]! @cost(weight: "10")
+  teams: [OrganizationTeamInfo!]! @cost(weight: "10")
+  "First-vote agreement, re-votes and velocity of every team side by side (OPP-157). Admins only."
+  comparison: [TeamComparisonInfo!]! @cost(weight: "10")
+  id: UUID!
+  name: String!
+  "The caller's role; null when the caller has not joined."
+  myRole: OrganizationRole
+  "The secret of the invite link. Admins only."
+  inviteToken: String
+}
+
+type OrganizationMemberInfo {
+  name: String @cost(weight: "10")
+  id: UUID!
+  role: OrganizationRole!
+}
+
+type OrganizationTeamInfo {
+  id: UUID!
+  name: String!
+  ownerId: UUID!
+}
+
+type OrganizationTeamLink {
+  id: UUID!
+  name: String!
+}
+
 type PinTeamAnchorPayload {
   teamAnchor: TeamAnchor
   errors: [PinTeamAnchorError!]
@@ -740,6 +799,10 @@ type Query {
   teamAccuracy(teamId: UUID!): TeamAccuracyResult! @cost(weight: "10")
   "Preview of the session summary and where it would go. Host and co-hosts."
   sessionSummary(gameId: UUID!): SessionSummaryResult! @cost(weight: "10")
+  "An organization by id. Anyone with the link sees its name; members see more."
+  organization(id: UUID!): OrganizationResult! @cost(weight: "10")
+  "Organizations the caller belongs to."
+  myOrganizations: [OrganizationInfo!]! @cost(weight: "10")
   "Capacity, budget and plan of one sprint of a team. Members only."
   sprintPlan(teamId: UUID! gameId: UUID!): SprintPlanResult! @cost(weight: "10")
   "The last 20 deliveries of a webhook, newest first (OPP-160). Team owner."
@@ -801,9 +864,24 @@ type RecapTicket {
   discussionMinutes: Float
 }
 
+type RemoveOrganizationMemberPayload {
+  boolean: Boolean
+  errors: [RemoveOrganizationMemberError!]
+}
+
 type RemovePlayerPayload {
   boolean: Boolean
   errors: [RemovePlayerError!]
+}
+
+type RemoveTeamFromOrganizationPayload {
+  boolean: Boolean
+  errors: [RemoveTeamFromOrganizationError!]
+}
+
+type RenameOrganizationPayload {
+  boolean: Boolean
+  errors: [RenameOrganizationError!]
 }
 
 type ReorderTicketsPayload {
@@ -878,6 +956,11 @@ type RevokeTeamApiTokenPayload {
   errors: [RevokeTeamApiTokenError!]
 }
 
+type RotateOrganizationInvitePayload {
+  organizationInfo: OrganizationInfo
+  errors: [RotateOrganizationInviteError!]
+}
+
 type RotateTeamWebhookSecretPayload {
   createdTeamWebhook: CreatedTeamWebhook
   errors: [RotateTeamWebhookSecretError!]
@@ -936,6 +1019,11 @@ type SetFinalEstimatePayload {
 type SetMemberCapacityPayload {
   sprintPlan: SprintPlan
   errors: [SetMemberCapacityError!]
+}
+
+type SetOrganizationRolePayload {
+  boolean: Boolean
+  errors: [SetOrganizationRoleError!]
 }
 
 type SetPlayerAvatarPayload {
@@ -1173,6 +1261,8 @@ type Team {
   createdOn: DateTime!
   "The incoming webhook for session summaries. Owner only; null for others."
   summaryWebhook: String @cost(weight: "10")
+  "The organization the team belongs to (OPP-154); null for a team on its own or for non-members."
+  organization: OrganizationTeamLink @cost(weight: "10")
   "API tokens of the team, newest first. Owner only; empty for others."
   apiTokens: [TeamApiTokenInfo!]! @cost(weight: "10")
   "Outgoing webhooks of the team. Owner only; empty for others."
@@ -1212,6 +1302,16 @@ type TeamApiTokenInfo {
   createdOn: DateTime!
   lastUsedOn: DateTime
   active: Boolean!
+}
+
+type TeamComparisonInfo {
+  teamId: UUID!
+  name: String!
+  sprints: Int!
+  firstRoundConsensusShare: Float
+  reVotesPerTicket: Float
+  averageVelocity: Float
+  velocity: [Float!]!
 }
 
 type TeamHistory {
@@ -1470,6 +1570,8 @@ union AddRetroActionItemError = ApplicationError
 
 union AddRetroCardError = ApplicationError
 
+union AddTeamToOrganizationError = ApplicationError
+
 union AiAssistantResult = AiAssistantStatus | ApplicationError
 
 union ApplySortedEstimatesError = ApplicationError
@@ -1487,6 +1589,8 @@ union CompleteTrackerConnectionError = ApplicationError
 union CreateGameError = ApplicationError
 
 union CreateOrUpdateVoteError = ApplicationError
+
+union CreateOrganizationError = ApplicationError
 
 union CreateSettingsError = ApplicationError
 
@@ -1546,6 +1650,8 @@ union JiraSprintsResult = JiraSprintList | ApplicationError
 
 union JoinGameError = ApplicationError
 
+union JoinOrganizationError = ApplicationError
+
 union JoinTeamError = ApplicationError
 
 union LeaveGameError = ApplicationError
@@ -1555,6 +1661,8 @@ union LeaveTeamError = ApplicationError
 union MovePlanToJiraSprintError = ApplicationError
 
 union MoveSortedTicketError = ApplicationError
+
+union OrganizationResult = OrganizationInfo | ApplicationError
 
 union PinTeamAnchorError = ApplicationError
 
@@ -1566,7 +1674,13 @@ union ReVoteTicketError = ApplicationError
 
 union RecapSharingResult = RecapSharing | ApplicationError
 
+union RemoveOrganizationMemberError = ApplicationError
+
 union RemovePlayerError = ApplicationError
+
+union RemoveTeamFromOrganizationError = ApplicationError
+
+union RenameOrganizationError = ApplicationError
 
 union ReorderTicketsError = ApplicationError
 
@@ -1579,6 +1693,8 @@ union RetroResult = RetroInfo | ApplicationError
 union RevealVotesError = ApplicationError
 
 union RevokeTeamApiTokenError = ApplicationError
+
+union RotateOrganizationInviteError = ApplicationError
 
 union RotateTeamWebhookSecretError = ApplicationError
 
@@ -1603,6 +1719,8 @@ union SetConfidenceError = ApplicationError
 union SetFinalEstimateError = ApplicationError
 
 union SetMemberCapacityError = ApplicationError
+
+union SetOrganizationRoleError = ApplicationError
 
 union SetPlayerAvatarError = ApplicationError
 
@@ -1705,6 +1823,11 @@ input AddRetroCardInput {
   text: String!
 }
 
+input AddTeamToOrganizationInput {
+  id: UUID!
+  teamId: UUID!
+}
+
 input ApplySortedEstimatesInput {
   gameId: UUID!
 }
@@ -1744,6 +1867,10 @@ input CreateGameInput {
 input CreateOrUpdateVoteInput {
   ticketId: UUID!
   value: String!
+}
+
+input CreateOrganizationInput {
+  name: String!
 }
 
 input CreateSettingsInput {
@@ -1840,6 +1967,11 @@ input JoinGameInput {
   gameId: UUID!
 }
 
+input JoinOrganizationInput {
+  id: UUID!
+  token: String!
+}
+
 input JoinTeamInput {
   teamId: UUID!
 }
@@ -1882,9 +2014,24 @@ input ReVoteTicketInput {
   ticketId: UUID!
 }
 
+input RemoveOrganizationMemberInput {
+  id: UUID!
+  playerId: UUID!
+}
+
 input RemovePlayerInput {
   gameId: UUID!
   playerId: UUID!
+}
+
+input RemoveTeamFromOrganizationInput {
+  id: UUID!
+  teamId: UUID!
+}
+
+input RenameOrganizationInput {
+  id: UUID!
+  name: String!
 }
 
 input ReorderTicketsInput {
@@ -1899,6 +2046,10 @@ input RevealVotesInput {
 input RevokeTeamApiTokenInput {
   teamId: UUID!
   tokenId: UUID!
+}
+
+input RotateOrganizationInviteInput {
+  id: UUID!
 }
 
 input RotateTeamWebhookSecretInput {
@@ -1955,6 +2106,12 @@ input SetMemberCapacityInput {
   gameId: UUID!
   playerId: UUID!
   days: Float!
+}
+
+input SetOrganizationRoleInput {
+  id: UUID!
+  playerId: UUID!
+  role: OrganizationRole!
 }
 
 input SetPlayerAvatarInput {
@@ -2133,6 +2290,11 @@ enum GameChangeKind {
   SORTING
   "The sprint's retro changed (OPP-162): reload the board."
   RETRO
+}
+
+enum OrganizationRole {
+  MEMBER
+  ADMIN
 }
 
 enum PlayerRole {

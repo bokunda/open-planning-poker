@@ -41,6 +41,21 @@ export const routes: Routes = [
     title: 'Team Room — Open Planning Poker'
   },
   {
+    // Organizations with several team rooms (OPP-154).
+    path: 'org',
+    component: HomeComponent,
+    pathMatch: 'full',
+    data: { view: 'org' },
+    title: 'Organizations — Open Planning Poker'
+  },
+  {
+    path: 'org/:orgId',
+    component: HomeComponent,
+    pathMatch: 'full',
+    data: { view: 'org' },
+    title: 'Organization — Open Planning Poker'
+  },
+  {
     // The retro of a team sprint (OPP-162); people join it like the sprint's game.
     path: 'retro/:gameId',
     component: HomeComponent,

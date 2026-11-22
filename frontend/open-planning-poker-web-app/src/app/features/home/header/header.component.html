@@ -38,6 +38,10 @@
           <mat-icon svgIcon="opp-team"></mat-icon>
           <span>{{ 'header.teamRooms' | transloco }}</span>
         </a>
+        <a mat-menu-item routerLink="/org">
+          <mat-icon>domain</mat-icon>
+          <span>{{ 'header.organizations' | transloco }}</span>
+        </a>
         @if (pwa.canInstall()) {
           <button mat-menu-item (click)="pwa.install()">
             <mat-icon>download</mat-icon>

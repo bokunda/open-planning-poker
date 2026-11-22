@@ -18,6 +18,12 @@ internal sealed class TeamConfiguration : IEntityTypeConfiguration<Team>
         builder.Property(team => team.SummaryWebhookUrl)
             .HasMaxLength(Team.MaxWebhookLength);
 
+        builder.HasIndex(team => team.OrganizationId);
+        builder.HasOne<Organization>()
+            .WithMany()
+            .HasForeignKey(team => team.OrganizationId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         builder.HasMany(team => team.Members)
             .WithOne(member => member.Team)
             .HasForeignKey(member => member.TeamId);

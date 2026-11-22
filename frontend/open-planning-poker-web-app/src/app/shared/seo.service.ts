@@ -26,6 +26,8 @@ function seoFor(path: string): PageSeo {
   // Shared recaps are public links, but private to the team that shares them: not indexed. The recap page sets its
   // own description and preview image once it has loaded.
   if (path.startsWith('/recap/')) return { index: false };
+  // Organizations are private to their members.
+  if (path === '/org' || path.startsWith('/org/')) return { index: false };
   // Retros are private to the team, like the sprint's room.
   if (path.startsWith('/retro/')) return { index: false, description: 'A sprint retro on Open Planning Poker. Join with the link from your team.' };
   return { index: false };
