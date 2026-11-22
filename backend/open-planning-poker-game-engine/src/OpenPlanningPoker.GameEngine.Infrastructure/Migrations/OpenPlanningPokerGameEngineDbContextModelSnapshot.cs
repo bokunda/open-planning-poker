@@ -893,6 +893,68 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                     b.ToTable("team_anchors", (string)null);
                 });
 
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.TeamApiToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<string>("Hash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("hash");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<DateTimeOffset?>("LastUsedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_used_on");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Prefix")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("prefix");
+
+                    b.Property<DateTimeOffset?>("RevokedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("revoked_on");
+
+                    b.Property<Guid>("TeamId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("team_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_team_api_tokens");
+
+                    b.HasIndex("Hash")
+                        .IsUnique()
+                        .HasDatabaseName("ix_team_api_tokens_hash");
+
+                    b.HasIndex("TeamId")
+                        .HasDatabaseName("ix_team_api_tokens_team_id");
+
+                    b.ToTable("team_api_tokens", (string)null);
+                });
+
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.TeamMember", b =>
                 {
                     b.Property<Guid>("Id")
@@ -931,6 +993,123 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasDatabaseName("ix_team_members_team_id_player_id");
 
                     b.ToTable("team_members", (string)null);
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.TeamWebhook", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("boolean")
+                        .HasColumnName("enabled");
+
+                    b.Property<string>("EventList")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("event_list");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("ProtectedSecret")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
+                        .HasColumnName("protected_secret");
+
+                    b.Property<Guid>("TeamId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("team_id");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("url");
+
+                    b.HasKey("Id")
+                        .HasName("pk_team_webhooks");
+
+                    b.HasIndex("TeamId")
+                        .HasDatabaseName("ix_team_webhooks_team_id");
+
+                    b.ToTable("team_webhooks", (string)null);
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.TeamWebhookDelivery", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("Attempt")
+                        .HasColumnType("integer")
+                        .HasColumnName("attempt");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<double>("DurationMs")
+                        .HasColumnType("double precision")
+                        .HasColumnName("duration_ms");
+
+                    b.Property<string>("Error")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("error");
+
+                    b.Property<string>("Event")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("event");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("event_id");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<int?>("StatusCode")
+                        .HasColumnType("integer")
+                        .HasColumnName("status_code");
+
+                    b.Property<bool>("Success")
+                        .HasColumnType("boolean")
+                        .HasColumnName("success");
+
+                    b.Property<Guid>("WebhookId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("webhook_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_team_webhook_deliveries");
+
+                    b.HasIndex("WebhookId", "CreatedOn")
+                        .HasDatabaseName("ix_team_webhook_deliveries_webhook_id_created_on");
+
+                    b.ToTable("team_webhook_deliveries", (string)null);
                 });
 
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Tickets.Ticket", b =>
@@ -1227,6 +1406,16 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasConstraintName("fk_team_anchors_ticket_ticket_id");
                 });
 
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.TeamApiToken", b =>
+                {
+                    b.HasOne("OpenPlanningPoker.GameEngine.Domain.Teams.Team", null)
+                        .WithMany()
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_team_api_tokens_team_team_id");
+                });
+
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.TeamMember", b =>
                 {
                     b.HasOne("OpenPlanningPoker.GameEngine.Domain.Teams.Team", "Team")
@@ -1237,6 +1426,26 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasConstraintName("fk_team_members_teams_team_id");
 
                     b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.TeamWebhook", b =>
+                {
+                    b.HasOne("OpenPlanningPoker.GameEngine.Domain.Teams.Team", null)
+                        .WithMany()
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_team_webhooks_teams_team_id");
+                });
+
+            modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Teams.TeamWebhookDelivery", b =>
+                {
+                    b.HasOne("OpenPlanningPoker.GameEngine.Domain.Teams.TeamWebhook", null)
+                        .WithMany()
+                        .HasForeignKey("WebhookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_team_webhook_deliveries_team_webhooks_webhook_id");
                 });
 
             modelBuilder.Entity("OpenPlanningPoker.GameEngine.Domain.Tickets.Ticket", b =>

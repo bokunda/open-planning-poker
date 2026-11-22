@@ -32,5 +32,5 @@ public static partial class SiteMetrics
         {
             if (Page(page) is { } name) Visit(name);
             return Results.NoContent();
-        }).AllowAnonymous();
+        }).AllowAnonymous().RequireRateLimiting(RateLimiting.ClientRateLimiting.SiteVisitPolicy);
 }
