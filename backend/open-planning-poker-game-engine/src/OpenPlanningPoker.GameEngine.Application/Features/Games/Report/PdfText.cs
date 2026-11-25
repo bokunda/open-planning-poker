@@ -3,7 +3,7 @@ using System.Text;
 namespace OpenPlanningPoker.GameEngine.Application.Features.Games.Report;
 
 /// <summary>
-/// Text people typed, made safe for the PDF fonts (Figtree with Lato as fallback). Since QuestPDF 2026.9 a single glyph
+/// Text people typed, made safe for the PDF fonts (Red Hat Text with Lato as fallback). Since QuestPDF 2026.9 a single glyph
 /// missing from the fonts fails the whole document, and names, tickets and retro cards often hold emoji or symbols.
 /// Those are left out; letters, digits and the usual punctuation of Latin, Greek and Cyrillic scripts stay.
 /// </summary>

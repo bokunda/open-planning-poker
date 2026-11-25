@@ -12,9 +12,9 @@ export const C = {
   primary: '#6a3ae8', primary300: '#ad94ff', primary100: '#e6ddff', primary50: '#f1ecff',
   ink: '#16132b', navy: '#1c1838', navy2: '#2a2350', bg: '#f5f4fa', white: '#ffffff', amber: '#ffcf70',
 };
-export const FONT_DISPLAY = "'Bricolage Grotesque', 'Segoe UI', sans-serif";
-export const FONT_BODY = "'Figtree', 'Segoe UI', sans-serif";
-export const FONT_MONO = "'JetBrains Mono', Consolas, monospace";
+export const FONT_DISPLAY = "'Red Hat Display', 'Segoe UI', sans-serif";
+export const FONT_BODY = "'Red Hat Text', 'Segoe UI', sans-serif";
+export const FONT_MONO = "'Red Hat Mono', Consolas, monospace";
 
 export const M = marks as { host: Record<string, number>; mobile: Record<string, number> };
 export const VO = durations as Record<string, number>;
@@ -31,9 +31,9 @@ export const useFonts = () => {
   fontsRequested = true;
   const handle = delayRender('fonts');
   const faces = [
-    new FontFace('Bricolage Grotesque', `url(${staticFile('fonts/bricolage-grotesque-latin.woff2')})`, { weight: '200 800' }),
-    new FontFace('Figtree', `url(${staticFile('fonts/figtree-latin.woff2')})`, { weight: '300 900' }),
-    new FontFace('JetBrains Mono', `url(${staticFile('fonts/jetbrains-mono-latin.woff2')})`, { weight: '100 800' }),
+    new FontFace('Red Hat Display', `url(${staticFile('fonts/red-hat-display-latin.woff2')})`, { weight: '200 800' }),
+    new FontFace('Red Hat Text', `url(${staticFile('fonts/red-hat-text-latin.woff2')})`, { weight: '300 900' }),
+    new FontFace('Red Hat Mono', `url(${staticFile('fonts/red-hat-mono-latin.woff2')})`, { weight: '100 800' }),
   ];
   Promise.all(faces.map((f) => f.load().then((ff) => document.fonts.add(ff))))
     .then(() => continueRender(handle))

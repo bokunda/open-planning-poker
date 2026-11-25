@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **New fonts**: Red Hat Display for headings and card numbers, Red Hat Text for text and Red Hat Mono for ticket keys, the timer and codes, in the app, the website, the PDF reports and the recap preview image. The font files are smaller than before
+
 ## [3.8.0] — 2026-11-22
 
 Build on your team's estimates with the public API, compare teams in an organization, and get optional AI help that never picks a card.
