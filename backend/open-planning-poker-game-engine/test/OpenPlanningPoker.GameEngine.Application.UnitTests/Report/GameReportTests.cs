@@ -96,8 +96,8 @@ public class GameReportDocumentTests
         new GameReportDocument(Sample()).GeneratePdf();
 
         var families = QuestPDF.Drawing.FontManager.GetRegisteredFonts().Select(font => font.FamilyName).ToList();
-        families.ShouldContain("Figtree");
-        families.ShouldContain("Bricolage Grotesque 48pt");
+        families.ShouldContain("Red Hat Text");
+        families.ShouldContain("Red Hat Display");
     }
 
     [Fact]

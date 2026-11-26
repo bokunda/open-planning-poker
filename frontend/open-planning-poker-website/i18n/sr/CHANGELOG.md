@@ -6,6 +6,13 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+## [3.8.1] — 2026-11-26
+
+Novi fontovi u aplikaciji, na sajtu i u PDF izveštajima, sa manjim fajlovima fontova.
+
+### Izmenjeno
+- **Novi fontovi**: Red Hat Display za naslove i brojeve na kartama, Red Hat Text za tekst i Red Hat Mono za ključeve tiketa, tajmer i kodove, u aplikaciji, na sajtu, u PDF izveštajima i na slici pregleda rezimea. Fajlovi fontova su manji nego ranije
+
 ## [3.8.0] — 2026-11-22
 
 Gradi na procenama svog tima uz javni API, uporedi timove u organizaciji i uzmi opcionu AI pomoć koja nikad ne bira kartu.

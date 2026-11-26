@@ -82,12 +82,12 @@
   --opp-radius-card: 10px;
 
   /* ── Typography ──
-     Display: Bricolage Grotesque — headings and the numbers on cards.
-     Body: Figtree. Mono: JetBrains Mono — ticket keys, timer, codes. */
-  --opp-font-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
-  --opp-font-body: 'Figtree', 'Segoe UI', system-ui, sans-serif;
+     Display: Red Hat Display — headings and the numbers on cards.
+     Body: Red Hat Text. Mono: Red Hat Mono — ticket keys, timer, codes. */
+  --opp-font-display: 'Red Hat Display', 'Segoe UI', system-ui, sans-serif;
+  --opp-font-body: 'Red Hat Text', 'Segoe UI', system-ui, sans-serif;
   --opp-font: var(--opp-font-body);
-  --opp-font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', monospace;
+  --opp-font-mono: 'Red Hat Mono', ui-monospace, 'Cascadia Mono', monospace;
   --opp-font-size-xs: 0.75rem;
   --opp-font-size-sm: 0.875rem;
   --opp-font-size-base: 1rem;

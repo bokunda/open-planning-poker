@@ -23,8 +23,8 @@ public sealed record ReportModel(
     IReadOnlyList<ReportTicket> Tickets);
 
 /// <summary>
-/// The game report PDF, styled like the app and the website: brand violet, Figtree for text,
-/// Bricolage Grotesque for headings, summary tiles and one card per ticket.
+/// The game report PDF, styled like the app and the website: brand violet, Red Hat Text for text,
+/// Red Hat Display for headings, summary tiles and one card per ticket.
 /// </summary>
 public sealed class GameReportDocument(ReportModel source) : IDocument
 {
@@ -63,9 +63,9 @@ public sealed class GameReportDocument(ReportModel source) : IDocument
     private const string Spread = "#8a4a0c";
     private const string SpreadSoft = "#fdf0e1";
 
-    internal const string BodyFont = "Figtree";
+    internal const string BodyFont = "Red Hat Text";
     // Family names as stored in the font files (QuestPDF 2026.9 no longer registers custom names).
-    internal const string DisplayFont = "Bricolage Grotesque 48pt";
+    internal const string DisplayFont = "Red Hat Display";
 
     private static readonly Lazy<byte[]> Logo = new(() => ReadResource("logo.png"));
 
@@ -341,7 +341,7 @@ internal static class ReportFonts
 {
     private static readonly Lazy<bool> Registered = new(() =>
     {
-        foreach (var file in new[] { "Figtree-400.ttf", "Figtree-600.ttf", "Figtree-700.ttf", "BricolageGrotesque-800.ttf" })
+        foreach (var file in new[] { "RedHatText-400.ttf", "RedHatText-600.ttf", "RedHatText-700.ttf", "RedHatDisplay-800.ttf" })
         {
             QuestPDF.Drawing.FontManager.RegisterFontFromStream(new MemoryStream(GameReportDocument.ReadResource(file)));
         }

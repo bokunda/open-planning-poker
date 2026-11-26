@@ -6,6 +6,13 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+## [3.8.1] — 2026-11-26
+
+Neue Schriften in der App, auf der Website und in den PDF-Berichten, mit kleineren Schriftdateien.
+
+### Geändert
+- **Neue Schriften**: Red Hat Display für Überschriften und die Zahlen auf den Karten, Red Hat Text für Text und Red Hat Mono für Ticket-Schlüssel, den Timer und Codes, in der App, auf der Website, in den PDF-Berichten und im Vorschaubild der Zusammenfassung. Die Schriftdateien sind kleiner als vorher
+
 ## [3.8.0] — 2026-11-22
 
 Mit der öffentlichen API auf den Schätzungen des Teams aufbauen, Teams in einer Organisation vergleichen und optionale KI-Hilfe nutzen, die nie eine Karte wählt.
