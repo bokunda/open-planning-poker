@@ -12,6 +12,9 @@ public static class GameAccessErrors
     public static ApplicationError TeamNotFound => new("TeamNotFound", "Team not found.");
     public static ApplicationError NotTeamMember => new("NotTeamMember", "Join the team before performing this action.");
     public static ApplicationError NotTeamOwner => new("NotTeamOwner", "Only the team owner can perform this action.");
+    public static ApplicationError OrganizationNotFound => new("OrganizationNotFound", "Organization not found.");
+    public static ApplicationError NotOrganizationAdmin => new("NotOrganizationAdmin", "Only an admin of the organization can do this.");
+    public static ApplicationError Forbidden => new("Forbidden", "You cannot see this.");
 }
 
 /// <summary>
@@ -40,6 +43,9 @@ public interface IGameAccessService
 
     Task<ApplicationError?> EnsureTeamMemberAsync(Guid teamId, CancellationToken cancellationToken = default);
     Task<ApplicationError?> EnsureTeamOwnerAsync(Guid teamId, CancellationToken cancellationToken = default);
+
+    /// <summary>An admin of the organization.</summary>
+    Task<ApplicationError?> EnsureOrganizationAdminAsync(Guid organizationId, CancellationToken cancellationToken = default);
 }
 
 public sealed class GameAccessService(
@@ -47,7 +53,8 @@ public sealed class GameAccessService(
     IGameRepository gameRepository,
     IGamePlayerRepository gamePlayerRepository,
     ITicketRepository ticketRepository,
-    ITeamRepository teamRepository) : IGameAccessService
+    ITeamRepository teamRepository,
+    IOrganizationRepository organizationRepository) : IGameAccessService
 {
     public Guid CurrentUserId => currentUserProvider.Id;
 
@@ -147,6 +154,22 @@ public sealed class GameAccessService(
     {
         var (team, error) = await GetTeamAsync(teamId, cancellationToken);
         return error ?? (team!.CreatedBy == CurrentUserId ? null : GameAccessErrors.NotTeamOwner);
+    }
+
+    public async Task<ApplicationError?> EnsureOrganizationAdminAsync(Guid organizationId, CancellationToken cancellationToken = default)
+    {
+        if (EnsureAuthenticated() is { } authError)
+        {
+            return authError;
+        }
+
+        if (await organizationRepository.GetAsync(organizationId, cancellationToken) is null)
+        {
+            return GameAccessErrors.OrganizationNotFound;
+        }
+
+        var member = await organizationRepository.GetMemberAsync(organizationId, CurrentUserId, cancellationToken);
+        return member?.Role == OrganizationRole.Admin ? null : GameAccessErrors.NotOrganizationAdmin;
     }
 
     private async Task<(Game? Game, ApplicationError? Error)> GetGameAsync(Guid gameId, CancellationToken cancellationToken)

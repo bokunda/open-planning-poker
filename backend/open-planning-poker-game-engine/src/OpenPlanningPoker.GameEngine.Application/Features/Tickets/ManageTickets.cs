@@ -1,10 +1,16 @@
 namespace OpenPlanningPoker.GameEngine.Application.Features.Tickets;
 
 /// <summary>Puts the game's tickets in the given order. Tickets missing from the list keep their place after the listed ones.</summary>
-public sealed record ReorderTicketsCommand(Guid GameId, IReadOnlyList<Guid> TicketIds) : IRequest<Result<bool, ApplicationError>>;
+public sealed record ReorderTicketsCommand(Guid GameId, IReadOnlyList<Guid> TicketIds) : IRequest<Result<bool, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Game(AuditActions.TicketsReordered, AuditType.Update, GameId);
+}
 
 /// <summary>Stores the estimate the host settled on; a null or empty value clears it.</summary>
-public sealed record SetFinalEstimateCommand(Guid TicketId, string? Value) : IRequest<Result<GetTicketResponse, ApplicationError>>;
+public sealed record SetFinalEstimateCommand(Guid TicketId, string? Value) : IRequest<Result<GetTicketResponse, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Ticket(AuditActions.TicketEstimated, AuditType.Update, TicketId, Value);
+}
 
 public static class ManageTickets
 {

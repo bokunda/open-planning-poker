@@ -67,7 +67,8 @@ public sealed class TeamApiService(
     IVoteRepository votes,
     ISender sender,
     ISecretProtector protector,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    IAuditLog auditLog)
 {
     public const string TokenPrefix = "opp_";
     public const string SecretPrefix = "whsec_";
@@ -89,6 +90,7 @@ public sealed class TeamApiService(
         var token = TeamApiToken.Create(teamId, name, Hash(raw), raw[..12]);
         api.AddToken(token);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.Team(AuditActions.TeamApiTokenCreated, AuditType.Create, teamId, detail: token.Name), cancellationToken);
         return new NewApiToken(Info(token), raw);
     }
 
@@ -101,6 +103,7 @@ public sealed class TeamApiService(
         if (token is null || token.TeamId != teamId) return PublicApiErrors.TokenNotFound;
         token.Revoke();
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.Team(AuditActions.TeamApiTokenRevoked, AuditType.Delete, teamId, detail: token.Name), cancellationToken);
         return true;
     }
 
@@ -198,6 +201,7 @@ public sealed class TeamApiService(
         var webhook = TeamWebhook.Create(teamId, url, protector.Protect(secret), events);
         api.AddWebhook(webhook);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.Team(AuditActions.TeamWebhookCreated, AuditType.Create, teamId, detail: WebhookHost(webhook.Url)), cancellationToken);
         return new NewWebhook(Info(webhook), secret);
     }
 
@@ -209,6 +213,7 @@ public sealed class TeamApiService(
         if (!ValidEvents(events)) return PublicApiErrors.InvalidEvents;
         webhook.Update(url, events, enabled);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.Team(AuditActions.TeamWebhookUpdated, AuditType.Update, teamId, detail: WebhookHost(webhook.Url)), cancellationToken);
         return Info(webhook);
     }
 
@@ -219,6 +224,7 @@ public sealed class TeamApiService(
         var secret = SecretPrefix + RandomPart();
         webhook.SetSecret(protector.Protect(secret));
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.Team(AuditActions.TeamWebhookSecretRotated, AuditType.Update, teamId, detail: WebhookHost(webhook.Url)), cancellationToken);
         return new NewWebhook(Info(webhook), secret);
     }
 
@@ -229,8 +235,12 @@ public sealed class TeamApiService(
         api.RemoveDeliveries(await api.GetDeliveriesAsync(webhookId, cancellationToken));
         api.RemoveWebhook(webhook);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.Team(AuditActions.TeamWebhookDeleted, AuditType.Delete, teamId, detail: WebhookHost(webhook.Url)), cancellationToken);
         return true;
     }
+
+    /// <summary>Only the host goes to the activity log: webhook paths often carry a secret (e.g. Zapier, Slack).</summary>
+    public static string WebhookHost(string url) => Uri.TryCreate(url, UriKind.Absolute, out var uri) ? uri.Host : string.Empty;
 
     public async Task<IReadOnlyList<WebhookInfo>> WebhooksAsync(Guid teamId, CancellationToken cancellationToken) =>
         [.. (await api.GetWebhooksAsync(teamId, cancellationToken)).Select(Info)];

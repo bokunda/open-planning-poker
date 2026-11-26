@@ -3,7 +3,10 @@ namespace OpenPlanningPoker.GameEngine.Application.Features.Tickets;
 public sealed record ImportTicketItemResponse(string Name, string Description);
 public sealed record ImportTicketItem(string Name, string Description);
 
-public sealed record ImportTicketsCommand(Guid GameId, ICollection<ImportTicketItem> Tickets) : IRequest<Result<ApiCollection<ImportTicketItemResponse>, ApplicationError>>;
+public sealed record ImportTicketsCommand(Guid GameId, ICollection<ImportTicketItem> Tickets) : IRequest<Result<ApiCollection<ImportTicketItemResponse>, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Game(AuditActions.TicketsImported, AuditType.Create, GameId, value: Tickets.Count.ToString(System.Globalization.CultureInfo.InvariantCulture));
+}
 
 public static class ImportTickets
 {

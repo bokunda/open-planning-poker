@@ -123,5 +123,6 @@ public class ChatAccessTests
         public Task<(Guid GameId, ApplicationError? Error)> EnsureVoterOfTicketAsync(Guid ticketId, CancellationToken cancellationToken = default) => Task.FromResult((GameId, memberError));
         public Task<ApplicationError?> EnsureTeamMemberAsync(Guid teamId, CancellationToken cancellationToken = default) => Task.FromResult(memberError);
         public Task<ApplicationError?> EnsureTeamOwnerAsync(Guid teamId, CancellationToken cancellationToken = default) => Task.FromResult(memberError);
+        public Task<ApplicationError?> EnsureOrganizationAdminAsync(Guid organizationId, CancellationToken cancellationToken = default) => Task.FromResult(memberError);
     }
 }

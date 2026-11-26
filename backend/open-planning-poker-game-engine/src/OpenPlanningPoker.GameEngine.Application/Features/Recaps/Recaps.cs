@@ -28,7 +28,10 @@ public sealed record RecapResponse(
     IReadOnlyList<string> Players);
 
 public sealed record GetRecapSharingQuery(Guid GameId) : IRequest<Result<RecapSharingResponse, ApplicationError>>;
-public sealed record SetRecapSharingCommand(Guid GameId, bool Shared, bool ShowNames) : IRequest<Result<RecapSharingResponse, ApplicationError>>;
+public sealed record SetRecapSharingCommand(Guid GameId, bool Shared, bool ShowNames) : IRequest<Result<RecapSharingResponse, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Game(Shared ? AuditActions.RecapShared : AuditActions.RecapUnshared, AuditType.Update, GameId);
+}
 public sealed record GetRecapQuery(string Token) : IRequest<Result<RecapResponse, ApplicationError>>;
 
 /// <summary>The link preview image of a shared recap (OPP-171): a 1200×630 PNG.</summary>

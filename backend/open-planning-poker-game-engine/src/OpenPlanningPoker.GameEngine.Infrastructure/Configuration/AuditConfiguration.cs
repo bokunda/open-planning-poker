@@ -1,4 +1,4 @@
-﻿namespace OpenPlanningPoker.GameEngine.Infrastructure.Configuration;
+namespace OpenPlanningPoker.GameEngine.Infrastructure.Configuration;
 
 internal sealed class AuditConfiguration : IEntityTypeConfiguration<Audit>
 {
@@ -8,24 +8,15 @@ internal sealed class AuditConfiguration : IEntityTypeConfiguration<Audit>
 
         builder.HasKey(audit => audit.Id);
 
-        builder.Property(audit => audit.Name)
-            .HasMaxLength(255)
-            .IsRequired();
+        builder.Property(audit => audit.Scope).IsRequired();
+        builder.Property(audit => audit.ScopeId).IsRequired();
+        builder.Property(audit => audit.Action).IsRequired().HasMaxLength(Audit.MaxActionLength);
+        builder.Property(audit => audit.Type).IsRequired();
+        builder.Property(audit => audit.Detail).HasMaxLength(Audit.MaxDetailLength);
+        builder.Property(audit => audit.Value).HasMaxLength(Audit.MaxValueLength);
 
-        builder.Property(audit => audit.Description)
-            .HasMaxLength(4080);
-
-        builder.Property(audit => audit.Type)
-            .IsRequired();
-
-        builder.Property(audit => audit.ObjectType)
-            .IsRequired();
-
-        builder.Property(audit => audit.ObjectId)
-            .IsRequired();
-
-        builder.HasIndex(audit => audit.Type);
-        builder.HasIndex(audit => audit.ObjectType);
-        builder.HasIndex(audit => audit.ObjectId);
+        // The activity list of one game / team / organization, newest first, and the retention delete.
+        builder.HasIndex(audit => new { audit.Scope, audit.ScopeId, audit.CreatedOn });
+        builder.HasIndex(audit => audit.CreatedOn);
     }
 }

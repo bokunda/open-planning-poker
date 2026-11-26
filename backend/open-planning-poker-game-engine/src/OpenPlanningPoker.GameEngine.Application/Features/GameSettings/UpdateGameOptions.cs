@@ -5,7 +5,11 @@ namespace OpenPlanningPoker.GameEngine.Application.Features.GameSettings;
 /// <see cref="UpdateGameSettingsCommand"/> so toggling an option never touches the deck.
 /// </summary>
 public sealed record UpdateGameOptionsCommand(Guid GameId, bool AutoReveal, DateTimeOffset? AsyncVotingEndsAt)
-    : IRequest<Result<GetGameSettingsResponse, ApplicationError>>;
+    : IRequest<Result<GetGameSettingsResponse, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Game(AuditActions.SettingsOptions, AuditType.Update, GameId,
+        value: AsyncVotingEndsAt is null ? (AutoReveal ? "autoReveal" : null) : (AutoReveal ? "autoReveal,async" : "async"));
+}
 
 public static class UpdateGameOptions
 {

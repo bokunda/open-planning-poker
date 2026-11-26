@@ -13,7 +13,10 @@ public sealed record GetSortingBoardQuery(Guid GameId) : IRequest<Result<Sorting
 public sealed record SetSortingOpenCommand(Guid GameId, bool Open) : IRequest<Result<SortingBoardResponse, ApplicationError>>;
 public sealed record MoveSortedTicketCommand(Guid TicketId, string? Column) : IRequest<Result<SortedTicketItem, ApplicationError>>;
 public sealed record ClearSortContestedCommand(Guid TicketId) : IRequest<Result<SortedTicketItem, ApplicationError>>;
-public sealed record ApplySortedEstimatesCommand(Guid GameId) : IRequest<Result<ApplySortedEstimatesResponse, ApplicationError>>;
+public sealed record ApplySortedEstimatesCommand(Guid GameId) : IRequest<Result<ApplySortedEstimatesResponse, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Game(AuditActions.SortingApplied, AuditType.Update, GameId);
+}
 
 public static class SortingErrors
 {

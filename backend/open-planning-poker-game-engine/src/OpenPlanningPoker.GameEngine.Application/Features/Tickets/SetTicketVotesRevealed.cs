@@ -3,7 +3,10 @@ namespace OpenPlanningPoker.GameEngine.Application.Features.Tickets;
 /// <summary>
 /// Reveals (true) or hides again (false, used by re-vote) the vote values of a ticket.
 /// </summary>
-public sealed record SetTicketVotesRevealedCommand(Guid TicketId, bool Revealed) : IRequest<Result<bool, ApplicationError>>;
+public sealed record SetTicketVotesRevealedCommand(Guid TicketId, bool Revealed) : IRequest<Result<bool, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Ticket(Revealed ? AuditActions.VotesRevealed : AuditActions.VotesHidden, AuditType.Update, TicketId);
+}
 
 public static class SetTicketVotesRevealed
 {

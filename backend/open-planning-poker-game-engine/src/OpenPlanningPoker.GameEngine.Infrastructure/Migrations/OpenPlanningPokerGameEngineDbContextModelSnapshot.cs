@@ -52,6 +52,12 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("action");
+
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid")
                         .HasColumnName("created_by");
@@ -60,45 +66,48 @@ namespace OpenPlanningPoker.GameEngine.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(4080)
-                        .HasColumnType("character varying(4080)")
-                        .HasColumnName("description");
+                    b.Property<string>("Detail")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("detail");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("name");
-
-                    b.Property<Guid>("ObjectId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("object_id");
-
-                    b.Property<int>("ObjectType")
+                    b.Property<int>("Scope")
                         .HasColumnType("integer")
-                        .HasColumnName("object_type");
+                        .HasColumnName("scope");
+
+                    b.Property<Guid>("ScopeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("scope_id");
+
+                    b.Property<Guid?>("TargetId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("target_id");
+
+                    b.Property<Guid?>("TicketId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ticket_id");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer")
                         .HasColumnName("type");
 
+                    b.Property<string>("Value")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("value");
+
                     b.HasKey("Id")
                         .HasName("pk_audits");
 
-                    b.HasIndex("ObjectId")
-                        .HasDatabaseName("ix_audits_object_id");
+                    b.HasIndex("CreatedOn")
+                        .HasDatabaseName("ix_audits_created_on");
 
-                    b.HasIndex("ObjectType")
-                        .HasDatabaseName("ix_audits_object_type");
-
-                    b.HasIndex("Type")
-                        .HasDatabaseName("ix_audits_type");
+                    b.HasIndex("Scope", "ScopeId", "CreatedOn")
+                        .HasDatabaseName("ix_audits_scope_scope_id_created_on");
 
                     b.ToTable("audits", (string)null);
                 });

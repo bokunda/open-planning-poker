@@ -3,7 +3,10 @@ namespace OpenPlanningPoker.GameEngine.Application.Features.Tickets;
 /// <summary>
 /// Starts a new voting round on a ticket: deletes all of its votes and hides votes again.
 /// </summary>
-public sealed record ResetTicketVotesCommand(Guid TicketId) : IRequest<Result<bool, ApplicationError>>;
+public sealed record ResetTicketVotesCommand(Guid TicketId) : IRequest<Result<bool, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Ticket(AuditActions.VotesReset, AuditType.Update, TicketId);
+}
 
 public static class ResetTicketVotes
 {

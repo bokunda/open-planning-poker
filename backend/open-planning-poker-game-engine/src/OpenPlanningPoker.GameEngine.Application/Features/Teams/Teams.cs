@@ -30,9 +30,18 @@ public sealed record SessionStats(int Revealed, int FirstRoundConsensus, int ReV
 }
 
 public sealed record CreateTeamCommand(string Name, string Description, Guid OwnerId) : IRequest<Result<TeamResponse, ApplicationError>>;
-public sealed record UpdateTeamCommand(Guid TeamId, string Name, string Description) : IRequest<Result<TeamResponse, ApplicationError>>;
-public sealed record JoinTeamCommand(Guid TeamId, Guid PlayerId) : IRequest<Result<bool, ApplicationError>>;
-public sealed record LeaveTeamCommand(Guid TeamId, Guid PlayerId) : IRequest<Result<bool, ApplicationError>>;
+public sealed record UpdateTeamCommand(Guid TeamId, string Name, string Description) : IRequest<Result<TeamResponse, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Team(AuditActions.TeamUpdated, AuditType.Update, TeamId, detail: Name);
+}
+public sealed record JoinTeamCommand(Guid TeamId, Guid PlayerId) : IRequest<Result<bool, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Team(AuditActions.TeamMemberJoined, AuditType.Create, TeamId, targetId: PlayerId);
+}
+public sealed record LeaveTeamCommand(Guid TeamId, Guid PlayerId) : IRequest<Result<bool, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Team(AuditActions.TeamMemberRemoved, AuditType.Delete, TeamId, targetId: PlayerId);
+}
 public sealed record GetTeamQuery(Guid TeamId) : IRequest<Result<TeamResponse, ApplicationError>>;
 public sealed record GetTeamMembersQuery(Guid TeamId) : IRequest<IReadOnlyList<Guid>>;
 public sealed record GetMyTeamsQuery(Guid PlayerId) : IRequest<IReadOnlyList<TeamResponse>>;

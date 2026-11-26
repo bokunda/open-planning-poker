@@ -17,10 +17,11 @@ public class JiraServiceTests
     private readonly FakeConnections _connections = new();
     private readonly FakeTickets _tickets = new();
     private readonly FakeVotes _votes = new();
+    private readonly Auditing.RecordingAuditLog _audit = new();
 
     private JiraService Service(bool configured = true) => new(
         Options.Create(new JiraOptions { ClientId = configured ? "client" : "", ClientSecret = configured ? "secret" : "" }),
-        _api, new FakeProtector(), _connections, _tickets, _votes, new FakeUnitOfWork());
+        _api, new FakeProtector(), _connections, _tickets, _votes, new FakeUnitOfWork(), _audit);
 
     private async Task ConnectAsync(JiraService service, DateTimeOffset? expires = null)
     {
@@ -205,6 +206,10 @@ public class JiraServiceTests
         (await service.DisconnectAsync(Player, default)).ShouldBeTrue();
         _connections.Items.ShouldBeEmpty();
         (await service.GetBoardsAsync(Player, default)).Error!.Code.ShouldBe("JiraNotConnected");
+
+        // Both show in the player's own activity log (GitHub #20).
+        _audit.Written.Select(e => e.Action).ShouldBe(["integration.connected", "integration.disconnected"]);
+        _audit.Written.ShouldAllBe(e => e.Scope == OpenPlanningPoker.GameEngine.Domain.Audits.AuditScope.User && e.ScopeId == Player && e.Value == "jira");
     }
 
     [Fact]

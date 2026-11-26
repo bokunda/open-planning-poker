@@ -36,7 +36,10 @@ public sealed record GetTicketFacilitationQuery(Guid TicketId) : IRequest<Result
 public sealed record SetVoteNoteCommand(Guid TicketId, string? Note) : IRequest<Result<TicketFacilitationResponse, ApplicationError>>;
 public sealed record SetConfidenceCommand(Guid TicketId, int? Value) : IRequest<Result<TicketFacilitationResponse, ApplicationError>>;
 public sealed record SetNeedsInfoCommand(Guid TicketId, bool NeedsInfo) : IRequest<Result<TicketFacilitationResponse, ApplicationError>>;
-public sealed record UpdateFacilitationOptionsCommand(Guid GameId, FacilitationOptions Options) : IRequest<Result<FacilitationOptions, ApplicationError>>;
+public sealed record UpdateFacilitationOptionsCommand(Guid GameId, FacilitationOptions Options) : IRequest<Result<FacilitationOptions, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Game(AuditActions.SettingsFacilitation, AuditType.Update, GameId);
+}
 
 /// <summary>Facilitation options of a game; defaults when the game has no settings yet.</summary>
 public sealed record GetFacilitationOptionsQuery(Guid GameId) : IRequest<FacilitationOptions>;

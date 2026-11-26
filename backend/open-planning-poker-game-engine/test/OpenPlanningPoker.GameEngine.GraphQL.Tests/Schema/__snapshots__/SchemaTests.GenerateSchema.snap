@@ -7,6 +7,17 @@
 "Base Game Engine query."
 type Query {
   """
+  The activity log (audit log) of a game (host and co-hosts), a team (owner), an organization (admins) or of
+  yourself (USER, your integrations), newest first. Pass the createdOn of the oldest entry shown as
+  before for the next page; take is 1 to 100. Entries are kept for 90 days.
+  """
+  activityLog(
+    scope: AuditScope!
+    scopeId: UUID!
+    before: DateTime
+    take: Int! = 30
+  ): ActivityLog!
+  """
   Returns recent chat messages for a game (from Redis, 24h TTL). Empty for callers who are not
   players of the game.
   """
@@ -378,6 +389,34 @@ type AccuracyOutlierInfo {
   ticket: TeamTicket!
   days: Float!
   cardMedianDays: Float!
+}
+
+"""
+One action in a game, team or organization. action is a stable code (e.g. votes.revealed) that the
+app translates; detail names the subject (a ticket, a token) and value is the new value (an estimate).
+"""
+type ActivityEntry {
+  "The actor's current name; null for the system and for users that no longer exist."
+  actorName: String
+  "The name of the player the action was about, if it is a user that still exists."
+  targetName: String
+  id: UUID!
+  action: String!
+  type: AuditType!
+  "Who did it; empty for changes made by Open Planning Poker itself (e.g. from Slack)."
+  actorId: UUID!
+  ticketId: UUID
+  targetId: UUID
+  detail: String
+  value: String
+  createdOn: DateTime!
+}
+
+"A page of the activity log, newest first (GitHub #20)."
+type ActivityLog {
+  entries: [ActivityEntry!]!
+  "True when older entries exist; ask again with before = the last entry's createdOn."
+  hasMore: Boolean!
 }
 
 "Whether the AI assistant can be used in a room (OPP-139)."
@@ -1141,6 +1180,19 @@ type VotesRevealed {
   revealedBy: String!
   "All votes of the ticket with their values, sent once the host reveals them."
   votes: [Vote!]!
+}
+
+enum AuditScope {
+  GAME
+  TEAM
+  ORGANIZATION
+  USER
+}
+
+enum AuditType {
+  CREATE
+  UPDATE
+  DELETE
 }
 
 "What changed in a game. Clients reload that part (players, tickets or the game and its settings)."

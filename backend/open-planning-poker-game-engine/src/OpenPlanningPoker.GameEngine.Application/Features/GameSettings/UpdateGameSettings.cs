@@ -2,7 +2,10 @@ namespace OpenPlanningPoker.GameEngine.Application.Features.GameSettings;
 
 public sealed record UpdateGameSettingsResponse(Guid Id, Guid GameId, string DeckSetup, bool AutoReveal = false, DateTimeOffset? AsyncVotingEndsAt = null);
 
-public sealed record UpdateGameSettingsCommand(Guid Id, Guid GameId, string DeckSetup) : IRequest<Result<UpdateGameSettingsResponse, ApplicationError>>;
+public sealed record UpdateGameSettingsCommand(Guid Id, Guid GameId, string DeckSetup) : IRequest<Result<UpdateGameSettingsResponse, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Game(AuditActions.SettingsDeck, AuditType.Update, GameId, value: DeckSetup);
+}
 
 public static class UpdateGameSettings
 {

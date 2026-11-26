@@ -26,8 +26,14 @@ public sealed record TeamHistoryPage(IReadOnlyList<TeamTicket> Items, int TotalC
 public sealed record TicketReferenceResponse(Guid? TeamId, IReadOnlyList<TeamAnchorResponse> Anchors, IReadOnlyList<TeamTicket> Similar);
 
 public sealed record GetTeamAnchorsQuery(Guid TeamId) : IRequest<IReadOnlyList<TeamAnchorResponse>>;
-public sealed record PinAnchorCommand(Guid TeamId, Guid TicketId, string? Note) : IRequest<Result<TeamAnchorResponse, ApplicationError>>;
-public sealed record UnpinAnchorCommand(Guid TeamId, Guid AnchorId) : IRequest<Result<bool, ApplicationError>>;
+public sealed record PinAnchorCommand(Guid TeamId, Guid TicketId, string? Note) : IRequest<Result<TeamAnchorResponse, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Team(AuditActions.TeamAnchorPinned, AuditType.Create, TeamId, ticketId: TicketId);
+}
+public sealed record UnpinAnchorCommand(Guid TeamId, Guid AnchorId) : IRequest<Result<bool, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Team(AuditActions.TeamAnchorUnpinned, AuditType.Delete, TeamId);
+}
 public sealed record SearchTeamHistoryQuery(Guid TeamId, string? Search, string? Value, int Skip, int Take) : IRequest<TeamHistoryPage>;
 public sealed record GetTicketReferenceQuery(Guid TicketId) : IRequest<Result<TicketReferenceResponse, ApplicationError>>;
 

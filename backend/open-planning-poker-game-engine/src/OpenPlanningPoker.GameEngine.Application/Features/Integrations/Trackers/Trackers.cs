@@ -105,7 +105,8 @@ public sealed class TrackerService(
     ITrackerConnectionRepository connections,
     ITicketRepository tickets,
     IVoteRepository votes,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    IAuditLog auditLog)
 {
     public const int MaxImport = 100;
     private static readonly TimeSpan StateLifetime = TimeSpan.FromMinutes(15);
@@ -163,6 +164,7 @@ public sealed class TrackerService(
         }
         Store(connection, tokens);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.User(AuditActions.IntegrationConnected, AuditType.Create, playerId, client.Provider), cancellationToken);
         return parsed.ReturnPath;
     }
 
@@ -172,6 +174,7 @@ public sealed class TrackerService(
         if (connection is null) return false;
         connections.Remove(connection);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.User(AuditActions.IntegrationDisconnected, AuditType.Delete, playerId, connection.Provider), cancellationToken);
         return true;
     }
 
