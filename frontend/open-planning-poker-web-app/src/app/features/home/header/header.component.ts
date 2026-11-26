@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { MatDialog } from '@angular/material/dialog';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -23,6 +23,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TranslocoPipe, RouterLink, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, DonateClickDirective]
 })
 export class HeaderComponent {

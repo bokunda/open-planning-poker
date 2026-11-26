@@ -21,7 +21,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   styleUrl: './voting.component.scss',
   standalone: true,
   imports: [TranslocoPipe, MatButtonModule, MatIconModule, MatTooltipModule, PokerCardComponent, PokerTableComponent, VoteResultsComponent, GameTimerComponent, MarkdownPipe, FacilitationPanelComponent, ReactionsComponent, ReferencePanelComponent],
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class VotingComponent implements OnInit, OnDestroy, OnChanges {
 

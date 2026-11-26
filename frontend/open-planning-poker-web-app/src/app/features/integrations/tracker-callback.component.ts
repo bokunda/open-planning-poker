@@ -1,4 +1,4 @@
-import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, inject, ChangeDetectionStrategy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,6 +28,7 @@ import { COMPLETE_TRACKER_CONNECTION } from '../home/game/gql/trackers.graphql';
       </section>
     </main>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .tracker-callback { display: grid; place-items: center; min-height: 70vh; padding: var(--opp-space-4); }
     .card { display: grid; gap: var(--opp-space-4); justify-items: center; max-width: 460px; width: 100%; padding: var(--opp-space-6);

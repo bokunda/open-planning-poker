@@ -15,7 +15,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   styleUrl: './players.component.scss',
   standalone: true,
   imports: [TranslocoPipe, MatButtonModule, MatIconModule, MatMenuModule, MatTooltipModule, PokerCardComponent],
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.Eager
 })
 export class PlayersComponent implements OnInit {
 

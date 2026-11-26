@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
@@ -29,6 +29,7 @@ export type ImportTicketsResult = ImportedTicket[] | { jiraImported: number; tra
   templateUrl: './import-tickets-dialog.component.html',
   styleUrl: './import-tickets-dialog.component.scss',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TranslocoPipe, FormsModule, MatDialogModule, MatTabsModule, MatButtonModule, MatIconModule, JiraImportComponent, TrackerImportComponent]
 })
 export class ImportTicketsDialogComponent {

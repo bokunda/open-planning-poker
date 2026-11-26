@@ -6,7 +6,11 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+### Geändert
+- **App auf Angular 22** (von 21) mit Angular Material 22 und TypeScript 6.0. Für Spieler ändert sich nichts
+
 ### Für Entwickler
+- Für den Build der App braucht es Node.js 22.22.3 oder 24.15 oder neuer (Angular CLI 22)
 - Hot Chocolate 16.7.7 in beiden Subgraphen, im gemeinsamen Paket und im Gateway. Das Gateway wechselt auf Fusion v2: Es liefert `gateway.far` aus (mit der Nitro CLI von `backend/open-planning-poker-graphql-gateway/compose-gateway.sh` zusammengesetzt) statt `gateway.fgp`, und Name und URL jedes Subgraphen stehen in seiner `schema-settings.json`
 - Die Bytes des Berichts und des Retro-Exports haben den Typ `[UnsignedByte!]!` (vorher `[Byte!]!`); die Werte sind unverändert
 - `OpenPlanningPoker.Shared` 1.2.0 ist gegen Hot Chocolate 16 gebaut; die Dienste bleiben bei 1.1.0, bis es veröffentlicht ist

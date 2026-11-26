@@ -6,7 +6,11 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+### Izmenjeno
+- **Aplikacija na Angularu 22** (sa 21) sa Angular Materialom 22 i TypeScriptom 6.0. Za igrače se ništa ne menja
+
 ### Za programere
+- Za build aplikacije treba Node.js 22.22.3 ili 24.15 ili noviji (Angular CLI 22)
 - Hot Chocolate 16.7.7 u oba podgrafa, u zajedničkom paketu i u gatewayu. Gateway prelazi na Fusion v2: služi `gateway.far` (sastavljen Nitro CLI-jem pomoću `backend/open-planning-poker-graphql-gateway/compose-gateway.sh`) umesto `gateway.fgp`, a ime i URL svakog podgrafa su u njegovom `schema-settings.json`
 - Bajtovi izveštaja i izvoza retroa su tipa `[UnsignedByte!]!` (ranije `[Byte!]!`); vrednosti su iste
 - `OpenPlanningPoker.Shared` 1.2.0 je izgrađen za Hot Chocolate 16; servisi ostaju na 1.1.0 dok se ne objavi

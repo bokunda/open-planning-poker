@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -7,6 +7,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   selector: 'app-errors',
   imports: [TranslocoPipe, RouterModule],
   templateUrl: './errors.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './errors.component.scss'
 })
 export class ErrorsComponent implements OnInit {
