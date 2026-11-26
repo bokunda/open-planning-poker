@@ -1,5 +1,6 @@
 using HotChocolate.Configuration;
-using HotChocolate.Types.Descriptors.Definitions;
+using HotChocolate.Types.Descriptors;
+using HotChocolate.Types.Descriptors.Configurations;
 
 namespace OpenPlanningPoker.UserManagement.GraphQL.Localization;
 
@@ -9,11 +10,23 @@ namespace OpenPlanningPoker.UserManagement.GraphQL.Localization;
 /// </summary>
 public sealed class ApplicationErrorMessageInterceptor : TypeInterceptor
 {
-    public override void OnBeforeCompleteType(ITypeCompletionContext completionContext, DefinitionBase definition)
+    /// <summary>
+    /// <c>ApplicationError.Message</c> is nullable in the shared package, but the <c>Error</c> interface of the
+    /// mutation conventions declares <c>message: String!</c>, which Hot Chocolate 16 enforces. The middleware below
+    /// always returns a message (falling back to the code), so the field is declared non-null.
+    /// </summary>
+    public override void OnAfterInitialize(ITypeDiscoveryContext discoveryContext, TypeSystemConfiguration configuration)
     {
-        if (definition is not ObjectTypeDefinition { Name: "ApplicationError" } type) return;
+        if (configuration is not ObjectTypeConfiguration { Name: "ApplicationError" } type) return;
         var message = type.Fields.FirstOrDefault(field => field.Name == "message");
-        message?.MiddlewareDefinitions.Add(new FieldMiddlewareDefinition(next => async context =>
+        if (message is not null) message.Type = TypeReference.Parse("String!");
+    }
+
+    public override void OnBeforeCompleteType(ITypeCompletionContext completionContext, TypeSystemConfiguration configuration)
+    {
+        if (configuration is not ObjectTypeConfiguration { Name: "ApplicationError" } type) return;
+        var message = type.Fields.FirstOrDefault(field => field.Name == "message");
+        message?.MiddlewareConfigurations.Add(new FieldMiddlewareConfiguration(next => async context =>
         {
             await next(context);
             if (context.Parent<object>() is ApplicationError error)

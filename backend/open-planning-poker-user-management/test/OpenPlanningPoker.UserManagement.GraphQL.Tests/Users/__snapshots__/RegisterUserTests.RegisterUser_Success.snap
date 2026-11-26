@@ -1,10 +1,5 @@
 ﻿{
-  "Kind": "SingleResult",
-  "RequestIndex": null,
-  "VariableIndex": null,
-  "Label": null,
-  "Path": null,
-  "Data": {
+  "data": {
     "registerUser": {
       "registerUserResponse": {
         "id": "e65fb783-3952-411c-b41c-1d5dc1d9ef6c",
@@ -14,12 +9,5 @@
       "errors": null,
       "__typename": "RegisterUserPayload"
     }
-  },
-  "Items": null,
-  "Errors": null,
-  "Extensions": null,
-  "Incremental": null,
-  "ContextData": null,
-  "HasNext": null,
-  "IsDataSet": true
+  }
 }

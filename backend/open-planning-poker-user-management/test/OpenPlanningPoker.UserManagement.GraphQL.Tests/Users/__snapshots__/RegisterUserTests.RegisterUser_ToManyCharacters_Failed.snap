@@ -1,27 +1,15 @@
 ﻿{
-  "Kind": "SingleResult",
-  "RequestIndex": null,
-  "VariableIndex": null,
-  "Label": null,
-  "Path": null,
-  "Data": {
+  "data": {
     "registerUser": {
       "registerUserResponse": null,
       "errors": [
         {
           "code": "MaximumLengthValidator",
-          "message": "The length of 'Username' must be 26 characters or fewer. You entered 66 characters.",
+          "message": "The username must be between 3 and 26 characters.",
           "__typename": "ApplicationError"
         }
       ],
       "__typename": "RegisterUserPayload"
     }
-  },
-  "Items": null,
-  "Errors": null,
-  "Extensions": null,
-  "Incremental": null,
-  "ContextData": null,
-  "HasNext": null,
-  "IsDataSet": true
+  }
 }

@@ -189,26 +189,19 @@ CI (`.github/workflows/ci.yaml`) runs all of this on every pull request, plus Li
 
 ## Schema Generation & Fusion Compose
 
-When GraphQL types change, regenerate the composed schema:
+When GraphQL types change, recompose the gateway's Fusion v2 archive (`gateway.far`) and commit it:
 
 ```bash
-# Option 1: Use the provided script
-cd backend/open-planning-poker-graphql-gateway
-./generate-schema.ps1
+# Once: the Nitro CLI
+dotnet tool install -g ChilliCream.Nitro.CommandLine --version 16.7.7
 
-# Option 2: Manual steps per subgraph
-cd backend/open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL
-dotnet run -- schema export --output schema.graphql
-fusion subgraph pack
-
-cd backend/open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL
-dotnet run -- schema export --output schema.graphql
-fusion subgraph pack
-
-cd backend/open-planning-poker-graphql-gateway
-fusion compose -p gateway.fgp -s ../open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL
-fusion compose -p gateway.fgp -s ../open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL
+# Exports both subgraph schemas and composes backend/open-planning-poker-graphql-gateway/gateway.far
+./backend/open-planning-poker-graphql-gateway/compose-gateway.sh
+# Windows: ./backend/open-planning-poker-graphql-gateway/generate-schema.ps1
 ```
+
+Each subgraph's name and URL (Docker DNS) are in its `schema-settings.json`. A field or type defined in both
+subgraphs must be `@shareable`, or composition fails with `INVALID_FIELD_SHARING`.
 
 ## Database Migrations
 

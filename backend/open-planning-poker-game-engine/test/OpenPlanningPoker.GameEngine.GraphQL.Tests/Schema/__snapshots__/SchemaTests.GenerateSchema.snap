@@ -4,6 +4,376 @@
   subscription: Subscription
 }
 
+"Base Game Engine query."
+type Query {
+  """
+  Returns recent chat messages for a game (from Redis, 24h TTL). Empty for callers who are not
+  players of the game.
+  """
+  chatMessages(gameId: UUID!): [ChatMessage!]!
+  "Is the assistant available on this server and on in this room? Players of the game."
+  aiAssistant(gameId: UUID!): AiAssistantStatus!
+  "Discussion data of a ticket. Players of the game only."
+  ticketFacilitation(ticketId: UUID!): TicketFacilitationInfo!
+  "Returns game with participants"
+  gamePlayers(gameId: UUID!): ApiCollectionOfGamePlayer!
+  "Returns Game details."
+  game(id: UUID!): Game!
+  "Returns an info about the Game Engine service."
+  info: Info!
+  "Whether the integration is available and the caller has connected Jira."
+  jiraConnection: JiraConnectionStatus!
+  "The Atlassian consent page to open; it returns to the app's Jira callback, then to returnPath."
+  jiraAuthorizeUrl(returnPath: String!): JiraAuthorizeLink!
+  jiraSites: JiraSiteList!
+  jiraBoards: JiraBoardList!
+  jiraSprints(boardId: Long!): JiraSprintList!
+  """
+  Import preview: a sprint's issues, a board's open issues, or a JQL query, with the issues that are already
+  tickets of the game marked. Host or co-host only.
+  """
+  jiraIssues(gameId: UUID!, boardId: Long, sprintId: Long, jql: String): JiraIssueSearch!
+  "The trackers this server offers, with the caller's connection to each."
+  trackers: [TrackerInfo!]!
+  "The tracker's consent page; it returns to /integrations/tracker/{provider}/callback, then to returnPath."
+  trackerAuthorizeUrl(provider: String!, returnPath: String!): TrackerAuthorizeLink!
+  "Repositories, teams or projects to import from."
+  trackerSources(provider: String!): TrackerSourceList!
+  "Import preview: up to 100 issues of a source, marking those already in the game. Host and co-hosts."
+  trackerIssues(
+    provider: String!
+    gameId: UUID!
+    sourceId: String!
+    query: String
+  ): TrackerIssueList!
+  "Dummy health-check query."
+  ping: String! @shareable
+  "The shared recap behind a recap link. No sign-in needed; RecapNotFound once the host stops sharing."
+  gameRecap(token: String!): GameRecap!
+  "Whether the recap of a game is shared. Host and co-hosts."
+  recapSharing(gameId: UUID!): RecapSharing!
+  "Gets Game Settings."
+  settings(gameId: UUID!): Settings!
+  "The sorting board of a game. Players of the game only."
+  sortingBoard(gameId: UUID!): SortingBoardInfo!
+  "Cycle times per card from Jira, with the caller's Jira connection. Team members."
+  teamAccuracy(teamId: UUID!): TeamAccuracyInfo!
+  "Preview of the session summary and where it would go. Host and co-hosts."
+  sessionSummary(gameId: UUID!): SessionSummaryInfo!
+  "An organization by id. Anyone with the link sees its name; members see more."
+  organization(id: UUID!): OrganizationInfo!
+  "Organizations the caller belongs to."
+  myOrganizations: [OrganizationInfo!]!
+  "Capacity, budget and plan of one sprint of a team. Members only."
+  sprintPlan(teamId: UUID!, gameId: UUID!): SprintPlan!
+  "The last 20 deliveries of a webhook, newest first (OPP-160). Team owner."
+  teamWebhookDeliveries(teamId: UUID!, webhookId: UUID!): TeamWebhookDeliveries!
+  "The team's anchors and up to three similar past tickets for a ticket. Players of the game only."
+  ticketReference(ticketId: UUID!): TicketReference!
+  "The retro of a sprint (game). Players of the game only; RetroNotFound when it has none yet."
+  retro(gameId: UUID!): RetroInfo!
+  "\"Sprint in numbers\" for the retro (OPP-167). Players of the game."
+  retroFacts(retroId: UUID!): SprintFactsInfo!
+  "The retro as Markdown or PDF (OPP-168). Players of the game."
+  retroExport(retroId: UUID!, pdf: Boolean! = false): RetroExportFile!
+  "A team room by id. Members-only fields are empty for others."
+  team(id: UUID!): Team!
+  "Team rooms the caller belongs to."
+  myTeams: [Team!]!
+  "Gets a ticket by id."
+  ticket(id: UUID!): Ticket!
+  "Gets a list of tickets by gameId."
+  tickets(gameId: UUID!): ApiCollectionOfTicket!
+  """
+  Current voting timer of a game, for players who join while it runs. Null when there is none
+  or the caller is not a player of the game.
+  """
+  gameTimer(gameId: UUID!): GameTimer
+  "Gets votes by ticketId."
+  votes(ticketId: UUID!): ApiCollectionOfVote!
+}
+
+"Base Game Engine mutation."
+type Mutation {
+  "Sends a chat message to a game. Only players of the game can send messages."
+  sendChatMessage(gameId: UUID!, content: String!): ChatMessage!
+  "Turns the assistant on or off for the room. Host and co-hosts."
+  setAiAssistant(gameId: UUID!, enabled: Boolean!): AiAssistantStatus!
+  "Up to three points that are unclear in the ticket, shown to everyone in the room (OPP-150). Host and co-hosts."
+  checkTicketClarity(ticketId: UUID!): TicketClarity!
+  "Clears the clarity points of a ticket for everyone. Host and co-hosts."
+  dismissTicketClarity(ticketId: UUID!): Boolean!
+  "Two to four smaller tickets for one that is too big (OPP-151). Only the host sees them. Host and co-hosts."
+  suggestTicketSplit(ticketId: UUID!): TicketSplitIdeas!
+  """
+  A one-sentence summary of the voters' notes and the chat since the reveal (OPP-152), for the host to edit and keep.
+  Player names are replaced before anything is sent. Host and co-hosts.
+  """
+  summarizeTicketDiscussion(ticketId: UUID!): TicketDiscussionSummary!
+  "Keeps (or clears, with an empty text) the summary of a ticket; it goes into the tracker comment and the report. Host and co-hosts."
+  setTicketDiscussionSummary(ticketId: UUID!, summary: String): Boolean!
+  "Explains the current user's card after the reveal (up to 200 characters; empty clears it)."
+  setVoteNote(ticketId: UUID!, note: String): TicketFacilitationInfo!
+  "Rates the current user's confidence (1–5) in the final estimate; null clears it."
+  setConfidence(ticketId: UUID!, value: Int): TicketFacilitationInfo!
+  "Marks a ticket as \"needs more information\" (or clears it). Host and co-hosts."
+  setTicketNeedsInfo(ticketId: UUID!, needsInfo: Boolean!): TicketFacilitationInfo!
+  """
+  Discussion and look options of the room. Host and co-hosts. Celebrations, theme and seasonal cards keep
+  their current value when left out.
+  """
+  updateFacilitationOptions(
+    gameId: UUID!
+    outlierNotes: Boolean!
+    discussionMinutes: Int!
+    confidenceCheck: Boolean!
+    reactions: Boolean!
+    celebrations: Boolean
+    theme: String
+    seasonalCards: Boolean
+  ): FacilitationSettings!
+  "Sends an emoji reaction to everyone in the room. Not stored."
+  sendReaction(gameId: UUID!, emoji: String!): Boolean!
+  "Join Game. Requires a valid user token."
+  joinGame(gameId: UUID!): Boolean!
+  "Leave a Game. Requires a valid user token."
+  leaveGame(gameId: UUID!): Boolean!
+  """
+  Switches between voting (PLAYER) and watching (OBSERVER). Players change their own role;
+  the host and co-hosts can change anyone's. Leave playerId empty for yourself.
+  """
+  setPlayerRole(gameId: UUID!, role: PlayerRole!, playerId: UUID): Boolean!
+  "Picks your emoji avatar in this game from the fixed list, or clears it with null."
+  setPlayerAvatar(gameId: UUID!, avatar: String): Boolean!
+  "Makes a player co-host, or a regular player again. Host only."
+  setCoHost(gameId: UUID!, playerId: UUID!, isCoHost: Boolean!): Boolean!
+  """
+  Removes a player from the game (their votes stay). Host and co-hosts; the host cannot be removed.
+  The removed player can join again with the link.
+  """
+  removePlayer(gameId: UUID!, playerId: UUID!): Boolean!
+  "Hands the game over to another player in it. Host only; the old host stays as a player."
+  transferHost(gameId: UUID!, playerId: UUID!): Boolean!
+  "Creates a game, returns game details. The caller becomes the game host."
+  createGame(
+    name: String!
+    description: String!
+    deckSetup: String
+    teamId: UUID
+    source: String
+  ): Game!
+  "Deletes a game with its tickets, votes and players. Host only (not co-hosts)."
+  deleteGame(gameId: UUID!): Boolean!
+  "Generates a PDF report of the game. Only players of the game can generate it."
+  generateGameReport(gameId: UUID!): GameReport!
+  """
+  Makes the caller the host of a game started from Slack or Teams, with the one-time link from the chat.
+  False when the game already has a host or the link is not valid.
+  """
+  claimGameHost(gameId: UUID!, token: String!): Boolean!
+  "Finishes the Atlassian consent: stores the tokens (encrypted) and lists the caller's sites."
+  completeJiraConnection(code: String!, state: String!): JiraConnectionResult!
+  selectJiraSite(cloudId: String!): JiraConnectionStatus!
+  "Deletes the caller's stored Jira tokens."
+  disconnectJira: Boolean!
+  "Adds Jira issues as tickets; issues already in the game are skipped. Host or co-host only."
+  importJiraIssues(gameId: UUID!, issueKeys: [String!]!): JiraImportSummary!
+  """
+  Writes the final estimate (or the most common card) to the Jira issue's story points; optionally adds a
+  comment with the votes. Host or co-host only, after the reveal.
+  """
+  saveEstimateToJira(ticketId: UUID!, addComment: Boolean!): JiraEstimateSaved!
+  "Finishes the OAuth sign-in with the code and state from the callback."
+  completeTrackerConnection(provider: String!, code: String!, state: String!): TrackerConnected!
+  "Deletes the caller's tokens for the tracker."
+  disconnectTracker(provider: String!): Boolean!
+  "Imports issues as tickets (all of the source when keys is empty), linked for \"Save to KEY\". Host and co-hosts."
+  importTrackerIssues(
+    provider: String!
+    gameId: UUID!
+    sourceId: String!
+    query: String
+    keys: [String!]
+  ): TrackerImportSummary!
+  "Writes the agreed estimate to the issue the ticket came from. Host and co-hosts."
+  saveEstimateToTracker(ticketId: UUID!): TrackerEstimateSaved!
+  "Dummy health-check mutation."
+  ping: String! @shareable
+  """
+  Shares the recap of a game as a read-only link, or stops sharing it (the link stops working). Sharing again
+  keeps the same link. Host and co-hosts.
+  """
+  setRecapSharing(gameId: UUID!, shared: Boolean!, showNames: Boolean! = false): RecapSharing!
+  "Creates Game Settings. Host only."
+  createSettings(gameId: UUID!, deckSetup: String): Settings!
+  "Updates Game Settings. Host only."
+  updateSettings(id: UUID!, gameId: UUID!, deckSetup: String): Settings!
+  """
+  Room options: auto-reveal, and the async voting window (players vote on all tickets on their own
+  until asyncVotingEndsAt; null or a past time switches to meeting mode). Host and co-hosts.
+  """
+  updateGameOptions(
+    gameId: UUID!
+    autoReveal: Boolean!
+    asyncVotingEndsAt: DateTime
+  ): Settings!
+  "Opens or closes the sorting board for everyone in the room. Host and co-hosts."
+  setSortingOpen(gameId: UUID!, open: Boolean!): SortingBoardInfo!
+  "Moves a ticket to a card column (an empty column moves it back to unsorted). Players, not observers."
+  moveSortedTicket(ticketId: UUID!, column: String): SortedTicket!
+  "Clears the \"discuss\" mark of a ticket once the team agrees. Host and co-hosts."
+  clearSortContested(ticketId: UUID!): SortedTicket!
+  """
+  Sets the final estimate of every sorted ticket without one to its column's card. Contested and unsorted tickets
+  are left as they are. Host and co-hosts.
+  """
+  applySortedEstimates(gameId: UUID!): SortedEstimatesApplied!
+  "Posts the session summary to the game's Slack thread or the team's webhook. Host and co-hosts."
+  postSessionSummary(gameId: UUID!): SessionSummaryInfo!
+  "Sets (or clears, with null) the Slack or Teams incoming webhook for session summaries. Team owner."
+  setTeamSummaryWebhook(teamId: UUID!, url: String): Boolean!
+  createOrganization(name: String!): OrganizationInfo!
+  renameOrganization(id: UUID!, name: String!): Boolean!
+  "Joins with the token from the invite link."
+  joinOrganization(id: UUID!, token: String!): Boolean!
+  "A new invite link; the old one stops working. Admins."
+  rotateOrganizationInvite(id: UUID!): OrganizationInfo!
+  setOrganizationRole(id: UUID!, playerId: UUID!, role: OrganizationRole!): Boolean!
+  "Leaves the organization (your own id) or removes a member (admins)."
+  removeOrganizationMember(id: UUID!, playerId: UUID!): Boolean!
+  "Moves your own team into the organization; you keep it."
+  addTeamToOrganization(id: UUID!, teamId: UUID!): Boolean!
+  "Takes a team out of the organization: its owner or an admin."
+  removeTeamFromOrganization(id: UUID!, teamId: UUID!): Boolean!
+  "Sets the working days of the sprint (1–30). Team owner only."
+  setSprintDays(teamId: UUID!, gameId: UUID!, days: Int!): SprintPlan!
+  "Sets how many days a member is available (in half days). The owner for anyone, members for themselves."
+  setMemberCapacity(teamId: UUID!, gameId: UUID!, playerId: UUID!, days: Float!): SprintPlan!
+  "Puts a ticket into the sprint plan or takes it out. Team owner only."
+  setTicketPlanned(teamId: UUID!, ticketId: UUID!, planned: Boolean!): SprintPlan!
+  """
+  Moves the planned Jira tickets into a Jira sprint with the caller's Jira connection. Other tickets are skipped.
+  Team owner only.
+  """
+  movePlanToJiraSprint(teamId: UUID!, gameId: UUID!, sprintId: Long!): JiraSprintMoved!
+  "Creates an API token for the team; the token is in the answer only (OPP-158). Team owner."
+  createTeamApiToken(teamId: UUID!, name: String!): CreatedTeamApiToken!
+  "Revokes an API token at once. Team owner."
+  revokeTeamApiToken(teamId: UUID!, tokenId: UUID!): Boolean!
+  "Adds an outgoing webhook; the signing secret is in the answer only (OPP-160). Team owner."
+  createTeamWebhook(teamId: UUID!, url: String!, events: [String!]!): CreatedTeamWebhook!
+  "Changes the address, the events or pauses a webhook. Team owner."
+  updateTeamWebhook(
+    teamId: UUID!
+    webhookId: UUID!
+    url: String!
+    events: [String!]!
+    enabled: Boolean!
+  ): TeamWebhookInfo!
+  "Makes a new signing secret; the old one stops working at once. Team owner."
+  rotateTeamWebhookSecret(teamId: UUID!, webhookId: UUID!): CreatedTeamWebhook!
+  deleteTeamWebhook(teamId: UUID!, webhookId: UUID!): Boolean!
+  "Pins an estimated ticket of the team's sprints as the reference for its card (two per card). Team members."
+  pinTeamAnchor(teamId: UUID!, ticketId: UUID!, note: String): TeamAnchor!
+  "Removes a reference ticket. Team members."
+  unpinTeamAnchor(teamId: UUID!, anchorId: UUID!): Boolean!
+  "Starts the retro of a team sprint from a template (OPP-163). Team owner or the sprint's host."
+  startRetro(teamId: UUID!, gameId: UUID!, template: String!): RetroInfo!
+  "Names on cards and dots per person; only while writing (OPP-164, OPP-165). Host."
+  updateRetroSettings(
+    retroId: UUID!
+    showAuthors: Boolean!
+    dotsPerPerson: Int!
+  ): RetroInfo!
+  "Moves the retro to the next step: reveal, voting, results (OPP-164, OPP-165). Host."
+  setRetroPhase(retroId: UUID!, phase: RetroPhase!): RetroInfo!
+  "Writes a card in a column. Players of the sprint."
+  addRetroCard(retroId: UUID!, column: Int!, text: String!): RetroCardInfo!
+  "Changes the text of one's own card."
+  editRetroCard(cardId: UUID!, text: String!): Boolean!
+  "Deletes a card: its author, or the host."
+  deleteRetroCard(cardId: UUID!): Boolean!
+  "Drops a card onto another to group them; without a target it leaves its group (OPP-165). Players."
+  groupRetroCard(cardId: UUID!, targetCardId: UUID): Boolean!
+  "Names a group (the card that heads it). Players."
+  setRetroGroupTitle(cardId: UUID!, title: String): Boolean!
+  "Puts one dot on a card (or takes one back). Returns the dots left. Dots stay hidden until the results."
+  voteRetroCard(cardId: UUID!, add: Boolean!): Int!
+  "Adds an action item, optionally for a card and with an owner (OPP-166). Players."
+  addRetroActionItem(retroId: UUID!, text: String!, cardId: UUID, ownerId: UUID): RetroActionItemInfo!
+  "Changes the text or owner of an action item. Players of the team's sprint, or team members."
+  updateRetroActionItem(actionItemId: UUID!, text: String!, ownerId: UUID): RetroActionItemInfo!
+  "Marks an action item done or open again. Team members, from the retro or the team room."
+  setRetroActionItemDone(actionItemId: UUID!, done: Boolean!): RetroActionItemInfo!
+  deleteRetroActionItem(actionItemId: UUID!): Boolean!
+  "Posts a short summary to the team's Slack or Teams webhook (OPP-168). Host."
+  postRetroSummary(retroId: UUID!): Boolean!
+  "Creates a team room; the caller becomes its owner and first member."
+  createTeam(name: String!, description: String): Team!
+  "Renames a team room. Owner only."
+  updateTeam(teamId: UUID!, name: String!, description: String): Team!
+  "Joins a team room with its link."
+  joinTeam(teamId: UUID!): Boolean!
+  "Leaves a team room. The owner cannot leave."
+  leaveTeam(teamId: UUID!): Boolean!
+  "Creates a ticket for given game. Host only."
+  createTicket(gameId: UUID!, name: String!, description: String!): Ticket!
+  """
+  Creates a ticket for a Jira issue and links it to the issue, so "Save to KEY" works after the reveal. Used when
+  a game is started from the Jira issue panel (OPP-120). Host only.
+  """
+  createTicketForIssue(
+    gameId: UUID!
+    key: String!
+    title: String!
+    url: String!
+  ): Ticket!
+  "Updates a ticket's name and description. Host and co-hosts."
+  updateTicket(id: UUID!, name: String!, description: String!): Ticket!
+  "Puts the game's tickets in the given order (first id first). Host and co-hosts."
+  reorderTickets(gameId: UUID!, ticketIds: [UUID!]!): Boolean!
+  """
+  Sets the estimate the team agreed on after the reveal (any value, usually a card). An empty value clears it.
+  Host and co-hosts.
+  """
+  setFinalEstimate(ticketId: UUID!, value: String): Ticket!
+  """
+  Re-votes a ticket: deletes its votes, hides voting again and broadcasts it as the
+  active ticket to all players in the game. Host only.
+  """
+  reVoteTicket(gameId: UUID!, ticketId: UUID!): Ticket!
+  "Deletes a ticket for given game. Host only."
+  deleteTicket(id: UUID!): Boolean!
+  "Starts (or restarts) the voting timer for everyone in the game. Host only."
+  startTimer(gameId: UUID!, durationSeconds: Int!): GameTimer!
+  "Stops the voting timer for everyone in the game. Host only."
+  stopTimer(gameId: UUID!): GameTimer!
+  """
+  Creates or updates a vote. Only players who joined the game can vote (observers cannot).
+  With auto-reveal on, the last missing vote reveals the cards for everyone.
+  """
+  createOrUpdateVote(ticketId: UUID!, value: String!): Vote!
+  "Reveals all votes for a ticket and broadcasts them to all players. Host and co-hosts."
+  revealVotes(ticketId: UUID!): VotesRevealed!
+}
+
+type Subscription {
+  "New chat messages of a game. Only players of the game can subscribe."
+  onChatMessage(gameId: UUID!): ChatMessage!
+  "Emoji reactions in a game. Only players of the game can subscribe."
+  onReaction(gameId: UUID!): Reaction!
+  onPlayerJoined(gameId: UUID!): BaseUserProfile!
+  onPlayerLeave(gameId: UUID!): BaseUserProfile!
+  onTicketCreated(gameId: UUID!): Ticket!
+  onTicketReVoted(gameId: UUID!): Ticket!
+  "Fires when players, tickets or the game itself change; reload the part named by kind."
+  onGameChanged(gameId: UUID!): GameChanged!
+  "Fires when the host starts or stops the timer."
+  onTimerChanged(gameId: UUID!): GameTimer!
+  onVoteCreatedOrUpdated(ticketId: UUID!): Vote!
+  onVotesRevealed(ticketId: UUID!): VotesRevealed!
+}
+
 type AccuracyOutlierInfo {
   ticket: TeamTicket!
   days: Float!
@@ -139,7 +509,7 @@ type GameRecap {
 type GameReport {
   gameId: UUID!
   fileName: String!
-  data: [Byte!]!
+  data: [UnsignedByte!]!
 }
 
 """
@@ -250,230 +620,6 @@ type MemberCapacityInfo {
   isDefault: Boolean!
 }
 
-"Base Game Engine mutation."
-type Mutation {
-  "Sends a chat message to a game. Only players of the game can send messages."
-  sendChatMessage(gameId: UUID! content: String!): ChatMessage!
-  "Turns the assistant on or off for the room. Host and co-hosts."
-  setAiAssistant(gameId: UUID! enabled: Boolean!): AiAssistantStatus!
-  "Up to three points that are unclear in the ticket, shown to everyone in the room (OPP-150). Host and co-hosts."
-  checkTicketClarity(ticketId: UUID!): TicketClarity!
-  "Clears the clarity points of a ticket for everyone. Host and co-hosts."
-  dismissTicketClarity(ticketId: UUID!): Boolean!
-  "Two to four smaller tickets for one that is too big (OPP-151). Only the host sees them. Host and co-hosts."
-  suggestTicketSplit(ticketId: UUID!): TicketSplitIdeas!
-  """
-  A one-sentence summary of the voters' notes and the chat since the reveal (OPP-152), for the host to edit and keep.
-  Player names are replaced before anything is sent. Host and co-hosts.
-  """
-  summarizeTicketDiscussion(ticketId: UUID!): TicketDiscussionSummary!
-  "Keeps (or clears, with an empty text) the summary of a ticket; it goes into the tracker comment and the report. Host and co-hosts."
-  setTicketDiscussionSummary(ticketId: UUID! summary: String): Boolean!
-  "Explains the current user's card after the reveal (up to 200 characters; empty clears it)."
-  setVoteNote(ticketId: UUID! note: String): TicketFacilitationInfo!
-  "Rates the current user's confidence (1–5) in the final estimate; null clears it."
-  setConfidence(ticketId: UUID! value: Int): TicketFacilitationInfo!
-  "Marks a ticket as \"needs more information\" (or clears it). Host and co-hosts."
-  setTicketNeedsInfo(ticketId: UUID! needsInfo: Boolean!): TicketFacilitationInfo!
-  """
-  Discussion and look options of the room. Host and co-hosts. Celebrations, theme and seasonal cards keep
-  their current value when left out.
-  """
-  updateFacilitationOptions(gameId: UUID! outlierNotes: Boolean! discussionMinutes: Int! confidenceCheck: Boolean! reactions: Boolean! celebrations: Boolean theme: String seasonalCards: Boolean): FacilitationSettings!
-  "Sends an emoji reaction to everyone in the room. Not stored."
-  sendReaction(gameId: UUID! emoji: String!): Boolean!
-  "Join Game. Requires a valid user token."
-  joinGame(gameId: UUID!): Boolean!
-  "Leave a Game. Requires a valid user token."
-  leaveGame(gameId: UUID!): Boolean!
-  """
-  Switches between voting (PLAYER) and watching (OBSERVER). Players change their own role;
-  the host and co-hosts can change anyone's. Leave playerId empty for yourself.
-  """
-  setPlayerRole(gameId: UUID! role: PlayerRole! playerId: UUID): Boolean!
-  "Picks your emoji avatar in this game from the fixed list, or clears it with null."
-  setPlayerAvatar(gameId: UUID! avatar: String): Boolean!
-  "Makes a player co-host, or a regular player again. Host only."
-  setCoHost(gameId: UUID! playerId: UUID! isCoHost: Boolean!): Boolean!
-  """
-  Removes a player from the game (their votes stay). Host and co-hosts; the host cannot be removed.
-  The removed player can join again with the link.
-  """
-  removePlayer(gameId: UUID! playerId: UUID!): Boolean!
-  "Hands the game over to another player in it. Host only; the old host stays as a player."
-  transferHost(gameId: UUID! playerId: UUID!): Boolean!
-  "Creates a game, returns game details. The caller becomes the game host."
-  createGame(name: String! description: String! deckSetup: String teamId: UUID source: String): Game!
-  "Deletes a game with its tickets, votes and players. Host only (not co-hosts)."
-  deleteGame(gameId: UUID!): Boolean!
-  "Generates a PDF report of the game. Only players of the game can generate it."
-  generateGameReport(gameId: UUID!): GameReport!
-  """
-  Makes the caller the host of a game started from Slack or Teams, with the one-time link from the chat.
-  False when the game already has a host or the link is not valid.
-  """
-  claimGameHost(gameId: UUID! token: String!): Boolean!
-  "Finishes the Atlassian consent: stores the tokens (encrypted) and lists the caller's sites."
-  completeJiraConnection(code: String! state: String!): JiraConnectionResult!
-  selectJiraSite(cloudId: String!): JiraConnectionStatus!
-  "Deletes the caller's stored Jira tokens."
-  disconnectJira: Boolean!
-  "Adds Jira issues as tickets; issues already in the game are skipped. Host or co-host only."
-  importJiraIssues(gameId: UUID! issueKeys: [String!]!): JiraImportSummary!
-  """
-  Writes the final estimate (or the most common card) to the Jira issue's story points; optionally adds a
-  comment with the votes. Host or co-host only, after the reveal.
-  """
-  saveEstimateToJira(ticketId: UUID! addComment: Boolean!): JiraEstimateSaved!
-  "Finishes the OAuth sign-in with the code and state from the callback."
-  completeTrackerConnection(provider: String! code: String! state: String!): TrackerConnected!
-  "Deletes the caller's tokens for the tracker."
-  disconnectTracker(provider: String!): Boolean!
-  "Imports issues as tickets (all of the source when keys is empty), linked for \"Save to KEY\". Host and co-hosts."
-  importTrackerIssues(provider: String! gameId: UUID! sourceId: String! query: String keys: [String!]): TrackerImportSummary!
-  "Writes the agreed estimate to the issue the ticket came from. Host and co-hosts."
-  saveEstimateToTracker(ticketId: UUID!): TrackerEstimateSaved!
-  "Dummy health-check mutation."
-  ping: String!
-  """
-  Shares the recap of a game as a read-only link, or stops sharing it (the link stops working). Sharing again
-  keeps the same link. Host and co-hosts.
-  """
-  setRecapSharing(gameId: UUID! shared: Boolean! showNames: Boolean! = false): RecapSharing!
-  "Creates Game Settings. Host only."
-  createSettings(gameId: UUID! deckSetup: String): Settings!
-  "Updates Game Settings. Host only."
-  updateSettings(id: UUID! gameId: UUID! deckSetup: String): Settings!
-  """
-  Room options: auto-reveal, and the async voting window (players vote on all tickets on their own
-  until asyncVotingEndsAt; null or a past time switches to meeting mode). Host and co-hosts.
-  """
-  updateGameOptions(gameId: UUID! autoReveal: Boolean! asyncVotingEndsAt: DateTime): Settings!
-  "Opens or closes the sorting board for everyone in the room. Host and co-hosts."
-  setSortingOpen(gameId: UUID! open: Boolean!): SortingBoardInfo!
-  "Moves a ticket to a card column (an empty column moves it back to unsorted). Players, not observers."
-  moveSortedTicket(ticketId: UUID! column: String): SortedTicket!
-  "Clears the \"discuss\" mark of a ticket once the team agrees. Host and co-hosts."
-  clearSortContested(ticketId: UUID!): SortedTicket!
-  """
-  Sets the final estimate of every sorted ticket without one to its column's card. Contested and unsorted tickets
-  are left as they are. Host and co-hosts.
-  """
-  applySortedEstimates(gameId: UUID!): SortedEstimatesApplied!
-  "Posts the session summary to the game's Slack thread or the team's webhook. Host and co-hosts."
-  postSessionSummary(gameId: UUID!): SessionSummaryInfo!
-  "Sets (or clears, with null) the Slack or Teams incoming webhook for session summaries. Team owner."
-  setTeamSummaryWebhook(teamId: UUID! url: String): Boolean!
-  createOrganization(name: String!): OrganizationInfo!
-  renameOrganization(id: UUID! name: String!): Boolean!
-  "Joins with the token from the invite link."
-  joinOrganization(id: UUID! token: String!): Boolean!
-  "A new invite link; the old one stops working. Admins."
-  rotateOrganizationInvite(id: UUID!): OrganizationInfo!
-  setOrganizationRole(id: UUID! playerId: UUID! role: OrganizationRole!): Boolean!
-  "Leaves the organization (your own id) or removes a member (admins)."
-  removeOrganizationMember(id: UUID! playerId: UUID!): Boolean!
-  "Moves your own team into the organization; you keep it."
-  addTeamToOrganization(id: UUID! teamId: UUID!): Boolean!
-  "Takes a team out of the organization: its owner or an admin."
-  removeTeamFromOrganization(id: UUID! teamId: UUID!): Boolean!
-  "Sets the working days of the sprint (1–30). Team owner only."
-  setSprintDays(teamId: UUID! gameId: UUID! days: Int!): SprintPlan!
-  "Sets how many days a member is available (in half days). The owner for anyone, members for themselves."
-  setMemberCapacity(teamId: UUID! gameId: UUID! playerId: UUID! days: Float!): SprintPlan!
-  "Puts a ticket into the sprint plan or takes it out. Team owner only."
-  setTicketPlanned(teamId: UUID! ticketId: UUID! planned: Boolean!): SprintPlan!
-  """
-  Moves the planned Jira tickets into a Jira sprint with the caller's Jira connection. Other tickets are skipped.
-  Team owner only.
-  """
-  movePlanToJiraSprint(teamId: UUID! gameId: UUID! sprintId: Long!): JiraSprintMoved!
-  "Creates an API token for the team; the token is in the answer only (OPP-158). Team owner."
-  createTeamApiToken(teamId: UUID! name: String!): CreatedTeamApiToken!
-  "Revokes an API token at once. Team owner."
-  revokeTeamApiToken(teamId: UUID! tokenId: UUID!): Boolean!
-  "Adds an outgoing webhook; the signing secret is in the answer only (OPP-160). Team owner."
-  createTeamWebhook(teamId: UUID! url: String! events: [String!]!): CreatedTeamWebhook!
-  "Changes the address, the events or pauses a webhook. Team owner."
-  updateTeamWebhook(teamId: UUID! webhookId: UUID! url: String! events: [String!]! enabled: Boolean!): TeamWebhookInfo!
-  "Makes a new signing secret; the old one stops working at once. Team owner."
-  rotateTeamWebhookSecret(teamId: UUID! webhookId: UUID!): CreatedTeamWebhook!
-  deleteTeamWebhook(teamId: UUID! webhookId: UUID!): Boolean!
-  "Pins an estimated ticket of the team's sprints as the reference for its card (two per card). Team members."
-  pinTeamAnchor(teamId: UUID! ticketId: UUID! note: String): TeamAnchor!
-  "Removes a reference ticket. Team members."
-  unpinTeamAnchor(teamId: UUID! anchorId: UUID!): Boolean!
-  "Starts the retro of a team sprint from a template (OPP-163). Team owner or the sprint's host."
-  startRetro(teamId: UUID! gameId: UUID! template: String!): RetroInfo!
-  "Names on cards and dots per person; only while writing (OPP-164, OPP-165). Host."
-  updateRetroSettings(retroId: UUID! showAuthors: Boolean! dotsPerPerson: Int!): RetroInfo!
-  "Moves the retro to the next step: reveal, voting, results (OPP-164, OPP-165). Host."
-  setRetroPhase(retroId: UUID! phase: RetroPhase!): RetroInfo!
-  "Writes a card in a column. Players of the sprint."
-  addRetroCard(retroId: UUID! column: Int! text: String!): RetroCardInfo!
-  "Changes the text of one's own card."
-  editRetroCard(cardId: UUID! text: String!): Boolean!
-  "Deletes a card: its author, or the host."
-  deleteRetroCard(cardId: UUID!): Boolean!
-  "Drops a card onto another to group them; without a target it leaves its group (OPP-165). Players."
-  groupRetroCard(cardId: UUID! targetCardId: UUID): Boolean!
-  "Names a group (the card that heads it). Players."
-  setRetroGroupTitle(cardId: UUID! title: String): Boolean!
-  "Puts one dot on a card (or takes one back). Returns the dots left. Dots stay hidden until the results."
-  voteRetroCard(cardId: UUID! add: Boolean!): Int!
-  "Adds an action item, optionally for a card and with an owner (OPP-166). Players."
-  addRetroActionItem(retroId: UUID! text: String! cardId: UUID ownerId: UUID): RetroActionItemInfo!
-  "Changes the text or owner of an action item. Players of the team's sprint, or team members."
-  updateRetroActionItem(actionItemId: UUID! text: String! ownerId: UUID): RetroActionItemInfo!
-  "Marks an action item done or open again. Team members, from the retro or the team room."
-  setRetroActionItemDone(actionItemId: UUID! done: Boolean!): RetroActionItemInfo!
-  deleteRetroActionItem(actionItemId: UUID!): Boolean!
-  "Posts a short summary to the team's Slack or Teams webhook (OPP-168). Host."
-  postRetroSummary(retroId: UUID!): Boolean!
-  "Creates a team room; the caller becomes its owner and first member."
-  createTeam(name: String! description: String): Team!
-  "Renames a team room. Owner only."
-  updateTeam(teamId: UUID! name: String! description: String): Team!
-  "Joins a team room with its link."
-  joinTeam(teamId: UUID!): Boolean!
-  "Leaves a team room. The owner cannot leave."
-  leaveTeam(teamId: UUID!): Boolean!
-  "Creates a ticket for given game. Host only."
-  createTicket(gameId: UUID! name: String! description: String!): Ticket!
-  """
-  Creates a ticket for a Jira issue and links it to the issue, so "Save to KEY" works after the reveal. Used when
-  a game is started from the Jira issue panel (OPP-120). Host only.
-  """
-  createTicketForIssue(gameId: UUID! key: String! title: String! url: String!): Ticket!
-  "Updates a ticket's name and description. Host and co-hosts."
-  updateTicket(id: UUID! name: String! description: String!): Ticket!
-  "Puts the game's tickets in the given order (first id first). Host and co-hosts."
-  reorderTickets(gameId: UUID! ticketIds: [UUID!]!): Boolean!
-  """
-  Sets the estimate the team agreed on after the reveal (any value, usually a card). An empty value clears it.
-  Host and co-hosts.
-  """
-  setFinalEstimate(ticketId: UUID! value: String): Ticket!
-  """
-  Re-votes a ticket: deletes its votes, hides voting again and broadcasts it as the
-  active ticket to all players in the game. Host only.
-  """
-  reVoteTicket(gameId: UUID! ticketId: UUID!): Ticket!
-  "Deletes a ticket for given game. Host only."
-  deleteTicket(id: UUID!): Boolean!
-  "Starts (or restarts) the voting timer for everyone in the game. Host only."
-  startTimer(gameId: UUID! durationSeconds: Int!): GameTimer!
-  "Stops the voting timer for everyone in the game. Host only."
-  stopTimer(gameId: UUID!): GameTimer!
-  """
-  Creates or updates a vote. Only players who joined the game can vote (observers cannot).
-  With auto-reveal on, the last missing vote reveals the cards for everyone.
-  """
-  createOrUpdateVote(ticketId: UUID! value: String!): Vote!
-  "Reveals all votes for a ticket and broadcasts them to all players. Host and co-hosts."
-  revealVotes(ticketId: UUID!): VotesRevealed!
-}
-
 "An organization as the caller sees it (OPP-154). Members see the names of its teams; admins also its numbers."
 type OrganizationInfo {
   members: [OrganizationMemberInfo!]!
@@ -530,90 +676,6 @@ type PointBudgetInfo {
   pointsPerPersonDay: Float
 }
 
-"Base Game Engine query."
-type Query {
-  """
-  Returns recent chat messages for a game (from Redis, 24h TTL). Empty for callers who are not
-  players of the game.
-  """
-  chatMessages(gameId: UUID!): [ChatMessage!]!
-  "Is the assistant available on this server and on in this room? Players of the game."
-  aiAssistant(gameId: UUID!): AiAssistantStatus!
-  "Discussion data of a ticket. Players of the game only."
-  ticketFacilitation(ticketId: UUID!): TicketFacilitationInfo!
-  "Returns game with participants"
-  gamePlayers(gameId: UUID!): ApiCollectionOfGamePlayer!
-  "Returns Game details."
-  game(id: UUID!): Game!
-  "Returns an info about the Game Engine service."
-  info: Info!
-  "Whether the integration is available and the caller has connected Jira."
-  jiraConnection: JiraConnectionStatus!
-  "The Atlassian consent page to open; it returns to the app's Jira callback, then to returnPath."
-  jiraAuthorizeUrl(returnPath: String!): JiraAuthorizeLink!
-  jiraSites: JiraSiteList!
-  jiraBoards: JiraBoardList!
-  jiraSprints(boardId: Long!): JiraSprintList!
-  """
-  Import preview: a sprint's issues, a board's open issues, or a JQL query, with the issues that are already
-  tickets of the game marked. Host or co-host only.
-  """
-  jiraIssues(gameId: UUID! boardId: Long sprintId: Long jql: String): JiraIssueSearch!
-  "The trackers this server offers, with the caller's connection to each."
-  trackers: [TrackerInfo!]!
-  "The tracker's consent page; it returns to \/integrations\/tracker\/{provider}\/callback, then to returnPath."
-  trackerAuthorizeUrl(provider: String! returnPath: String!): TrackerAuthorizeLink!
-  "Repositories, teams or projects to import from."
-  trackerSources(provider: String!): TrackerSourceList!
-  "Import preview: up to 100 issues of a source, marking those already in the game. Host and co-hosts."
-  trackerIssues(provider: String! gameId: UUID! sourceId: String! query: String): TrackerIssueList!
-  "Dummy health-check query."
-  ping: String!
-  "The shared recap behind a recap link. No sign-in needed; RecapNotFound once the host stops sharing."
-  gameRecap(token: String!): GameRecap!
-  "Whether the recap of a game is shared. Host and co-hosts."
-  recapSharing(gameId: UUID!): RecapSharing!
-  "Gets Game Settings."
-  settings(gameId: UUID!): Settings!
-  "The sorting board of a game. Players of the game only."
-  sortingBoard(gameId: UUID!): SortingBoardInfo!
-  "Cycle times per card from Jira, with the caller's Jira connection. Team members."
-  teamAccuracy(teamId: UUID!): TeamAccuracyInfo!
-  "Preview of the session summary and where it would go. Host and co-hosts."
-  sessionSummary(gameId: UUID!): SessionSummaryInfo!
-  "An organization by id. Anyone with the link sees its name; members see more."
-  organization(id: UUID!): OrganizationInfo!
-  "Organizations the caller belongs to."
-  myOrganizations: [OrganizationInfo!]!
-  "Capacity, budget and plan of one sprint of a team. Members only."
-  sprintPlan(teamId: UUID! gameId: UUID!): SprintPlan!
-  "The last 20 deliveries of a webhook, newest first (OPP-160). Team owner."
-  teamWebhookDeliveries(teamId: UUID! webhookId: UUID!): TeamWebhookDeliveries!
-  "The team's anchors and up to three similar past tickets for a ticket. Players of the game only."
-  ticketReference(ticketId: UUID!): TicketReference!
-  "The retro of a sprint (game). Players of the game only; RetroNotFound when it has none yet."
-  retro(gameId: UUID!): RetroInfo!
-  "\"Sprint in numbers\" for the retro (OPP-167). Players of the game."
-  retroFacts(retroId: UUID!): SprintFactsInfo!
-  "The retro as Markdown or PDF (OPP-168). Players of the game."
-  retroExport(retroId: UUID! pdf: Boolean! = false): RetroExportFile!
-  "A team room by id. Members-only fields are empty for others."
-  team(id: UUID!): Team!
-  "Team rooms the caller belongs to."
-  myTeams: [Team!]!
-  "Gets a ticket by id."
-  ticket(id: UUID!): Ticket!
-  "Gets a list of tickets by gameId."
-  tickets(gameId: UUID!): ApiCollectionOfTicket!
-  """
-  Current voting timer of a game, for players who join while it runs. Null when there is none
-  or the caller is not a player of the game.
-  """
-  gameTimer(gameId: UUID!): GameTimer
-  "Gets votes by ticketId."
-  votes(ticketId: UUID!): ApiCollectionOfVote!
-}
-
 "A short emoji reaction; broadcast to the room, never stored (OPP-125)."
 type Reaction {
   gameId: UUID!
@@ -621,7 +683,7 @@ type Reaction {
   emoji: String!
 }
 
-"Whether the recap of a game is shared (OPP-170). The link is app.openplanningpoker.com\/recap\/{token}."
+"Whether the recap of a game is shared (OPP-170). The link is app.openplanningpoker.com/recap/{token}."
 type RecapSharing {
   shared: Boolean!
   token: String
@@ -672,7 +734,7 @@ type RetroCardInfo {
 type RetroExportFile {
   fileName: String!
   contentType: String!
-  data: [Byte!]!
+  data: [UnsignedByte!]!
 }
 
 "The retro of a sprint as the caller sees it (OPP-162)."
@@ -756,16 +818,6 @@ type Sprint {
   stats: SprintStats
 }
 
-type SprintFactTicket {
-  ticketId: UUID!
-  name: String!
-  externalKey: String
-  estimate: String
-  days: Float
-  cardMedianDays: Float
-  confidence: Float
-}
-
 type SprintFactsInfo {
   hasData: Boolean!
   estimatedPoints: Float!
@@ -775,6 +827,16 @@ type SprintFactsInfo {
   velocity: [VelocityPoint!]!
   outliers: [SprintFactTicket!]!
   lowConfidence: [SprintFactTicket!]!
+}
+
+type SprintFactTicket {
+  ticketId: UUID!
+  name: String!
+  externalKey: String
+  estimate: String
+  days: Float
+  cardMedianDays: Float
+  confidence: Float
 }
 
 "Capacity, budget and the chosen tickets of one team sprint (OPP-138)."
@@ -806,23 +868,6 @@ type SprintStats {
   "Average seconds from the reveal to the final estimate."
   averageDiscussionSeconds: Float
   needsInfo: Int!
-}
-
-type Subscription {
-  "New chat messages of a game. Only players of the game can subscribe."
-  onChatMessage(gameId: UUID!): ChatMessage!
-  "Emoji reactions in a game. Only players of the game can subscribe."
-  onReaction(gameId: UUID!): Reaction!
-  onPlayerJoined(gameId: UUID!): BaseUserProfile!
-  onPlayerLeave(gameId: UUID!): BaseUserProfile!
-  onTicketCreated(gameId: UUID!): Ticket!
-  onTicketReVoted(gameId: UUID!): Ticket!
-  "Fires when players, tickets or the game itself change; reload the part named by kind."
-  onGameChanged(gameId: UUID!): GameChanged!
-  "Fires when the host starts or stops the timer."
-  onTimerChanged(gameId: UUID!): GameTimer!
-  onVoteCreatedOrUpdated(ticketId: UUID!): Vote!
-  onVotesRevealed(ticketId: UUID!): VotesRevealed!
 }
 
 """
@@ -857,7 +902,7 @@ type Team {
   "Reference tickets, by card value. Empty for non-members."
   anchors: [TeamAnchor!]!
   "Estimated tickets of all sprints, newest first, filtered by text and card value. Empty for non-members."
-  history(search: String value: String skip: Int! = 0 take: Int! = 20): TeamHistory!
+  history(search: String, value: String, skip: Int! = 0, take: Int! = 20): TeamHistory!
   "Sprints that have a retro and its step. Empty for non-members."
   retros: [SprintRetro!]!
   "Open action items of the team's retros (OPP-166). Empty for non-members."
@@ -1102,7 +1147,7 @@ type VotesRevealed {
 enum GameChangeKind {
   "Host, settings or options changed: reload the game."
   GAME
-  "A player joined, left, was removed, or changed role \/ co-host."
+  "A player joined, left, was removed, or changed role / co-host."
   PLAYERS
   "Tickets were edited, deleted, reordered or got a final estimate."
   TICKETS
@@ -1139,19 +1184,26 @@ enum VoteSpread {
   WIDE
 }
 
-"The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
-directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
+"The `DateTime` scalar type represents a date and time with time zone offset information."
+scalar DateTime
+  @specifiedBy(url: "https://scalars.graphql.org/chillicream/date-time.html")
 
-"The `Byte` scalar type represents non-fractional whole numeric values. Byte can represent values between 0 and 255."
-scalar Byte
-
-"The `DateTime` scalar represents an ISO-8601 compliant date time type."
-scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")
-
-"The `Decimal` scalar type represents a decimal floating-point number."
+"The `Decimal` scalar type represents a decimal floating-point number with high precision."
 scalar Decimal
+  @specifiedBy(url: "https://scalars.graphql.org/chillicream/decimal.html")
 
-"The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1."
+"The `Long` scalar type represents a signed 64-bit integer."
 scalar Long
+  @specifiedBy(url: "https://scalars.graphql.org/chillicream/long.html")
 
-scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")
+"The `UnsignedByte` scalar type represents an unsigned 8-bit integer."
+scalar UnsignedByte
+  @specifiedBy(
+    url: "https://scalars.graphql.org/chillicream/unsigned-byte.html"
+  )
+
+"The `UUID` scalar type represents a Universally Unique Identifier (UUID) as defined by RFC 9562."
+scalar UUID
+  @specifiedBy(url: "https://scalars.graphql.org/chillicream/uuid.html")
+
+directive @shareable repeatable on OBJECT | FIELD_DEFINITION

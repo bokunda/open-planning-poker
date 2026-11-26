@@ -10,5 +10,7 @@ public static class Query
     /// Dummy health-check query.
     /// </summary>
     /// <returns></returns>
+    // Both subgraphs have it, so Fusion needs it to be @shareable.
+    [HotChocolate.Types.Composite.Shareable]
     public static string Ping() => "Pong.";
 }

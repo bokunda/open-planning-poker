@@ -1,6 +1,0 @@
-{
-  "subgraph": "GameEngine",
-  "http": {
-    "baseAddress": "http://OpenPlanningPoker.GameEngine.GraphQL:8080/graphql"
-  }
-}

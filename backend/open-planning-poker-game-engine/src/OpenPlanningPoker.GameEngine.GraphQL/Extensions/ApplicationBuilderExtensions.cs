@@ -27,6 +27,8 @@ public static class ApplicationBuilderExtensions
             .AddSocketSessionInterceptor<WebSocketAuthInterceptor>()
             // Error messages in the caller's language.
             .TryAddTypeInterceptor<Localization.ApplicationErrorMessageInterceptor>()
+            // Types both subgraphs define are @shareable for Fusion composition.
+            .TryAddTypeInterceptor<ShareableTypesInterceptor>()
             .AddMaxExecutionDepthRule(MaxExecutionDepth)
             .ModifyRequestOptions(options =>
             {

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Developers
+- Hot Chocolate 16.7.7 in both subgraphs, the shared package and the gateway. The gateway moves to Fusion v2: it serves `gateway.far` (composed with the Nitro CLI by `backend/open-planning-poker-graphql-gateway/compose-gateway.sh`) instead of `gateway.fgp`, and each subgraph's name and URL are in its `schema-settings.json`
+- The report and retro export bytes are typed `[UnsignedByte!]!` (was `[Byte!]!`); the values are unchanged
+- `OpenPlanningPoker.Shared` 1.2.0 is built against Hot Chocolate 16; the services keep 1.1.0 until it is published
+
 ## [3.8.1] — 2026-11-26
 
 New fonts in the app, on the website and in the PDF reports, with smaller font files.

@@ -1,5 +1,7 @@
-const string HttpClientName = "Fusion";
-const string FusionConfigFileName = "gateway.fgp";
+// Fusion v2 sends subgraph requests through the "fusion" HTTP client (transports.http.clientName in the
+// subgraphs' schema-settings.json); it carries the caller's token, language and address.
+const string HttpClientName = "fusion";
+const string FusionConfigFileName = "gateway.far";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,18 +27,19 @@ if (corsConfig.AllowedOrigins is null || corsConfig.AllowedOrigins.Length == 0)
 builder.Services.AddCors(corsConfig.PolicyName, corsConfig.AllowedOrigins);
 
 builder.Services
-    .AddFusionGatewayServer()
-    .ConfigureFromFile(FusionConfigFileName)
-    // Query plans expose internal subgraph structure; keep them off.
-    .ModifyFusionOptions(x => x.AllowQueryPlan = false)
-    .CoreBuilder
-    .AddMaxExecutionDepthRule(10)
+    .AddGraphQLGatewayServer()
+    .AddFileSystemConfiguration(FusionConfigFileName)
+    // Operation plans expose internal subgraph structure; they stay off (the Fusion v2 default).
     .ModifyRequestOptions(options =>
     {
+        options.AllowOperationPlanRequests = false;
         options.ExecutionTimeout = TimeSpan.FromSeconds(15);
         options.IncludeExceptionDetails = builder.Environment.IsDevelopment();
     })
-    .DisableIntrospection(!builder.Environment.IsDevelopment());
+    .AddMaxExecutionDepthRule(10)
+    .DisableIntrospection(!builder.Environment.IsDevelopment())
+    // The Nitro IDE is for local development only.
+    .ModifyServerOptions(options => options.Tool.Enable = builder.Environment.IsDevelopment());
 
 // The gateway is the public entry point for HTTP GraphQL traffic.
 builder.Services.AddClientRateLimiting(builder.Configuration);
@@ -51,10 +54,6 @@ var app = builder.Build();
 app.UseCors(corsConfig.PolicyName);
 app.UseRateLimiter();
 app.UseWebSockets();
-app.MapGraphQL().WithOptions(new GraphQLServerOptions
-{
-    // The Nitro IDE is for local development only.
-    Tool = { Enable = app.Environment.IsDevelopment() }
-});
+app.MapGraphQL();
 
 app.Run();

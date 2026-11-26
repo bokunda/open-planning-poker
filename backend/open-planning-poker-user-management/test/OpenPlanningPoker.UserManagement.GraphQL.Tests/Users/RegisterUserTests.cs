@@ -64,6 +64,7 @@ public class RegisterUserTests
             .AddAuthorization()
             .AddQueryConventions()
             .AddMutationConventions()
+            .TryAddTypeInterceptor<OpenPlanningPoker.UserManagement.GraphQL.Localization.ApplicationErrorMessageInterceptor>()
             .AddTypes()
             .BuildRequestExecutorAsync();
 
@@ -74,7 +75,7 @@ public class RegisterUserTests
 
 
         // assert
-        result.MatchSnapshot();
+        result.ToJson().MatchSnapshot();
     }
 
     [Fact]
@@ -108,6 +109,7 @@ public class RegisterUserTests
             .AddAuthorization()
             .AddQueryConventions()
             .AddMutationConventions()
+            .TryAddTypeInterceptor<OpenPlanningPoker.UserManagement.GraphQL.Localization.ApplicationErrorMessageInterceptor>()
             .AddTypes()
             .BuildRequestExecutorAsync();
 
@@ -118,7 +120,7 @@ public class RegisterUserTests
 
 
         // assert
-        result.MatchSnapshot();
+        result.ToJson().MatchSnapshot();
     }
 
     [Fact]
@@ -144,6 +146,7 @@ public class RegisterUserTests
             .AddAuthorization()
             .AddQueryConventions()
             .AddMutationConventions()
+            .TryAddTypeInterceptor<OpenPlanningPoker.UserManagement.GraphQL.Localization.ApplicationErrorMessageInterceptor>()
             .AddTypes()
             .BuildRequestExecutorAsync();
 
@@ -154,6 +157,6 @@ public class RegisterUserTests
 
 
         // assert
-        result.MatchSnapshot();
+        result.ToJson().MatchSnapshot();
     }
 }

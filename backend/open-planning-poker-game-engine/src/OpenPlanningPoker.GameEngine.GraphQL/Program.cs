@@ -106,11 +106,8 @@ app.MapChatIntegrations();
 app.MapRecapEndpoints();
 OpenPlanningPoker.GameEngine.GraphQL.Features.Teams.PublicApiEndpoints.MapPublicApi(app);
 OpenPlanningPoker.GameEngine.GraphQL.Features.Info.SiteMetrics.MapSiteMetrics(app);
-app.MapGraphQL().WithOptions(new GraphQLServerOptions
-{
-    // The Nitro IDE is for local development only.
-    Tool = { Enable = app.Environment.IsDevelopment() }
-});
+// The Nitro IDE is for local development only.
+app.MapGraphQL().WithOptions(options => options.Tool.Enable = app.Environment.IsDevelopment());
 
 app.RunWithGraphQLCommands(args);
 

@@ -37,9 +37,9 @@ Open Planning Poker is a free, open-source agile estimation tool for Scrum teams
 - `backend/open-planning-poker-game-engine/src/.../Program.cs` — Game Engine startup, sitemap endpoint
 - `backend/open-planning-poker-game-engine/src/.../Extensions/ApplicationBuilderExtensions.cs` — **Database.Migrate() was commented out! Fixed.**
 - `backend/open-planning-poker-graphql-gateway/Program.cs` — Fusion Gateway setup
-- `backend/open-planning-poker-graphql-gateway/gateway.fgp` — **Binary pack file — CI/CD regenerates with production URLs**
-- `backend/open-planning-poker-game-engine/src/.../subgraph-config.json` — Docker DNS: `http://OpenPlanningPoker.GameEngine.GraphQL:8080/graphql`
-- `backend/open-planning-poker-user-management/src/.../subgraph-config.json` — Docker DNS: `http://OpenPlanningPoker.UserManagement.GraphQL:8080/graphql`
+- `backend/open-planning-poker-graphql-gateway/gateway.far` — **Fusion v2 archive (zip) — composed by `compose-gateway.sh`; CI/CD recomposes it on deploy**
+- `backend/open-planning-poker-game-engine/src/.../schema-settings.json` — Fusion subgraph name + Docker DNS: `http://OpenPlanningPoker.GameEngine.GraphQL:8080/graphql`
+- `backend/open-planning-poker-user-management/src/.../schema-settings.json` — Fusion subgraph name + Docker DNS: `http://OpenPlanningPoker.UserManagement.GraphQL:8080/graphql`
 
 ### Frontend Critical Files
 - `frontend/open-planning-poker-web-app/src/app/features/home/game/game.component.ts` — Main game logic, voting state
@@ -83,7 +83,7 @@ Open Planning Poker is a free, open-source agile estimation tool for Scrum teams
 
 ## Known Limitations
 - .NET SDK 10 installed locally, projects target net9.0 — need .NET 9 runtime for `dotnet run`
-- `gateway.fgp` must be regenerated for local dev (use `regenerate-gateway.sh`)
+- `gateway.far` must be recomposed after schema changes (use `backend/open-planning-poker-graphql-gateway/compose-gateway.sh` or `regenerate-gateway.sh`)
 - Fusion Gateway HTTPS port removed in local override (no dev cert in Docker)
 - CORS only localhost in appsettings (CI/CD overwrites)
 - Node 22-alpine for both Docker stages
@@ -113,7 +113,7 @@ npm start  # http://localhost:4200
 ## CI/CD Info
 - Registry: ghcr.io/bokunda/*
 - Deploy via SSH to 162.55.213.9
-- gateway.fgp regenerated during deploy-opp-gateway workflow
+- gateway.far recomposed during deploy-opp-gateway workflow
 - config.json overwritten during deploy-opp-ui workflow
 - Private server 91.99.28.247: PostgreSQL + Redis only
 - CI/CD uses GitHub Variables (SSH_HOST, POSTGRES_PASSWORD, etc.)
@@ -121,17 +121,17 @@ npm start  # http://localhost:4200
 
 ## Common Pitfalls
 1. **Database not created** — `Database.Migrate()` was commented out. Run `createdb opp-gameengine` manually if needed.
-2. **gateway.fgp has production URLs** — Must regenerate for local dev. CI/CD handles production.
+2. **gateway.far has Docker DNS URLs** — Recompose after schema changes. CI/CD handles production.
 3. **Fusion Gateway HTTPS crash** — Exit code 139. Fixed by removing ASPNETCORE_HTTPS_PORTS from override.
 4. **User Management / Game Engine hang** — Serilog Loki sink blocks startup if Loki unavailable. Added console sink to Dev configs.
 5. **Duplicate players** — getGamePlayers() was overwriting list. Fixed with merge logic.
 6. **config.json localhost** — CI/CD overwrites during build. Safe to keep localhost for dev.
 7. **Angular Material imports** — `MatSelectModule`, `MatProgressSpinnerModule`, `MatSlideToggleModule`, `MatBadgeModule` added to MaterialModule.
-8. **Chat/Reveal require gateway.fgp regeneration** — New types added to GameEngine schema. Run `.\generate-schema.ps1` then `docker compose build` + `up -d`.
+8. **Schema changes require gateway.far recomposition** — Run `compose-gateway.sh` (or `generate-schema.ps1`) then `docker compose build` + `up -d`.
 9. **takeUntilDestroyed context error (NG0203)** — Must inject `DestroyRef` and pass to `takeUntilDestroyed(this.destroyRef)` when used outside injection context (e.g., in paramMap subscription callbacks).
 10. **RedisValue ambiguity** — `JsonSerializer.Deserialize<T>(RedisValue)` is ambiguous; cast to `(string)value` explicitly.
 11. **Shared project is a NuGet package** — `OpenPlanningPoker.Shared` v1.0.1-preview1. Local changes to `backend/open-planning-poker-shared/` are **ignored by Docker**. Register services directly in the consuming project's `Program.cs` instead.
-12. **Gateway regeneration workflow** — After schema/C# changes to GameEngine GraphQL types, run `generate-schema.ps1` for local Docker (`docker compose build` → `docker compose up -d --force-recreate`) and commit the updated `gateway.fgp`. The Deploy OPP Gateway workflow recomposes the same `backend/open-planning-poker-graphql-gateway/gateway.fgp` (the file the image copies) and fails if the composed schema lacks expected fields. Subgraph URLs inside it are Docker DNS names; do not point them at public URLs.
+12. **Gateway regeneration workflow** — After schema/C# changes to GameEngine GraphQL types, run `compose-gateway.sh` (or `generate-schema.ps1`) for local Docker (`docker compose build` → `docker compose up -d --force-recreate`) and commit the updated `gateway.far`. The Deploy OPP Gateway workflow recomposes the same `backend/open-planning-poker-graphql-gateway/gateway.far` (the file the image copies) and fails if the composed schema lacks expected fields. Subgraph URLs inside it are Docker DNS names; do not point them at public URLs.
 13. **Nginx: `location ~*` blocks without `proxy_pass`** — These capture static asset requests but don't forward to containers. Remove them when proxying to Docker containers; use only `location /` with `proxy_pass`.
 14. **Nginx: use `127.0.0.1` not public IP** — Proxy to `127.0.0.1:PORT` for Docker containers on the same host. Public IP loops through external network.
 15. **Website container shows default nginx page** — Build script (`package.json`) must copy HTML, images, robots.txt etc. to `dist/`. Fixed: `cp` commands added to `npm run build`.
