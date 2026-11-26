@@ -41,7 +41,7 @@ public class ValidationBehaviorTests
     public async Task InvalidRequest_ReturnsValidationError_WithoutCallingHandler()
     {
         var handlerCalled = false;
-        RequestHandlerDelegate<Result<CreateGameResponse, ApplicationError>> next = () =>
+        RequestHandlerDelegate<Result<CreateGameResponse, ApplicationError>> next = _ =>
         {
             handlerCalled = true;
             return Task.FromResult<Result<CreateGameResponse, ApplicationError>>(new CreateGameResponse(Guid.NewGuid(), "x", "", Guid.NewGuid()));
@@ -59,7 +59,7 @@ public class ValidationBehaviorTests
     {
         var response = new CreateGameResponse(Guid.NewGuid(), "Sprint 42", "", Guid.NewGuid());
         RequestHandlerDelegate<Result<CreateGameResponse, ApplicationError>> next =
-            () => Task.FromResult<Result<CreateGameResponse, ApplicationError>>(response);
+            _ => Task.FromResult<Result<CreateGameResponse, ApplicationError>>(response);
 
         var result = await Behavior.Handle(new CreateGameCommand("Sprint 42", ""), next, CancellationToken.None);
 
