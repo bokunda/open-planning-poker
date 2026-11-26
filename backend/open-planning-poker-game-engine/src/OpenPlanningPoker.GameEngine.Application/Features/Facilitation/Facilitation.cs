@@ -177,7 +177,7 @@ public static class TicketFacilitation
         }
     }
 
-    public sealed class OptionsHandler(IGameSettingsRepository settingsRepository, IUnitOfWork unitOfWork)
+    public sealed class OptionsHandler(IGameSettingsRepository settingsRepository, IUnitOfWork unitOfWork, AuditContext audit)
         : IRequestHandler<UpdateFacilitationOptionsCommand, Result<FacilitationOptions, ApplicationError>>
     {
         public async Task<Result<FacilitationOptions, ApplicationError>> Handle(UpdateFacilitationOptionsCommand request, CancellationToken cancellationToken)
@@ -197,6 +197,11 @@ public static class TicketFacilitation
             if (settings is null)
             {
                 return new ApplicationError("GameSettingsNotFound", "Game settings not found.");
+            }
+
+            if (FacilitationOptions.From(settings) == o)
+            {
+                audit.MarkUnchanged();
             }
 
             settings.UpdateFacilitation(o.OutlierNotes, o.DiscussionMinutes, o.ConfidenceCheck, o.Reactions);

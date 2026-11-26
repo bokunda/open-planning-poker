@@ -18,7 +18,7 @@ public static class SetTicketVotesRevealed
         }
     }
 
-    public sealed class RequestHandler(ITicketRepository ticketRepository, IUnitOfWork unitOfWork, Integrations.Chat.IChatNotifications chatNotifications)
+    public sealed class RequestHandler(ITicketRepository ticketRepository, IUnitOfWork unitOfWork, Integrations.Chat.IChatNotifications chatNotifications, AuditContext audit)
         : IRequestHandler<SetTicketVotesRevealedCommand, Result<bool, ApplicationError>>
     {
         public async Task<Result<bool, ApplicationError>> Handle(SetTicketVotesRevealedCommand request, CancellationToken cancellationToken = default)
@@ -31,6 +31,7 @@ public static class SetTicketVotesRevealed
 
             if (ticket.VotesRevealed == request.Revealed)
             {
+                audit.MarkUnchanged();
                 return true;
             }
 

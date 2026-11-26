@@ -7,9 +7,10 @@ namespace OpenPlanningPoker.GameEngine.Application.Abstractions.Auditing;
 /// Writes the activity log for commands that implement <see cref="IAuditedRequest"/>: the entry is resolved before
 /// the handler runs (so a deleted ticket keeps its name) and written only when the handler succeeds. A result of
 /// <c>Result&lt;T, ApplicationError&gt;</c> succeeds when <c>IsSuccess</c> is true; any other non-null result when the
-/// handler did not throw.
+/// handler did not throw. A handler that changed nothing calls <see cref="AuditContext.MarkUnchanged"/> and no entry
+/// is written.
 /// </summary>
-public sealed class AuditBehavior<TRequest, TResponse>(IAuditLog auditLog) : IPipelineBehavior<TRequest, TResponse>
+public sealed class AuditBehavior<TRequest, TResponse>(IAuditLog auditLog, AuditContext context) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
 {
     private static readonly ConcurrentDictionary<Type, FieldInfo?> SuccessFields = new();
@@ -22,9 +23,12 @@ public sealed class AuditBehavior<TRequest, TResponse>(IAuditLog auditLog) : IPi
         }
 
         var resolved = await auditLog.ResolveAsync(entry, cancellationToken);
+        context.Reset();
         var response = await next(cancellationToken);
+        var unchanged = context.Unchanged;
+        context.Reset();
 
-        if (resolved is not null && IsSuccess(response))
+        if (resolved is not null && !unchanged && IsSuccess(response))
         {
             await auditLog.WriteAsync(resolved, cancellationToken);
         }

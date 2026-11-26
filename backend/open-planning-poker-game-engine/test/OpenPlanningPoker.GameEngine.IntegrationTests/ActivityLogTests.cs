@@ -77,6 +77,26 @@ public sealed class ActivityLogTests(GameEngineFactory factory)
     }
 
     [Fact]
+    public async Task SavingSettingsThatDidNotChange_IsNotLogged()
+    {
+        var host = await factory.CreateUserAsync("Ana");
+        var gameId = await host.CreateGameAsync();
+        await host.JoinAsync(gameId);
+        var game = await host.RunAsync("query($id: UUID!) { game(id: $id) { settingsDetails { id } } }", new { id = gameId });
+        var settingsId = game.GetProperty("game").GetProperty("settingsDetails").GetProperty("id").GetGuid();
+
+        const string Update = "mutation($input: UpdateSettingsInput!) { updateSettings(input: $input) { settings { deckSetup } errors { ... on ApplicationError { code } } } }";
+        // The room saves the chosen deck right after creating a game: the default deck again is no change.
+        GraphQLClient.ErrorCode((await host.RunAsync(Update, new { input = new { id = settingsId, gameId, deckSetup = "0,0.5,1,2,3,5,8,13,❓,⏸️" } })).GetProperty("updateSettings")).ShouldBeNull();
+        Actions(await LogAsync(host, "GAME", gameId)).ShouldBeEmpty();
+
+        GraphQLClient.ErrorCode((await host.RunAsync(Update, new { input = new { id = settingsId, gameId, deckSetup = "1,2,3" } })).GetProperty("updateSettings")).ShouldBeNull();
+        var log = await LogAsync(host, "GAME", gameId);
+        Actions(log).ShouldBe(["settings.deck"]);
+        log.GetProperty("entries")[0].GetProperty("value").GetString().ShouldBe("1,2,3");
+    }
+
+    [Fact]
     public async Task TeamMembership_IsLogged_ForTheOwnerOnly()
     {
         var owner = await factory.CreateUserAsync("Ana");

@@ -14,15 +14,19 @@ test.describe('The activity log (GitHub #20)', () => {
 
     // The panel starts closed and loads when the host opens it.
     await page.getByRole('button', { name: 'Show activity' }).click();
-    const entries = page.getByTestId('activity-panel').getByTestId('activity-entry');
+    const panel = page.getByTestId('activity-panel');
+    const entries = panel.getByTestId('activity-entry');
+    const entry = (action: string) => panel.locator(`[data-testid="activity-entry"][data-action="${action}"]`);
+
     await expect(entries.first()).toContainText('revealed the votes on OPP-20 Audit logs');
-    await expect(entries.last()).toContainText('added the ticket OPP-20 Audit logs');
-    // Votes are never part of the log.
+    await expect(entry('ticket.created')).toContainText('added the ticket OPP-20 Audit logs');
+    // Creating the game with the default deck is not a deck change, and votes are never part of the log.
+    await expect(entry('settings.deck')).toHaveCount(0);
     await expect(entries).toHaveCount(2);
 
     // A new round shows up while the panel is open.
     await page.getByRole('button', { name: 'Vote again' }).click();
-    await expect(entries).toHaveCount(3);
+    await expect(entry('votes.reset')).toHaveCount(1);
     await expect(entries.first()).toContainText('cleared the votes on OPP-20 Audit logs');
 
     await expectNoA11yViolations(page);

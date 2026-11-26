@@ -29,16 +29,23 @@ public static class UpdateGameSettings
 
     public sealed class RequestHandler(
         IGameSettingsRepository gameSettingsRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        AuditContext audit)
         : IRequestHandler<UpdateGameSettingsCommand, Result<UpdateGameSettingsResponse, ApplicationError>>
     {
         public async Task<Result<UpdateGameSettingsResponse, ApplicationError>> Handle(UpdateGameSettingsCommand request, CancellationToken cancellationToken = default)
         {
-            // Create a game
             var gameSettings = await gameSettingsRepository.GetByIdAsync(request.Id, cancellationToken);
             if (gameSettings is null || gameSettings.GameId != request.GameId)
             {
                 return new ApplicationError("GameSettingsNotFound", "Game settings not found for this game.");
+            }
+
+            // The room saves the chosen deck right after creating a game; with the default deck that is no change.
+            if (gameSettings.DeckSetup == request.DeckSetup)
+            {
+                audit.MarkUnchanged();
+                return gameSettings.ToUpdateGameSettingsResponse();
             }
 
             gameSettings.Update(request.GameId, request.DeckSetup);

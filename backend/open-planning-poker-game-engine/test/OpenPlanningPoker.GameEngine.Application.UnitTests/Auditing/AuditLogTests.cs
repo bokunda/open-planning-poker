@@ -23,7 +23,7 @@ public class AuditLogTests
     public async Task Behavior_ResolvesBeforeTheHandler_AndWritesAfterASuccess()
     {
         var log = new RecordingAuditLog();
-        var behavior = new AuditBehavior<SetTicketVotesRevealedCommand, Result<bool, ApplicationError>>(log);
+        var behavior = new AuditBehavior<SetTicketVotesRevealedCommand, Result<bool, ApplicationError>>(log, new AuditContext());
         var ticketId = Guid.NewGuid();
 
         var result = await behavior.Handle(new SetTicketVotesRevealedCommand(ticketId, true), _ =>
@@ -44,7 +44,7 @@ public class AuditLogTests
     public async Task Behavior_DoesNotWrite_WhenTheHandlerReturnsAnError()
     {
         var log = new RecordingAuditLog();
-        var behavior = new AuditBehavior<RemovePlayerCommand, Result<bool, ApplicationError>>(log);
+        var behavior = new AuditBehavior<RemovePlayerCommand, Result<bool, ApplicationError>>(log, new AuditContext());
 
         var result = await behavior.Handle(new RemovePlayerCommand(Guid.NewGuid(), Guid.NewGuid()),
             _ => Task.FromResult<Result<bool, ApplicationError>>(GameAccessErrors.PlayerNotFound), default);
@@ -54,10 +54,32 @@ public class AuditLogTests
     }
 
     [Fact]
+    public async Task Behavior_DoesNotWrite_WhenTheHandlerChangedNothing()
+    {
+        var log = new RecordingAuditLog();
+        var context = new AuditContext();
+        var behavior = new AuditBehavior<SetTicketVotesRevealedCommand, Result<bool, ApplicationError>>(log, context);
+
+        var result = await behavior.Handle(new SetTicketVotesRevealedCommand(Guid.NewGuid(), true), _ =>
+        {
+            context.MarkUnchanged();
+            return Task.FromResult<Result<bool, ApplicationError>>(true);
+        }, default);
+
+        result.IsSuccess.ShouldBeTrue();
+        log.Written.ShouldBeEmpty();
+        // The flag belongs to that one request: the next one in the same scope is written again.
+        context.Unchanged.ShouldBeFalse();
+        await behavior.Handle(new SetTicketVotesRevealedCommand(Guid.NewGuid(), false),
+            _ => Task.FromResult<Result<bool, ApplicationError>>(true), default);
+        log.Written.ShouldHaveSingleItem();
+    }
+
+    [Fact]
     public async Task Behavior_DoesNotWrite_WhenTheHandlerThrows()
     {
         var log = new RecordingAuditLog();
-        var behavior = new AuditBehavior<DeleteTicketCommand, Result<bool, ApplicationError>>(log);
+        var behavior = new AuditBehavior<DeleteTicketCommand, Result<bool, ApplicationError>>(log, new AuditContext());
 
         await Should.ThrowAsync<InvalidOperationException>(() => behavior.Handle(new DeleteTicketCommand(Guid.NewGuid()),
             _ => throw new InvalidOperationException(), default));
@@ -69,7 +91,7 @@ public class AuditLogTests
     public async Task Behavior_IgnoresRequestsThatAreNotAudited()
     {
         var log = new RecordingAuditLog();
-        var behavior = new AuditBehavior<CreateOrUpdateVoteCommand, Result<bool, ApplicationError>>(log);
+        var behavior = new AuditBehavior<CreateOrUpdateVoteCommand, Result<bool, ApplicationError>>(log, new AuditContext());
         var ran = false;
 
         await behavior.Handle(new CreateOrUpdateVoteCommand(Guid.NewGuid(), "5"), _ =>
@@ -86,7 +108,7 @@ public class AuditLogTests
     public async Task Behavior_SkipsTheEntry_WhenItCannotBePlaced()
     {
         var log = new RecordingAuditLog { TicketGame = null };
-        var behavior = new AuditBehavior<ResetTicketVotesCommand, Result<bool, ApplicationError>>(log);
+        var behavior = new AuditBehavior<ResetTicketVotesCommand, Result<bool, ApplicationError>>(log, new AuditContext());
 
         await behavior.Handle(new ResetTicketVotesCommand(Guid.NewGuid()), _ => Task.FromResult<Result<bool, ApplicationError>>(true), default);
 

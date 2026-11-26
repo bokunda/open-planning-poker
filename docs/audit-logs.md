@@ -83,6 +83,9 @@ flowchart LR
 * `AuditBehavior` resolves the entry **before** the handler runs (a ticket command only knows the ticket id; the
   behavior finds its game and name, which is gone after a delete), runs the handler, and writes the row only when
   the result is a success (`Result<T, ApplicationError>.IsSuccess`).
+* A handler that changed nothing calls `AuditContext.MarkUnchanged()` and no entry is written: saving the deck
+  the game already has (the room does that right after a game is created), the same room or facilitation options,
+  or revealing cards that are already revealed.
 * Services that are not MediatR handlers (team API, organizations, integrations) call `IAuditLog.RecordAsync`
   after a successful change.
 * The actor is the signed-in user (`CreatedBy`, set by the DbContext like on every entity). Changes made by the
