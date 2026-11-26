@@ -1,0 +1,17 @@
+{
+  "name": "GameEngine",
+  "transports": {
+    "http": {
+      "url": "http://OpenPlanningPoker.GameEngine.GraphQL:8080/graphql",
+      "clientName": "fusion",
+      "capabilities": {
+        "batching": {
+          "variableBatching": true,
+          "requestBatching": false,
+          "aliasBatching": true
+        },
+        "onError": "propagate"
+      }
+    }
+  }
+}

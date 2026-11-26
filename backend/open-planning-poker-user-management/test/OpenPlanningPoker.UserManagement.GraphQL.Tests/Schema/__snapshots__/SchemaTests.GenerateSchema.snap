@@ -3,15 +3,15 @@
   mutation: Mutation
 }
 
-type Mutation {
-  ping: String!
-  changeUsername(username: String!): Boolean! @authorize
-  registerUser(username: String): RegisterUserResponse!
+type Query {
+  ping: String! @shareable
+  currentUser: User! @authorize
 }
 
-type Query {
-  ping: String!
-  currentUser: User! @authorize
+type Mutation {
+  ping: String! @shareable
+  changeUsername(username: String!): Boolean! @authorize
+  registerUser(username: String): RegisterUserResponse!
 }
 
 type RegisterUserResponse {
@@ -35,10 +35,18 @@ enum ApplyPolicy {
   VALIDATION
 }
 
+"The `UUID` scalar type represents a Universally Unique Identifier (UUID) as defined by RFC 9562."
+scalar UUID
+  @specifiedBy(url: "https://scalars.graphql.org/chillicream/uuid.html")
+
 "The authorize directive."
-directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!] "Defines when when the authorize directive shall be applied.By default the authorize directives are applied during the validation phase." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on OBJECT | FIELD_DEFINITION
+directive @authorize(
+  "The name of the authorization policy that determines access to the annotated resource."
+  policy: String
+  "Roles that are allowed to access the annotated resource."
+  roles: [String!]
+  "Defines when the authorize directive shall be applied. By default the authorize directive is applied before the resolver is executed."
+  apply: ApplyPolicy! = BEFORE_RESOLVER
+) repeatable on OBJECT | FIELD_DEFINITION
 
-"The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
-directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
-
-scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")
+directive @shareable repeatable on OBJECT | FIELD_DEFINITION

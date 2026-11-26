@@ -35,6 +35,8 @@ builder
     })
     .DisableIntrospection(!builder.Environment.IsDevelopment())
     .TryAddTypeInterceptor<OpenPlanningPoker.UserManagement.GraphQL.Localization.ApplicationErrorMessageInterceptor>()
+    // Types both subgraphs define are @shareable for Fusion composition.
+    .TryAddTypeInterceptor<OpenPlanningPoker.UserManagement.GraphQL.Extensions.ShareableTypesInterceptor>()
     .AddTypes();
 
 builder.Services.AddClientRateLimiting(builder.Configuration);
@@ -74,10 +76,7 @@ app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGraphQL().WithOptions(new GraphQLServerOptions
-{
-    // The Nitro IDE is for local development only.
-    Tool = { Enable = app.Environment.IsDevelopment() }
-});
+// The Nitro IDE is for local development only.
+app.MapGraphQL().WithOptions(options => options.Tool.Enable = app.Environment.IsDevelopment());
 
 app.RunWithGraphQLCommands(args);

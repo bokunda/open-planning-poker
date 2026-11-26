@@ -1,7 +1,7 @@
 # Full backend for the end-to-end tests (e2e/): PostgreSQL, Redis, both subgraphs and the gateway.
 # The SSR app runs next to it (see e2e/playwright.config.ts). Used by CI; locally:
 #   docker compose -f docker-compose.e2e.yml up -d --build --wait
-# Container names match the subgraph URLs in gateway.fgp.
+# Container names match the subgraph URLs in gateway.far (each subgraph's schema-settings.json).
 name: opp-e2e
 
 x-backend-env: &backend-env

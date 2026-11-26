@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <PackageId>OpenPlanningPoker.Shared</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>Bojan Piskulic</Authors>
     <Company>Bitcrafta</Company>
     <Description>Shared logic used for Open Planning Poker project.</Description>

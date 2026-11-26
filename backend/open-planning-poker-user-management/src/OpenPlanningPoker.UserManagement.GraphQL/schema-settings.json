@@ -1,0 +1,17 @@
+{
+  "name": "UserManagement",
+  "transports": {
+    "http": {
+      "url": "http://OpenPlanningPoker.UserManagement.GraphQL:8080/graphql",
+      "clientName": "fusion",
+      "capabilities": {
+        "batching": {
+          "variableBatching": true,
+          "requestBatching": false,
+          "aliasBatching": true
+        },
+        "onError": "propagate"
+      }
+    }
+  }
+}

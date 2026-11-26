@@ -99,7 +99,7 @@ cd frontend/open-planning-poker-web-app && npm install && npm start
 
 - HotChocolate schema-first via code
 - Fusion subgraph patterns for schema stitching
-- Always regenerate fusion compose after schema changes (see `generate-schema.ps1`)
+- Always recompose the gateway (`gateway.far`) after schema changes (see `backend/open-planning-poker-graphql-gateway/compose-gateway.sh`)
 
 ### Tests
 

@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Json;
 using HotChocolate.AspNetCore.Subscriptions;
 using HotChocolate.AspNetCore.Subscriptions.Protocols;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -36,7 +37,7 @@ public sealed class WebSocketAuthInterceptor : DefaultSocketSessionInterceptor
     {
         try
         {
-            var token = payload.As<ConnectionInitPayload>()?.AuthToken;
+            var token = payload.Payload?.Deserialize<ConnectionInitPayload>(JsonSerializerOptions.Web)?.AuthToken;
             if (string.IsNullOrWhiteSpace(token)) return null;
             return token.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase) ? token["Bearer ".Length..] : token;
         }

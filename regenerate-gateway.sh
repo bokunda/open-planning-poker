@@ -1,9 +1,7 @@
 #!/bin/sh
-dotnet tool install -g HotChocolate.Fusion.CommandLine 2>/dev/null || true
+# Recomposes backend/open-planning-poker-graphql-gateway/gateway.far (Fusion v2) inside a .NET 10 SDK
+# container with backend/ mounted at /src.
+dotnet tool install -g ChilliCream.Nitro.CommandLine --version 16.7.7 2>/dev/null || true
 export PATH="$PATH:/root/.dotnet/tools"
-cd /src/open-planning-poker-graphql-gateway
-fusion compose -p gateway.fgp -s /src/open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL
-fusion compose -p gateway.fgp -s /src/open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL
-echo "DONE - gateway.fgp regenerated"
-
-echo "DONE - gateway.fgp regenerated"
+sh /src/open-planning-poker-graphql-gateway/compose-gateway.sh
+echo "DONE - gateway.far regenerated"
