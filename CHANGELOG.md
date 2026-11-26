@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **App on Angular 22** (from 21) with Angular Material 22 and TypeScript 6.0. Nothing changes for players
+
+### Developers
+- Building the app needs Node.js 22.22.3 or 24.15 or newer (Angular CLI 22)
+
 ## [3.8.1] — 2026-11-26
 
 New fonts in the app, on the website and in the PDF reports, with smaller font files.

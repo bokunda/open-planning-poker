@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject, ChangeDetectionStrategy } from '@angular/core';
 import { DOCUMENT } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -111,6 +111,7 @@ type Source = 'sprint' | 'jql';
       <p class="jira-error" role="alert">{{ error }}</p>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     :host { display: grid; gap: var(--opp-space-3); padding: var(--opp-space-3) 0; }
     .jira-loading { display: grid; place-items: center; padding: var(--opp-space-5); }

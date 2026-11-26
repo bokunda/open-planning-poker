@@ -1,4 +1,4 @@
-import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, inject, ChangeDetectionStrategy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -83,6 +83,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
       }
     </main>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .teams-config { display: grid; gap: var(--opp-space-3); max-width: 520px; margin: 0 auto; padding: var(--opp-space-5) var(--opp-space-4); }
     h1 { margin: 0; font-family: var(--opp-font-display); font-size: 1.375rem; }

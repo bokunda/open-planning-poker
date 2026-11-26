@@ -27,7 +27,7 @@ const ROUNDS: Record<string, string>[] = [
   selector: 'app-demo-table',
   standalone: true,
   imports: [TranslocoPipe, PokerTableComponent],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="demo" aria-hidden="true">
       <app-poker-table

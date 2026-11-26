@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -41,6 +41,7 @@ export interface QrShareData {
         </mat-dialog-actions>
       </div>
     `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .qr-share-wrapper { text-align: center; }
     .qr-container { display: flex; justify-content: center; padding: 16px 0; }
