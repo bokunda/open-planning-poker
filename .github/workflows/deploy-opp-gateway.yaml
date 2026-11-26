@@ -41,6 +41,7 @@ jobs:
           ./compose-gateway.sh
           unzip -p gateway.far gateway/2.0.0/gateway.graphqls > composed.graphqls
           grep -q "votesRevealed" composed.graphqls && grep -q "onTimerChanged" composed.graphqls && grep -q "onGameChanged" composed.graphqls || { echo "::error::Composed gateway schema is missing expected fields"; exit 1; }
+          grep -q "@fusion__cost_options(defaultListSize: 1)" composed.graphqls || { echo "::error::gateway.far lost its defaultListSize composition setting (see fusion-commands.md)"; exit 1; }
           rm composed.graphqls
           unzip -p gateway.far gateway/2.0.0/gateway-settings.json
 

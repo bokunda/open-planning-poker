@@ -18,7 +18,9 @@ do
   cp "$dir/schema-settings.json" "$out/schema-settings.json"
 done
 
-rm -f "$gateway/gateway.far"
+# Compose into the committed archive: it keeps the composition settings stored in it, notably
+# defaultListSize 1 (lists without @listSize count as one item, as in the subgraphs). Without it the
+# gateway's cost analysis treats such lists as infinite and rejects every operation that selects one.
 nitro fusion compose \
   -f "$backend/open-planning-poker-user-management/src/OpenPlanningPoker.UserManagement.GraphQL/obj/fusion" \
   -f "$backend/open-planning-poker-game-engine/src/OpenPlanningPoker.GameEngine.GraphQL/obj/fusion" \

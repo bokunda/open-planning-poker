@@ -20,7 +20,9 @@ foreach ($subgraph in $subgraphs) {
     Copy-Item (Join-Path $dir "schema-settings.json") (Join-Path $out "schema-settings.json") -Force
     $composeArgs += @("-f", $out)
 }
+# Compose into the committed archive: it keeps the composition settings stored in it, notably
+# defaultListSize 1 (lists without @listSize count as one item, as in the subgraphs). Without it the
+# gateway's cost analysis treats such lists as infinite and rejects every operation that selects one.
 $archive = Join-Path $PSScriptRoot "gateway.far"
-if (Test-Path $archive) { Remove-Item -Force $archive }
 nitro fusion compose @composeArgs -a $archive
 if ($LASTEXITCODE -ne 0) { throw "Composition failed" }
