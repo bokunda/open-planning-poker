@@ -30,7 +30,7 @@
   "homepage": "https://github.com/themesberg/landwind#readme",
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.5",
-    "marked": "^18.2.0",
+    "marked": "^18.2.1",
     "tailwindcss": "^4.3.5"
   }
 }
