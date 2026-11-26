@@ -10,7 +10,8 @@
 
   @if (!collapsed) {
     <div class="chat-panel">
-      <div class="chat-messages">
+      <!-- Scrollable, so it must be reachable with the keyboard (axe scrollable-region-focusable). -->
+      <div class="chat-messages" role="log" tabindex="0" [attr.aria-label]="'chat.title' | transloco">
         @if (messages.length === 0) {
           <div class="chat-empty">
             {{ 'chat.empty' | transloco }} 👋

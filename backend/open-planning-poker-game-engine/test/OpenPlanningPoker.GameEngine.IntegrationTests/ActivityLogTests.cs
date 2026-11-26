@@ -82,7 +82,7 @@ public sealed class ActivityLogTests(GameEngineFactory factory)
         var host = await factory.CreateUserAsync("Ana");
         var gameId = await host.CreateGameAsync();
         await host.JoinAsync(gameId);
-        var game = await host.RunAsync("query($id: UUID!) { game(id: $id) { settingsDetails { id } } }", new { id = gameId });
+        var game = await host.RunAsync("query($id: UUID!) { game(id: $id) { ... on Game { settingsDetails { ... on Settings { id } } } } }", new { id = gameId });
         var settingsId = game.GetProperty("game").GetProperty("settingsDetails").GetProperty("id").GetGuid();
 
         const string Update = "mutation($input: UpdateSettingsInput!) { updateSettings(input: $input) { settings { deckSetup } errors { ... on ApplicationError { code } } } }";

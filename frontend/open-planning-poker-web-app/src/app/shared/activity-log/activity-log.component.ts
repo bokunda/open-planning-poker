@@ -41,7 +41,7 @@ type Result = { entries?: ActivityEntry[]; hasMore?: boolean; code?: string; mes
           </button>
         </div>
         @if (!collapsed) {
-          <div class="panel-body">
+          <div class="panel-body" role="region" tabindex="0" [attr.aria-label]="'activity.title' | transloco">
             <ng-container *ngTemplateOutlet="body"></ng-container>
           </div>
         }
