@@ -6,10 +6,14 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+### Dodato
+- **Dnevnik aktivnosti** ([#20](https://github.com/bokunda/open-planning-poker/issues/20)): voditelji i suvoditelji vide ko je otkrio ili obrisao glasove, izmenio ili obrisao tikete, promenio špil ili opcije i uklonio ili unapredio igrače, u panelu „Aktivnosti” u sobi. Vlasnici timova vide članstvo, referentne tikete, API tokene i webhookove u sobi tima, a administratori organizacije članove, uloge i timove na stranici organizacije. Zapisi se čuvaju 90 dana; glasovi se nikad ne beleže
+
 ### Izmenjeno
 - **Aplikacija na Angularu 22** (sa 21) sa Angular Materialom 22 i TypeScriptom 6.0. Za igrače se ništa ne menja
 
 ### Za programere
+- Game Engine upisuje tabelu `audits` (migracija `AddAuditLog` menja njen oblik): komande implementiraju `IAuditedRequest`, a `AuditBehavior` upisuje zapis posle uspešnog handlera; servisi pozivaju `IAuditLog`. Novi upit `activityLog(scope, scopeId, before, take)` sa proverom pristupa po opsegu. Vidi `docs/audit-logs.md`
 - Za build aplikacije treba Node.js 22.22.3 ili 24.15 ili noviji (Angular CLI 22)
 - Hot Chocolate 16.7.7 u oba podgrafa, u zajedničkom paketu i u gatewayu. Gateway prelazi na Fusion v2: služi `gateway.far` (sastavljen Nitro CLI-jem pomoću `backend/open-planning-poker-graphql-gateway/compose-gateway.sh`) umesto `gateway.fgp`, a ime i URL svakog podgrafa su u njegovom `schema-settings.json`
 - Bajtovi izveštaja i izvoza retroa su tipa `[UnsignedByte!]!` (ranije `[Byte!]!`); vrednosti su iste

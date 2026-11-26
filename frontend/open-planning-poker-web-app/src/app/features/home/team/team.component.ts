@@ -15,6 +15,7 @@ import { TeamReferenceComponent } from './team-reference.component';
 import { TeamInsightsComponent } from './team-insights.component';
 import { TeamPlanComponent } from './team-plan.component';
 import { TeamApiComponent } from './team-api.component';
+import { ActivityLogComponent } from '../../../shared/activity-log/activity-log.component';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { OppDatePipe } from '../../../i18n/opp-date.pipe';
 
@@ -27,7 +28,7 @@ type Errors = { errors?: { message: string }[] | null } | null | undefined;
 @Component({
   selector: 'app-team',
   standalone: true,
-  imports: [TranslocoPipe, OppDatePipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, VelocityChartComponent, TeamReferenceComponent, TeamInsightsComponent, TeamPlanComponent, TeamApiComponent],
+  imports: [TranslocoPipe, OppDatePipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, VelocityChartComponent, TeamReferenceComponent, TeamInsightsComponent, TeamPlanComponent, TeamApiComponent, ActivityLogComponent],
   templateUrl: './team.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './team.component.scss',

@@ -8,6 +8,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { OPP_SNACKBAR_DURATION_DEFAULT } from '../../../shared/constants';
 import { MY_TEAMS, TeamSummary } from '../team/team.graphql';
 import { comparisonCsv, TeamComparison } from './org-helpers';
+import { ActivityLogComponent } from '../../../shared/activity-log/activity-log.component';
 
 const ERRORS = `errors { ... on ApplicationError { code message } }`;
 const ORG_FIELDS = `id name myRole inviteToken`;
@@ -46,7 +47,7 @@ type Payload = { errors?: { code: string; message: string }[] | null } | null | 
 @Component({
   selector: 'app-org',
   standalone: true,
-  imports: [TranslocoPipe, FormsModule, RouterLink, MatButtonModule],
+  imports: [TranslocoPipe, FormsModule, RouterLink, MatButtonModule, ActivityLogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="org">
@@ -186,6 +187,11 @@ type Payload = { errors?: { code: string; message: string }[] | null } | null | 
             </ul>
             <button mat-button type="button" (click)="leave()">{{ 'org.leave' | transloco }}</button>
           </section>
+
+          <!-- Who changed what in the organization, for admins (GitHub #20) -->
+          @if (isAdmin) {
+            <app-activity-log scope="ORGANIZATION" [scopeId]="org.id" [refresh]="activityVersion"></app-activity-log>
+          }
         }
       }
     </div>
@@ -251,6 +257,9 @@ export class OrgComponent implements OnInit {
     });
   }
 
+  /** Raised on every reload so the activity card shows the change just made. */
+  activityVersion = 0;
+
   get isAdmin(): boolean { return this.org?.myRole === 'ADMIN'; }
 
   get inviteUrl(): string {
@@ -281,6 +290,7 @@ export class OrgComponent implements OnInit {
     this.apollo.query<{ organization: Org & { code?: string } }>({ query: GET_ORGANIZATION, variables: { id: this.orgId }, fetchPolicy: 'no-cache' })
       .subscribe(({ data }) => {
         this.org = data?.organization?.id ? data.organization : null;
+        this.activityVersion++;
         this.renameDraft = this.org?.name ?? '';
         this.loading = false;
         this.cdr.markForCheck();

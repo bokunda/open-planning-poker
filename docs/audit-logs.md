@@ -19,10 +19,10 @@ hidden votes). Joining a game is not audited either: the room calls it on every 
 | Game | `votes.revealed`, `votes.hidden`, `votes.reset` | The cards are turned over, hidden again for a re-vote, or the votes are cleared. |
 | Game | `player.role`, `player.coHostGranted`, `player.coHostRevoked`, `player.removed`, `host.transferred` | Room roles change (the target is the player). |
 | Game | `settings.deck`, `settings.options`, `settings.facilitation`, `recap.shared`, `recap.unshared`, `sorting.applied` | Deck, auto-reveal / async voting, facilitation options, recap sharing and the sorting board. |
-| Team | `team.updated`, `team.memberJoined`, `team.memberLeft`, `team.memberRemoved` | Team details and membership. |
+| Team | `team.updated`, `team.memberJoined`, `team.memberRemoved` | Team details and membership ("removed" reads "left" when the actor is the member). |
 | Team | `team.anchorPinned`, `team.anchorUnpinned` | Reference tickets. |
-| Team | `team.apiTokenCreated`, `team.apiTokenRevoked`, `team.webhookCreated`, `team.webhookUpdated`, `team.webhookSecretRotated`, `team.webhookDeleted` | The team's public API (tokens and webhooks; secrets are never logged). |
-| Organization | `org.renamed`, `org.inviteRotated`, `org.memberJoined`, `org.memberLeft`, `org.memberRemoved`, `org.memberRole`, `org.teamAdded`, `org.teamRemoved` | Organization details, membership, roles and teams. |
+| Team | `team.apiTokenCreated`, `team.apiTokenRevoked`, `team.webhookCreated`, `team.webhookUpdated`, `team.webhookSecretRotated`, `team.webhookDeleted` | The team's public API. Secrets are never logged, and of a webhook only the host (its path often holds a secret). |
+| Organization | `org.renamed`, `org.inviteRotated`, `org.memberJoined`, `org.memberRemoved`, `org.memberRole`, `org.teamAdded`, `org.teamRemoved` | Organization details, membership, roles and teams. |
 | User | `integration.connected`, `integration.disconnected` | Your own Jira / GitHub / Linear / Azure DevOps connections (detail: the provider). |
 
 ## Who can read it
@@ -44,6 +44,8 @@ Engine) deletes older rows once at start-up and then every 24 hours with a singl
 The log stores user ids, not names: names are looked up when the log is read, and anonymous users are deleted after
 24 hours, so older entries show "Someone" instead of a name. Ticket names are kept in the detail (up to 512
 characters) because that is what makes the entry useful.
+
+The User scope (your own integration connections) is readable through the API; the app does not show it yet.
 
 ## Where it shows
 
@@ -104,7 +106,7 @@ flowchart LR
 ```graphql
 activityLog(scope: AuditScope!, scopeId: UUID!, before: DateTime, take: Int! = 30): ActivityLogResult
 # ActivityLog { entries: [ActivityEntry!]!, hasMore: Boolean! } | ApplicationError
-# ActivityEntry { id action type actorId actorName ticketId targetId targetName detail createdOn }
+# ActivityEntry { id action type actorId actorName ticketId targetId targetName detail value createdOn }
 ```
 
 Paging is a cursor on `createdOn` (`before` = the oldest entry already shown), `take` is clamped to 1–100.
@@ -120,7 +122,8 @@ Table `audits` (it existed since the first migration but nothing wrote to it; mi
 | `action` | varchar(64) | Action code from the table above |
 | `type` | int | Create / Update / Delete (icon in the UI) |
 | `ticket_id`, `target_id` | uuid null | The ticket and the player (or team) the action was about |
-| `detail` | varchar(512) null | Ticket name, deck, value, provider… never secrets or votes |
+| `detail` | varchar(512) null | The subject's name: ticket, token, webhook host, team. Never secrets or votes |
+| `value` | varchar(256) null | The new value: estimate, role, deck, provider, number of imported tickets |
 | `created_by`, `created_on` | uuid, timestamptz | Actor and time |
 
 Index `(scope, scope_id, created_on)` serves the read query and `created_on` the retention delete.

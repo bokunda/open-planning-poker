@@ -7,10 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Activity log** ([#20](https://github.com/bokunda/open-planning-poker/issues/20)): hosts and co-hosts see who revealed or cleared the votes, edited or deleted tickets, changed the deck or the options and removed or promoted players, in an "Activity" panel in the room. Team owners see membership, reference tickets, API tokens and webhooks in the team room, and organization admins see members, roles and teams on the organization page. Entries are kept for 90 days; votes are never logged
+
 ### Changed
 - **App on Angular 22** (from 21) with Angular Material 22 and TypeScript 6.0. Nothing changes for players
 
 ### Developers
+- The Game Engine writes the `audits` table (migration `AddAuditLog` reshapes it): commands implement `IAuditedRequest` and `AuditBehavior` writes the entry after a successful handler; services call `IAuditLog`. New query `activityLog(scope, scopeId, before, take)`, access-checked per scope. See `docs/audit-logs.md`
 - Building the app needs Node.js 22.22.3 or 24.15 or newer (Angular CLI 22)
 - Hot Chocolate 16.7.7 in both subgraphs, the shared package and the gateway. The gateway moves to Fusion v2: it serves `gateway.far` (composed with the Nitro CLI by `backend/open-planning-poker-graphql-gateway/compose-gateway.sh`) instead of `gateway.fgp`, and each subgraph's name and URL are in its `schema-settings.json`
 - The report and retro export bytes are typed `[UnsignedByte!]!` (was `[Byte!]!`); the values are unchanged
