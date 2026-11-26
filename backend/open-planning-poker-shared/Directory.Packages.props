@@ -20,9 +20,9 @@
     <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.23" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.23" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.19.1" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.19.1" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.19.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.19.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.21.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.21.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.21.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.21.0" />
   </ItemGroup>
 </Project>
