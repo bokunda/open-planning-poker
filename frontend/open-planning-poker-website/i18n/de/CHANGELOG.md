@@ -6,6 +6,12 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+### Geändert
+- **App auf Angular 22** (von 21) mit Angular Material 22 und TypeScript 6.0. Für Spieler ändert sich nichts
+
+### Für Entwickler
+- Für den Build der App braucht es Node.js 22.22.3 oder 24.15 oder neuer (Angular CLI 22)
+
 ## [3.8.1] — 2026-11-26
 
 Neue Schriften in der App, auf der Website und in den PDF-Berichten, mit kleineren Schriftdateien.

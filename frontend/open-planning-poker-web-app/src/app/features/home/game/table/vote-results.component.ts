@@ -13,7 +13,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   selector: 'app-vote-results',
   standalone: true,
   imports: [TranslocoPipe, CommonModule, MatButtonModule],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (stats) {
       <section class="results" aria-live="polite" [attr.aria-label]="'results.title' | transloco">

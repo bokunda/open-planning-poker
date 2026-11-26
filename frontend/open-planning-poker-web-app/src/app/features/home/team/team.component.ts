@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -29,6 +29,7 @@ type Errors = { errors?: { message: string }[] | null } | null | undefined;
   standalone: true,
   imports: [TranslocoPipe, OppDatePipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, VelocityChartComponent, TeamReferenceComponent, TeamInsightsComponent, TeamPlanComponent, TeamApiComponent],
   templateUrl: './team.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './team.component.scss',
 })
 export class TeamComponent implements OnInit {

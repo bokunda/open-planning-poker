@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit, DestroyRef, PLATFORM_ID } from '@angular/core';
+import { Component, inject, Input, OnInit, DestroyRef, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -73,6 +73,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   styleUrl: './game.component.scss',
   standalone: true,
   imports: [TranslocoPipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent, AsyncVotingComponent, SortingBoardComponent, CelebrationComponent, InviteCardComponent, AiAssistComponent, NgClass],
+  changeDetection: ChangeDetectionStrategy.Eager,
   animations: [
     trigger('fadeSlide', [
       transition(':enter', [

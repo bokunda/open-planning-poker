@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostBinding, Input, Output, OnDestroy, OnChanges, SimpleChanges, inject, DestroyRef } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, Output, OnDestroy, OnChanges, SimpleChanges, inject, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { FormsModule } from '@angular/forms';
@@ -18,6 +18,7 @@ import { OppDatePipe } from '../../../../i18n/opp-date.pipe';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TranslocoPipe, OppDatePipe, FormsModule, MatButtonModule, MatIconModule]
 })
 export class ChatComponent implements OnChanges, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, DoCheck, Input } from '@angular/core';
+import { Component, DoCheck, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { ApiCollectionOfGamePlayer, Vote } from '../../../../graphql/graphql-gateway.service';
 import { PokerCardComponent } from '../../../../shared/poker-card/poker-card.component';
@@ -27,6 +27,7 @@ interface Seat {
   standalone: true,
   imports: [TranslocoPipe, PokerCardComponent],
   templateUrl: './poker-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './poker-table.component.scss',
 })
 export class PokerTableComponent implements DoCheck {

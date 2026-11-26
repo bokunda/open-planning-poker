@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,6 +13,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TranslocoPipe, MatButtonModule, MatIconModule, DonateClickDirective]
 })
 export class FooterComponent {

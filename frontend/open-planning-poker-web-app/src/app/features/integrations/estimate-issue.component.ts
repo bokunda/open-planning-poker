@@ -1,4 +1,4 @@
-import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, inject, ChangeDetectionStrategy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -51,6 +51,7 @@ export function isJiraIssueUrl(url: string): boolean {
       }
     </main>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .estimate { max-width: 560px; margin: 0 auto; padding: var(--opp-space-8, 48px) var(--opp-space-4, 16px); text-align: center; }
     h1 { font-family: var(--opp-font-display); font-size: var(--opp-font-size-2xl, 1.5rem); color: var(--opp-text); }

@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnChanges, DOCUMENT } from '@angular/core';
+import { Component, inject, Input, OnChanges, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 
 import { RouterModule } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
@@ -16,6 +16,7 @@ export interface BreadcrumbItem {
   templateUrl: './breadcrumb.component.html',
   styleUrl: './breadcrumb.component.scss',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TranslocoPipe, RouterModule]
 })
 export class BreadcrumbComponent implements OnChanges {
