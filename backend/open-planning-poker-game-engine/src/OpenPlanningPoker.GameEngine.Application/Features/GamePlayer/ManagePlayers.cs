@@ -1,16 +1,28 @@
 namespace OpenPlanningPoker.GameEngine.Application.Features.GamePlayer;
 
 /// <summary>Switches a player between voting and observing. Access is checked by the caller.</summary>
-public sealed record SetPlayerRoleCommand(Guid GameId, Guid PlayerId, PlayerRole Role) : IRequest<Result<bool, ApplicationError>>;
+public sealed record SetPlayerRoleCommand(Guid GameId, Guid PlayerId, PlayerRole Role) : IRequest<Result<bool, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Game(AuditActions.PlayerRole, AuditType.Update, GameId, PlayerId, value: Role.ToString());
+}
 
 /// <summary>Makes a player co-host (or a regular player again). Access is checked by the caller.</summary>
-public sealed record SetCoHostCommand(Guid GameId, Guid PlayerId, bool IsCoHost) : IRequest<Result<bool, ApplicationError>>;
+public sealed record SetCoHostCommand(Guid GameId, Guid PlayerId, bool IsCoHost) : IRequest<Result<bool, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Game(IsCoHost ? AuditActions.PlayerCoHostGranted : AuditActions.PlayerCoHostRevoked, AuditType.Update, GameId, PlayerId);
+}
 
 /// <summary>Removes a player from the game. Their votes stay on the tickets.</summary>
-public sealed record RemovePlayerCommand(Guid GameId, Guid PlayerId) : IRequest<Result<bool, ApplicationError>>;
+public sealed record RemovePlayerCommand(Guid GameId, Guid PlayerId) : IRequest<Result<bool, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Game(AuditActions.PlayerRemoved, AuditType.Delete, GameId, PlayerId);
+}
 
 /// <summary>Hands the game over to another player. The previous host stays in the game as a player.</summary>
-public sealed record TransferHostCommand(Guid GameId, Guid PlayerId) : IRequest<Result<bool, ApplicationError>>;
+public sealed record TransferHostCommand(Guid GameId, Guid PlayerId) : IRequest<Result<bool, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Game(AuditActions.HostTransferred, AuditType.Update, GameId, PlayerId);
+}
 
 /// <summary>Sets the emoji avatar of a player in a game, or clears it with null (OPP-173).</summary>
 public sealed record SetPlayerAvatarCommand(Guid GameId, Guid PlayerId, string? Avatar) : IRequest<Result<bool, ApplicationError>>;

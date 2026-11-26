@@ -32,6 +32,7 @@ public static class DependencyInjection
         services.AddScoped<ITicketRepository, TicketRepository>();
         services.AddScoped<IVoteRepository, VoteRepository>();
         services.AddScoped<ITeamRepository, TeamRepository>();
+        services.AddScoped<IAuditRepository, AuditRepository>();
 
 
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<OpenPlanningPokerGameEngineDbContext>());

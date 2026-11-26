@@ -1,3 +1,4 @@
+import { ActivityLogComponent } from '../../../shared/activity-log/activity-log.component';
 import { Component, inject, Input, OnInit, DestroyRef, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -72,7 +73,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',
   standalone: true,
-  imports: [TranslocoPipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent, AsyncVotingComponent, SortingBoardComponent, CelebrationComponent, InviteCardComponent, AiAssistComponent, NgClass],
+  imports: [TranslocoPipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, RoomSkeletonComponent, DemoTableComponent, GameDetailsComponent, VotingComponent, VotingHistoryComponent, PlayersComponent, ChatComponent, AsyncVotingComponent, SortingBoardComponent, CelebrationComponent, InviteCardComponent, AiAssistComponent, ActivityLogComponent, NgClass],
   changeDetection: ChangeDetectionStrategy.Eager,
   animations: [
     trigger('fadeSlide', [
@@ -140,6 +141,9 @@ export class GameComponent implements OnInit {
 
   playersCollapsed = false;
   chatCollapsed = false;
+  /** The host's activity log (GitHub #20): closed by default; raised on room changes to reload it while open. */
+  activityCollapsed = true;
+  activityVersion = 0;
   private gameSubsInitialized = false;
   private currentSubscribedTicketId: string | undefined;
 
@@ -804,6 +808,7 @@ export class GameComponent implements OnInit {
           return;
         }
         const ticket = result.data.onTicketReVoted as Ticket;
+        this.activityVersion++;
         this.revealedTicketIds.delete(ticket.id);
         this.ticket = ticket;
         this.votes = [];
@@ -902,6 +907,7 @@ export class GameComponent implements OnInit {
       next: (result) => {
         const reveal = result?.data?.onVotesRevealed;
         if (reveal) {
+          this.activityVersion++;
           this.applyRevealedVotes(reveal);
         }
       },
@@ -977,6 +983,7 @@ export class GameComponent implements OnInit {
       next: (result) => {
         const change = result?.data?.onGameChanged;
         if (!change) return;
+        this.activityVersion++;
         switch (change.kind) {
           case 'GAME':
             this.refreshGame(gameId);

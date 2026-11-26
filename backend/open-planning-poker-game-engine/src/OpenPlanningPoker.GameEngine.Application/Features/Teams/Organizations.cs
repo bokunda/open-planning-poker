@@ -24,7 +24,7 @@ public static class OrganizationErrors
 }
 
 /// <summary>Organizations with team rooms and roles (OPP-154) and the numbers of their teams (OPP-157).</summary>
-public sealed class OrganizationService(IOrganizationRepository organizations, ITeamRepository teams, ISender sender, IUnitOfWork unitOfWork)
+public sealed class OrganizationService(IOrganizationRepository organizations, ITeamRepository teams, ISender sender, IUnitOfWork unitOfWork, IAuditLog auditLog)
 {
     /// <summary>Sprints compared per team.</summary>
     public const int LookBack = 6;
@@ -61,6 +61,7 @@ public sealed class OrganizationService(IOrganizationRepository organizations, I
         if (organization is null) return OrganizationErrors.NotFound;
         organization.Rename(name);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.Organization(AuditActions.OrganizationRenamed, AuditType.Update, id, detail: organization.Name), cancellationToken);
         return organization;
     }
 
@@ -78,6 +79,7 @@ public sealed class OrganizationService(IOrganizationRepository organizations, I
         {
             organizations.AddMember(OrganizationMember.Create(id, playerId, OrganizationRole.Member));
             await unitOfWork.SaveChangesAsync(cancellationToken);
+            await auditLog.RecordAsync(AuditEntry.Organization(AuditActions.OrganizationMemberJoined, AuditType.Create, id, playerId), cancellationToken);
         }
         return true;
     }
@@ -88,6 +90,7 @@ public sealed class OrganizationService(IOrganizationRepository organizations, I
         if (organization is null) return OrganizationErrors.NotFound;
         organization.SetInviteToken(NewInviteToken());
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.Organization(AuditActions.OrganizationInviteRotated, AuditType.Update, id), cancellationToken);
         return organization;
     }
 
@@ -102,6 +105,7 @@ public sealed class OrganizationService(IOrganizationRepository organizations, I
         }
         member.SetRole(role);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.Organization(AuditActions.OrganizationMemberRole, AuditType.Update, id, playerId, value: role.ToString()), cancellationToken);
         return true;
     }
 
@@ -114,6 +118,7 @@ public sealed class OrganizationService(IOrganizationRepository organizations, I
         if (member.Role == OrganizationRole.Admin && members.Count(m => m.Role == OrganizationRole.Admin) == 1) return OrganizationErrors.LastAdmin;
         organizations.RemoveMember(member);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.Organization(AuditActions.OrganizationMemberRemoved, AuditType.Delete, id, playerId), cancellationToken);
         return true;
     }
 
@@ -126,6 +131,7 @@ public sealed class OrganizationService(IOrganizationRepository organizations, I
         if (team.CreatedBy != callerId) return OrganizationErrors.NotTeamOwner;
         team.MoveToOrganization(id);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.Organization(AuditActions.OrganizationTeamAdded, AuditType.Create, id, teamId, team.Name), cancellationToken);
         return true;
     }
 
@@ -138,6 +144,7 @@ public sealed class OrganizationService(IOrganizationRepository organizations, I
         if (team.CreatedBy != callerId && caller?.Role != OrganizationRole.Admin) return OrganizationErrors.NotAdmin;
         team.MoveToOrganization(null);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.Organization(AuditActions.OrganizationTeamRemoved, AuditType.Delete, id, teamId, team.Name), cancellationToken);
         return true;
     }
 

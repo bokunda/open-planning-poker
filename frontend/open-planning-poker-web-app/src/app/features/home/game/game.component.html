@@ -185,6 +185,17 @@
           [currentUserName]="currentUserName"
           [(collapsed)]="chatCollapsed">
         </app-chat>
+
+        <!-- Activity log for the host and co-hosts (GitHub #20) -->
+        @if (isHost) {
+          <app-activity-log
+            scope="GAME"
+            variant="panel"
+            [scopeId]="game.id"
+            [refresh]="activityVersion"
+            [(collapsed)]="activityCollapsed">
+          </app-activity-log>
+        }
       </aside>
     </div>
     } @placeholder {

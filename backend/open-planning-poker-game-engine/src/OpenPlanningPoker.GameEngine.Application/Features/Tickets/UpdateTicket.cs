@@ -2,7 +2,10 @@ namespace OpenPlanningPoker.GameEngine.Application.Features.Tickets;
 
 public sealed record UpdateTicketResponse(Guid Id, Guid GameId, string Name, string Description, bool VotesRevealed, string? FinalEstimate = null, int Position = 0, string? ExternalKey = null, string? ExternalUrl = null);
 
-public sealed record UpdateTicketCommand(Guid TicketId, string Name, string Description) : IRequest<Result<UpdateTicketResponse, ApplicationError>>;
+public sealed record UpdateTicketCommand(Guid TicketId, string Name, string Description) : IRequest<Result<UpdateTicketResponse, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Ticket(AuditActions.TicketUpdated, AuditType.Update, TicketId) with { Detail = Name };
+}
 
 public static class UpdateTicket
 {

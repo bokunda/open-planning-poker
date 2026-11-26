@@ -2,7 +2,10 @@ namespace OpenPlanningPoker.GameEngine.Application.Features.Tickets;
 
 public sealed record CreateTicketResponse(Guid Id, Guid GameId, string Name, string Description, bool VotesRevealed, string? FinalEstimate = null, int Position = 0, string? ExternalKey = null, string? ExternalUrl = null);
 
-public sealed record CreateTicketCommand(Guid GameId, string Name, string Description) : IRequest<Result<CreateTicketResponse, ApplicationError>>;
+public sealed record CreateTicketCommand(Guid GameId, string Name, string Description) : IRequest<Result<CreateTicketResponse, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Game(AuditActions.TicketCreated, AuditType.Create, GameId, detail: Name);
+}
 
 public static class CreateTicket
 {

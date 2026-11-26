@@ -5,7 +5,11 @@ namespace OpenPlanningPoker.GameEngine.Application.Features.GameSettings;
 /// <see cref="UpdateGameSettingsCommand"/> so toggling an option never touches the deck.
 /// </summary>
 public sealed record UpdateGameOptionsCommand(Guid GameId, bool AutoReveal, DateTimeOffset? AsyncVotingEndsAt)
-    : IRequest<Result<GetGameSettingsResponse, ApplicationError>>;
+    : IRequest<Result<GetGameSettingsResponse, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Game(AuditActions.SettingsOptions, AuditType.Update, GameId,
+        value: AsyncVotingEndsAt is null ? (AutoReveal ? "autoReveal" : null) : (AutoReveal ? "autoReveal,async" : "async"));
+}
 
 public static class UpdateGameOptions
 {
@@ -23,7 +27,7 @@ public static class UpdateGameOptions
         }
     }
 
-    public sealed class RequestHandler(IGameSettingsRepository settingsRepository, IUnitOfWork unitOfWork)
+    public sealed class RequestHandler(IGameSettingsRepository settingsRepository, IUnitOfWork unitOfWork, AuditContext audit)
         : IRequestHandler<UpdateGameOptionsCommand, Result<GetGameSettingsResponse, ApplicationError>>
     {
         public async Task<Result<GetGameSettingsResponse, ApplicationError>> Handle(UpdateGameOptionsCommand request, CancellationToken cancellationToken)
@@ -36,6 +40,11 @@ public static class UpdateGameOptions
 
             // A window that already ended means "meeting mode": store it as no window.
             var endsAt = request.AsyncVotingEndsAt > DateTimeOffset.UtcNow ? request.AsyncVotingEndsAt : null;
+            if (settings.AutoReveal == request.AutoReveal && settings.AsyncVotingEndsAt == endsAt)
+            {
+                audit.MarkUnchanged();
+            }
+
             settings.UpdateOptions(request.AutoReveal, endsAt);
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return settings.ToGetGameSettingsResponse();

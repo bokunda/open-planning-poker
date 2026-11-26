@@ -22,3 +22,6 @@ global using QuestPDF.Fluent;
 global using QuestPDF.Helpers;
 global using OpenPlanningPoker.GameEngine.Application.Abstractions.Authorization;
 global using OpenPlanningPoker.GameEngine.Domain.Teams;
+
+global using OpenPlanningPoker.GameEngine.Application.Abstractions.Auditing;
+global using OpenPlanningPoker.GameEngine.Domain.Audits;

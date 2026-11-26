@@ -43,6 +43,8 @@ builder.Services.AddSingleton<OpenPlanningPoker.GameEngine.Application.Features.
 builder.Services.AddHttpClient(OpenPlanningPoker.GameEngine.GraphQL.Features.Teams.WebhookDispatcher.HttpClientName, client => client.Timeout = TimeSpan.FromSeconds(10))
     .ConfigurePrimaryHttpMessageHandler(OpenPlanningPoker.GameEngine.GraphQL.Features.Teams.WebhookDispatcher.CreateHandler);
 if (!isSchemaExport) builder.Services.AddHostedService<OpenPlanningPoker.GameEngine.GraphQL.Features.Teams.WebhookDispatcher>();
+// Activity log retention (GitHub #20).
+if (!isSchemaExport) builder.Services.AddHostedService<OpenPlanningPoker.GameEngine.GraphQL.Features.Audits.AuditRetentionService>();
 
 var app = builder.Build();
 

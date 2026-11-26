@@ -40,7 +40,8 @@ public sealed class JiraService(
     IJiraConnectionRepository connections,
     ITicketRepository tickets,
     IVoteRepository votes,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    IAuditLog auditLog)
 {
     public const int MaxImport = 100;
     private static readonly TimeSpan StateLifetime = TimeSpan.FromMinutes(15);
@@ -115,6 +116,7 @@ public sealed class JiraService(
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.User(AuditActions.IntegrationConnected, AuditType.Create, playerId, "jira"), cancellationToken);
         return new JiraConnectResult(sites, parsed.ReturnPath, selected);
     }
 
@@ -141,6 +143,7 @@ public sealed class JiraService(
         if (connection is null) return false;
         connections.Remove(connection);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+        await auditLog.RecordAsync(AuditEntry.User(AuditActions.IntegrationDisconnected, AuditType.Delete, playerId, "jira"), cancellationToken);
         return true;
     }
 

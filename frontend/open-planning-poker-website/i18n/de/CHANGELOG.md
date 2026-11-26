@@ -6,10 +6,14 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+### Hinzugefügt
+- **Aktivitätsprotokoll** ([#20](https://github.com/bokunda/open-planning-poker/issues/20)): Hosts und Co-Hosts sehen im Panel „Aktivität“ im Raum, wer die Stimmen aufgedeckt oder gelöscht, Tickets bearbeitet oder gelöscht, das Kartendeck oder die Optionen geändert und Spieler entfernt oder befördert hat. Team-Owner sehen Mitgliedschaft, Referenztickets, API-Tokens und Webhooks im Teamraum, Organisations-Admins Mitglieder, Rollen und Teams auf der Organisationsseite. Einträge bleiben 90 Tage gespeichert; Stimmen werden nie protokolliert
+
 ### Geändert
 - **App auf Angular 22** (von 21) mit Angular Material 22 und TypeScript 6.0. Für Spieler ändert sich nichts
 
 ### Für Entwickler
+- Die Game Engine schreibt die Tabelle `audits` (die Migration `AddAuditLog` formt sie um): Befehle implementieren `IAuditedRequest`, und `AuditBehavior` schreibt den Eintrag nach einem erfolgreichen Handler; Dienste rufen `IAuditLog` auf. Neue Abfrage `activityLog(scope, scopeId, before, take)` mit Zugriffsprüfung je Bereich. Siehe `docs/audit-logs.md`
 - Für den Build der App braucht es Node.js 22.22.3 oder 24.15 oder neuer (Angular CLI 22)
 - Hot Chocolate 16.7.7 in beiden Subgraphen, im gemeinsamen Paket und im Gateway. Das Gateway wechselt auf Fusion v2: Es liefert `gateway.far` aus (mit der Nitro CLI von `backend/open-planning-poker-graphql-gateway/compose-gateway.sh` zusammengesetzt) statt `gateway.fgp`, und Name und URL jedes Subgraphen stehen in seiner `schema-settings.json`
 - Die Bytes des Berichts und des Retro-Exports haben den Typ `[UnsignedByte!]!` (vorher `[Byte!]!`); die Werte sind unverändert

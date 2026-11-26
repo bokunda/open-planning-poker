@@ -1,6 +1,9 @@
 ﻿namespace OpenPlanningPoker.GameEngine.Application.Features.Tickets;
 
-public sealed record DeleteTicketCommand(Guid TicketId) : IRequest<Result<bool, ApplicationError>>;
+public sealed record DeleteTicketCommand(Guid TicketId) : IRequest<Result<bool, ApplicationError>>, IAuditedRequest
+{
+    public AuditEntry? ToAuditEntry() => AuditEntry.Ticket(AuditActions.TicketDeleted, AuditType.Delete, TicketId);
+}
 
 public static class DeleteTicket
 {
