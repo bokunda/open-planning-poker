@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.9.0] — 2026-11-27
+
+See who changed what in the room, the team room and the organization, with the app on Angular 22 and the backend on Hot Chocolate 16.
+
 ### Added
 - **Activity log** ([#20](https://github.com/bokunda/open-planning-poker/issues/20)): hosts and co-hosts see who revealed or cleared the votes, edited or deleted tickets, changed the deck or the options and removed or promoted players, in an "Activity" panel in the room. Team owners see membership, reference tickets, API tokens and webhooks in the team room, and organization admins see members, roles and teams on the organization page. Entries are kept for 90 days; votes are never logged
 

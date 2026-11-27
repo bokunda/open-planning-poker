@@ -6,6 +6,10 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 
 ## [Unveröffentlicht]
 
+## [3.9.0] — 2026-11-27
+
+Sieh, wer was im Raum, im Teamraum und in der Organisation geändert hat, mit der App auf Angular 22 und dem Backend auf Hot Chocolate 16.
+
 ### Hinzugefügt
 - **Aktivitätsprotokoll** ([#20](https://github.com/bokunda/open-planning-poker/issues/20)): Hosts und Co-Hosts sehen im Panel „Aktivität“ im Raum, wer die Stimmen aufgedeckt oder gelöscht, Tickets bearbeitet oder gelöscht, das Kartendeck oder die Optionen geändert und Spieler entfernt oder befördert hat. Team-Owner sehen Mitgliedschaft, Referenztickets, API-Tokens und Webhooks im Teamraum, Organisations-Admins Mitglieder, Rollen und Teams auf der Organisationsseite. Einträge bleiben 90 Tage gespeichert; Stimmen werden nie protokolliert
 
