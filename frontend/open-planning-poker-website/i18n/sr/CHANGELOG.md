@@ -6,6 +6,10 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 
 ## [Neobjavljeno]
 
+## [3.9.0] — 2026-11-27
+
+Vidi ko je šta promenio u sobi, sobi tima i organizaciji, uz aplikaciju na Angularu 22 i backend na Hot Chocolate 16.
+
 ### Dodato
 - **Dnevnik aktivnosti** ([#20](https://github.com/bokunda/open-planning-poker/issues/20)): voditelji i suvoditelji vide ko je otkrio ili obrisao glasove, izmenio ili obrisao tikete, promenio špil ili opcije i uklonio ili unapredio igrače, u panelu „Aktivnosti” u sobi. Vlasnici timova vide članstvo, referentne tikete, API tokene i webhookove u sobi tima, a administratori organizacije članove, uloge i timove na stranici organizacije. Zapisi se čuvaju 90 dana; glasovi se nikad ne beleže
 

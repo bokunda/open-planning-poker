@@ -1,4 +1,28 @@
-<div class="changelog-content"><h2>[3.8.1] — 2026-11-26</h2>
+<div class="changelog-content"><h2>[3.9.0] — 2026-11-27</h2>
+<p>See who changed what in the room, the team room and the organization, with the app on Angular 22 and the backend on Hot Chocolate 16.</p>
+<h3>Added</h3>
+<ul>
+<li><strong>Activity log</strong> (<a href="https://github.com/bokunda/open-planning-poker/issues/20">#20</a>): hosts and co-hosts see who revealed or cleared the votes, edited or deleted tickets, changed the deck or the options and removed or promoted players, in an &quot;Activity&quot; panel in the room. Team owners see membership, reference tickets, API tokens and webhooks in the team room, and organization admins see members, roles and teams on the organization page. Entries are kept for 90 days; votes are never logged</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li><strong>App on Angular 22</strong> (from 21) with Angular Material 22 and TypeScript 6.0. Nothing changes for players</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Emoji reactions work for players who open the room from a link: the reactions stream opened before they had joined, so the server turned it away and they saw no reactions</li>
+<li>Missing icons in the retro (&quot;Sprint in numbers&quot;, &quot;Reveal all cards&quot;, &quot;Start dot voting&quot;, &quot;End voting and show results&quot;, card menus) and in a few other places showed as stray glyphs; the icon font now has them</li>
+<li>In the team room&#39;s member list, the &quot;Owner&quot; and &quot;You&quot; badges no longer stick out of the card for long names</li>
+</ul>
+<h3>Developers</h3>
+<ul>
+<li>The Game Engine writes the <code>audits</code> table (migration <code>AddAuditLog</code> reshapes it): commands implement <code>IAuditedRequest</code> and <code>AuditBehavior</code> writes the entry after a successful handler; services call <code>IAuditLog</code>. New query <code>activityLog(scope, scopeId, before, take)</code>, access-checked per scope. See <code>docs/audit-logs.md</code></li>
+<li>Building the app needs Node.js 22.22.3 or 24.15 or newer (Angular CLI 22)</li>
+<li>Hot Chocolate 16.7.7 in both subgraphs, the shared package and the gateway. The gateway moves to Fusion v2: it serves <code>gateway.far</code> (composed with the Nitro CLI by <code>backend/open-planning-poker-graphql-gateway/compose-gateway.sh</code>) instead of <code>gateway.fgp</code>, and each subgraph&#39;s name and URL are in its <code>schema-settings.json</code></li>
+<li>The report and retro export bytes are typed <code>[UnsignedByte!]!</code> (was <code>[Byte!]!</code>); the values are unchanged</li>
+<li><code>OpenPlanningPoker.Shared</code> 1.2.0 is built against Hot Chocolate 16; the services keep 1.1.0 until it is published</li>
+</ul>
+<h2>[3.8.1] — 2026-11-26</h2>
 <p>New fonts in the app, on the website and in the PDF reports, with smaller font files.</p>
 <h3>Changed</h3>
 <ul>
