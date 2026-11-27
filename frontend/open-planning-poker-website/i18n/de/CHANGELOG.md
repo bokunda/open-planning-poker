@@ -12,6 +12,11 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 ### Geändert
 - **App auf Angular 22** (von 21) mit Angular Material 22 und TypeScript 6.0. Für Spieler ändert sich nichts
 
+### Behoben
+- Emoji-Reaktionen funktionieren auch für Spieler, die den Raum über einen Link öffnen: Der Reaktionsstrom startete, bevor sie beigetreten waren, deshalb lehnte der Server ihn ab und sie sahen keine Reaktionen
+- Fehlende Icons in der Retro („Sprint in Zahlen“, „Alle Karten aufdecken“, „Punktabstimmung starten“, „Abstimmung beenden und Ergebnisse zeigen“, Kartenmenüs) und an einigen anderen Stellen erschienen als fremde Zeichen; die Icon-Schrift enthält sie jetzt
+- In der Mitgliederliste des Teamraums ragen die Badges „Owner“ und „Du“ bei langen Namen nicht mehr aus der Karte
+
 ### Für Entwickler
 - Die Game Engine schreibt die Tabelle `audits` (die Migration `AddAuditLog` formt sie um): Befehle implementieren `IAuditedRequest`, und `AuditBehavior` schreibt den Eintrag nach einem erfolgreichen Handler; Dienste rufen `IAuditLog` auf. Neue Abfrage `activityLog(scope, scopeId, before, take)` mit Zugriffsprüfung je Bereich. Siehe `docs/audit-logs.md`
 - Für den Build der App braucht es Node.js 22.22.3 oder 24.15 oder neuer (Angular CLI 22)

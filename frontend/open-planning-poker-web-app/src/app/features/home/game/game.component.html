@@ -111,6 +111,7 @@
         @if (!asyncVotingOpen && !sortingOpen) {
           <app-voting
             [gameId]="game.id"
+            [memberGameId]="chatGameId"
             [players]="players"
             [gameSettings]="game.settingsDetails"
             [ticket]="ticket"

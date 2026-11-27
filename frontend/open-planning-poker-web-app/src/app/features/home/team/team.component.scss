@@ -108,7 +108,7 @@
   &:focus { outline: 2px solid var(--opp-primary); outline-offset: 1px; border-color: transparent; }
 }
 
-.team-list, .sprint-list, .member-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.team-list, .sprint-list, .member-list { display: grid; gap: 0; min-width: 0; margin: 0; padding: 0; list-style: none; }
 
 .team-link, .sprint-link {
   display: grid;
@@ -146,6 +146,9 @@
   align-items: center;
   gap: var(--opp-space-2);
   padding: var(--opp-space-2) 0;
+  // A grid item keeps its min-content width (the whole name) unless told otherwise,
+  // which pushed the badges out of the card.
+  min-width: 0;
 }
 
 .member-avatar {
@@ -163,6 +166,8 @@
 .member-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .member-badge {
+  flex: none;
+  white-space: nowrap;
   padding: 1px 8px;
   border-radius: var(--opp-radius-full);
   background: var(--opp-surface-hover);

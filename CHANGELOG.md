@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **App on Angular 22** (from 21) with Angular Material 22 and TypeScript 6.0. Nothing changes for players
 
+### Fixed
+- Emoji reactions work for players who open the room from a link: the reactions stream opened before they had joined, so the server turned it away and they saw no reactions
+- Missing icons in the retro ("Sprint in numbers", "Reveal all cards", "Start dot voting", "End voting and show results", card menus) and in a few other places showed as stray glyphs; the icon font now has them
+- In the team room's member list, the "Owner" and "You" badges no longer stick out of the card for long names
+
 ### Developers
 - The Game Engine writes the `audits` table (migration `AddAuditLog` reshapes it): commands implement `IAuditedRequest` and `AuditBehavior` writes the entry after a successful handler; services call `IAuditLog`. New query `activityLog(scope, scopeId, before, take)`, access-checked per scope. See `docs/audit-logs.md`
 - Building the app needs Node.js 22.22.3 or 24.15 or newer (Angular CLI 22)

@@ -107,6 +107,8 @@ export class VotingComponent implements OnInit, OnDestroy, OnChanges {
 
   // Timer: shared by everyone, run by the server (app-game-timer); the table ring follows it.
   @Input() gameId = '';
+  /** Set once the server has the user as a player; reactions can only be subscribed to by players. */
+  @Input() memberGameId: string | undefined;
   @ViewChild(GameTimerComponent) private timer?: GameTimerComponent;
   timerTick: TimerTick = { remaining: null, total: 60 };
 
