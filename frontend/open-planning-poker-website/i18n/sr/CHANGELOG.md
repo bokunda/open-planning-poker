@@ -12,6 +12,11 @@ Format prati [Keep a Changelog](https://keepachangelog.com/sr/1.0.0/), a verzije
 ### Izmenjeno
 - **Aplikacija na Angularu 22** (sa 21) sa Angular Materialom 22 i TypeScriptom 6.0. Za igrače se ništa ne menja
 
+### Ispravljeno
+- Emoji reakcije rade i igračima koji otvore sobu preko linka: tok reakcija se otvarao pre nego što su se pridružili, pa ga je server odbijao i nisu videli reakcije
+- Ikonice koje su nedostajale u retrospektivi („Sprint u brojkama”, „Otkrij sve kartice”, „Pokreni glasanje tačkicama”, „Završi glasanje i prikaži rezultate”, meniji kartica) i na još par mesta prikazivale su se kao čudni znakovi; font ikonica ih sada ima
+- U spisku članova sobe tima oznake „Vlasnik” i „Ti” više ne izlaze iz kartice kod dugih imena
+
 ### Za programere
 - Game Engine upisuje tabelu `audits` (migracija `AddAuditLog` menja njen oblik): komande implementiraju `IAuditedRequest`, a `AuditBehavior` upisuje zapis posle uspešnog handlera; servisi pozivaju `IAuditLog`. Novi upit `activityLog(scope, scopeId, before, take)` sa proverom pristupa po opsegu. Vidi `docs/audit-logs.md`
 - Za build aplikacije treba Node.js 22.22.3 ili 24.15 ili noviji (Angular CLI 22)

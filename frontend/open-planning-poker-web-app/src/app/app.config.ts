@@ -48,37 +48,55 @@ const SVG_ICONS: Record<string, string> = {
 };
 
 /**
- * Icons in the self-hosted Material Symbols subset (public/fonts/material-symbols-outlined.woff2).
+ * Icons in the self-hosted Material Symbols subset (public/fonts/material-symbols-outlined-v2.woff2; rename the file when it changes, fonts are cached as immutable).
  * An icon that is not in the font renders as its name. To add one: download the subset again from
  * https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0&icon_names=<sorted list>&display=block
  * (the woff2 URL inside that CSS) and add the name here.
  */
 export const ICON_NAMES = [
   'add',
+  'add_comment',
+  'arrow_forward',
+  'auto_awesome',
+  'call_split',
   'chevron_left',
   'chevron_right',
+  'close',
   'content_copy',
   'dark_mode',
+  'delete',
+  'description',
+  'domain',
   'download',
   'edit',
   'expand_less',
   'expand_more',
+  'fact_check',
   'file_upload',
+  'forum',
   'info',
+  'insights',
+  'ios_share',
   'language',
   'light_mode',
+  'lightbulb',
   'link',
   'login',
   'logout',
   'menu',
+  'merge',
   'more_vert',
   'person_add',
+  'picture_as_pdf',
   'play_arrow',
+  'remove',
   'replay',
   'restart_alt',
   'send',
+  'short_text',
   'stop',
   'visibility',
+  'visibility_off',
 ] as const;
 
 export const appConfig: ApplicationConfig = {

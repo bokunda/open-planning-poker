@@ -94,7 +94,7 @@
       <app-reference-panel [ticketId]="ticket?.id ?? ''" [teamId]="teamId"></app-reference-panel>
     }
     @if (facilitation.reactions) {
-      <app-reactions class="voting-reactions" [gameId]="gameId" [players]="players" [currentUserId]="currentUserId"></app-reactions>
+      <app-reactions class="voting-reactions" [gameId]="memberGameId ?? ''" [players]="players" [currentUserId]="currentUserId"></app-reactions>
     }
     @if (isObserver) {
       <p class="observer-note">
